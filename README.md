@@ -1,4 +1,4 @@
-# Negative Studio v0.9 – färg och svartvitt
+# Negative Studio v0.9.1 – färg och svartvitt
 
 Bygger på v0.8.1 och behåller gränssnittet, offline-PWA, LibRaw, TIFF-export och fem-bilderskön.
 
@@ -19,3 +19,10 @@ Ersätt `index.html`, `sw.js` och `README.md` i projektets rot. Låt fungerande 
 
 ## Tester som återstår på iPad
 Kontrollera att filmvalet syns och förändrar färg/ton utan att reglagen rör sig. Byt till svartvitt och kontrollera gråskala, exponering, negativ/positiv samt TIFF och JPEG. Kontrollera batch/JPEG-ZIP och TIFF med en RAF. Syntaxkontroll är inte fullständig iPad-validering.
+
+
+## v0.9.1
+- Tydligare filmskillnader mellan profilerna.
+- Större förhandsvisning.
+- Dagläge/nattläge.
+- Liten UI-uppfräschning med kontrastfärg.
