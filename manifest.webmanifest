@@ -1,1 +1,23 @@
-{"name": "Negative Studio 1.0 Beta 3", "short_name": "Negative Studio", "start_url": "./index.html", "display": "standalone", "background_color": "#0f151a", "theme_color": "#0f151a"}
+{
+  "name": "FILMLABB — Negativframkallning",
+  "short_name": "FILMLABB",
+  "description": "Lokal negativkonvertering och RAW-framkallning i webbläsaren.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#11191d",
+  "theme_color": "#11191d",
+  "icons": [
+    {
+      "src": "./icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

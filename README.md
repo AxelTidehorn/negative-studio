@@ -1,4 +1,4 @@
-# Negative Studio 1.0 Beta 3 — RAW-fokus
+# FILMLABB — Beta 3.5 (RAW-fokus)
 
 Beta 3 är ett jämförelsebygge med RAF direkt från kameran som huvudflöde. **Beta 1:s färgmetod är fortfarande standard, men även den använder Beta 3:s korrigerade import. För en exakt jämförelse med tidigare Beta 1 behövs det tidigare bygget.** Välj Beta 3 under Färgmotor för att prova filmruteberoende basuppskattning ovanpå Beta 1:s färgframkallning. Beta 2 finns kvar som separat experiment. Inga nya RAW-format har tillkommit: RAF och DNG stöds via LibRaw 1.6.0.
 
@@ -50,3 +50,7 @@ De privata negativfilerna ingår inte i leveransen. Tester utan bildunderlag kon
 
 ### Beta 3.4 – låst sidzoom på iPad
 Sidans pinch-/dubbeltryckszoom begränsas via viewport, touch-action och Safari-gesthändelser. Vanlig scrollning, dubbeltryck på reglage och bildens separata zoomknappar är kvar. Kontrollera funktionen i Safari på riktig iPad.
+
+
+## FILMLABB-identitet
+Ny transparent FILMLABB-logga, appikoner och petrolblå accent i ljust och mörkt tema. Gamla projektformat och localStorage-nycklar lämnas oförändrade för bakåtkompatibilitet. GitHub-URL:er ändras inte automatiskt.
