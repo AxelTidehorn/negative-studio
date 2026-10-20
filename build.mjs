@@ -12,3 +12,5 @@ fs.copyFileSync('manifest.webmanifest','site/manifest.webmanifest');
 fs.copyFileSync('sw.js','site/sw.js');
 
 fs.copyFileSync('demo-negative.png','site/demo-negative.png');
+
+for(const f of ['color-engine.js','color-management.js','srgb-profile.js','beta2.js'])fs.copyFileSync(f,'site/'+f);

@@ -1,1 +1,12 @@
-{"name":"negative-studio-raw-experiment","private":true,"type":"module","scripts":{"build":"node build.mjs"},"dependencies":{"libraw-wasm":"1.6.0"}}
+{
+  "name": "negative-studio-beta2",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node tests/smoke.mjs && node tests/color-engine.mjs && node tests/app-integration.mjs"
+  },
+  "dependencies": {
+    "libraw-wasm": "1.6.0"
+  }
+}
