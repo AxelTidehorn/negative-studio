@@ -1,27 +1,24 @@
-# Negative Studio v0.6 – experimentell
+# Negative Studio v0.7 — iPad offline
 
-## Uppdateringar utan ZIP/a-Shell (GitHub Pages)
+## Installation och uppdatering
+1. Behåll ditt GitHub-repository och dess GitHub Pages-inställning **Source: GitHub Actions**. På gratis GitHub-konto måste Pages-projektet normalt vara publikt.
+2. Ersätt i repositoryts rot: `index.html`, `build.mjs`, `package.json`, `sw.js`, `manifest.webmanifest`, `README.md`.
+3. Behåll `.github/workflows/` där den ligger, eller använd de fullständiga medföljande filerna.
+4. När **Publish Negative Studio** är grön, öppna `https://axeltidehorn.github.io/negative-studio/`. Ladda om online en gång för att få ny offline-cache.
+5. Installera via Safari > Dela > Lägg till på hemskärmen. Kontrollera offline i flygplansläge efter en onlineöppning.
+6. Inga RAF-filer skickas till GitHub; allt bearbetas lokalt. Uppdatering kräver internet men användning ska fungera offline när samtliga WASM-filer cachelagrats.
 
-1. OBS: GitHub Pages på gratis GitHub-konto kan kräva ett **public** repository. Projektets källkod blir då offentlig, men bilder behandlas endast lokalt i webbläsaren och laddas inte upp. Publicera aldrig privata RAF-filer i repot.
-2. Repository → Settings → Pages → Source: **GitHub Actions**. Om Pages inte erbjuds med privat repo, välj själv om du vill göra koden publik; annars fortsätt via artefakt + a-Shell.
-3. Ladda upp/ersätt projektfilerna från detta paket, **inklusive** `.github/workflows/pages.yml`. `build.yml` är fortsatt den vanliga reservvägen.
-4. Vid varje push publiceras appen automatiskt till `https://<användarnamn>.github.io/negative-studio/` (om Pages är tillgängligt och deploy går igenom). Öppna URL:en en gång online, lägg på hemskärmen via Safari. Offline-serviceworkern försöker cachea HTML, JS och WASM. Verifiera OFFLINE genom att stänga av nätverk och öppna igen innan du förlitar dig på lösningen.
-5. RAW-filer väljs **från Filer**, aldrig från GitHub. Inga serveranrop görs för filmrullar.
-6. Om den nya versionen inte syns, öppna sidan med nätverk och ladda om för att uppdatera cache. Installation/uppdatering kräver internet; användning efter cache ska fungera offline.
+## Nytt
+* Fem bilder i arbetskö. Filmremsa under Negativ/Positiv/Jämför. Fast bildyta med scrollbara reglage på större skärmar.
+* Inbäddad RAF-JPEG för snabb bläddring, och full 16-bitars LibRaw vid separat begäran och TIFF-export.
+* Emulsionsprofil är separat från användarens reglage. Generisk, UltraMax 400, Gold 200, Portra 400. **Numeriska transformvärden är uttryckligen experimentella hypoteser**, inte kalibrerade mätdata.
+* En central analysyta exkluderar fem procent kring bildkanterna, som en första skyddsåtgärd (inte faktisk automatisk bildrutadetektion).
 
-## Använda appen
+## Viktiga begränsningar
+* En profil från publicerade karakteristiska densitets- och spektralkurvor kräver även ljuskällans spektrum, sensorns känslighet och en referenspositiv för verklig färgkalibrering. Kodak E-4050 och E-7022 anges som referens; vi har **inte digitiserat kurvor numeriskt** i v0.7. UltraMax saknar motsvarande verifierad komplett kurvuppsättning här.
+* Filmbas utan exponeringsfri kant är en uppskattning. Varje JPEG-förhandsvisning kan skilja sig från slutlig 16-bitars RAW-export.
+* RAF-filer blir temporärt inlästa i minnet vid JPEG-extraktion och full RAW-avkodning. Batch-TIFF max tre åt gången.
+* Arbetskö/projektfiler lagrar inte original-RAF.
+* UI- och WASM-användning behöver verifieras på iPad.
 
-* Importera flera RAF/JPEG/TIFF på en gång. Bläddra i filmremsan. RAF avkodas **en bild i taget** för att minska minnet.
-* Välj generisk eller experimentell emissionsprofil. Dessa är ENDAST startvärden för tre parametrar – **inte vetenskapligt kalibrerade filmprofiler**.
-* Tryck **Kopiera inställningar till hela rullen** för gemensamma justeringar; per-bild exponering bevaras. Bildspecifika reglage sparas inom sessionen.
-* **Avancerad konvertering** fälls ut vid behov. Saknas säker filmkant, välj motivbaserad konvertering. Algoritmen är fortfarande heuristisk.
-* JPEG-ZIP exporterar bilder sekventiellt i 8 bitar. TIFF-knappen exporter högst tre markerade i taget; iPad Safari kan begränsa flera nedladdningar. Exporten kan vara långsam och minneskrävande.
-* Spara rullprojekt JSON regelbundet. Filen lagrar justeringar men inte originalbilder. Vid återöppning: importera **samma** bildfiler först, importera sedan rullprojekt JSON.
-
-## Begränsningar
-
-* Ingen validerad per-emulsionsprofil eller exponeringskalibrering. Ingen professionell färghantering/ICC eller kontrollerad testnegativreferens.
-* Batch-JPEG avkodas på nytt per bild och kan ta tid; 16-bitars TIFF-batch hämtar flera filer separat och kan bli blockerad av Safari.
-* 16-bitars TIFF-källor/RAF har högbitarsdata, men delar av analysen sker på 8-bitars nedskalad förhandsvisning. Inget påstående om end-to-end filmkorrekt färg.
-* Offline-cachen kan rensas av iPadOS; spara alltid programkoden och projekt-JSON separat.
-* GitHub Pages är en enklare distribution, men är en extern **distributionsserver** vid uppdatering; själva bilderna behandlas lokalt.
+Källor: https://www.kodakprofessional.com/sites/default/files/wysiwyg/pro/resources/e4050_portra_400.pdf och https://www.kodakprofessional.com/sites/default/files/wysiwyg/pro/resources/E7022_Gold_200.pdf
