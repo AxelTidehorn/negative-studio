@@ -47,3 +47,6 @@ De privata negativfilerna ingår inte i leveransen. Tester utan bildunderlag kon
 - Luminanshistogram för den synliga förhandsvisningen, inklusive jämförelseläget.
 - Både JPEG- och 16-bitars TIFF-exporten använder samma tonjusteringar. Den snabba neutrala RAW-uppslagstabellen används inte när dessa justeringar aktiveras för att undvika felaktig kanalseparat beräkning.
 - `npm test` och `npm run build` har passerat. Manuell visuell kontroll i Safari/iPad och med verkliga RAF-filer återstår.
+
+### Beta 3.4 – låst sidzoom på iPad
+Sidans pinch-/dubbeltryckszoom begränsas via viewport, touch-action och Safari-gesthändelser. Vanlig scrollning, dubbeltryck på reglage och bildens separata zoomknappar är kvar. Kontrollera funktionen i Safari på riktig iPad.

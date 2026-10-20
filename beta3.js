@@ -58,7 +58,7 @@ function applyTonalZones(p,opts){
  if(!shadows&&!highlights)return p;
  const lum=CE.clamp(.2126*p[0]+.7152*p[1]+.0722*p[2]);
  const sw=(1-CE.clamp(lum/.65))**2,hw=CE.clamp((lum-.35)/.65)**2;
- const adjustment=(shadows/100)*sw*(1-lum)*.7+(highlights/100)*hw*lum*.7;
+ const adjustment=-(shadows/100)*sw*(1-lum)*.7+(highlights/100)*hw*lum*.7;
  return p.map(v=>CE.clamp(v+adjustment));
 }
 function technicalPositive(linear,opts){
@@ -68,7 +68,7 @@ function technicalPositive(linear,opts){
  let p=CE.positive(linear,calibration,opts.autoLevels,opts.balanceStrength).map(CE.encode);
  const f=filmProfiles[rollShared.profile]||filmProfiles.generic,profileOut=applyEmulsion(p);p=f.type==='bw'?profileOut:p.map((v,c)=>v+(profileOut[c]-v)*rollShared.strength);p=applyPrint(p);
  const ev=2**opts.exposure,gains=f.type==='bw'?[1,1,1]:[Math.exp(opts.temperature/180+opts.tint/350),Math.exp(-opts.tint/120),Math.exp(-opts.temperature/180+opts.tint/350)];
- p=p.map((v,c)=>{v=CE.clamp((v-opts.shadow)/Math.max(.1,opts.highlight-opts.shadow));v=v**(1/Math.max(.25,opts.gamma));return CE.clamp((CE.clamp(v*ev*gains[c]))**(1/Math.max(.2,opts.contrast)));});
+ p=p.map((v,c)=>{v=CE.clamp((v-opts.shadow)/Math.max(.1,opts.highlight-opts.shadow));v=v**(1/Math.max(.25,opts.gamma));return CE.clamp(.5+(CE.clamp(v*ev*gains[c])-.5)*opts.contrast);});
  const l=.2126*p[0]+.7152*p[1]+.0722*p[2];return applyTonalZones(p.map(v=>CE.clamp(l+(v-l)*(f.type==='bw'?0:opts.saturation))),opts);
 }
 // Neutral profile and saturation 1 have independent channels. Cache the exact
