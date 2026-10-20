@@ -1,0 +1,20 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+import vm from 'node:vm';
+const html=fs.readFileSync('index.html','utf8');
+const js=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)][0]?.[1];
+assert.ok(js,'App JavaScript must exist');
+new vm.Script(js); // parse entire application
+assert.match(html,/id="themeToggle"/);
+assert.match(js,/^applyTheme\(currentTheme\);/m,'theme must initialize at startup, not in slider callback');
+assert.match(html,/id="profileStrength"/);
+assert.match(js,/\.dng\$/i,'DNG file extension accepted for RAW');
+assert.match(js,/function applyEmulsion/);
+assert.match(js,/p\.map\(\(v,c\)=>v\+\(profileOut\[c\]-v\)\*rollShared\.strength\)/);
+assert.match(html,/id="rotateLeft"/);
+assert.match(html,/id="rotateRight"/);
+assert.match(html,/github\.com\/AxelTidehorn\/negative-studio\/issues/);
+const themeInitIndex=js.indexOf('applyTheme(currentTheme);');
+const sliderFinishIndex=js.indexOf("$('auto').checked");
+assert.ok(themeInitIndex<sliderFinishIndex,'theme must initialize before form setup');
+console.log('Smoke tests OK: syntax, theme, creative strength, DNG path, rotation, feedback');
