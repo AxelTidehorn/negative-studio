@@ -1,18 +1,21 @@
-# Negative Studio v0.8 – testversion
+# Negative Studio v0.8.1 – gränssnitt och återställd konvertering
 
-## Installera/uppdatera
-Ersätt index.html, build.mjs, package.json, manifest.webmanifest och sw.js i repositoryts rot. Behåll `.github/workflows` i rätt mapp. Commit: Actions Build och Pages publicerar. Öppna Pages-adressen och ladda om med internetanslutning; säkerställ att rubriken visar v0.8. Offline måste testas efter att alla resurser hämtats.
+Denna korrigeringsversion bygger på v0.8 men återställer densitetskonverteringens insignal från v0.7: den motivbaserade automatiska exponeringsmultiplikatorn används inte längre i pixelberäkningen. Välj alltid samma filmbasläge och reglage om du jämför med v0.7. Vald ljuskällereferens kan fortfarande påverka RGB-resultatet.
 
-## Nytt
-- Fast, större bildyta på iPad i liggande läge, zoom 100–800 % och pekpanorering. Zoom är visningszoom, inte sensorpixelvisning.
-- Filmruteområde för statistik: manuell procentuell kantmarginal samt försiktig automatisk uppskattning. Automatiken är INTE en exakt geometrisk detektor. Export beskär ännu inte bildens pixeldata.
-- Gemensamma justeringar: bara färg, bara ton eller båda till markerade rutor; individuell exponering bevaras.
-- Ljuskällereferens via bild: uppskattar global kanalbalans (inte spatial flat field/vinjettering). För RAW-referens används inbäddad JPEG. En ny referens behövs efter omladdning.
-- Batch TIFF med högst fem markerade bilder, sekventiella nedladdningar (Safari kan fråga om varje nedladdning). JPEG-ZIP finns kvar.
-- Existerande LibRaw RAF, 16-bit TIFF, emulsionsprofiler, offline-resurser bevarade.
+## Förändringar
+- Större fast bildyta på iPad i landskapsläge: endast höger inställningskolumn scrollar.
+- Import/JPEG/TIFF i kompakt verktygsrad.
+- Filmprofil flyttad till höger, ovanför de enkla justeringarna.
+- Positiv/Negativ/Jämför och zoom direkt under bilden, ovanför miniatyrerna.
+- Referens, beskärningsverktyg och kopiera-inställningar flyttade till två stängda paneler i högerkolumnen.
+- Arbetskö högst fem bilder samt RAW, TIFF, JPEG och befintliga profiler bevarade.
+- TIFF- och JPEG-batch samt projektsparning kvar i högerkolumnen.
+
+## Uppdatering
+Ladda upp/ersätt `index.html`, `sw.js` och `README.md` i repositoryts rot. `build.mjs`, `package.json`, `manifest.webmanifest` och fungerande `.github/workflows/` kan behållas oförändrade. Kör GitHub Actions automatiskt, kontrollera både bygg- och publiceringsjobb, och uppdatera sidan i Safari. Verifiera `v0.8.1` i appens rubrik. Offlinetest efter att appens nya tillgångar cachats.
 
 ## Begränsningar
-Normalisering är fortfarande heuristisk, inte kalibrerad mot exponering eller emulsion. Ljuskällereferens har ingen platsberoende korrigering och normaliseras utifrån en enda bild. Automatisk beskärning är en uppskattning av analysområdet, inte säker bildrutedetektion; export är fortfarande i helbild. Ingen garanti om filmtrogen färg. Originalbilder lämnar inte enheten. Projekt-JSON innehåller inte RAF eller referensbild.
-
-## Tester
-Kontrollera två UltraMax-RAF, växla mellan bilder, välj 5, kopiera färg utan exponering, ladda ljuskällereferens, ändra analysmarginal, zooma, TIFF-exportera samt offline efter onlineuppdatering. Syntax- och byggkontroll genomförs; faktisk Safari-körning måste verifieras på iPad.
+- Ingen ny filmvetenskap eller kalibrering i denna version.
+- Automatisk beskärning är en heuristisk analysmarginal, inte exakt filmkantdetektion.
+- RAF-avkodning och full TIFF-export behöver verifieras på iPad; webbläsarflödet har inte körts här.
+- Välj bort gammal ljuskällereferens när du jämför konverteringen med v0.7.
