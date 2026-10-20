@@ -4,8 +4,8 @@
   "description": "Lokal negativkonvertering och RAW-framkallning i webbläsaren.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#11191d",
-  "theme_color": "#11191d",
+  "background_color": "#191715",
+  "theme_color": "#191715",
   "icons": [
     {
       "src": "./icon-192.png",
