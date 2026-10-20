@@ -1,0 +1,1 @@
+{"name":"negative-studio-raw-experiment","private":true,"type":"module","scripts":{"build":"node build.mjs"},"dependencies":{"libraw-wasm":"1.6.0"}}
