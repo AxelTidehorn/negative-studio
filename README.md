@@ -1,21 +1,21 @@
-# Negative Studio v0.8.1 – gränssnitt och återställd konvertering
+# Negative Studio v0.9 – färg och svartvitt
 
-Denna korrigeringsversion bygger på v0.8 men återställer densitetskonverteringens insignal från v0.7: den motivbaserade automatiska exponeringsmultiplikatorn används inte längre i pixelberäkningen. Välj alltid samma filmbasläge och reglage om du jämför med v0.7. Vald ljuskällereferens kan fortfarande påverka RGB-resultatet.
+Bygger på v0.8.1 och behåller gränssnittet, offline-PWA, LibRaw, TIFF-export och fem-bilderskön.
 
-## Förändringar
-- Större fast bildyta på iPad i landskapsläge: endast höger inställningskolumn scrollar.
-- Import/JPEG/TIFF i kompakt verktygsrad.
-- Filmprofil flyttad till höger, ovanför de enkla justeringarna.
-- Positiv/Negativ/Jämför och zoom direkt under bilden, ovanför miniatyrerna.
-- Referens, beskärningsverktyg och kopiera-inställningar flyttade till två stängda paneler i högerkolumnen.
-- Arbetskö högst fem bilder samt RAW, TIFF, JPEG och befintliga profiler bevarade.
-- TIFF- och JPEG-batch samt projektsparning kvar i högerkolumnen.
+## Nytt
+- **Filmväljaren är synlig och användbar** (tidigare gömd av misstag i `sr-only`).
+- Generisk C-41, UltraMax 400, Gold 200, Portra 160/400/800, Ektar 100, Pro Image 100, Fujifilm 400 och Pro 400H.
+- **Svartvitt utan filmemulsionsprofiler**: optisk densitetsinvertering, neutral luminans och exponerings-/kontrastreglage; färgjustering av positivet ignoreras.
+- Neutral, mjuk och klassisk **positiv återgivning** är frikopplad från filmval och från redigeringsreglagen.
+- Export av inställningsprojekt tar med både filmval och återgivning.
 
-## Uppdatering
-Ladda upp/ersätt `index.html`, `sw.js` och `README.md` i repositoryts rot. `build.mjs`, `package.json`, `manifest.webmanifest` och fungerande `.github/workflows/` kan behållas oförändrade. Kör GitHub Actions automatiskt, kontrollera både bygg- och publiceringsjobb, och uppdatera sidan i Safari. Verifiera `v0.8.1` i appens rubrik. Offlinetest efter att appens nya tillgångar cachats.
+## Viktigt om vetenskap och noggrannhet
+Profilerna är **illustrativa, konservativa modeller**, inte extraherade mätprofiler eller en verifierad rekonstruktion av filmens färger. Tillverkarnas spektrala känslighets- och densitetskurvor räcker inte ensamma för att generera en kalibrerad Fuji-X-Pro3+ljuskälla+film-RGB-transform. De ger vägledning om modellens struktur, men exakta numeriska värden kräver mätning och referensnegativ. Kodaks publicerade Portra 400 E-4050, Gold 200 E-7022, RawTherapees Film Negative och darktables Negadoctor är relevanta tekniska referenser.
 
-## Begränsningar
-- Ingen ny filmvetenskap eller kalibrering i denna version.
-- Automatisk beskärning är en heuristisk analysmarginal, inte exakt filmkantdetektion.
-- RAF-avkodning och full TIFF-export behöver verifieras på iPad; webbläsarflödet har inte körts här.
-- Välj bort gammal ljuskällereferens när du jämför konverteringen med v0.7.
+För färgnegativ kan färgmask, ojämn exponeringsnivå och en ljuskälla utan känd spektral fördelning ge stora färgfel. Använd helst en exponeringsfri filmkant och en separat ljuskällereferens. Välj neutral profil som kontroll och jämför sedan varianterna.
+
+## Uppdatering på GitHub Pages
+Ersätt `index.html`, `sw.js` och `README.md` i projektets rot. Låt fungerande `build.yml`, `pages.yml`, `package.json` och `build.mjs` vara kvar. GitHub Actions bygger och publicerar; gå till sidan online, uppdatera och kontrollera att v0.9 visas. Därefter kan appen fungera offline från cache. Lägg inte RAW-filer i GitHub-repositoryt.
+
+## Tester som återstår på iPad
+Kontrollera att filmvalet syns och förändrar färg/ton utan att reglagen rör sig. Byt till svartvitt och kontrollera gråskala, exponering, negativ/positiv samt TIFF och JPEG. Kontrollera batch/JPEG-ZIP och TIFF med en RAF. Syntaxkontroll är inte fullständig iPad-validering.
