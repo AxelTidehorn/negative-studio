@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="sv"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Negative Studio · v0.5</title><style>
+:root{color-scheme:dark;font-family:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Helvetica Neue",sans-serif;background:#11161b;color:#ebf0ef}*{box-sizing:border-box}body{margin:0}header{padding:19px max(18px,env(safe-area-inset-left));border-bottom:1px solid #30393d;display:flex;align-items:center;justify-content:space-between;gap:10px}h1{font-size:20px;margin:0;letter-spacing:-.5px}small,.muted{color:#a2acae}.version{font-size:12px;color:#acb6b8}main{max-width:1160px;margin:auto;padding:18px;display:grid;grid-template-columns:minmax(0,1.7fr) minmax(275px,1fr);gap:18px}@media(max-width:760px){main{grid-template-columns:1fr}}.panel{background:#1c2529;border:1px solid #334047;border-radius:15px;padding:16px;min-width:0}.picture{background:#101619;display:flex;align-items:center;justify-content:center;min-height:260px;position:relative;overflow:hidden;border-radius:12px}.picture canvas{width:100%;height:auto;max-height:65vh;object-fit:contain;display:block}.empty{text-align:center;padding:50px 12px;color:#a2abad}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:13px}.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;cursor:pointer;min-height:40px;background:#2b3940;color:#f0f5f3;border:1px solid #506067;border-radius:10px;padding:9px 12px;font-size:14px;font-weight:600}.btn.primary{background:#d8e7d6;border-color:#d8e7d6;color:#132018}.btn:disabled{opacity:.4;cursor:default}input[type=file]{display:none}.seg{display:flex;border-radius:10px;background:#11181c;padding:4px;gap:4px;margin:12px 0}.seg button{flex:1;border:0;color:#aebfc3;background:transparent;border-radius:7px;padding:10px;cursor:pointer}.seg button.active{background:#34464c;color:white}.control{margin:13px 0}.control label{display:flex;align-items:center;justify-content:space-between;font-size:14px;margin-bottom:7px}.control output{font-variant-numeric:tabular-nums;color:#bbcec9}.control input{width:100%;accent-color:#bfd6bf;touch-action:pan-x;height:32px;cursor:pointer}h2{margin:0 0 12px;font-size:16px}.hint{font-size:12px;color:#acb8b8;line-height:1.55}.switch{display:flex;align-items:center;gap:9px;font-size:14px}.switch input{accent-color:#bfd6bf}.row{display:flex;flex-wrap:wrap;gap:9px;align-items:center;margin-top:12px}.status{font-size:12px;line-height:1.5;color:#aebcbd;margin:10px 0;overflow-wrap:anywhere}.foot{max-width:1160px;margin:0 auto 25px;padding:0 18px;font-size:12px;color:#9ca9a8;line-height:1.7}.eyebrow{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:#a9bbbd;margin:0 0 9px}.hidden{display:none!important}</style></head>
+<body><header><div><h1>Negative Studio</h1><div class="version">v0.5 · Filmkonvertering</div></div><span class="version">Ingen uppladdning</span></header>
+<main><section class="panel"><div class="actions"><label class="btn primary" for="imageFile">Importera bild</label><input type="file" id="imageFile" accept="image/*,.jpg,.jpeg,.png,.webp,.tif,.tiff,.raf"><button class="btn" id="export" disabled>Spara JPEG</button><button class="btn" id="exportTiff" disabled>Spara TIFF 16-bit</button></div><div class="picture"><div id="empty" class="empty">Välj JPEG, PNG, WebP, TIFF eller RAF. RAF försöker läsa riktig 16-bitars RAW med LibRaw. Om det misslyckas erbjuds JPEG-förhandsbilden som reserv.<p class="hint">Originalet bearbetas bara i din webbläsare.</p></div><canvas id="preview" class="hidden"></canvas></div><div class="seg"><button id="tabPos" class="active">Positiv</button><button id="tabNeg">Negativ</button><button id="tabSplit">Jämför</button></div><div id="status" class="status" aria-live="polite">Redo. Ingen bild är inläst.</div></section><section class="panel"><p class="eyebrow">Konvertering</p><h2>Filmbas och mask</h2><label class="switch"><input type="checkbox" id="auto" checked> Beräkna filmbas automatiskt</label><p class="hint">Utan synlig oexponerad filmkant är automatiken en osäker uppskattning. Välj Filmbas saknas för en alternativ grundkonvertering eller använd pipetten om en exponeringsfri kant finns.</p><div class="row"><button class="btn" id="sample" disabled>Välj filmbas med pipett</button><button class="btn" id="recalc" disabled>Analysera igen</button></div><div class="row"><label class="switch"><input type="checkbox" id="noBase"> Ingen pålitlig filmbas (motivbaserad)</label></div><div id="baseInfo" class="status">Filmbas: ej analyserad.</div><hr style="border:0;border-top:1px solid #344148;margin:22px 0"><p class="eyebrow">Automatisk positivframkallning</p><label class="switch"><input type="checkbox" id="autoLevels" checked> Automatiska svart-/vitpunkter och färgbalans</label><p class="hint">Robusta percentiler beräknas från negativets motiv, utan filmkant. Detta ger en användbar utgångspunkt men ingen garanterat filmtrogen färgprofil.</p><div class="row"><button class="btn" id="analyzeLevels" disabled>Beräkna nivåer igen</button></div><div id="levelsInfo" class="status">Nivåer: inte analyserade.</div><hr style="border:0;border-top:1px solid #344148;margin:22px 0"><p class="eyebrow">Finjustering</p><div id="controls"></div><div class="row"><button class="btn" id="reset">Återställ reglage</button></div><hr style="border:0;border-top:1px solid #344148;margin:22px 0"><h2>Inställningar</h2><p class="hint">Inställningar sparas automatiskt på enheten. Du kan också exportera och importera en projektfil för säkerhetskopia och för att återanvända inställningar.</p><div class="row"><button class="btn" id="saveSettings">Exportera JSON</button><label class="btn" for="settingsFile">Importera JSON</label><input id="settingsFile" type="file" accept="application/json,.json"></div><p class="hint">Originalbilden lagras inte med inställningarna. Ladda in den igen vid nästa session.</p></section></main><div class="foot">v0.5 experiment: WebAssembly RAW-avkodning via separat LibRaw-modul; kräver byggda lokala filer. Responsiva reglage med separat förhandsvisning. RAF använder LibRaw om installerad; JPEG används endast efter tydligt val. Okomprimerad RGB-TIFF med 16-bitars kanaler bevaras internt som 16 bitar. Vanliga JPEG/PNG/WebP avkodas av Safari som 8 bitar; TIFF-export kan inte återställa förlorad information. RAW-avkodning testad med X-Pro3 och X-T3 på iPad; ingen filmkalibrering; automatisk motivnivå är heuristisk och kan skapa färgstick. 16-bitars TIFF-export kan kräva mycket arbetsminne på iPad. Alla filer behandlas lokalt.</div>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const controls=[['exposure','Exponering',-2,2,.05,0,' EV'],['contrast','Kontrast',.5,1.7,.02,1,'×'],['temperature','Varm / kall',-35,35,1,0,''],['tint','Grön / magenta',-35,35,1,0,''],['saturation','Färgmättnad',0,1.8,.02,1,'×'],['balanceStrength','Autofärgbalans',0,1,.05,.75,'×'],['shadow','Svartpunkt',0,.12,.005,.015,''],['highlight','Vitpunkt',.85,1,.005,.99,''],['gamma','Mellantoner',.65,1.6,.025,1,'×']];
+const defaultState=()=>({auto:true,exposure:0,contrast:1,temperature:0,tint:0,saturation:1,balanceStrength:.75,shadow:.015,highlight:.99,gamma:1,noBase:false,autoLevels:true,manualBase:null});
+let state=defaultState(),src=null,previewSrc=null,hires=null,display='positive',base=[235,167,105],sampleMode=false,fullWidth=0,fullHeight=0,levels=null;
+const clamp=(x,min=0,max=255)=>Math.max(min,Math.min(max,x));
+try{const prev=JSON.parse(localStorage.getItem('negative-studio-v03')||'null');if(prev&&typeof prev==='object')state={...state,...prev}}catch(e){}
+for(const [id,label,min,max,step,val,unit] of controls){const div=document.createElement('div');div.className='control';div.innerHTML=`<label for="${id}">${label}<output id="${id}Value"></output></label><input id="${id}" type="range" min="${min}" max="${max}" step="${step}">`;$('controls').append(div);$(id).value=Number.isFinite(Number(state[id]))?state[id]:val;$(id).addEventListener('input',()=>{state[id]=Number($(id).value);updateValues();scheduleRender();schedulePersist()});$(id).addEventListener('change',()=>{scheduleRender(true);persist()})}
+$('auto').checked=!!state.auto;$('noBase').checked=!!state.noBase;$('autoLevels').checked=!!state.autoLevels;
+function updateValues(){for(const [id,,min,max,step,,unit] of controls){const v=Number(state[id]);$(id+'Value').textContent=(id==='exposure'&&v>0?'+':'')+v.toFixed(step<1?2:0)+unit}}
+let persistTimer=null;function schedulePersist(){clearTimeout(persistTimer);persistTimer=setTimeout(persist,450)}
+function persist(){clearTimeout(persistTimer);try{localStorage.setItem('negative-studio-v03',JSON.stringify(state))}catch(e){}}
+updateValues();
+function setStatus(s){$('status').textContent=s}
+async function readFile(file){
+ if(!file)return;
+ if(/\.raf$/i.test(file.name)){
+  try {
+   const buffer=await file.arrayBuffer();
+   setStatus('RAW: laddar LibRaw och avkodar X-Trans… Detta kan ta tid.');
+   try {
+     const mod=await import('./libraw/dist/index.js');
+     const LibRaw=mod.default;
+     const decoder=new LibRaw();
+     try {
+       await decoder.open(new Uint8Array(buffer), {outputBps:16, outputColor:1, useCameraWb:true, noAutoBright:true, gamm:[1,1], bright:1});
+       const meta=await decoder.metadata();
+       const im=await decoder.imageData();
+       if(!im||im.bits!==16||im.colors!==3||!(im.data instanceof Uint16Array)||im.data.length!==im.width*im.height*3)
+         throw Error('LibRaw gav inte 16-bitars RGB (format '+(im?.bits||'?')+' bit / '+(im?.colors||'?')+' kanaler).');
+       await importRawRGB16(im, file.name, meta);
+     } finally { decoder.dispose(); }
+   } catch(rawError) {
+     setStatus('RAW-avkodning misslyckades: '+rawError.message);
+     const jpeg=extractRafJpeg(buffer);
+     if(!jpeg)throw Error('RAW fungerade inte och ingen JPEG-förhandsbild kunde hittas: '+rawError.message);
+     if(confirm('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
+       await importBrowserImage(new File([jpeg],file.name+'.jpg',{type:'image/jpeg'}),
+          `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`);
+     }
+   }
+  }catch(e){setStatus('RAF-import misslyckades: '+e.message)}
+  return;
+ }
+ if(!file)return;setStatus('Läser in bild…');src=null;hires=null;
+ if(/\.tiff?$/i.test(file.name)||file.type==='image/tiff'){
+  try{const raw=parseTiff16(await file.arrayBuffer());hires=raw;fullWidth=raw.width;fullHeight=raw.height;
+   const scale=Math.min(1,1600/Math.max(raw.width,raw.height));const w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
+   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const cx=canvas.getContext('2d',{willReadFrequently:true});const im=cx.createImageData(w,h);
+   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h)),j=(sy*raw.width+sx)*raw.channels,i=(y*w+x)*4;for(let c=0;c<3;c++)im.data[i+c]=Math.round(raw.data[j+c]/257);im.data[i+3]=255;}
+   src=im;finishImport(`${file.name} · ${raw.width}×${raw.height} · riktig 16-bitars TIFF-källa (förhandsvisning ${w}×${h}).`);return;
+  }catch(e){setStatus('TIFF-formatet stöds inte: '+e.message);return}
+ }
+ if(!file.type.startsWith('image/')){setStatus('Använd JPEG, PNG, WebP, TIFF eller RAF.');return}
+ await importBrowserImage(file);
+}
+async function importRawRGB16(im,name,meta){
+ const raw={width:im.width,height:im.height,channels:3,data:im.data};
+ hires=raw;fullWidth=raw.width;fullHeight=raw.height;
+ const scale=Math.min(1,1600/Math.max(raw.width,raw.height)),w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
+ const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d',{willReadFrequently:true});const p=cx.createImageData(w,h);
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){
+  const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h));
+  const j=(sy*raw.width+sx)*3,i=(y*w+x)*4;
+  for(let c=0;c<3;c++)p.data[i+c]=Math.round(raw.data[j+c]/257);
+  p.data[i+3]=255;
+ }
+ src=p;
+ finishImport(`RAW 16-bit ${name} · ${raw.width}×${raw.height} · ${meta?.camera_model||'kamera'} · LibRaw RGB. Experimentell färghantering.`);
+}
+function extractRafJpeg(buffer){
+ const d=new DataView(buffer);
+ if(d.byteLength<100)throw Error('Filen är för kort.');
+ const sig=new TextDecoder('ascii').decode(new Uint8Array(buffer,0,16));
+ if(!sig.startsWith('FUJIFILMCCD-RAW'))throw Error('Filen är inte en Fujifilm RAF.');
+ const offset=d.getUint32(84,false),length=d.getUint32(88,false);
+ if(length<4||length>40000000||offset<100||offset+length>buffer.byteLength)throw Error('Felaktig offset eller längd i RAF-header.');
+ if(d.getUint8(offset)!==255||d.getUint8(offset+1)!==216||d.getUint8(offset+length-2)!==255||d.getUint8(offset+length-1)!==217)throw Error('JPEG-signaturen saknas.');
+ return new Blob([buffer.slice(offset,offset+length)],{type:'image/jpeg'});
+}
+async function importBrowserImage(file,note=''){
+ const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{try{const maxSide=3500;const scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight));fullWidth=img.naturalWidth;fullHeight=img.naturalHeight;const c=document.createElement('canvas');c.width=Math.max(1,Math.round(fullWidth*scale));c.height=Math.max(1,Math.round(fullHeight*scale));const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);src=ctx.getImageData(0,0,c.width,c.height);finishImport(`${note ? note+" · " : ""}${file.name} · ${fullWidth}×${fullHeight} px · 8-bitars bild; bearbetning ${c.width}×${c.height}.`)}catch(e){setStatus('Kunde inte läsa bilden: '+e.message)}finally{URL.revokeObjectURL(url)}};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Kunde inte öppna bilden.')};img.src=url;
+}
+function finishImport(message){previewSrc=makePreview(src);$('preview').width=previewSrc.width;$('preview').height=previewSrc.height;$('preview').classList.remove('hidden');$('empty').classList.add('hidden');$('export').disabled=false;$('exportTiff').disabled=false;$('sample').disabled=false;$('recalc').disabled=false;$('analyzeLevels').disabled=false;sampleMode=false;updateBase();analyzeLevels();render();setStatus(message)}
+// Only the interactive preview is downscaled; full-resolution src/hires stays untouched.
+function makePreview(image){const limit=960,ratio=Math.min(1,limit/Math.max(image.width,image.height));if(ratio===1)return image;const input=document.createElement('canvas');input.width=image.width;input.height=image.height;input.getContext('2d').putImageData(image,0,0);const out=document.createElement('canvas');out.width=Math.max(1,Math.round(image.width*ratio));out.height=Math.max(1,Math.round(image.height*ratio));const ctx=out.getContext('2d',{willReadFrequently:true});ctx.imageSmoothingQuality='high';ctx.drawImage(input,0,0,out.width,out.height);return ctx.getImageData(0,0,out.width,out.height)}
+// Limited but genuine 16-bit TIFF reader. Supports 8/16-bit unsigned chunky RGB,
+// single/multiple uncompressed strips, orientation=top-left. No color profiles.
+function parseTiff16(buffer){
+ const v=new DataView(buffer),endian=String.fromCharCode(v.getUint8(0),v.getUint8(1));if(endian!=='II'&&endian!=='MM')throw Error('Ogiltig byteordning');const le=endian==='II';
+ const u16=p=>v.getUint16(p,le),u32=p=>v.getUint32(p,le);if(u16(2)!==42)throw Error('BigTIFF stöds inte');const ifd=u32(4),count=u16(ifd),tags={};
+ const typelen={1:1,2:1,3:2,4:4};
+ for(let k=0;k<count;k++){const p=ifd+2+k*12,tag=u16(p),type=u16(p+2),n=u32(p+4);if(!typelen[type]||!n||n>200000)continue;const off=n*typelen[type]<=4?p+8:u32(p+8);const arr=[];for(let j=0;j<n;j++){const q=off+j*typelen[type];if(q+typelen[type]>buffer.byteLength)throw Error('Ogiltigt TIFF-fält');arr.push(type===3?u16(q):type===4?u32(q):v.getUint8(q))}tags[tag]=arr;}
+ const one=(t,def)=>tags[t]?.[0]??def,w=one(256),h=one(257),bits=tags[258]||[],channels=one(277,3),strips=tags[273]||[],bytes=tags[279]||[],photometric=one(262),compression=one(259,1);
+ if(!w||!h||w*h>35000000)throw Error('Bilden är för stor (gräns 35 megapixel)');if(compression!==1)throw Error('Endast okomprimerad TIFF stöds');if(photometric!==2)throw Error('Endast RGB-TIFF stöds');if(channels<3||channels>4||one(284,1)!==1)throw Error('Endast 3/4 interfolierade färgkanaler stöds');if(one(274,1)!==1)throw Error('Endast orientering 1 stöds');if(!bits.length||bits.some(x=>x!==bits[0])||![8,16].includes(bits[0]))throw Error('Endast 8 eller 16 bitar per kanal stöds');if(!strips.length||strips.length!==bytes.length)throw Error('Felaktiga TIFF-strips');
+ const pixelbytes=channels*bits[0]/8,expected=w*h*pixelbytes,total=bytes.reduce((a,b)=>a+b,0);if(total<expected)throw Error('Ofullständiga pixeldata');const samples=new Uint16Array(w*h*channels);let idx=0;
+ for(let k=0;k<strips.length;k++){const start=strips[k],len=bytes[k];if(start+len>buffer.byteLength)throw Error('TIFF-data utanför filen');for(let q=start;q<start+len&&idx<samples.length;q+=bits[0]/8){samples[idx++]=bits[0]===16?u16(q):v.getUint8(q)*257;}}
+ if(idx!==samples.length)throw Error('Ofullständiga pixlar');return {width:w,height:h,channels,data:samples};
+}
+$('imageFile').addEventListener('change',e=>readFile(e.target.files[0]));
+// Automatic base from brightest 3% of negative pixels in the *edge band*.
+// This is a heuristic, not film-stock calibrated. In high-key scenes it may be incorrect.
+function estimateBase(image){const {data,width:w,height:h}=image;const picks=[];const stride=Math.max(1,Math.floor(Math.sqrt(w*h/18000)));const edge=.12;for(let y=0;y<h;y+=stride){for(let x=0;x<w;x+=stride){if(x>w*edge&&x<w*(1-edge)&&y>h*edge&&y<h*(1-edge))continue;const i=(y*w+x)*4;if(data[i+3]<200)continue;const r=data[i],g=data[i+1],b=data[i+2];picks.push({score:Math.min(r,g,b)+.1*(r+g+b),r,g,b})}}if(picks.length<10)return [235,167,105];picks.sort((a,b)=>b.score-a.score);const n=Math.max(8,Math.round(picks.length*.03));const top=picks.slice(0,n);return [0,1,2].map((k)=>Math.round(top.reduce((sum,v)=>sum+v[['r','g','b'][k]],0)/n))}
+function updateBase(){if(!src)return;base=(!state.auto&&Array.isArray(state.manualBase))?state.manualBase:estimateBase(previewSrc||src);$('baseInfo').textContent=state.noBase?'Ingen säker filmbas – motivbaserad invertering aktiv':`Uppskattad filmbas RGB: ${base.join(' / ')}${state.auto?' · automatisk, osäker om ingen filmkant finns':' · manuellt vald'}`}
+function percentile(sorted,q){return sorted[Math.max(0,Math.min(sorted.length-1,Math.floor(q*(sorted.length-1))))]}
+// Channelwise photographic density; an absent base is treated as unity and tone/color ranges come from motif statistics.
+function untoned(values,filmBase,opts,scale){let out=[];for(let c=0;c<3;c++){let t=Math.max(1/65535,values[c]/scale);let fb=opts.noBase?1:Math.max(1/65535,filmBase[c]/255);let density=Math.max(0,-Math.log10(Math.max(1/65535,t/fb)));out[c]=1-Math.exp(-2.302585093*density)}return out}
+function analyzeLevels(){if(!previewSrc)return;const d=previewSrc.data,arr=[[],[],[]],step=Math.max(1,Math.floor(Math.sqrt(previewSrc.width*previewSrc.height/20000)));for(let y=0;y<previewSrc.height;y+=step)for(let x=0;x<previewSrc.width;x+=step){const i=(y*previewSrc.width+x)*4;const q=untoned([d[i],d[i+1],d[i+2]],base,state,255);for(let c=0;c<3;c++)arr[c].push(q[c])}for(const a of arr)a.sort((a,b)=>a-b);let lo=arr.map(a=>percentile(a,.015)),hi=arr.map(a=>percentile(a,.985));levels={lo,hi};const spreads=hi.map((h,c)=>h-lo[c]);const weak=spreads.some(x=>x<.045);$('levelsInfo').textContent=(weak?'Varning: låg kanalvariation. ':'')+'Motivnivåer (1,5–98,5 %): '+lo.map((x,c)=>x.toFixed(2)+'–'+hi[c].toFixed(2)).join(' / ');scheduleRender()}
+function develop(values,filmBase,opts,scale){let p=untoned(values,filmBase,opts,scale);const ev=Math.pow(2,opts.exposure),gains=[Math.exp(opts.temperature/180+opts.tint/350),Math.exp(-opts.tint/120),Math.exp(-opts.temperature/180+opts.tint/350)];
+ if(opts.autoLevels&&levels){const span=levels.hi.map((v,c)=>Math.max(.04,v-levels.lo[c]));const ref=span.slice().sort((a,b)=>a-b)[1];p=p.map((v,c)=>{let channel=(v-levels.lo[c])/span[c];let neutral=(v-levels.lo[c])/ref;return neutral+(channel-neutral)*opts.balanceStrength})}
+ p=p.map((v,c)=>{v=clamp(v,0,1);v=clamp((v-opts.shadow)/Math.max(.1,opts.highlight-opts.shadow),0,1);v=Math.pow(v,1/Math.max(.25,opts.gamma));v=Math.pow(clamp(v*ev*gains[c],0,1),1/Math.max(.2,opts.contrast));return clamp(v,0,1)});
+ const lum=.2126*p[0]+.7152*p[1]+.0722*p[2];return p.map(v=>clamp(lum+(v-lum)*opts.saturation,0,1))}
+function convertImage(image,mode,params,filmBase){const output=new ImageData(image.width,image.height);const d=image.data,o=output.data,w=image.width;for(let i=0;i<d.length;i+=4){const neg=[d[i],d[i+1],d[i+2]],pos=develop(neg,filmBase,params,255);const showNegative=mode==='negative'||(mode==='split'&&((i/4)%w)<w/2);for(let c=0;c<3;c++)o[i+c]=showNegative?neg[c]:Math.round(pos[c]*255);o[i+3]=255}return output}
+let renderTimer=null,renderBusy=false,renderPending=false;
+function scheduleRender(immediate=false){if(!previewSrc)return;clearTimeout(renderTimer);renderTimer=setTimeout(render,immediate?0:110)}
+function render(){if(!previewSrc)return;if(renderBusy){renderPending=true;return}renderBusy=true;try{const c=$('preview').getContext('2d');c.putImageData(convertImage(previewSrc,display,state,base),0,0)}finally{renderBusy=false;if(renderPending){renderPending=false;scheduleRender(true)}}}
+
+function setDisplay(mode){display=mode;for(const [id,value] of [['tabPos','positive'],['tabNeg','negative'],['tabSplit','split']])$(id).classList.toggle('active',mode===value);render()}
+$('tabPos').onclick=()=>setDisplay('positive');$('tabNeg').onclick=()=>setDisplay('negative');$('tabSplit').onclick=()=>setDisplay('split');
+$('auto').onchange=()=>{state.auto=$('auto').checked;updateBase();analyzeLevels();persist();render()};$('noBase').onchange=()=>{state.noBase=$('noBase').checked;updateBase();analyzeLevels();persist();render()};$('autoLevels').onchange=()=>{state.autoLevels=$('autoLevels').checked;persist();render()};$('analyzeLevels').onclick=()=>analyzeLevels();$('recalc').onclick=()=>{state.auto=true;state.manualBase=null;$('auto').checked=true;updateBase();analyzeLevels();persist();render()};
+$('sample').onclick=()=>{sampleMode=!sampleMode;$('sample').textContent=sampleMode?'Tryck på en oexponerad filmkant…':'Välj filmbas med pipett';setStatus(sampleMode?'Tryck på en tydligt oexponerad filmkant i bilden för att välja basfärg.':'Pipetten avbruten.')};
+$('preview').addEventListener('click',e=>{if(!sampleMode||!src)return;const rect=$('preview').getBoundingClientRect(),x=Math.max(0,Math.min(src.width-1,Math.floor((e.clientX-rect.left)/rect.width*src.width))),y=Math.max(0,Math.min(src.height-1,Math.floor((e.clientY-rect.top)/rect.height*src.height)));const vals=[[],[],[]];for(let yy=Math.max(0,y-3);yy<=Math.min(src.height-1,y+3);yy++)for(let xx=Math.max(0,x-3);xx<=Math.min(src.width-1,x+3);xx++){const i=(yy*src.width+xx)*4;for(let ch=0;ch<3;ch++)vals[ch].push(src.data[i+ch])}state.manualBase=vals.map(a=>Math.round(a.reduce((s,n)=>s+n,0)/a.length));state.auto=false;$('auto').checked=false;sampleMode=false;$('sample').textContent='Välj filmbas med pipett';updateBase();analyzeLevels();persist();render();setStatus('Manuell filmbas vald. Klicka ”Analysera igen” för att återgå till automatiken.')});
+$('reset').onclick=()=>{const keepBase=state.manualBase,keepAuto=state.auto,keepNoBase=state.noBase;state={...defaultState(),manualBase:keepBase,auto:keepAuto,noBase:keepNoBase};for(const [id] of controls)$(id).value=state[id];updateValues();analyzeLevels();persist();render()};
+function downloadBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),3000)}
+function conversionSample(r,g,b,params,filmBase,scale){return develop([r,g,b],filmBase,params,scale).map(v=>Math.round(v*65535))}
+function makeTiffHeader(width,height,pixelOffset){
+ const tags=[
+  [256,4,1,width],[257,4,1,height],[258,3,3,0],[259,3,1,1],[262,3,1,2],[273,4,1,pixelOffset],[277,3,1,3],[278,4,1,height],[279,4,1,width*height*6],[284,3,1,1],[339,3,1,1]
+ ];
+ const size=8+2+tags.length*12+4+6,ab=new ArrayBuffer(size),v=new DataView(ab);v.setUint8(0,73);v.setUint8(1,73);v.setUint16(2,42,true);v.setUint32(4,8,true);v.setUint16(8,tags.length,true);
+ for(let i=0;i<tags.length;i++){const [tag,type,count,value]=tags[i],p=10+i*12;v.setUint16(p,tag,true);v.setUint16(p+2,type,true);v.setUint32(p+4,count,true);v.setUint32(p+8,tag===258?size-6:value,true)}
+ const bits=size-6;v.setUint16(bits,16,true);v.setUint16(bits+2,16,true);v.setUint16(bits+4,16,true);return ab;
+}
+async function exportTiff(){
+ if(!src)return;const w=hires?.width||src.width,h=hires?.height||src.height,headerSize=8+2+11*12+4+6;
+ // TIFF classic: no support for files larger than 4 GiB.
+ if(w*h*6+headerSize>=4294967295){setStatus('Bilden är för stor för klassisk TIFF.');return}
+ $('exportTiff').disabled=true;setStatus(`Skapar 16-bitars TIFF (${w}×${h}). Vänta…`);
+ try{const chunks=[makeTiffHeader(w,h,headerSize)],rowsPerChunk=32;
+ for(let y0=0;y0<h;y0+=rowsPerChunk){const rows=Math.min(rowsPerChunk,h-y0),ab=new ArrayBuffer(w*rows*6),view=new DataView(ab);
+  for(let yy=0;yy<rows;yy++)for(let x=0;x<w;x++){const y=y0+yy,idx=(y*w+x),sample=hires?(function(){const i=idx*hires.channels;return conversionSample(hires.data[i],hires.data[i+1],hires.data[i+2],state,base,65535)})():(function(){const i=idx*4;return conversionSample(src.data[i],src.data[i+1],src.data[i+2],state,base,255)})();const q=(yy*w+x)*6;view.setUint16(q,sample[0],true);view.setUint16(q+2,sample[1],true);view.setUint16(q+4,sample[2],true)}
+  chunks.push(ab);if(y0%256===0){setStatus(`TIFF-export: ${Math.round(100*(y0+rows)/h)} %`);await new Promise(resolve=>setTimeout(resolve,0));}
+ }
+ downloadBlob(new Blob(chunks,{type:'image/tiff'}),'negative-studio-positive-16bit.tif');setStatus(`16-bitars TIFF skapad (${w}×${h}). ${hires?'16-bitars källbild':'OBS: ursprungsbilden avkodades till 8 bitar.'}`)
+ }catch(e){setStatus('Exportfel: '+e.message)}finally{$('exportTiff').disabled=false}
+}
+$('exportTiff').onclick=exportTiff;
+$('export').onclick=()=>{if(!src)return;const result=convertImage(src,'positive',state,base),c=document.createElement('canvas');c.width=src.width;c.height=src.height;c.getContext('2d').putImageData(result,0,0);c.toBlob(blob=>blob&&downloadBlob(blob,'negative-studio-positive.jpg'),'image/jpeg',.94)};
+$('saveSettings').onclick=()=>downloadBlob(new Blob([JSON.stringify({format:'negative-studio-v03',state},null,2)],{type:'application/json'}),'negative-studio-settings.json');
+$('settingsFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const obj=JSON.parse(await file.text());if(obj.format!=='negative-studio-v03'||!obj.state)throw Error('Fel format');const next={...defaultState()};for(const [id,,min,max] of controls){const v=Number(obj.state[id]);if(!Number.isFinite(v)||v<min||v>max)throw Error('Ogiltigt värde för '+id);next[id]=v}next.auto=!!obj.state.auto;next.noBase=!!obj.state.noBase;next.autoLevels=obj.state.autoLevels!==false;if(Array.isArray(obj.state.manualBase)&&obj.state.manualBase.length===3&&obj.state.manualBase.every(v=>Number.isInteger(v)&&v>=0&&v<=255))next.manualBase=obj.state.manualBase;state=next;$('auto').checked=state.auto;$('noBase').checked=state.noBase;$('autoLevels').checked=state.autoLevels;for(const [id] of controls)$(id).value=state[id];updateValues();updateBase();analyzeLevels();persist();render();setStatus('Inställningarna importerade.')}catch(err){setStatus('Kunde inte importera inställningarna: '+err.message)}finally{e.target.value=''}};
+</script></body></html>
