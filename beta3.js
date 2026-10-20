@@ -51,22 +51,32 @@ function prepareTiff(raw){
  else{sourceInfo={encoding:state.tiffEncoding||'srgb',label:'TIFF utan ICC · antagen '+(state.tiffEncoding==='linear'?'linjär sRGB':'sRGB')+' · kontrollera källkodning'};}
  return raw;
 }
+// Smooth tonal adjustments in output sRGB space; neutral at zero.
+// Used identically by preview and full-resolution JPEG/TIFF export.
+function applyTonalZones(p,opts){
+ const shadows=Number(opts.shadows)||0,highlights=Number(opts.highlights)||0;
+ if(!shadows&&!highlights)return p;
+ const lum=CE.clamp(.2126*p[0]+.7152*p[1]+.0722*p[2]);
+ const sw=(1-CE.clamp(lum/.65))**2,hw=CE.clamp((lum-.35)/.65)**2;
+ const adjustment=(shadows/100)*sw*(1-lum)*.7+(highlights/100)*hw*lum*.7;
+ return p.map(v=>CE.clamp(v+adjustment));
+}
 function technicalPositive(linear,opts){
  if((opts.engine||'legacy')!=='beta2'){levels=opts.engine==='beta3'&&beta3Levels?beta3Levels:legacyLevels;
   const filmBase=opts.engine==='beta3'&&beta3Base?beta3Base:base,values=linear.map(v=>(sourceInfo.encoding==='linear'?v:CE.encode(v))*255);
-  return legacyDevelop(values,filmBase,opts,255);}
+  return applyTonalZones(legacyDevelop(values,filmBase,opts,255),opts);}
  let p=CE.positive(linear,calibration,opts.autoLevels,opts.balanceStrength).map(CE.encode);
  const f=filmProfiles[rollShared.profile]||filmProfiles.generic,profileOut=applyEmulsion(p);p=f.type==='bw'?profileOut:p.map((v,c)=>v+(profileOut[c]-v)*rollShared.strength);p=applyPrint(p);
  const ev=2**opts.exposure,gains=f.type==='bw'?[1,1,1]:[Math.exp(opts.temperature/180+opts.tint/350),Math.exp(-opts.tint/120),Math.exp(-opts.temperature/180+opts.tint/350)];
  p=p.map((v,c)=>{v=CE.clamp((v-opts.shadow)/Math.max(.1,opts.highlight-opts.shadow));v=v**(1/Math.max(.25,opts.gamma));return CE.clamp((CE.clamp(v*ev*gains[c]))**(1/Math.max(.2,opts.contrast)));});
- const l=.2126*p[0]+.7152*p[1]+.0722*p[2];return p.map(v=>CE.clamp(l+(v-l)*(f.type==='bw'?0:opts.saturation)));
+ const l=.2126*p[0]+.7152*p[1]+.0722*p[2];return applyTonalZones(p.map(v=>CE.clamp(l+(v-l)*(f.type==='bw'?0:opts.saturation))),opts);
 }
 // Neutral profile and saturation 1 have independent channels. Cache the exact
 // developer output for each possible 16-bit input before rendering a RAW/TIFF.
 function neutralLookup(opts,im){
  if(!im||im.encoding!=='linear'||im.scale!==65535||(im.normalization||1)!==1||
     (opts.engine||'legacy')==='beta2'||rollShared.profile!=='generic'||
-    rollShared.print!=='neutral'||opts.saturation!==1)return null;
+    rollShared.print!=='neutral'||opts.saturation!==1||opts.shadows||opts.highlights)return null;
  const table=[new Uint16Array(65536),new Uint16Array(65536),new Uint16Array(65536)];
  for(let v=0;v<65536;v++){const p=technicalPositive([v/65535,v/65535,v/65535],opts);for(let c=0;c<3;c++)table[c][v]=Math.round(p[c]*65535);}
  return table;
@@ -131,3 +141,21 @@ async function decodeLightFile(file){
  const bitmap=await createImageBitmap(file,{colorSpaceConversion:'default'}),c=document.createElement('canvas');c.width=128;c.height=128;const cx=c.getContext('2d',{colorSpace:'srgb',willReadFrequently:true});cx.drawImage(bitmap,0,0,128,128);bitmap.close();return {width:128,height:128,data:cx.getImageData(0,0,128,128).data,channels:4,scale:255,encoding:'srgb'};
 }
 $('referenceFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const im=await decodeLightFile(f),p=CE.sample(im,{x:.15,y:.15,w:.7,h:.7}),m=[0,1,2].map(k=>CE.quantile(p.map(v=>v[k]),.5));if(Math.max(...m)>.98||Math.min(...m)<.01)throw Error('Ljuskällereferensen är klippt eller för mörk.');const target=(m[0]*m[1]*m[2])**(1/3);sharedLight={name:f.name,encoding:im.encoding,gains:m.map(v=>target/v)};if(working)analyzeLevels();else updateCalibrationUI();}catch(err){setStatus('Referensfel: '+err.message);}finally{e.target.value='';}};
+
+// Luminance histogram of actual displayed preview, not the unconverted negative.
+const renderBeforeHistogram=render;
+render=function(){renderBeforeHistogram();updateHistogram();};
+function updateHistogram(){
+ const canvas=$('histogram');if(!canvas)return;
+ const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
+ if(typeof ctx?.clearRect!=='function'||typeof ctx?.fillRect!=='function')return; // Headless test canvas
+ ctx.clearRect(0,0,w,h);
+ if(!workingPreview||$('preview').classList.contains('hidden')){$('histogramInfo').textContent='Ingen bild';return;}
+ const shown=$('preview'),data=shown.getContext('2d',{willReadFrequently:true}).getImageData(0,0,shown.width,shown.height).data;
+ const bins=new Uint32Array(256),step=Math.max(1,Math.floor(data.length/4/25000));
+ for(let i=0;i<data.length;i+=4*step){const l=Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2]);bins[l]++;}
+ const peaks=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,peaks[Math.floor(peaks.length*.99)]);
+ ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';
+ for(let k=0;k<256;k++){const v=Math.min(1,bins[k]/max),x=k*w/256;ctx.fillRect(x,h-v*(h-4),Math.ceil(w/256),v*(h-4));}
+ $('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';
+}

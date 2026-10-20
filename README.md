@@ -39,3 +39,11 @@ npm run build
 ```
 
 De privata negativfilerna ingår inte i leveransen. Tester utan bildunderlag kontrollerar bl.a. ICC-normalisering, filmruteanalys, profilseparation, rotation, JPEG- och TIFF-export. `raf-dng-pair.mjs` kontrollerar att en RAF och dess DNG ger jämförbar avkodad RGB-statistik.
+
+## Beta 3.1 – högerpanel och tonkontroller (20 oktober 2026)
+
+- Tätare grupperad bildjusteringspanel med visuellt centrerat neutralläge på reglagen. De underliggande värdena och projektfilernas värden behålls, även för asymmetriska skalor.
+- Nya **Shadows** och **Highlights** (-100 till +100, neutralt 0) påverkar luminansstyrda tonzoner efter positivframkallningen i alla tre färgmotorer. Svartpunkt och vitpunkt finns kvar under Avancerad konvertering.
+- Luminanshistogram för den synliga förhandsvisningen, inklusive jämförelseläget.
+- Både JPEG- och 16-bitars TIFF-exporten använder samma tonjusteringar. Den snabba neutrala RAW-uppslagstabellen används inte när dessa justeringar aktiveras för att undvika felaktig kanalseparat beräkning.
+- `npm test` och `npm run build` har passerat. Manuell visuell kontroll i Safari/iPad och med verkliga RAF-filer återstår.
