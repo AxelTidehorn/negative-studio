@@ -1,36 +1,46 @@
-# Negative Studio v0.9.1 – färg och svartvitt
+# Negative Studio v1.0 – public beta (testversion)
 
-Bygger på v0.8.1 och behåller gränssnittet, offline-PWA, LibRaw, TIFF-export och fem-bilderskön.
+En webbaserad negativkonverterare för iPad och dator. Bilder bearbetas lokalt i webbläsaren. Ingen bildserver eller inloggning behövs.
 
-## Nytt
-- **Filmväljaren är synlig och användbar** (tidigare gömd av misstag i `sr-only`).
-- Generisk C-41, UltraMax 400, Gold 200, Portra 160/400/800, Ektar 100, Pro Image 100, Fujifilm 400 och Pro 400H.
-- **Svartvitt utan filmemulsionsprofiler**: optisk densitetsinvertering, neutral luminans och exponerings-/kontrastreglage; färgjustering av positivet ignoreras.
-- Neutral, mjuk och klassisk **positiv återgivning** är frikopplad från filmval och från redigeringsreglagen.
-- Export av inställningsprojekt tar med både filmval och återgivning.
+## Nyheter
 
-## Viktigt om vetenskap och noggrannhet
-Profilerna är **illustrativa, konservativa modeller**, inte extraherade mätprofiler eller en verifierad rekonstruktion av filmens färger. Tillverkarnas spektrala känslighets- och densitetskurvor räcker inte ensamma för att generera en kalibrerad Fuji-X-Pro3+ljuskälla+film-RGB-transform. De ger vägledning om modellens struktur, men exakta numeriska värden kräver mätning och referensnegativ. Kodaks publicerade Portra 400 E-4050, Gold 200 E-7022, RawTherapees Film Negative och darktables Negadoctor är relevanta tekniska referenser.
+- DNG kan importeras med LibRaw/WASM där kameran och DNG-varianten stöds; **DNG är inte kompatibilitetstestad på alla kameror**.
+- Kreativa färgprofiler har egna namn och en styrka på 0–100 %, utan påståenden om filmspecifik kalibrering.
+- Den neutrala konverteringen fungerar som referens. Svartvitt har separata tonprofiler.
+- Förstahjälp/instruktion, syntetisk exempelfil och länk till GitHub Issues för feedback.
+- Ljust/mörkt gränssnitt och större bildyta.
 
-För färgnegativ kan färgmask, ojämn exponeringsnivå och en ljuskälla utan känd spektral fördelning ge stora färgfel. Använd helst en exponeringsfri filmkant och en separat ljuskällereferens. Välj neutral profil som kontroll och jämför sedan varianterna.
+## Installera i ditt GitHub-projekt
 
-## Uppdatering på GitHub Pages
-Ersätt `index.html`, `sw.js` och `README.md` i projektets rot. Låt fungerande `build.yml`, `pages.yml`, `package.json` och `build.mjs` vara kvar. GitHub Actions bygger och publicerar; gå till sidan online, uppdatera och kontrollera att v0.9 visas. Därefter kan appen fungera offline från cache. Lägg inte RAW-filer i GitHub-repositoryt.
+1. Packa upp ZIP-filen. Kopiera **innehållet** i mappen `Negative_Studio_v1.0_beta_source` till roten av repositoryt.
+2. Behåll samma Pages-konfiguration. Granska att `.github/workflows/pages.yml` och `build.yml` finns.
+3. Commit, vänta på grön körning under Actions och öppna GitHub Pages.
+4. Kontrollera att appen visar **v1.0 beta**. Vid cacheproblem prova en ny URL med `?v=100b`.
 
-## Tester som återstår på iPad
-Kontrollera att filmvalet syns och förändrar färg/ton utan att reglagen rör sig. Byt till svartvitt och kontrollera gråskala, exponering, negativ/positiv samt TIFF och JPEG. Kontrollera batch/JPEG-ZIP och TIFF med en RAF. Syntaxkontroll är inte fullständig iPad-validering.
+Du kan låta v0.9.2 ligga på en egen git-branch innan uppdatering för enkel återställning.
 
+## Begränsningar – läs före användning
 
-## v0.9.1
-- Tydligare filmskillnader mellan profilerna.
-- Större förhandsvisning.
-- Dagläge/nattläge.
-- Liten UI-uppfräschning med kontrastfärg.
+- Färgmotorn utgår från v0.9.2, där automatisk motivanalys och andra beräkningar inte är färgmetriskt kalibrerade. **Detta är inte en ny vetenskapligt uppmätt färgmotor.** Starka kreativa profiler kan bli mindre exakta än Neutral.
+- RAW/DNG används vid full avkodning/TIFF-export. Snabb förhandsvisning förutsätter en inbäddad JPEG – DNG utan JPEG-förhandsbild kan behöva full RAW-avkodning.
+- TIFF läses som okomprimerad RGB 8/16-bitars. ICC-profiler i TIFF läses inte. JPG-export bör betraktas som vanlig webbläsarkodad RGB/sRGB, men ingen validerad ICC-pipeline finns ännu.
+- Rullens filmbas/ljuskälla är heuristisk. 16-bitars TIFF-export använder 16-bitars samples men vissa normaliseringar kommer från 8-bitars förhandsvisning.
+- Offline fungerar efter att alla nödvändiga WASM-filer faktiskt hämtats. RAW-stöd och minnesanvändning kan variera mellan enheter.
+- Demoskann är en matematiskt genererad färggradient, inte ett representativt fotografi eller uppmätt film.
 
+## Testplan
 
-## v0.9.2
-- Ljust/mörkt läge med explicita färgöverskrivningar för det äldre gränssnittets hårdkodade färger. Valet sparas lokalt.
-- Rotera 90° med-/moturs. JPEG- och TIFF-export roteras också. Rotation sparas per bild i arbetskön; beskärningsstatistik mäts före rotation.
-- Fyra **experimentella** svartvita grundprofiler: HP5 Plus, Tri-X 400, FP4 Plus och Delta 100. Profilerna är försiktiga tonkurvor, inte laboratoriekalibrerade emulsion/framkallarkombinationer.
-- Texten ”Ingen uppladdning” förtydligas: inga bilder skickas från webbläsaren. GitHub Pages hämtar endast appfiler.
-- Ingen ny mätbaserad färgkalibrering i denna utgåva.
+1. Kontrollera ljust/mörkt läge och rotation på iPad.
+2. Importera JPEG, okomprimerad TIFF, RAF och en DNG och kontrollera att konvertering och export fungerar.
+3. Testa profilstyrka 0 %: resultatet ska vara identiskt mellan alla **färgprofiler** med samma övriga inställningar.
+4. Jämför profilerna vid 100 %. De är kreativa tolkningar.
+5. Testa svartvitt och exporterad TIFF.
+6. Testa offline efter att ha öppnat appen online och hämtat RAW-biblioteket.
+
+### Rapportera buggar
+
+Använd `Feedback` i appen eller skapa ett GitHub Issue. Bifoga version, filformat, webbläsare, reproduktionssteg och gärna skärmbild. Negativfiler bifogas endast med eget uttryckligt val.
+
+## Publiceringskvalitet
+
+Detta projekt är en **beta**, inte en verifierad v1.0-release. Undvik att ersätta dina original eller använda exporten som enda säkerhetskopia.

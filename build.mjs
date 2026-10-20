@@ -10,3 +10,5 @@ console.log('Klart: publicera hela site-mappen via HTTPS, och cachea lokalt för
 
 fs.copyFileSync('manifest.webmanifest','site/manifest.webmanifest');
 fs.copyFileSync('sw.js','site/sw.js');
+
+fs.copyFileSync('demo-negative.png','site/demo-negative.png');
