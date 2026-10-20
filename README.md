@@ -26,3 +26,11 @@ Kontrollera att filmvalet syns och förändrar färg/ton utan att reglagen rör 
 - Större förhandsvisning.
 - Dagläge/nattläge.
 - Liten UI-uppfräschning med kontrastfärg.
+
+
+## v0.9.2
+- Ljust/mörkt läge med explicita färgöverskrivningar för det äldre gränssnittets hårdkodade färger. Valet sparas lokalt.
+- Rotera 90° med-/moturs. JPEG- och TIFF-export roteras också. Rotation sparas per bild i arbetskön; beskärningsstatistik mäts före rotation.
+- Fyra **experimentella** svartvita grundprofiler: HP5 Plus, Tri-X 400, FP4 Plus och Delta 100. Profilerna är försiktiga tonkurvor, inte laboratoriekalibrerade emulsion/framkallarkombinationer.
+- Texten ”Ingen uppladdning” förtydligas: inga bilder skickas från webbläsaren. GitHub Pages hämtar endast appfiler.
+- Ingen ny mätbaserad färgkalibrering i denna utgåva.
