@@ -1,6 +1,10 @@
 /* FILMLABB UI translations. Swedish is the source copy; image-processing data and project settings are never translated. */
 (()=>{'use strict';
 const rows=[
+['Arbetskö','Queue','File d’attente','Cola de imágenes','Bildwarteschlange'],
+['Justeringar','Adjustments','Réglages','Ajustes','Anpassungen'],
+['Fokusläge','Focus mode','Mode concentration','Modo enfoque','Fokusmodus'],
+['Återställ layout','Reset layout','Réinitialiser la disposition','Restablecer diseño','Layout zurücksetzen'],
 // Swedish | English | French | Spanish | German
 ['Dagläge','Day mode','Mode clair','Modo claro','Hellmodus'],
 ['Nattläge','Night mode','Mode sombre','Modo oscuro','Dunkelmodus'],

@@ -1,14 +1,16 @@
-# FILMLABB 1.0 Beta 4
+# FILMLABB 1.1 Beta 1
 
-Beta 4 är en utvärderingsversion från 3.9. Den behåller 3.9 som färgmetod och RAW-import för jämförelse. Inga nya kreativa profiler eller större layoutändringar ingår.
+1.1 Beta 1 innehåller den uppdaterade arbetsytan med separat bildkö, större bildyta, döljbara paneler och fokusläge. Färgmotorn från Beta 4 och jämförelselägena är bevarade.
 
 ## Installera via GitHub
 
-Packa upp `FILMLABB_beta4_root_update.zip`. Ladda upp **alla filer samtidigt i projektroten**, där `index.html` ligger, och ersätt befintliga filer. Behåll `.github`, `tests`, `site` och befintlig GitHub Pages-konfiguration. Du behöver inte skapa några nya undermappar manuellt.
+Packa upp `FILMLABB_1.1_beta1_root_update.zip`. Ladda upp **alla filer samtidigt i projektroten**, där `index.html` ligger, och ersätt befintliga filer. Behåll `.github`, `tests`, `site` och befintlig GitHub Pages-konfiguration. Du behöver inte skapa några nya undermappar manuellt. ZIP-filen innehåller bara filer på en nivå; ladda upp även `workspace.js`, som styr det nya gränssnittet.
 
-GitHub Actions ska köra `npm ci`, `npm test`, `npm run build` och publicera `site/`. Testfiler återskapas från `test-suite.json` även om gamla tester finns kvar i repot. Bygget kopierar alla nya skript till `site/`. Kontrollera efter publicering att sidfoten visar **Beta 4**. Om en gammal offlineversion ligger kvar: stäng appflikarna och öppna sidan igen efter lyckat bygge.
+Detta paket använder samma GitHub Actions-installation som tidigare. Pages ska fortsatt publiceras via **GitHub Actions** från den byggda `site/`-mappen. Byt inte till direktpublicering från `main`/roten: RAW-beroendet installeras och kopieras av bygget.
 
-## Nytt
+GitHub Actions ska köra `npm ci`, `npm test`, `npm run build` och publicera `site/`. Testfiler återskapas från `test-suite.json` även om gamla tester finns kvar i repot. Bygget kopierar alla nya skript till `site/`. Kontrollera efter publicering att sidfoten visar **1.1 Beta 1**. Om en gammal offlineversion ligger kvar: stäng appflikarna och öppna sidan igen efter lyckat bygge.
+
+## Färgmotor från Beta 4
 
 - **Separat färgkalibrering och tonanalys.** Vid bekräftad filmruta sparas bildens kanalrespons. Ändrad beskärning analyserar om ett gemensamt tonomfång utan att uppskatta tre nya färgkurvor. Knappen *Uppskatta färg på nytt* gör en uttrycklig ny uppskattning från aktuell ruta.
 - **Två neutrala ytor.** Valfri mätning av en ljus och en mörk neutral yta ger relativ kanalrespons och färgankare. Ordningen spelar ingen roll. Välj verkligt neutrala ytor, utan klippning; inte hud eller gräs. Dåliga prov kan fortfarande ge dålig färg – appen kan inte veta om ytan verkligen är neutral.
