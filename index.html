@@ -200,6 +200,19 @@ main.workspace .image-topbar,main.workspace .image-controls,main.workspace .imag
  main.workspace.queue-collapsed .queue-panel,main.workspace.adjust-collapsed .editor-panel{display:none!important}
  .workspace-toolbar{padding:5px 7px;gap:4px}.workspace-toolbar .btn{padding:5px 6px;font-size:11px}.workspace-reset{margin-left:0}
 }
+/* FILMLABB 1.1 Beta 1 — image-first sizing correction. */
+@media (min-width:761px){
+ main.workspace{height:var(--fl-workspace-height,calc(100dvh - 105px))!important;min-height:0!important}
+ main.workspace .image-panel{min-height:0!important}
+ main.workspace .picture{min-height:0!important;height:0!important;flex:1 1 0!important;max-height:none!important}
+}
+main.workspace .picture{position:relative!important}
+main.workspace .picture #preview{position:absolute!important;left:50%;top:50%;max-height:none!important;max-width:none!important;object-fit:fill!important;transform-origin:center center!important}
+main.workspace .image-footer .row{margin:0!important}
+main.workspace .image-footer .fl-diagnostics{margin-top:4px;border-top:0;padding-top:0}
+main.workspace .fl-diagnostics summary{font-size:11px;padding:3px 0;color:var(--ns-muted);font-weight:400}
+main.workspace .fl-diagnostics .hint,main.workspace .fl-diagnostics .status{margin:3px 0}
+@media (min-width:761px){main.workspace .image-topbar{min-height:36px!important}}
 </style><link rel="manifest" href="./manifest.webmanifest"><meta name="theme-color" content="#191715"><link rel="icon" type="image/png" href="./icon-192.png"><link rel="apple-touch-icon" href="./icon-192.png"><style>
 /* FILMLABB beta 3.7: compact controls, functional footer and restrained classic accents */
 .header-tools{gap:7px!important;flex-wrap:nowrap!important}

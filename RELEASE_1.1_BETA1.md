@@ -1,3 +1,5 @@
+Layoutfix efter 1.1 Beta 1: dynamisk bildanpassning inklusive rotation och kompakta tekniska detaljer. Bildmotor och root-installation oförändrade.
+
 # FILMLABB 1.1 Beta 1 — arbetsyta
 
 Utgår från användarens Beta 4. Bildmotor och RAW-kod har inte ändrats.

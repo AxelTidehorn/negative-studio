@@ -1,3 +1,12 @@
+## Korrigering av bildytan (1.1 Beta 1 – layoutfix)
+
+- Visningen använder höjden som återstår i fönstret, i stället för en hårdkodad uppskattning av headerns höjd.
+- Anpassa/fokus tar hänsyn till 90°/270° rotation och storleken räknas om när panelerna ändras.
+- Teknisk bildinformation finns kvar i utfällbara Bildinformation / tekniska detaljer; inga bildparametrar ändras.
+- Root-installation är oförändrad: ladda upp platta filer i roten; GitHub Actions kör npm ci och npm run build, vilket kopierar LibRaw till site/.
+- Den här leveransen innehåller ingen färdig site eftersom LibRaw inte ingick i käll-ZIP och pakethämtning inte kunde fullföljas i testmiljön.
+- Kontrollera filmbeskärningsram, zoom/rotation och bildstorlek på Edge och iPad efter deployment.
+
 # FILMLABB 1.1 Beta 1
 
 1.1 Beta 1 innehåller den uppdaterade arbetsytan med separat bildkö, större bildyta, döljbara paneler och fokusläge. Färgmotorn från Beta 4 och jämförelselägena är bevarade.
