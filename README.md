@@ -1,56 +1,39 @@
-# FILMLABB — Beta 3.5 (RAW-fokus)
-
-Beta 3 är ett jämförelsebygge med RAF direkt från kameran som huvudflöde. **Beta 1:s färgmetod är fortfarande standard, men även den använder Beta 3:s korrigerade import. För en exakt jämförelse med tidigare Beta 1 behövs det tidigare bygget.** Välj Beta 3 under Färgmotor för att prova filmruteberoende basuppskattning ovanpå Beta 1:s färgframkallning. Beta 2 finns kvar som separat experiment. Inga nya RAW-format har tillkommit: RAF och DNG stöds via LibRaw 1.6.0.
+# FILMLABB 1.0 Beta 3.8
 
 ## Installera
 
-Kopiera innehållet i denna katalog till roten av ditt befintliga GitHub-projekt och bygg/publicera `site/` med den befintliga arbetsgången. `npm ci`, `npm test` och `npm run build` fungerar också lokalt. En byggd `site/` ingår i leveransen. Publicera hela den katalogen via HTTPS. Service worker-cache har fått ett nytt namn så att den äldre Beta 2-versionen inte återanvänds.
+Packa upp och lägg innehållet i katalogen i projektroten. Kör `npm ci`, `npm test`, `npm run build` och publicera hela `site/` via den befintliga GitHub Actions-processen. Ett färdigt `site/` ingår också. `sw.js` använder en ny cache för 3.8. Det här paketet har inte publicerats till den befintliga webbadressen.
 
-## Arbeta med en RAF direkt
+## Vad som ändrats
 
-1. Importera en `.RAF`. Bilden avkodas i 16 bitar med LibRaw, inte från kamerans inbäddade JPEG. Om avkodningen misslyckas får du välja JPEG-reservläge uttryckligen.
-2. Kontrollera den gula filmrutan. Flytta en sida om den innehåller filmkant, ljuskälla eller intilliggande ruta och bekräfta rektangeln. Filmrutan används för analys utan att ändra originalet; beskärning av exporten är ett eget val.
-3. Välj `Beta 3 · förbättrad källhantering` för jämförelse. Välj `Beta 1 · färgmetod (referens)` för att återgå till den beprövade färgmetoden. Neutral profil vid 0 % visar grundkonverteringen.
-4. Klicka `TIFF 16-bit` för fullstor sRGB-TIFF med inbäddad ICC-profil. En liggande RAF med stående motiv kan roteras med 90°-knapparna; eventuell rotation används också i exporten.
+- Standardläget **Beta 1 · korrigerad analys** använder linjära motivvärden innanför vald filmruta. Vit ljuskälla eller svart ram utanför motivet används inte som fallback-filmbas. Säker oexponerad filmkant kan fortfarande mätas separat.
+- RAW, ICC-TIFF och JPEG normaliseras till samma linjära domän före den korrigerade färgberäkningen. Det innebär en avsiktlig ändring av tidigare JPEG-resultat.
+- Ljuskällereferensen når nu den korrigerade färgvägen. Samma gain appliceras på motiv och filmbas. Med uppmätt bas kan korrektionen därför matematiskt förkortas bort; en aktiv referens ska inte automatiskt tvinga fram en synlig färgförändring.
+- **Beta 3.7 · oförändrad referens** bevarar den äldre färgberäkningen. 30 sparade jämförelsefall från originalet ger samma resultat. Gamla Beta 1-byggens importkedja är inte identisk med 3.7.
+- **Beta 3.8 · densitet och kanallutning (test)** är en valbar försöksvariant med separata röda/blå kanallutningar. Den har inte slagit referensen visuellt och är inte standard. Kanallutningarna finns under Avancerad konvertering; 1,00 är neutralt. Ingen fast varm/magentaförskjutning har införts.
+- Färgberäkningen för preview körs i en Worker där det stöds. Reservväg finns. Vid reglageändring används 700 px för snabb respons och 1400 px när ändringen avslutas. Färgmetod och kalibrering är gemensamma med exporten.
+- Histogrammet byggs av redan beräknade bildvärden. Det läser inte tillbaka hela visningscanvasen.
+- Teknisk export-LUT kan återanvändas även med kreativa profiler och Shadows/Highlights. Kanalblandande och tonala steg beräknas efter LUT:en med samma pixelkod. Den helt separerbara neutrala vägen har en extra slutlig LUT.
+- Språksystemet översätter ändrade noder i stället för att gå igenom hela gränssnittet vid varje textändring. Fem språk, tema, rotation, arbetskö och filmbasreferenser finns kvar.
 
-## Ändringar i Beta 3
+## Testa
 
-- RAF och DNG får samma normaliserade linjära RGB-ingång till analys, visning och export. Kamerafilerna skapas inte om till DNG på disk.
-- TIFF med matris/TRC-ICC (inklusive Adobe RGB) skalas gemensamt över alla tre kanaler **före** omvandling till 16-bitars linjär sRGB. Därmed tappas nästan inte längre den röda informationen vid import. Samma metod används för TIFF som ljuskällereferens.
-- Den nya Beta 3-varianten av Beta 1:s motor försöker endast mäta verklig oexponerad filmkant utanför den markerade filmrutan. Finns ingen säker kant använder den uttryckligen motivets övre percentiler *innanför* filmrutan som en uppskattning; vit extern ljuskälla används aldrig som uppmätt filmbas.
-- Förhandsvisningens kanalvärden skapas från samma normaliserade 16-bitars källa som den fullstora exporten. Rotation, arbetskö, manuella inställningar, kreativa profiler och separat exportbeskärning är kvar.
-- En neutral 16-bitars RAF/TIFF-export använder en numeriskt jämförd uppslagstabell. Kreativa profiler använder fortfarande den allmänna pixelvägen.
-- Knappen för att bekräfta en filmruta döljs korrekt efter bekräftelse.
+1. Importera en RAF, kontrollera och bekräfta filmrutan. Automatisk identifiering kan fortfarande ta med intilliggande rutor; justera vid behov.
+2. Jämför standardläget med **Beta 3.7 · oförändrad referens**, med Neutral kreativ profil. Kontrollera hud, skuggor och neutrala ytor.
+3. Prova reglage och exportera 16-bitars TIFF. Kontrollera att färgerna stämmer mot preview och att rotation/exportbeskärning blir rätt.
+4. På iPad: kontrollera att reglage svarar medan preview uppdateras, att senaste ändringen visas och att köbyte inte visar ett gammalt färgjobb.
 
-## Viktigt vid utvärdering
+TIFF-färgsticket är fortfarande olöst. Att använda samma interna format kan inte automatiskt ta bort tonkurvor och färgändringar som redan bakats in i en TIFF. De tillhandahållna TIFF-filerna matchar ännu inte RAF/DNG. Se `TEST_REPORT.md` för verifiering och begränsningar.
 
-Den Adobe RGB-TIFF som levererades med `_DSF9237` är fortfarande betydligt cyanare än motsvarande RAF/DNG i neutral framkallning. Ett verkligt informationsbortfall vid TIFF-importen är reparerat, men Lightroom-exportens färgtolkning och/eller tonalitet skiljer sig från RAW-avkodningen. **Beta 3 är därför inte färgmässigt godkänd som ersättare för Beta 1, och TIFF-överensstämmelse är fortfarande öppen.** Ingen fast varm eller magentafärgad kompensation har lagts in för att dölja problemet. Se `TEST_REPORT.md`.
+## Verifiering
 
-En inbäddad TIFF-profil utanför RGB-matris/TRC stöds inte. TIFF måste vara okomprimerad chunky RGB, 8 eller 16 bitar och orientering 1. Neutral RAF→TIFF klarade ett fullstorlekstest på 6032×4032 pixlar; exportberäkningen tog 8 s på testdatorn utöver RAW-avkodning. Kreativa profiler kan vara betydligt långsammare och verklig Safari/iPad-prestanda har ännu inte verifierats. Ytterligare kamerors RAW kräver avkodar- och färgtester, inte bara en ny filändelse.
+`npm test` kör syntaxkontroller, 14 rena motortester, 20 integrationstester, 10 tester för 3.8 samt export med samtidiga inställningsändringar och 30 jämförelsefall mot 3.7. `node tests/raw-fixture.mjs` verifierar verklig LibRaw-avkodning av en syntetisk DNG. `node tests/i18n-static.mjs` kontrollerar språk och att byggd HTML stämmer med källan efter byggning.
 
-## Tester
+Privata originalbilder ingår inte. Frivilliga verkliga filtester:
 
 ```sh
-npm ci
-npm test
-node tests/raw-fixture.mjs
-node tests/raf-dng-pair.mjs /path/to/image.RAF /path/to/image.dng
-npm run build
+node tests/real38.mjs /sökväg/till/original /sökväg/till/testutdata
+node tests/full-raf-export.mjs /sökväg/till/bild.RAF
 ```
 
-De privata negativfilerna ingår inte i leveransen. Tester utan bildunderlag kontrollerar bl.a. ICC-normalisering, filmruteanalys, profilseparation, rotation, JPEG- och TIFF-export. `raf-dng-pair.mjs` kontrollerar att en RAF och dess DNG ger jämförbar avkodad RGB-statistik.
-
-## Beta 3.1 – högerpanel och tonkontroller (20 oktober 2026)
-
-- Tätare grupperad bildjusteringspanel med visuellt centrerat neutralläge på reglagen. De underliggande värdena och projektfilernas värden behålls, även för asymmetriska skalor.
-- Nya **Shadows** och **Highlights** (-100 till +100, neutralt 0) påverkar luminansstyrda tonzoner efter positivframkallningen i alla tre färgmotorer. Svartpunkt och vitpunkt finns kvar under Avancerad konvertering.
-- Luminanshistogram för den synliga förhandsvisningen, inklusive jämförelseläget.
-- Både JPEG- och 16-bitars TIFF-exporten använder samma tonjusteringar. Den snabba neutrala RAW-uppslagstabellen används inte när dessa justeringar aktiveras för att undvika felaktig kanalseparat beräkning.
-- `npm test` och `npm run build` har passerat. Manuell visuell kontroll i Safari/iPad och med verkliga RAF-filer återstår.
-
-### Beta 3.4 – låst sidzoom på iPad
-Sidans pinch-/dubbeltryckszoom begränsas via viewport, touch-action och Safari-gesthändelser. Vanlig scrollning, dubbeltryck på reglage och bildens separata zoomknappar är kvar. Kontrollera funktionen i Safari på riktig iPad.
-
-
-## FILMLABB-identitet
-Ny transparent FILMLABB-logga, appikoner och petrolblå accent i ljust och mörkt tema. Gamla projektformat och localStorage-nycklar lämnas oförändrade för bakåtkompatibilitet. GitHub-URL:er ändras inte automatiskt.
+Safari/iPad har inte körts i denna testmiljö. Worker- och pixelfunktioner har verifierats i Node; verklig respons, minnesanvändning och filhämtning behöver även kontrolleras på enheten.

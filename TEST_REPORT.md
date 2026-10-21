@@ -1,13 +1,36 @@
-# Beta 3 — verifiering och öppna frågor
+# Beta 3.8: verifiering och öppna frågor
 
-Testad mot det tillhandahållna paret `_DSF9237(1).RAF` och `_DSF9237.dng` samt `_DSF9237.tif`, `_DSF9243.tif` och `_DSF8434.tif` (källfilerna distribueras inte). RAF och DNG avkodas med samma LibRaw-parametrar till 16-bitars linjär sRGB. RAF är 6032×4032, DNG är 4032×6032 med annan orientering. Skillnaden i samplade kanalmedelvärden är 0,0041/0,0025/0,0020 på skala 0–1; största skillnaden mellan samplade 2/25/50/75/98-percentiler är 0,0075. Det stödjer att källavkodningen är nära ekvivalent, men bildrutornas orientering och analyserad yta behöver fortsatt kontrolleras.
+## Färg
 
-TIFF-filerna är 2048×2048, okomprimerad 16-bitars RGB med Adobe RGB (1998) ICC. Tidigare kod klippte cirka 52 % av den röda kanalen i `_DSF9237.tif` när Adobe RGB-matrisen konverterades direkt till [0,1] sRGB. Gemensam skalning av alla tre kanaler före 16-bitars kvantisering ger skala 1,160; därefter är cirka 0,11 % av samplade röda pixlar klippta. `_DSF9243.tif` ger skala 1,105 och cirka 0,11 % klippta. Detta är en mätbar förbättring av källdata, inte i sig ett visuellt godkännande.
+Den tidigare standardvägen mätte filmbas i hela bildens yttre band. En syntetisk jämförelse med identiskt motiv/ROI och vit respektive svart omgivning ger nu identiskt motivresultat i den verkliga standardvägen. Linjära och motsvarande sRGB-kodade prov ger överensstämmande kalibrering/utdata inom 0,000002. Kreativa profiler och manuella tonändringar ändrar inte analysen.
 
-Visuell utvärdering av skolbussmotivet: RAF och DNG ger jämförbar färg i Beta 1/Beta 3, sedan man mentalt tar hänsyn till 90° rotation. Den korrigerade TIFF-importen är fortfarande cyan/blå. En alternativ bas hämtad från motivets övre percentiler gjorde liten skillnad; problemet ska inte täckas med en generell färgförskjutning. Beta 2:s befintliga densitetsmotor är fortfarande sämre i tidigare användarbilder och kvarstår enbart som experiment.
+Ljuskällans gain når standardvägen. Utan bas och automatisk normalisering ger en kontrollerad gainförändring förväntad effekt. Med uppmätt bas förkortas samma diagonala gain bort i transmissionskvoten; detta är avsiktligt, inte en felaktig utebliven korrektion. Kamerans WB/matris och en mer fullständig ljuskälleprofil är en separat fortsatt fråga.
 
-`npm test` passerar 14 motortester och 17 integrationstester, inklusive ICC-värden utanför sRGB, extern bakbelysning utanför filmrutan, profiloberoende teknisk kalibrering, preview/export-pixelväg, rotation, JPEG och TIFF. RAF/DNG-parskriptet passerar för `_DSF9237`. Dessa tester är en DOM-harness och matematiska kontroller, inte en riktig Safari/iPad-körning. Ingen slutsats om stöd för RAW från andra kameror kan dras av dessa testfiler.
+Referenslägets pixelberäkning matchar 30 fixtures skapade från oförändrad 3.7: linjär/sRGB, fem profiler inklusive BW, positiva tonreglage. Max numerisk skillnad 0. Densitetsvarianten är exponeringsstabil i syntetiska oklippta data. LUT med profiler/tonzoner jämförs mot direkt beräkning; de testade 16-bitarsvärdena är identiska. Exportcachen invalidieras även av exponering/gamma/kontrast.
 
-Fullstor RAF→TIFF-export på `_DSF9237(1).RAF` gav 6032×4032 pixlar och 145 926 896 byte med 16-bitars RGB och sRGB-profil. Den neutrala exportberäkningen tog 8 s på testdatorn efter RAW-avkodning; uppslagstabellen överensstämmer inom ett 16-bitars steg med den vanliga pixelberäkningen. Detta är inte ett iPad/Safari-prestandatest.
+Verkliga filer: `_DSF9237(1).RAF`, `_DSF9237.dng`, `_DSF9237.tif`, `_DSF9243(1).RAF` importerades för jämförelse. Motiven innefattar gul buss/neutrala ytor och människor/hud/grönska. Standardläget och referensen ligger visuellt nära på RAF/DNG. Densitetsvarianten ger mer cyan och har inte godkänts som färgförbättring. TIFF är fortfarande kraftigt cyan i alla lägen. Jämförelsebilderna är förhandsvisningar, inte färgkalibrerade labbreferenser.
 
-**Öppna acceptanspunkter:** TIFF-matchningen, jämförelse av hudtoner/skuggor över fler RAF, automatisk filmruteidentifiering i bilder med intilliggande rutor, samt kreativ profil-export och interaktiv prestanda på iPad. Beta 1 förblir standard tills de är visuellt godkända.
+Automatisk filmruta kan omfatta intilliggande rutor. De relevanta jämförelserna kompletterades därför med manuellt valda motivområden. Ingen automatisk detektor har godkänts generellt i 3.8. Export kräver fortsatt bekräftad filmruta.
+
+## Prestanda
+
+En avgränsad Node-jämförelse använde samma normaliserade DNG-förhandsvisning, 334×500 pixlar, fem mätningar efter uppvärmning. Den äldre 3.7-pixelvägen och den nya pixelvägen kördes båda som vanliga JavaScript-funktioner i samma värdprocess, inte med olika VM-kostnad. Färginställningarna var identiska (referensläge), och samtliga utmatningsbyte var identiska.
+
+| Fall | Tidigare median | Ny median |
+|---|---:|---:|
+| Neutral | 88,2 ms | 22,6 ms |
+| Sunday Best med Shadows/Highlights | 293,9 ms | 191,1 ms |
+
+Detta är en isolerad varm pixelberäkning, inte importtid eller en iPad/Safari-mätning. Cacheuppbyggnad, DOM, överföring till Worker och skärmvisning ingår inte i dessa tider. Enhetsrespons måste mätas separat. För stora profiler är beräkningen fortfarande betydande; Worker förbättrar främst gränssnittets tillgänglighet.
+
+Preview skickar källdata till Worker en gång per import. Endast senaste färdiga jobb får visas; det finns högst ett pågående och ett väntande renderjobb. Reglagedrag får en mindre preview och efterföljande slutrender. Export har full upplösning och samma färgkod. RAW-avkodningen var redan i Worker före 3.8. Köbyte avkodar fortfarande RAW igen; ingen stor RAW-cache infördes.
+
+## Utförda automatiska kontroller
+
+Syntax/smoke, 14 rena motortester, 20 integrationstester, 10 nya regressionstester, separat exporttest med samtidiga inställningsändringar, 30 referensfixtures, syntetisk DNG genom verklig LibRaw/WASM, samt i18n/byggparitet. Worker-meddelanden testades med den verkliga worker-koden i en kontrollerad miljö. Ingen verklig Safari/iPad-session har genomförts.
+
+Fullstor RAF→TIFF verifierades efter optimering: 6032×4032 och 145 926 896 byte, korrekt 16-bitars RGB och inbäddad sRGB-profil. Exportberäkningen tog 3 s på testdatorn, utöver RAW-avkodning; ett centralt exportprov stämmer inom ett 16-bitars steg med direkt pixelberäkning. En tidigare iteration tog 15 s och ledde till att onödig kvantisering/kopiering togs bort. Detta är inte en iPad-mätning.
+
+## Kvarstående acceptans
+
+Visuellt godkännande på iPad/Safari, TIFF-matchning, robustare automatisk filmruta och en färgmodell som överträffar referensen över hela testuppsättningen. Den nya densitetsvarianten ska inte ersätta standardmetoden med nuvarande bildresultat. Inga nya RAW-format eller kreativa profiler har införts.
