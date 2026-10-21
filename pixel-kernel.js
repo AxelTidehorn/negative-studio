@@ -7,6 +7,10 @@ function compile(c){
  gains=bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],
  invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?0:o.saturation;
  function technical(v,k){
+  if(c.kind==='log39'){
+   const s=c.cal.log39,corrected=c.noBase?v*c.light[k]:v/Math.max(1e-8,c.base[k]),d=-Math.log10(Math.max(1/65535,v));
+   return clamp(o.autoLevels?(d-s.lo[k])/s.spans[k]:-Math.log10(Math.max(1/65535,corrected)));
+  }
   if(c.kind==='beta2'||c.kind==='density38'){
    const cal=c.cal,d=-Math.log10(Math.max(1e-8,v*cal.light[k]/Math.max(1e-8,cal.baseShape[k]*cal.exposure)))*(c.slopes?.[k]||1);
    const u=o.autoLevels?(d-cal.lo)/cal.span:d;
@@ -31,7 +35,7 @@ function compile(c){
  }
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
  function finish(p){
-  if(c.kind==='beta2'||c.kind==='density38')p=p.map(encode);
+  if(c.kind==='beta2'||c.kind==='density38'||c.kind==='log39')p=p.map(encode);
   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
   if(!c.neutralPrint)p=p.map(v=>{v=clamp(v);if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
   p=p.map((v,k)=>{v=clamp((clamp(v)-o.shadow)/range);if(o.gamma!==1)v=v**invGamma;v=clamp(v*ev*gains[k]);return o.contrast===1?v:clamp(.5+(v-.5)*o.contrast);});

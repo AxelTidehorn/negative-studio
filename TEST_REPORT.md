@@ -1,36 +1,53 @@
-# Beta 3.8: verifiering och öppna frågor
+# Beta 3.9 – resultat och verifiering
 
-## Färg
+21 oktober 2026. Jämförelse mot oförändrad Beta 3.8, med samma motivområden. Ingen mätning av absolut färgriktighet på kalibrerat filmfärgkort har genomförts.
 
-Den tidigare standardvägen mätte filmbas i hela bildens yttre band. En syntetisk jämförelse med identiskt motiv/ROI och vit respektive svart omgivning ger nu identiskt motivresultat i den verkliga standardvägen. Linjära och motsvarande sRGB-kodade prov ger överensstämmande kalibrering/utdata inom 0,000002. Kreativa profiler och manuella tonändringar ändrar inte analysen.
+## Reproducerat RAW-importfel
 
-Ljuskällans gain når standardvägen. Utan bas och automatisk normalisering ger en kontrollerad gainförändring förväntad effekt. Med uppmätt bas förkortas samma diagonala gain bort i transmissionskvoten; detta är avsiktligt, inte en felaktig utebliven korrektion. Kamerans WB/matris och en mer fullständig ljuskälleprofil är en separat fortsatt fråga.
+LibRaw-Wasm 1.6.0 accepterar inte tvåelementsvärdet `gamm:[1,1]` i den levererade bindningen trots att typdeklarationen beskriver två värden. Det ger i praktiken standardtonkurvan. Detta var fel även i appens tidigare märkning av RAW som linjärt.
 
-Referenslägets pixelberäkning matchar 30 fixtures skapade från oförändrad 3.7: linjär/sRGB, fem profiler inklusive BW, positiva tonreglage. Max numerisk skillnad 0. Densitetsvarianten är exponeringsstabil i syntetiska oklippta data. LUT med profiler/tonzoner jämförs mot direkt beräkning; de testade 16-bitarsvärdena är identiska. Exportcachen invalidieras även av exponering/gamma/kontrast.
+Ett syntetiskt CFA-DNG med känt första värde 3000 ger 11476 med den gamla inställningen och 3000 med `gamm:[1,1,0,0,0,0]` i kamera-RGB. Med gammal inställning var medianförhållandet vid halverad ljusstyrka cirka 0,680; med rätt inställning cirka 0,500. Testet läser verklig LibRaw/WASM-utdata och kontrollerar både det kända värdet och linearitet över många pixelprov.
 
-Verkliga filer: `_DSF9237(1).RAF`, `_DSF9237.dng`, `_DSF9237.tif`, `_DSF9243(1).RAF` importerades för jämförelse. Motiven innefattar gul buss/neutrala ytor och människor/hud/grönska. Standardläget och referensen ligger visuellt nära på RAF/DNG. Densitetsvarianten ger mer cyan och har inte godkänts som färgförbättring. TIFF är fortfarande kraftigt cyan i alla lägen. Jämförelsebilderna är förhandsvisningar, inte färgkalibrerade labbreferenser.
+Primärkällor: LibRaw API:s gammabeskrivning, och upstream-ärendet “Setting gamm requires 6 fields instead of 2”, LibRaw-Wasm #8. Den avgörande verifieringen här är utförd på den faktiskt medföljande WASM-filen.
+https://www.libraw.org/docs/API-datastruct.html
+https://github.com/ybouane/LibRaw-Wasm/issues/8
 
-Automatisk filmruta kan omfatta intilliggande rutor. De relevanta jämförelserna kompletterades därför med manuellt valda motivområden. Ingen automatisk detektor har godkänts generellt i 3.8. Export kräver fortsatt bekräftad filmruta.
+Samtliga produktionsvägar för RAW-bild och RAW-ljuskällereferens är korrigerade. Tvåelementsinställningen ersattes även i de relevanta verkliga filtesterna.
 
-## Prestanda
+## Ny färgmetod
 
-En avgränsad Node-jämförelse använde samma normaliserade DNG-förhandsvisning, 334×500 pixlar, fem mätningar efter uppvärmning. Den äldre 3.7-pixelvägen och den nya pixelvägen kördes båda som vanliga JavaScript-funktioner i samma värdprocess, inte med olika VM-kostnad. Färginställningarna var identiska (referensläge), och samtliga utmatningsbyte var identiska.
+Varje kanal omvandlas till logaritmisk transmission. 1,5- och 98,5-percentiler inom motivet, med 1,8 % inre marginal, bestämmer kanalernas ändpunkter. Kurvorna normaliseras före gemensam positiv kodning, kreativa profiler och manuella justeringar. Ingen fast varm/magenta-kompensation och ingen neutralisering av motivets RGB-medelvärde används. Antagandet om användbara kanaländpunkter kvarstår och är inte en universell färgkalibrering.
 
-| Fall | Tidigare median | Ny median |
+Den kontrollerade syntetiska uppsättningen innehåller svart/vitt, fyra neutrala nivåer och separata färgprov med olika respons i R/G/B. Summan av neutralprovens kanalavvikelser minskar från cirka 0,516 till mindre än 0,000001. Kända färgprov återges inom 0,000002 på skala 0–1. Dessa tal gäller den angivna syntetiska modellen, inte färgfel på verkliga fotografier.
+
+Utan källklippning är resultaten stabila vid −2, −1, 0 och +0,3 EV. Kanalvisa skalningar och potenskurvor ger överensstämmande utdata i den kontrollerade formatmodellen. Godtyckliga tonkurvor, lokal redigering, färgmatriser och klippning omfattas inte av det invariansresultatet.
+
+## Verkliga bilder
+
+Följande avkodades: `_DSF9237(1).RAF`, `_DSF9237.dng`, `_DSF9237.tif`, `_DSF9243(1).RAF`, `_DSF9243.tif`, `_DSF9235.RAF`, `_DSF8983.RAF`, `_DSF8434.tif`.
+
+Motiv: gul buss med neutrala ytor, människor/hud/grönska, porträtt med blå kläder, inomhusmotiv med fönster, samt snö/arkitektur. Jämförelsen visar mindre cyan på de två TIFF-motiven, mer neutral ljus återgivning i snöbilden och generellt varmare RAF-återgivning. Alla motiv är inte neutrala och något absolut facit saknas; varmare är inte i sig ett kvalitetsmått.
+
+Bussens TIFF och DNG registrerades geometriskt med bildstruktur (korrelation cirka 0,991) för en jämförelse av samma motivyta. Det gemensamma urvalet är 49 669 pixlar utan extrema utvärden i något av lägena. Måttet är per pixel största skillnaden mellan sRGB-kanalerna efter normalisering med kanalernas summa; det dämpar ljushetens inverkan och är INTE Delta E eller färgriktighet mot en scenreferens.
+
+| Matchad DNG/TIFF | Beta 3.8 | Beta 3.9 |
 |---|---:|---:|
-| Neutral | 88,2 ms | 22,6 ms |
-| Sunday Best med Shadows/Highlights | 293,9 ms | 191,1 ms |
+| Median för normaliserad kanalskillnad | 0,1884 | 0,1017 |
+| 90-percentil för samma mått | 0,2389 | 0,1465 |
+| Median för största vanlig sRGB-kanalskillnad | 0,3373 | 0,2863 |
 
-Detta är en isolerad varm pixelberäkning, inte importtid eller en iPad/Safari-mätning. Cacheuppbyggnad, DOM, överföring till Worker och skärmvisning ingår inte i dessa tider. Enhetsrespons måste mätas separat. För stora profiler är beräkningen fortfarande betydande; Worker förbättrar främst gränssnittets tillgänglighet.
+Medianen för det relativa färgmåttet minskar cirka 46 %. TIFF och DNG matchar fortfarande inte exakt. Registrering, förhandsvisningsupplösning och tidigare TIFF-bearbetning begränsar slutsatsen. Detta kan inte generaliseras till alla format/kameror.
 
-Preview skickar källdata till Worker en gång per import. Endast senaste färdiga jobb får visas; det finns högst ett pågående och ett väntande renderjobb. Reglagedrag får en mindre preview och efterföljande slutrender. Export har full upplösning och samma färgkod. RAW-avkodningen var redan i Worker före 3.8. Köbyte avkodar fortfarande RAW igen; ingen stor RAW-cache infördes.
+## Filmruta och arbetsflöde
 
-## Utförda automatiska kontroller
+Den nya detektorn väljer den centrala rutan i syntetiska remsor i båda orienteringarna. På verkliga bilder minskar inblandningen av intilliggande rutor. Heuristiken är inte en kalibrerad sannolikhet och kräver visuell kontroll vid osäkerhet.
 
-Syntax/smoke, 14 rena motortester, 20 integrationstester, 10 nya regressionstester, separat exporttest med samtidiga inställningsändringar, 30 referensfixtures, syntetisk DNG genom verklig LibRaw/WASM, samt i18n/byggparitet. Worker-meddelanden testades med den verkliga worker-koden i en kontrollerad miljö. Ingen verklig Safari/iPad-session har genomförts.
+Den nya neutralpipetten justerar positivets färgreglage. Tester säkerställer att kalibrering och ROI inte ändras och att en kontrollerad grön avvikelse korrigeras åt rätt håll. Projekttester kontrollerar nya motorval och att gamla RAW-referenser inte tyst återanvänds i den korrigerade importkedjan.
 
-Fullstor RAF→TIFF verifierades efter optimering: 6032×4032 och 145 926 896 byte, korrekt 16-bitars RGB och inbäddad sRGB-profil. Exportberäkningen tog 3 s på testdatorn, utöver RAW-avkodning; ett centralt exportprov stämmer inom ett 16-bitars steg med direkt pixelberäkning. En tidigare iteration tog 15 s och ledde till att onödig kvantisering/kopiering togs bort. Detta är inte en iPad-mätning.
+## Export, prestanda och testgränser
 
-## Kvarstående acceptans
+Fullstor `_DSF9237(1).RAF` gav 6032×4032 och 145 926 896 byte som 16-bitars RGB-TIFF med sRGB-profil. Ett exporterat pixelprov stämmer inom ett 16-bitars steg med samma direkta färgfunktion som preview. Exportberäkningen tog 3 s på testdatorn efter RAW-avkodningen. Detta är inte en iPad-mätning.
 
-Visuellt godkännande på iPad/Safari, TIFF-matchning, robustare automatisk filmruta och en färgmodell som överträffar referensen över hela testuppsättningen. Den nya densitetsvarianten ska inte ersätta standardmetoden med nuvarande bildresultat. Inga nya RAW-format eller kreativa profiler har införts.
+Tester: syntax/smoke, 14 rena motortester, 20 integrationstester, 10 regressionstester från 3.8, 9 nya färg-/arbetsflödestester, projektimport, 30 fixtures för den äldre färgfunktionen, export under samtidiga inställningsändringar och verklig LibRaw/DNG-linearitet. Worker och direktväg jämförs. Den äldre färgfunktionen är bevarad, men samma korrigerade RAW-import används i samtliga lägen i 3.9.
+
+Safari/iPad, en bred uppsättning kameror och en kalibrerad fotografisk referens återstår. Klippta avkodade kanaler kan inte återskapas av denna färgmotor. Starkt färgdominerade motiv och snävt tonomfång kan fortfarande kräva korrigering. Privata original- och jämförelsebilder ingår inte i uppdateringspaketet.
