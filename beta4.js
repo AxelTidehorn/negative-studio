@@ -7,6 +7,7 @@ function explicitBase4(){return !state.noBase&&(state.useRollBase||!state.auto)?
 function response4(){const saved=state.useRollResponse4?sharedResponse4:state.response4;return CC4.valid(saved)&&saved.domain===domain4()?saved:null;}
 function cancelPair4(){neutralPair4=null;$('neutralPair4').textContent='Kalibrera två neutrala ytor';}
 function controls4(){
+ syncEngineSelector();
  const enabled=!!working&&state.engine==='calibrated4';
  for(const id of ['neutralPair4','resetResponse4','saveResponse4'])$(id).disabled=!enabled;
  $('useResponse4').checked=!!state.useRollResponse4;$('useResponse4').disabled=!sharedResponse4;
