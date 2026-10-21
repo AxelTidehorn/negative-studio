@@ -92,11 +92,11 @@ const rows=[
 ['Vitpunkt','White point','Point blanc','Punto blanco','Weißpunkt']
 ];
 const extra=[
-['Välj JPEG, PNG, WebP, TIFF, RAF eller DNG. RAF försöker läsa riktig 16-bitars RAW med LibRaw. Om det misslyckas erbjuds JPEG-förhandsbilden som reserv.',
-'Select JPEG, PNG, WebP, TIFF, RAF or DNG. RAF attempts full 16-bit RAW decoding with LibRaw; if it fails, a JPEG preview fallback is offered.',
-'Sélectionnez JPEG, PNG, WebP, TIFF, RAF ou DNG. Le décodage RAW 16 bits utilise LibRaw ; en cas d’échec, un aperçu JPEG est proposé.',
-'Selecciona JPEG, PNG, WebP, TIFF, RAF o DNG. Se intenta decodificar RAW de 16 bits con LibRaw; si falla, se ofrece una vista JPEG.',
-'JPEG, PNG, WebP, TIFF, RAF oder DNG wählen. RAF wird mit LibRaw als 16-Bit-RAW dekodiert; andernfalls steht eine JPEG-Vorschau bereit.'],
+['Välj JPEG, PNG, WebP, TIFF, RAF, DNG eller Sony ARW. RAW avkodas med LibRaw; stöd beror på kameramodell och komprimering. Endast RAF har JPEG-reservläge.',
+'Select JPEG, PNG, WebP, TIFF, RAF, DNG or Sony ARW. LibRaw support depends on camera model and compression. Only RAF has a JPEG fallback.',
+'Sélectionnez JPEG, PNG, WebP, TIFF, RAF, DNG ou Sony ARW. Le support LibRaw dépend du boîtier et de la compression. Seul RAF dispose du secours JPEG.',
+'Selecciona JPEG, PNG, WebP, TIFF, RAF, DNG o Sony ARW. LibRaw depende de la cámara y la compresión. Solo RAF ofrece JPEG de reserva.',
+'JPEG, PNG, WebP, TIFF, RAF, DNG oder Sony ARW wählen. LibRaw hängt von Kamera und Komprimierung ab. Nur RAF bietet einen JPEG-Ersatz.'],
 ['RAW avkodas i 16 bitar vid import; endast visningen har lägre upplösning.','RAW is decoded at 16-bit precision on import; only the preview has reduced resolution.','Le RAW est décodé en 16 bits ; seul l’aperçu est réduit.','RAW se decodifica a 16 bits; solo la vista previa tiene menor resolución.','RAW wird mit 16 Bit dekodiert; nur die Vorschau ist verkleinert.'],
 ['Analysen använder bara filmrutan, med 1,2 % säkerhetsmarginal. Originalfilen ändras aldrig.','Analysis uses only the frame with a 1.2% safety margin. The source file is never modified.','L’analyse utilise uniquement la vue avec une marge de 1,2 %. Le fichier source reste intact.','El análisis usa solo el fotograma con margen del 1,2 %. El original no se modifica.','Die Analyse nutzt nur das Bildfeld mit 1,2 % Sicherheitsrand. Die Quelldatei bleibt unverändert.'],
 ['Välj Beta 3 för filmruteberoende analys. Båda lägena delar korrigerad import; jämför med den äldre appen för exakt Beta 1-bild.','Select Beta 3 for frame-based analysis. Both modes share the updated import pipeline; compare with the old app for exact Beta 1 output.','Choisissez Bêta 3 pour une analyse par vue. Les modes partagent l’import corrigé ; comparez l’ancienne application pour le rendu exact de Bêta 1.','Elige Beta 3 para analizar el fotograma. Los modos comparten la importación corregida; compara con la app anterior para Beta 1 exacta.','Beta 3 für bildfeldbasierte Analyse wählen. Beide Modi nutzen den korrigierten Import; für exakte Beta-1-Bilder mit der alten App vergleichen.'],

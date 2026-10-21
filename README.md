@@ -1,3 +1,21 @@
+# FILMLABB 1.1 Beta 2
+
+Se [release och root-installation](RELEASE_1.1_BETA2.md), [teknisk genomlysning](docs/TEKNISK_GENOMLYSNING.md), [verifieringsrapport](docs/VERIFIERINGSRAPPORT.md) samt [testmetod och nästa steg](docs/TESTMETOD_OCH_NASTA_STEG.md).
+
+Den kompakta arbetsytan och färgmotorn från Beta 1 är kvar. Sony ARW går genom samma RAW-färgväg. Begränsningar och faktiska tester redovisas i rapporten; suffixet ARW innebär inte generell kamerakompatibilitet.
+
+```sh
+npm ci
+npm test
+npm run build
+```
+
+Publicera site/ med din befintliga GitHub Actions-installation. Bevara .github/ när du uppdaterar källfilerna. Kör appen via HTTP(S). Npm-paketet libraw-wasm är fortsatt låst till 1.6.0. Projekt innehåller inställningar, inte originalbilder.
+
+---
+
+Följande är historisk Beta 1/Beta 4-dokumentation, inte nya verifieringsresultat. Vid motstridighet gäller Beta 2-rapporterna ovan.
+
 ## Korrigering av bildytan (1.1 Beta 1 – layoutfix)
 
 - Visningen använder höjden som återstår i fönstret, i stället för en hårdkodad uppskattning av headerns höjd.
