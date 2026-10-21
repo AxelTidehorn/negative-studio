@@ -7,6 +7,10 @@ function compile(c){
  gains=bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],
  invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?0:o.saturation;
  function technical(v,k){
+  if(c.kind==='calibrated4'){
+   const a=c.cal.beta4,r=a.response;
+   return (-Math.log10(Math.max(1/65535,v)*a.light[k]/a.base[k])-r.offset[k])/r.span[k];
+  }
   if(c.kind==='log39'){
    const s=c.cal.log39,corrected=c.noBase?v*c.light[k]:v/Math.max(1e-8,c.base[k]),d=-Math.log10(Math.max(1/65535,v));
    return clamp(o.autoLevels?(d-s.lo[k])/s.spans[k]:-Math.log10(Math.max(1/65535,corrected)));
@@ -34,7 +38,33 @@ function compile(c){
   return q.map(v=>{v=clamp(v+(f.lift||0));if(f.shoulder)v=v/(1+f.shoulder*(1-v));if(f.toe)v=v**(1/(1+f.toe));if(f.curve&&f.curve!==1)v=v**(1/f.curve);return clamp(v);});
  }
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
+ const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
+ const black4=decode(o.shadow),whiteRange4=Math.max(.01,decode(o.highlight)-black4);
+ function finish4(p){
+  const a=c.cal.beta4;
+  // Keep signed density coordinates until the shared range has been applied.
+  p=p.map((v,k)=>Math.max(0,o.autoLevels?(v-a.lo)/a.span:v)*ev*gains[k]);
+  let y=.2126*p[0]+.7152*p[1]+.0722*p[2];
+  if(y>1e-12){
+   let target=Math.max(0,(y-black4)/whiteRange4);
+   if(o.gamma!==1)target=target**invGamma;
+   if(o.contrast!==1)target=.18*(target/.18)**o.contrast;
+   if(o.shadows||o.highlights){const displayY=encode(target),sw=(1-clamp(displayY/.65))**2,hw=clamp((displayY-.35)/.65)**2;target*=2**(-(o.shadows/100)*sw*1.4+(o.highlights/100)*hw*1.4);}
+   p=p.map(v=>v*target/y);
+  }
+  if(sat!==1){y=.2126*p[0]+.7152*p[1]+.0722*p[2];p=p.map(v=>Math.max(0,y+(v-y)*sat));}
+  const peak=Math.max(...p);
+  // Smooth path to display white, applied by one RGB scale, before output encoding.
+  const mapped=o.toneMode4==='reference'?Math.min(1,peak):peak<=.8?peak:.8+.2*(-Math.expm1(-Math.min(100,(peak-.8)/.2)));
+  if(peak>0)p=p.map(v=>v*mapped/peak);
+  p=p.map(encode);
+  // Existing creative profiles remain downstream and do not enter calibration.
+  if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
+  if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
+  return p;
+ }
  function finish(p){
+  if(c.kind==='calibrated4')return finish4(p);
   if(c.kind==='beta2'||c.kind==='density38'||c.kind==='log39')p=p.map(encode);
   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
   if(!c.neutralPrint)p=p.map(v=>{v=clamp(v);if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
@@ -49,17 +79,18 @@ function compile(c){
 // Cache only the separable technical stage. Creative mixing and tonal zones remain exact.
 function tables(kernel){const a=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let k=0;k<3;k++)for(let i=0;i<65536;i++)a[k][i]=kernel.technical(i/65535,k);return a;}
 function completeTables(config,kernel){
+ if(config.kind==='calibrated4')return null;
  if(!config.neutralProfile||!config.neutralPrint||config.opts.saturation!==1||config.opts.shadows||config.opts.highlights)return null;
  const t=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let i=0;i<65536;i++){const p=kernel.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=p[c];}return t;
 }
-let renderCache=null;
-function cachedRender(config){const key=JSON.stringify(config);if(!renderCache||renderCache.key!==key){const kernel=compile(config);renderCache={key,kernel,table:completeTables(config,kernel)};}return renderCache;}
+let renderCache=null,technicalRenderCache4=null;
+function cachedRender(config){const key=JSON.stringify(config);if(!renderCache||renderCache.key!==key){const kernel=compile(config);let technical=null;if(config.kind==='calibrated4'){const a=config.cal.beta4,tkey=JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalRenderCache4||technicalRenderCache4.key!==tkey)technicalRenderCache4={key:tkey,table:tables(kernel)};technical=technicalRenderCache4.table;}renderCache={key,kernel,table:completeTables(config,kernel),technical};}return renderCache;}
 function lookup(t,v,c){const u=clamp(v)*65535,a=Math.floor(u),b=Math.min(65535,a+1);return t[c][a]+(t[c][b]-t[c][a])*(u-a);}
 function read(im,i){const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
 function render(im,config,mode='positive',limit=1400,cache){
- const cached=cachedRender(config),kernel=cached.kernel,table=cached.table,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256);
+ const cached=cachedRender(config),kernel=cached.kernel,table=cached.table,technical=cached.technical,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256);
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/h)),j=(sy*im.width+sx)*im.channels,p=read(im,j),q=mode==='negative'||mode==='split'&&x<w/2?p.map(encode):table?[lookup(table,p[0],0),lookup(table,p[1],1),lookup(table,p[2],2)]:kernel.pixel(p),i=(y*w+x)*4;for(let k=0;k<3;k++)data[i+k]=Math.round(q[k]*255);data[i+3]=255;if((y*w+x)%Math.max(1,Math.floor(w*h/25000))===0)bins[Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2])]++;}
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/h)),j=(sy*im.width+sx)*im.channels,p=read(im,j),q=mode==='negative'||mode==='split'&&x<w/2?p.map(encode):table?[lookup(table,p[0],0),lookup(table,p[1],1),lookup(table,p[2],2)]:technical?kernel.finish(p.map((v,k)=>lookup(technical,v,k))):kernel.pixel(p),i=(y*w+x)*4;for(let k=0;k<3;k++)data[i+k]=Math.round(q[k]*255);data[i+3]=255;if((y*w+x)%Math.max(1,Math.floor(w*h/25000))===0)bins[Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2])]++;}
  return {width:w,height:h,data,bins};
 }
 function exportRows(im,config,geometry,y0,rows,table,complete=false){

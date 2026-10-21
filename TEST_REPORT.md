@@ -1,53 +1,61 @@
-# Beta 3.9 – resultat och verifiering
+# Beta 4 – jämförelse och testning
 
-21 oktober 2026. Jämförelse mot oförändrad Beta 3.8, med samma motivområden. Ingen mätning av absolut färgriktighet på kalibrerat filmfärgkort har genomförts.
+Utgångspunkt: oförändrad Beta 3.9 som referens. Testerna skiljer på ny RAW-import, teknisk färgkalibrering och tonåtergivning. Ingen mätning mot ett kalibrerat fotografiskt filmfärgkort har gjorts.
 
-## Reproducerat RAW-importfel
+## RAW-import: reproducerbar informationsvinst
 
-LibRaw-Wasm 1.6.0 accepterar inte tvåelementsvärdet `gamm:[1,1]` i den levererade bindningen trots att typdeklarationen beskriver två värden. Det ger i praktiken standardtonkurvan. Detta var fel även i appens tidigare märkning av RAW som linjärt.
+På `_DSF9237(1).RAF` avkodades samma data genom riktig LibRaw-Wasm 1.6.0 med sex korrekta gammavärden. Fem alternativ prövades: sRGB, sRGB med halverad ljusstyrka, Rec.2020, kamera-RGB och ett experiment med egna WB-multiplikatorer. Det sista experimentet försämrade blå kanal och används inte.
 
-Ett syntetiskt CFA-DNG med känt första värde 3000 ger 11476 med den gamla inställningen och 3000 med `gamm:[1,1,0,0,0,0]` i kamera-RGB. Med gammal inställning var medianförhållandet vid halverad ljusstyrka cirka 0,680; med rätt inställning cirka 0,500. Testet läser verklig LibRaw/WASM-utdata och kontrollerar både det kända värdet och linearitet över många pixelprov.
+I en fördefinierad central rektangel med 50 875 prov var 4 011 röda prov klippta vid sRGB-avkodning, medan Rec.2020 gav noll klippta prov där. Halverad ljusstyrka sänkte de tidigare klippta värdena men återskapade inte variationen.
 
-Primärkällor: LibRaw API:s gammabeskrivning, och upstream-ärendet “Setting gamm requires 6 fields instead of 2”, LibRaw-Wasm #8. Den avgörande verifieringen här är utförd på den faktiskt medföljande WASM-filen.
-https://www.libraw.org/docs/API-datastruct.html
-https://github.com/ybouane/LibRaw-Wasm/issues/8
+Över hela 500 px-förhandsvisningen hade sRGB-avkodningen 23 153 prov med klippt röd kanal. sRGB med halverad ljusstyrka gav bara fyra olika värden på dessa platser. Rec.2020 konverterat till utökad linjär sRGB gav 23 151 olika värden där; röd kanal varierade ungefär 1,000–1,204 före gemensam halvskala. Detta visar bevarad variation som den tidigare färgrymdskonverteringen förlorade. Det visar inte återställning av sensorklippta värden eller absolut färgriktighet.
 
-Samtliga produktionsvägar för RAW-bild och RAW-ljuskällereferens är korrigerade. Tvåelementsinställningen ersattes även i de relevanta verkliga filtesterna.
+Den implementerade vägen använder Rec.2020, en D65-matriskonvertering till sRGB och en fast gemensam faktor 0,5 före 16-bitarskvantisering. Ingen bildberoende kanalnormalisering sker i detta importsteg. RAW-bilder och RAW-ljuskällereferenser använder samma väg. Negativa sRGB-komponenter begränsas till noll; klippning i Rec.2020 och negativa komponenter räknas före konverteringen.
 
-## Ny färgmetod
+## Verkliga bilder och visuell kontroll
 
-Varje kanal omvandlas till logaritmisk transmission. 1,5- och 98,5-percentiler inom motivet, med 1,8 % inre marginal, bestämmer kanalernas ändpunkter. Kurvorna normaliseras före gemensam positiv kodning, kreativa profiler och manuella justeringar. Ingen fast varm/magenta-kompensation och ingen neutralisering av motivets RGB-medelvärde används. Antagandet om användbara kanaländpunkter kvarstår och är inte en universell färgkalibrering.
+Följande original avkodades igen med nya RAW-vägen: `_DSF9237(1).RAF`, `_DSF9237.dng`, `_DSF9243(1).RAF`, `_DSF9235.RAF`, `_DSF8983.RAF`. De fyra första proven hade inga klippta Rec.2020-komponenter över hela bilden; `_DSF8983.RAF` hade fyra röda och ett grönt klippt pixelprov. Alla filer hade ett mindre antal negativa sRGB-komponenter efter matrisen. Det är inte ett löfte om klippfri RAW-import för andra bilder.
 
-Den kontrollerade syntetiska uppsättningen innehåller svart/vitt, fyra neutrala nivåer och separata färgprov med olika respons i R/G/B. Summan av neutralprovens kanalavvikelser minskar från cirka 0,516 till mindre än 0,000001. Kända färgprov återges inom 0,000002 på skala 0–1. Dessa tal gäller den angivna syntetiska modellen, inte färgfel på verkliga fotografier.
+RAF/DNG-paret för samma negativ jämfördes efter 90° orienteringsanpassning på 500 px normaliserade källvärden. Medelabsolut RGB-skillnad var cirka 0,000021; 99-percentilen cirka 0,000168. Detta gäller samma Fuji-källa och är inte ett mått på färgriktighet eller universell formatöverensstämmelse.
 
-Utan källklippning är resultaten stabila vid −2, −1, 0 och +0,3 EV. Kanalvisa skalningar och potenskurvor ger överensstämmande utdata i den kontrollerade formatmodellen. Godtyckliga tonkurvor, lokal redigering, färgmatriser och klippning omfattas inte av det invariansresultatet.
+Med samma tidigare normaliserade källvärden gjordes även en separat 3.9/4-jämförelse på sju motiv: DNG-bussen, TIFF-bussen, paret i RAF och TIFF, porträtt i blå kläder, inomhusporträtt och snö/arkitektur. Automatisk färg ligger då huvudsakligen nära 3.9; den nya mjuka högdagern är en mindre skillnad.
 
-## Verkliga bilder
+Med nya RAW-importen ger de fem RAW-proven mindre framträdande grönt/cyan i flera neutrala ytor och hudpartier. Exempelvis kan den blå tröjan och parets vita kläder separeras från det gamla grönsticket bättre. En del färger ändras även i varm riktning. Detta är en visuell bedömning, inte ett färgfacit. TIFF-bilderna har fortfarande egna färgavvikelser och blir inte automatiskt identiska med RAW.
 
-Följande avkodades: `_DSF9237(1).RAF`, `_DSF9237.dng`, `_DSF9237.tif`, `_DSF9243(1).RAF`, `_DSF9243.tif`, `_DSF9235.RAF`, `_DSF8983.RAF`, `_DSF8434.tif`.
+## Teknisk kalibrering och automatiska tester
 
-Motiv: gul buss med neutrala ytor, människor/hud/grönska, porträtt med blå kläder, inomhusmotiv med fönster, samt snö/arkitektur. Jämförelsen visar mindre cyan på de två TIFF-motiven, mer neutral ljus återgivning i snöbilden och generellt varmare RAF-återgivning. Alla motiv är inte neutrala och något absolut facit saknas; varmare är inte i sig ett kvalitetsmått.
+Nya tester kontrollerar:
 
-Bussens TIFF och DNG registrerades geometriskt med bildstruktur (korrelation cirka 0,991) för en jämförelse av samma motivyta. Det gemensamma urvalet är 49 669 pixlar utan extrema utvärden i något av lägena. Måttet är per pixel största skillnaden mellan sRGB-kanalerna efter normalisering med kanalernas summa; det dämpar ljushetens inverkan och är INTE Delta E eller färgriktighet mot en scenreferens.
+- Bekräftad filmruta sparar separat kanalrespons; beskärning ändrar gemensam tonanalys utan att ändra sparade kanalkurvor.
+- Två neutrala prov korrigerar en känd syntetisk modell med olika R/G/B-respons även utan neutral motivfördelning. Identiska, klippta och motsägelsefulla prov avvisas.
+- Gemensam kalibrering med motsvarande uppmätt filmbas behåller tekniska värden vid ändrad avfotograferingsexponering. Utan en sådan referens är detta inte garanterat för en återanvänd kalibrering.
+- En ändrad uppmätt filmbas påverkar teknisk konvertering även med automatiska nivåer. Samma ljuskällekorrektion på filmbas och motiv tar ut sig.
+- Kreativ profil och styrka ändrar inte teknisk kalibrering.
+- Den mjuka högdagern bevarar positiva linjära RGB-förhållanden före kreativa profiler. Exponering är en gemensam linjär förstärkning under högdagerkompressionen.
+- Den gemensamma RGB-tonhanteringen använder inte en felaktig fullständig kanalvis LUT.
+- Direkt beräkning, teknisk 16-bitars-LUT, worker-preview och TIFF ger överensstämmande resultat; preview har 8-bitars avrundning.
+- Projekt bevarar bildspecifik/gemensam kalibrering, RAW-import och tonval. Ogiltiga kalibreringar används inte. Äldre 3.9-projekt behåller sin gamla RAW-import.
+- Byte av RAW-import rensar aktuell bilds inkompatibla källkalibrering och lämnar andra bilder orörda.
+- Verklig LibRaw-avkodning av ett syntetiskt CFA-DNG verifierar både linjär gamma och Rec.2020-vägen. Vid oklippta värden överensstämmer skyddad import ×2 med sRGB-vägen inom 2 nivåsteg vid 95-percentilen.
 
-| Matchad DNG/TIFF | Beta 3.8 | Beta 3.9 |
-|---|---:|---:|
-| Median för normaliserad kanalskillnad | 0,1884 | 0,1017 |
-| 90-percentil för samma mått | 0,2389 | 0,1465 |
-| Median för största vanlig sRGB-kanalskillnad | 0,3373 | 0,2863 |
+Tidigare motor-, import-, export-, profil-, tema-, rotations-, kö- och projektkontroller från 3.9 körs också. Exporttest under samtidiga inställningsändringar körs med nya standardmotorn. 3.9-färgens syntetiska referenstester och äldre 3.7-fixtures behålls.
 
-Medianen för det relativa färgmåttet minskar cirka 46 %. TIFF och DNG matchar fortfarande inte exakt. Registrering, förhandsvisningsupplösning och tidigare TIFF-bearbetning begränsar slutsatsen. Detta kan inte generaliseras till alla format/kameror.
+## Prestanda
 
-## Filmruta och arbetsflöde
+En fullstor 6032×4032-RAF behandlades genom hela nya tekniska pixelvägen till 145 926 144 byte RGB-pixeldata. Med samma tekniska LUT-exportväg och samma källbild tog 3.9 cirka 7,68 s och Beta 4 cirka 10,60 s på testvärden. 500×334-preview tog cirka 64 respektive 114 ms. Detta är CPU-beräkning i Node, efter RAW-avkodning, utan filnedladdning och utan iPad/Safari. 3.9 har dessutom en snabbare fullständig LUT i vissa neutrala inställningar som inte är giltig för den nya gemensamma tonhanteringen. Beta 4 är därför inte en generell prestandaförbättring.
 
-Den nya detektorn väljer den centrala rutan i syntetiska remsor i båda orienteringarna. På verkliga bilder minskar inblandningen av intilliggande rutor. Heuristiken är inte en kalibrerad sannolikhet och kräver visuell kontroll vid osäkerhet.
+Tekniska kanaltabeller cacheas separat från ton- och profilreglage, och worker-kön är fortsatt begränsad. Full RAW-avkodning i dessa prov tog ungefär 17–21 s inklusive den nya konverteringen. Tiderna gäller testmiljön, inte användarens dator.
 
-Den nya neutralpipetten justerar positivets färgreglage. Tester säkerställer att kalibrering och ROI inte ändras och att en kontrollerad grön avvikelse korrigeras åt rätt håll. Projekttester kontrollerar nya motorval och att gamla RAW-referenser inte tyst återanvänds i den korrigerade importkedjan.
+## Återstående gränser
 
-## Export, prestanda och testgränser
+Utan neutrala referenser använder den första färguppskattningen fortfarande motivpercentiler. Den kan feltolka stark färgdominans. Att frysa kurvorna förhindrar nya kanalsträckningar vid beskärning, men gör inte en felaktig ursprunglig uppskattning rätt. Manuell ny uppskattning och valfri tvåpunktskalibrering finns därför kvar.
 
-Fullstor `_DSF9237(1).RAF` gav 6032×4032 och 145 926 896 byte som 16-bitars RGB-TIFF med sRGB-profil. Ett exporterat pixelprov stämmer inom ett 16-bitars steg med samma direkta färgfunktion som preview. Exportberäkningen tog 3 s på testdatorn efter RAW-avkodningen. Detta är inte en iPad-mätning.
+Varken fullständig kameraoberoende färgriktighet, alla filmtyper, godtyckligt bearbetade TIFF/JPEG eller fysiskt iPad/Safari-gränssnitt är verifierat. Programtester är DOM-/WASM-tester; ingen fullständig webbläsarinteraktion har körts här. Gränssnittets struktur, språk, tema och rotation bevaras men behöver användartest.
 
-Tester: syntax/smoke, 14 rena motortester, 20 integrationstester, 10 regressionstester från 3.8, 9 nya färg-/arbetsflödestester, projektimport, 30 fixtures för den äldre färgfunktionen, export under samtidiga inställningsändringar och verklig LibRaw/DNG-linearitet. Worker och direktväg jämförs. Den äldre färgfunktionen är bevarad, men samma korrigerade RAW-import används i samtliga lägen i 3.9.
+## Primärkällor till konstruktionen
 
-Safari/iPad, en bred uppsättning kameror och en kalibrerad fotografisk referens återstår. Klippta avkodade kanaler kan inte återskapas av denna färgmotor. Starkt färgdominerade motiv och snävt tonomfång kan fortfarande kräva korrigering. Privata original- och jämförelsebilder ingår inte i uppdateringspaketet.
+- RawTherapee Film Negative: relativ kanalrespons och två neutrala prov som kan återanvändas på en rulle: https://rawpedia.pixls.us/film_negative/
+- darktable negadoctor: separat ljuskälla, filmbas, tonomfång och positiv återgivning: https://docs.darktable.org/usermanual/development/en/module-reference/processing-modules/negadoctor/
+- darktable sigmoid: gemensam RGB-skalning och kontrollerade högdagerövergångar. Beta 4 är en egen, enklare kurva, inte en kopia av sigmoid: https://docs.darktable.org/usermanual/5.6/en/module-reference/processing-modules/sigmoid/
+- W3C CSS Color 4: linjära Rec.2020/XYZ/sRGB-matriser: https://www.w3.org/TR/css-color-4/#color-conversion-code
+- LibRaw: klippning vid vitbalans/utdata och särskilda skalningsparametrar: https://www.libraw.org/comment/5682

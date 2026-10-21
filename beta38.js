@@ -10,7 +10,7 @@ updateBase=function(){if(!workingPreview)return;};
 analyzeLevels=function(){
  if(!workingPreview)return;const start=now38(),p=CE.sample(workingPreview,cropRegion,.012,20000),channels=[0,1,2].map(c=>sorted38(p.map(v=>v[c])));
  const measured=calibrationBase()||(!state.noBase?CE.findBase(workingPreview,cropRegion):null);
- const manual=!state.auto&&(state.manualCalibration||(state.manualBase?{kind:'manual',confidence:1,measured:state.manualBase.map(v=>sourceInfo.encoding==='linear'?v/255:CE.decode(v/255))}:null));
+ const manual=!state.auto&&(calibrationBase()||((!sourceInfo.domain||sourceInfo.rawMode4==='reference')&&state.manualBase?{kind:'manual',confidence:1,measured:state.manualBase.map(v=>sourceInfo.encoding==='linear'?v/255:CE.decode(v/255))}:null));
  const film=manual||measured;
  const b=film?.measured?[...film.measured]:[0,1,2].map(c=>at38(channels[c],.995));
  const safe=b.map(v=>Math.max(1/65535,v));base=safe.map(v=>v*255);beta3Base=[...base];

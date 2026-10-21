@@ -13,6 +13,6 @@ fs.copyFileSync('sw.js','site/sw.js');
 
 fs.copyFileSync('demo-negative.png','site/demo-negative.png');
 
-for(const f of ['color-engine.js','color-management.js','srgb-profile.js','beta3.js','beta38.js','beta39.js','color-analysis.js','pixel-kernel.js','render-worker.js','i18n.js'])fs.copyFileSync(f,'site/'+f);
+for(const f of ['color-engine.js','color-management.js','srgb-profile.js','beta3.js','beta38.js','beta39.js','beta4.js','color-calibration.js','raw-input.js','color-analysis.js','pixel-kernel.js','render-worker.js','i18n.js'])fs.copyFileSync(f,'site/'+f);
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);

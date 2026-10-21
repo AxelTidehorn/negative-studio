@@ -1,39 +1,40 @@
-# FILMLABB 1.0 Beta 3.9
+# FILMLABB 1.0 Beta 4
 
-## Uppdatera via GitHub
+Beta 4 är en utvärderingsversion från 3.9. Den behåller 3.9 som färgmetod och RAW-import för jämförelse. Inga nya kreativa profiler eller större layoutändringar ingår.
 
-Paketet innehåller endast filer för projektroten. Packa upp ZIP-filen, öppna projektroten på GitHub där `index.html` ligger och ladda upp ALLA uppackade filer samtidigt. Ersätt befintliga filer och committa till `main`. Behåll befintliga undermappar, workflows och Pages-inställningen GitHub Actions.
+## Installera via GitHub
 
-`npm ci` installerar LibRaw. `npm test` återskapar rätt tests-filer från `test-suite.json` och kör testerna. `npm run build` skapar och uppdaterar `site/`. Du behöver inte skapa eller ladda upp undermappar manuellt. Paketet publicerar inte webbplatsen förrän du själv har laddat upp filerna.
+Packa upp `FILMLABB_beta4_root_update.zip`. Ladda upp **alla filer samtidigt i projektroten**, där `index.html` ligger, och ersätt befintliga filer. Behåll `.github`, `tests`, `site` och befintlig GitHub Pages-konfiguration. Du behöver inte skapa några nya undermappar manuellt.
 
-## Nytt i 3.9
+GitHub Actions ska köra `npm ci`, `npm test`, `npm run build` och publicera `site/`. Testfiler återskapas från `test-suite.json` även om gamla tester finns kvar i repot. Bygget kopierar alla nya skript till `site/`. Kontrollera efter publicering att sidfoten visar **Beta 4**. Om en gammal offlineversion ligger kvar: stäng appflikarna och öppna sidan igen efter lyckat bygge.
 
-**RAW-importen är faktiskt linjär.** LibRaw-Wasm 1.6.0 ignorerar gammainställningen när bara två värden skickas. Tidigare versioner använde därför en tonkurva samtidigt som appen märkte data som linjära. 3.9 skickar sex gammavärden och verifierar inställningen mot kända DNG-värden och halverad exponering. Detta är ett identifierat importfel, inte en estetisk kompensation.
+## Nytt
 
-**Ny standardmotor: Beta 3.9 · automatisk färg.** Invertering och kanalnormalisering görs i logaritmisk transmission/densitet. Kanalernas kurvor normaliseras med robusta motivpercentiler och positiv återgivning kommer därefter. Ingen konstant varm eller magentafärgad förskjutning har införts. Färgfördelningen antas inte vara grå i genomsnitt, men de automatiska kanaländpunkterna är fortfarande en uppskattning som kan påverkas av starkt färgdominerade motiv.
+- **Separat färgkalibrering och tonanalys.** Vid bekräftad filmruta sparas bildens kanalrespons. Ändrad beskärning analyserar om ett gemensamt tonomfång utan att uppskatta tre nya färgkurvor. Knappen *Uppskatta färg på nytt* gör en uttrycklig ny uppskattning från aktuell ruta.
+- **Två neutrala ytor.** Valfri mätning av en ljus och en mörk neutral yta ger relativ kanalrespons och färgankare. Ordningen spelar ingen roll. Välj verkligt neutrala ytor, utan klippning; inte hud eller gräs. Dåliga prov kan fortfarande ge dålig färg – appen kan inte veta om ytan verkligen är neutral.
+- **Rullkalibrering.** Spara kurvorna och aktivera dem på andra bilder från samma film och avfotografering. Valet är per bild; en uppskattad kalibrering märks som uppskattad även när den delas. Gemensam filmbas och ljuskälla är fortfarande separata referenser. Kalibrering från annan kamera/importdomän används inte tyst.
+- **Gemensam tonåtergivning.** Exponering och färgbalans appliceras före sRGB-kodning. Ljushetsjusteringar använder en gemensam skala. Den mjuka högdagern minskar hela RGB-tripeln med samma faktor och bevarar dess förhållanden före kreativa profiler. Ett rakt alternativ finns för jämförelse.
+- **RAW med större marginal.** LibRaw avkodar till linjär Rec.2020. Därefter konverteras RGB till linjär sRGB med en fast, gemensam halvskala före lagring i 16 bitar. Detta bevarar sRGB-värden över 1 som tidigare klipptes under avkodningen. Det är ingen kanalvis maskkompensation. Preview och export använder samma normaliserade källdata.
+- **Källkontroll.** RAW-importen kan växlas tillbaka till 3.9. Byte läser om aktuell RAW och tar bort dess inkompatibla källreferenser. Projekt från 3.9 behåller sin gamla RAW-import. Inbäddad JPEG är fortsatt uttryckligt reservläge.
 
-**Förbättrad central filmruta.** Detektorn söker efter genomgående filmkantband runt den centrala rutan och använder tidigare kantanalys som reserv. Den är prövad på de tillhandahållna motiven men kan fortfarande behöva manuell korrigering. Markeringen används för analys; exportbeskärning väljs separat.
+Utan uppmätta referenser bygger den första färguppskattningen fortfarande på 3.9:s robusta kanalpercentiler. Den är inte en universell filmprofil. Bekräfta filmrutan först, särskilt om automatiken är osäker. När den bekräftas sparas färgkurvorna; senare tonanalys följer beskärningen.
 
-**Neutralpipett på positiv bild.** Välj en känd neutral mellangrå yta inne i motivet. Pipetten justerar endast Varm/kall och Grön/magenta, med de befintliga reglagens begränsningar. Filmbas och teknisk analys ändras inte. Kreativ profil ingår inte i referensprovet. HUD, himmel och grönt gräs är inte neutrala referenser.
+Uppmätt filmbas används i densitetsförhållandet även med automatiskt tonomfång. Ljuskällans diagonala färgkorrektion tar ut sig om den appliceras lika på uppmätt filmbas och motiv. Saknas filmbas kan en ljuskällereferens användas, men den räcker inte ensam för att känna filmens färgrespons.
 
-**Klippta RGB-kanaler visas separat.** Uppgiften gäller avkodade bildvärden. Den kan inte ensam avgöra om klippningen skedde i sensorn, RAW-framkallningen eller i en tidigare TIFF-export.
+## Första testet
 
-3.8:s Worker-preview, mindre preview under reglagedrag, gemensamma exportfunktion, histogram och export-LUT finns kvar. Kreativa profiler, fem språk, tema, rotation och arbetskö finns kvar.
+1. Importera en RAF och kontrollera filmrutan. Välj Neutral kreativ profil och återställ bildreglagen.
+2. Prova Beta 4 med *större färgmarginal*. Titta på hud, neutrala ytor, skuggor och starka färger.
+3. För jämförelse av bara färgmetoden: byt till Beta 3.9 utan att ändra RAW-import.
+4. För jämförelse med hela 3.9-kedjan: välj *3.9 · linjär sRGB* under RAW-import, låt bilden laddas om och välj färgmetod 3.9.
+5. Exportera TIFF med önskad rotation/beskärning. RAW-originalet ändras aldrig.
 
-## Jämför rätt
+Tvåpunktskalibrering och rullreferenser är frivilliga. Direkt import till automatisk positiv och TIFF-export fungerar utan dem.
 
-1. Kontrollera att sidfoten visar Beta 3.9.
-2. Välj `Beta 3.9 · automatisk färg` om ett tidigare motorval ligger kvar.
-3. Kontrollera filmrutan. Återställ bildreglagen och välj Neutral kreativ profil vid jämförelsen.
-4. Jämför med Beta 1/äldre färgmetod. Alla lägen i 3.9 använder den korrigerade RAW-importen; exakt historisk RAW-återgivning kräver det gamla bygget.
-5. Kontrollera TIFF-exportens färg, rotation och eventuell exportbeskärning.
+## Prestanda och begränsningar
 
-Gamla RAW-baserade filmbas-/ljuskällereferenser kan behöva mätas om eftersom de byggde på fel tonkodning. Projekt sparas med kalibreringsversion 39. Vid import av äldre projekt avaktiveras inkompatibla RAW-referenser med ett meddelande; originalprojektfilen ändras inte. Beskärning, profiler och manuella bildreglage kan behållas, men äldre färgjusteringar behöver bedömas på nytt.
+Worker-preview, senaste-jobbet-kö, mindre förhandsvisning under reglagedrag och stegvis TIFF-export behålls. Kanalernas tekniska uppslagstabeller återanvänds när bara bildreglagen ändras. Beta 4:s gemensamma RGB-tonhantering kan inte ersättas av tre oberoende fullständiga kanaltabeller; den kräver mer beräkning än 3.9:s enklaste läge. Ingen generell hastighetsförbättring utlovas.
 
-## Begränsningar
+Tidigare bearbetade TIFF/JPEG kan ha egna kurvor och klippta kanaler. De kan inte automatiskt bli identiska med RAW. Negativa sRGB-komponenter efter arbetsrymdskonvertering begränsas till noll inför densitetsberäkning. Sensor- eller tidigare RAW-klippning kan inte återskapas. Den fasta RAW-halvskalan kostar cirka ett bitsteg i den interna 16-bitarskvantiseringen och ger större färgmarginal.
 
-De tillhandahållna TIFF-filerna har fortfarande inte exakt samma färger som RAW/DNG. På den matchade bussbilden minskar skillnaden tydligt, och den visuella jämförelsen visar mindre cyan på båda TIFF-motiven. Detta är inte bevis för absolut färgriktighet eller alla filmtyper/kameror. En redan bearbetad TIFF kan innehålla kurvor och lokala ändringar som ett gemensamt arbetsformat inte upphäver.
-
-Automatiska ändpunkter kan feltolkas i motiv med begränsat tonomfång eller stark färgdominans. Neutralpipetten är frivillig hjälp, inte ett krav för varje bild. Safari/iPad har ännu inte verifierats på en fysisk enhet i denna testmiljö.
-
-Se TEST_REPORT.md för resultat, testuppsättning och mätmetod.
+Projekt innehåller inställningar och kalibrering, inte originalbilder. Safari/iPad och bred kamerakompatibilitet återstår att verifiera på fysiska enheter. Se `TEST_REPORT.md` för genomförda tester och jämförelsens gränser.
