@@ -20,26 +20,23 @@
  settings.queue=settings.queue!==false;settings.adjust=settings.adjust!==false;
  function fitPicture(){
   const picture=get('picture'),canvas=get('preview');
-  if(!picture||!canvas||!canvas.width||!canvas.height)return;
-  const w=picture.clientWidth,h=picture.clientHeight;
+  if(!picture||!canvas||canvas.classList.contains('hidden')||!canvas.width||!canvas.height)return;
+  const {width:w,height:h}=picture.getBoundingClientRect();
   if(w<1||h<1)return;
-  const angle=((window.state?.rotation??0)%360+360)%360;
-  // State is lexical in index.html; the actual rotation is reflected by applyView.
+  // Read rotation from the actual editor view rather than window.state (lexically scoped).
   const match=(canvas.style.transform||'').match(/rotate\((-?[\d.]+)deg\)/);
-  const rotation=match?Number(match[1]):angle;
-  const swapped=(Math.abs(rotation)%180)>45;
-  const k=Math.min(w/(swapped?canvas.height:canvas.width),h/(swapped?canvas.width:canvas.height));
-  canvas.style.setProperty('width',canvas.width*k+'px','important');
-  canvas.style.setProperty('height',canvas.height*k+'px','important');
-  // Center transform must come first, then pan/zoom/rotation.
-  const t=canvas.style.transform.replace(/^translate\(-50%,\s*-50%\)\s*/, '');
-  canvas.style.transform='translate(-50%, -50%) '+t;
-  // Keep the overlay in the same native coordinate system as the preview.
+  const angle=match?Number(match[1]):0;
+  const swapped=Math.round(((angle%360)+360)%360/90)%2===1;
+  const fit=Math.min(w/(swapped?canvas.height:canvas.width),h/(swapped?canvas.width:canvas.height));
+  if(!Number.isFinite(fit)||fit<=0)return;
+  const pixelW=canvas.width*fit,pixelH=canvas.height*fit;
+  canvas.style.setProperty('width',pixelW+'px','important');
+  canvas.style.setProperty('height',pixelH+'px','important');
   const overlay=get('cropOverlay');
   if(overlay&&!overlay.classList.contains('hidden')){
-   overlay.style.width=canvas.width*k+'px';overlay.style.height=canvas.height*k+'px';
+   overlay.style.width=pixelW+'px';overlay.style.height=pixelH+'px';
    overlay.style.left='50%';overlay.style.top='50%';
-   overlay.style.transform='translate(-50%, -50%) '+t;
+   overlay.style.transform=canvas.style.transform;
   }
  }
  function measureWorkspace(){
@@ -79,8 +76,6 @@
  if(typeof MutationObserver!=='undefined')new MutationObserver(()=>requestAnimationFrame(fitPicture)).observe(canvas,{attributes:true,attributeFilter:['width','height','class']});
  window.addEventListener('resize',measureWorkspace);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);
- const priorApply=typeof window.applyView==='function'?window.applyView:null;
- // applyView is a top-level function declaration exposed on window by index.html.
- if(priorApply)window.applyView=function(...args){const result=priorApply.apply(this,args);requestAnimationFrame(fitPicture);return result};
+ window.addEventListener('filmlabb:view-change',()=>requestAnimationFrame(fitPicture));
  render();measureWorkspace();
 })();
