@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build-root.mjs",
-    "test": "node verify-film-frame.mjs"
+    "test": "node verify-preview.mjs"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"

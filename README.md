@@ -1,4 +1,4 @@
-# FILMLABB 1.1 Beta 3.1
+# FILMLABB 1.1 Beta 3.3
 
 Befintliga kreativa profiler har fått tydligare karaktär. Standardmotorn analyserar nu originaldata; visningsbildens nedskalning används inte längre för ny färgkalibrering. Äldre projekt behåller tidigare profiler, motor och analysmetod.
 
@@ -22,3 +22,11 @@ Historiska motorimplementationer finns kvar för bakåtkompatibilitet, men bara 
 ## Korrigerad manuell filmruta
 
 Se [ändringar och verifiering](docs/MANUELL_FILMRUTA_BETA3_1.md) och [installation](RELEASE_1.1_BETA3_1.md). Tidigare Beta 3-resultat finns under docs/history/beta3.
+
+## Svarstid i förhandsvisningen
+
+Se [prestandarapport](docs/PRESTANDA_BETA3_2.md) och [installation](RELEASE_1.1_BETA3_2.md). Filmrutefixen från 3.1 ingår.
+
+## Direktare reglage
+
+Se [reglagerapport](docs/PRESTANDA_BETA3_3.md) och [installation](RELEASE_1.1_BETA3_3.md).
