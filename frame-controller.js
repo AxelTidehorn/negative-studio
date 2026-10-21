@@ -170,42 +170,66 @@ $('engineMode').onchange=e=>{state.engine=e.target.value;updateCalibrationUI();s
 $('tiffEncoding').onchange=async e=>{state.tiffEncoding=e.target.value;saveCurrentFrame();if(activeFrame>=0&&/\.tiff?$/i.test(roll[activeFrame].file.name))await chooseFrame(activeFrame,{force:true});};
 $('clearReference').onclick=()=>{sharedLight=null;referenceGains=[1,1,1];referenceAvailable=false;if(working)analyzeLevels();else updateCalibrationUI();};
 function exportReady(){if(exportBusy||rollLoading||!working)return false;if(!state.cropConfirmed){setStatus('Kontrollera filmrutan och tryck Bekräfta filmruta före export.');return false;}return true;}
-function makeExportCanvas(){const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation),c=document.createElement('canvas');c.width=g.width;c.height=g.height;const cx=c.getContext('2d',{colorSpace:'srgb'}),out=cx.createImageData(g.width,g.height),lookup=neutralLookup(state,working);for(let y=0;y<g.height;y++)for(let x=0;x<g.width;x++){const [sx,sy]=g.at(x,y),i=(y*g.width+x)*4;if(lookup){const j=(sy*working.width+sx)*working.channels;for(let k=0;k<3;k++)out.data[i+k]=Math.round(lookup[k][working.data[j+k]]/257);}else{const p=technicalPositive(sourcePixel(working,sx,sy),state);for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);}out.data[i+3]=255;}cx.putImageData(out,0,0);return c;}
-jpegBytes=async function(){if(!exportReady())throw Error('Filmrutan måste bekräftas före export.');const c=makeExportCanvas(),blob=await new Promise(r=>c.toBlob(r,'image/jpeg',.94));if(!blob)throw Error('JPEG-kodning misslyckades');return new Uint8Array(await blob.arrayBuffer());};
-$('export').onclick=async()=>{if(!exportReady())return;try{const bytes=await jpegBytes();downloadBlob(new Blob([bytes],{type:'image/jpeg'}),'negative-studio-positive.jpg');setStatus('JPEG exporterad · sRGB');}catch(e){setStatus('Exportfel: '+e.message);}};
+// Safari (especially iOS) may return null from canvas.toBlob when the canvas
+// exceeds its pixel/side budget. Render directly at the selected JPEG size;
+// never allocate a full-resolution RGBA buffer merely to shrink it afterwards.
+function makeExportCanvas(maxPixels=12000000){
+ const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation);
+ if(!Number.isSafeInteger(g.width*g.height)||g.width<1||g.height<1)throw Error('Ogiltig exportstorlek.');
+ const factor=Math.min(1,8192/g.width,8192/g.height,Math.sqrt(maxPixels/(g.width*g.height)));
+ const w=Math.max(1,Math.floor(g.width*factor)),h=Math.max(1,Math.floor(g.height*factor));
+ const c=document.createElement('canvas');c.width=w;c.height=h;
+ const cx=c.getContext('2d',{colorSpace:'srgb'});
+ if(!cx)throw Error('Kunde inte skapa JPEG-canvas.');
+ const lookup=neutralLookup(state,working);
+ // Drawing in strips avoids allocating an additional full-frame ImageData.
+ for(let y0=0;y0<h;y0+=128){
+  const rows=Math.min(128,h-y0),out=cx.createImageData(w,rows);
+  for(let dy=0;dy<rows;dy++)for(let x=0;x<w;x++){
+   const gx=Math.min(g.width-1,Math.floor((x+.5)*g.width/w));
+   const gy=Math.min(g.height-1,Math.floor((y0+dy+.5)*g.height/h));
+   const [sx,sy]=g.at(gx,gy),i=(dy*w+x)*4;
+   if(lookup){const j=(sy*working.width+sx)*working.channels;
+    for(let k=0;k<3;k++)out.data[i+k]=Math.round(lookup[k][working.data[j+k]]/257);
+   }else{const p=technicalPositive(sourcePixel(working,sx,sy),state);
+    for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);}
+   out.data[i+3]=255;
+  }
+  cx.putImageData(out,0,y0);
+ }
+ return {canvas:c,width:w,height:h,originalWidth:g.width,originalHeight:g.height};
+}
+jpegBytes=async function(skipBusyCheck=false){
+ if(!(skipBusyCheck ? (!rollLoading&&working&&state.cropConfirmed) : exportReady()))throw Error('Filmrutan måste bekräftas före export.');
+ let lastError=null;
+ for(const budget of [12000000,6000000,3000000]){
+  let result;
+  try{
+   result=makeExportCanvas(budget);
+   const blob=await new Promise((resolve,reject)=>{
+    try{result.canvas.toBlob(resolve,'image/jpeg',.94);}catch(e){reject(e);}
+   });
+   if(blob&&blob.size>0){
+    jpegExportInfo={width:result.width,height:result.height,originalWidth:result.originalWidth,originalHeight:result.originalHeight};
+    return new Uint8Array(await blob.arrayBuffer());
+   }
+   lastError=new Error('Webbläsaren kunde inte JPEG-koda '+result.width+'×'+result.height+'.');
+  }catch(e){lastError=e;}
+  finally{if(result){result.canvas.width=0;result.canvas.height=0;}}
+ }
+ throw new Error('JPEG-kodning misslyckades även vid reducerad storlek: '+(lastError?.message||'okänt fel'));
+};
+let jpegExportInfo=null;
+$('export').onclick=async()=>{
+ if(!exportReady())return;
+ exportBusy=true;$('export').disabled=true;
+ try{
+  const bytes=await jpegBytes(true);
+  downloadBlob(new Blob([bytes],{type:'image/jpeg'}),'negative-studio-positive.jpg');
+  const info=jpegExportInfo;
+  setStatus('JPEG exporterad · sRGB · '+info.width+'×'+info.height+(info.width!==info.originalWidth||info.height!==info.originalHeight?' · anpassad storlek för webbläsaren':''));
+ }catch(e){setStatus('Exportfel: '+e.message);}
+ finally{exportBusy=false;$('export').disabled=false;}
+};
 function tiffHeader(w,h){const icc=NSSRGBProfile,nt=12,bitsOffset=8+2+nt*12+4,iccOffset=bitsOffset+6,pixelOffset=iccOffset+icc.length+(icc.length%2),ab=new ArrayBuffer(pixelOffset),v=new DataView(ab),tags=[[256,4,1,w],[257,4,1,h],[258,3,3,bitsOffset],[259,3,1,1],[262,3,1,2],[273,4,1,pixelOffset],[277,3,1,3],[278,4,1,h],[279,4,1,w*h*6],[284,3,1,1],[339,3,1,1],[34675,7,icc.length,iccOffset]];v.setUint16(0,0x4949,true);v.setUint16(2,42,true);v.setUint32(4,8,true);v.setUint16(8,nt,true);tags.forEach(([tag,type,n,value],i)=>{const p=10+i*12;v.setUint16(p,tag,true);v.setUint16(p+2,type,true);v.setUint32(p+4,n,true);v.setUint32(p+8,value,true);});for(let i=0;i<3;i++)v.setUint16(bitsOffset+i*2,16,true);new Uint8Array(ab).set(icc,iccOffset);return ab;}
 exportTiff=async function(){if(!exportReady())return;exportBusy=true;$('exportTiff').disabled=true;try{const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation),parts=[tiffHeader(g.width,g.height)];if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');const lookup=neutralLookup(state,working);for(let y0=0;y0<g.height;y0+=32){const rows=Math.min(32,g.height-y0),ab=new ArrayBuffer(g.width*rows*6),v=new DataView(ab);for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x++){const [sx,sy]=g.at(x,y0+dy),i=(dy*g.width+x)*6;if(lookup){const j=(sy*working.width+sx)*working.channels;for(let k=0;k<3;k++)v.setUint16(i+k*2,lookup[k][working.data[j+k]],true);}else{const p=technicalPositive(sourcePixel(working,sx,sy),state);for(let k=0;k<3;k++)v.setUint16(i+k*2,Math.round(p[k]*65535),true);}}parts.push(ab);setStatus(`TIFF ${Math.round(100*(y0+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}downloadBlob(new Blob(parts,{type:'image/tiff'}),'negative-studio-positive-16bit.tif');setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);}catch(e){setStatus('Exportfel: '+e.message);}finally{exportBusy=false;$('exportTiff').disabled=false;}};
-$('exportTiff').onclick=()=>exportTiff();
-exportFrameTiff=async function(i){await chooseFrame(i,{force:true});if(!exportReady())throw Error('Bekräfta filmrutan för bild '+(i+1)+' före batch-export.');await exportTiff();};
-$('batchTiff').onclick=async()=>{if(rollingExport||rollLoading)return;saveCurrentFrame();const ids=roll.map((f,i)=>f.selected?i:-1).filter(i=>i>=0);if(!ids.length)return;if(ids.some(i=>!roll[i].settings.cropConfirmed)){setStatus('Öppna och bekräfta varje markerad filmruta före batch-export.');return;}rollingExport=true;const old=activeFrame;try{for(const i of ids)await exportFrameTiff(i);}catch(e){setStatus('Batchfel: '+e.message);}finally{rollingExport=false;await chooseFrame(old,{force:true});}};
-$('saveSettings').onclick=()=>{saveCurrentFrame();downloadBlob(new Blob([JSON.stringify({format:'negative-studio-roll-beta3',sourceCalibrationVersion:39,creativeProfileVersion:rollShared.profileVersion,profile:rollShared.profile,print:rollShared.print,strength:rollShared.strength,sharedBase,sharedLight,sharedResponse4,frames:roll.map(f=>({filename:f.file.name,settings:f.settings,crop:f.crop,sourceMetadata:f.sourceMetadata||null}))},null,2)],{type:'application/json'}),'filmlabb-project.json');};
-$('settingsFile').onchange=async e=>{try{const data=JSON.parse(await e.target.files[0].text());if(!['negative-studio-roll-beta3','negative-studio-roll-beta2','negative-studio-roll-v08'].includes(data.format))throw Error('Okänt projektformat');rollShared.profileVersion=data.creativeProfileVersion===2?2:1;rollShared.profile=filmProfiles[data.profile]?data.profile:'generic';rollShared.print=printStyles[data.print]?data.print:'neutral';rollShared.strength=CE.clamp(Number(data.strength)||0);let retiredCalibration=false;sharedBase=data.sharedBase||null;sharedLight=data.sharedLight||null;sharedResponse4=NSColorCalibration.valid(data.sharedResponse4)?data.sharedResponse4:null;if(data.sourceCalibrationVersion!==39){if(sharedBase?.sourceEncoding==='linear'){sharedBase=null;retiredCalibration=true;}if(sharedLight?.encoding==='linear'&&(!sharedLight.name||NSFileFormats.isRaw(sharedLight.name))){sharedLight=null;retiredCalibration=true;}}for(const saved of data.frames||[]){const f=roll.find(x=>x.file.name===saved.filename);if(f){const next={...defaultState(),...saved.settings};next.analysisSampling=saved.settings?.analysisSampling==='source'?'source':'preview';if(data.sourceCalibrationVersion!==39&&NSFileFormats.isRaw(f.file.name)){next.manualCalibration=null;next.manualBase=null;next.useRollBase=false;next.auto=true;next.sourceCalibrationVersion=39;retiredCalibration=true;}for(const [key,,min,max] of controls)next[key]=CE.clamp(Number(next[key])||0,min,max);next.engine=['legacy','beta2','beta3','reference','density38','log39','calibrated4'].includes(next.engine)?next.engine:'log39';next.rawMode4=saved.settings?.rawMode4==='protected'?'protected':'reference';next.toneMode4=next.toneMode4==='reference'?'reference':'smooth';if(!NSColorCalibration.valid(next.response4))next.response4=null;next.rotation=[0,90,180,270].includes(next.rotation)?next.rotation:0;f.settings=next;f.crop=saved.crop?CE.rect(saved.crop):null;}}$('filmProfile').value=rollShared.profile;$('printStyle').value=rollShared.print;$('profileStrength').value=rollShared.strength*100;$('profileStrengthValue').textContent=Math.round(rollShared.strength*100)+' %';refreshProfileInfo();/* Avoid writing current state over restored settings. */activeFrame=-1;await chooseFrame(0,{force:true});if(retiredCalibration)setStatus('Äldre RAW-kalibrering behöver mätas om efter den korrigerade RAW-importen.');}catch(err){setStatus('Projektimport: '+err.message);}finally{e.target.value='';}};
-const clearOriginal=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(rollLoading||exportBusy)return;clearOriginal();working=null;workingPreview=null;calibration=null;beta3Base=null;beta3Levels=null;$('cropOverlay').classList.add('hidden');for(const id of ['export','exportTiff','sample','recalc'])$(id).disabled=true;};
-updateCalibrationUI();
-// Keep technical calibration and the frame when resetting only the photographic controls.
-$('reset').onclick=()=>{for(const [id,,,,,] of controls)state[id]=defaultState()[id];syncControls();saveCurrentFrame();persist();render();};
-async function decodeLightFile(file){
- if(NSFileFormats.isRaw(file)){const {im,meta}=await NSRawDecoder.decode(file,state.rawMode4);return {width:im.width,height:im.height,data:im.data,channels:3,scale:65535,encoding:'linear',domain:'raw-'+(im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),inputDiagnostics4:im.inputDiagnostics4};}
- if(/\.tiff?$/i.test(file.name)){const im=parseTiff16(await file.arrayBuffer());if(im.icc)normalizeIccTiff(im);else im.encoding=state.tiffEncoding||'srgb';return {...im,scale:65535};}
- if(NSFileFormats.kind(file)!=='browser')throw Error(NSFileFormats.error(file));
- const bitmap=await createImageBitmap(file,{colorSpaceConversion:'default'}),c=document.createElement('canvas');c.width=128;c.height=128;const cx=c.getContext('2d',{colorSpace:'srgb',willReadFrequently:true});cx.drawImage(bitmap,0,0,128,128);bitmap.close();return {width:128,height:128,data:cx.getImageData(0,0,128,128).data,channels:4,scale:255,encoding:'srgb'};
-}
-$('referenceFile').onchange=async e=>{const f=e.target.files[0];if(!f)return;try{const im=await decodeLightFile(f),p=CE.sample(im,{x:.15,y:.15,w:.7,h:.7}),m=[0,1,2].map(k=>CE.quantile(p.map(v=>v[k]),.5));if(Math.max(...m)>.98||Math.min(...m)<.01||(im.inputDiagnostics4&&Math.max(...im.inputDiagnostics4.clipped)>im.inputDiagnostics4.pixels*.001))throw Error('Ljuskällereferensen är klippt eller för mörk.');const target=(m[0]*m[1]*m[2])**(1/3);sharedLight={name:f.name,encoding:im.encoding,domain:im.domain,gains:m.map(v=>target/v)};if(working)analyzeLevels();else updateCalibrationUI();}catch(err){setStatus('Referensfel: '+err.message);}finally{e.target.value='';}};
-
-// Luminance histogram of actual displayed preview, not the unconverted negative.
-const renderBeforeHistogram=render;
-render=function(){renderBeforeHistogram();updateHistogram();};
-function updateHistogram(){
- const canvas=$('histogram');if(!canvas)return;
- const ctx=canvas.getContext('2d'),w=canvas.width,h=canvas.height;
- if(typeof ctx?.clearRect!=='function'||typeof ctx?.fillRect!=='function')return; // Headless test canvas
- ctx.clearRect(0,0,w,h);
- if(!workingPreview||$('preview').classList.contains('hidden')){$('histogramInfo').textContent='Ingen bild';return;}
- const shown=$('preview'),data=shown.getContext('2d',{willReadFrequently:true}).getImageData(0,0,shown.width,shown.height).data;
- const bins=new Uint32Array(256),step=Math.max(1,Math.floor(data.length/4/25000));
- for(let i=0;i<data.length;i+=4*step){const l=Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2]);bins[l]++;}
- const peaks=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,peaks[Math.floor(peaks.length*.99)]);
- ctx.fillStyle=getComputedStyle(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';
- for(let k=0;k<256;k++){const v=Math.min(1,bins[k]/max),x=k*w/256;ctx.fillRect(x,h-v*(h-4),Math.ceil(w/256),v*(h-4));}
- $('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';
-}
