@@ -1,4 +1,4 @@
-# FILMLABB 1.1 Beta 3.3
+# FILMLABB 1.1 Beta 3.4
 
 Befintliga kreativa profiler har fått tydligare karaktär. Standardmotorn analyserar nu originaldata; visningsbildens nedskalning används inte längre för ny färgkalibrering. Äldre projekt behåller tidigare profiler, motor och analysmetod.
 
@@ -30,3 +30,7 @@ Se [prestandarapport](docs/PRESTANDA_BETA3_2.md) och [installation](RELEASE_1.1_
 ## Direktare reglage
 
 Se [reglagerapport](docs/PRESTANDA_BETA3_3.md) och [installation](RELEASE_1.1_BETA3_3.md).
+
+## Telefonlayout
+
+Se [mobilrapport](docs/MOBIL_BETA3_4.md) och [installation](RELEASE_1.1_BETA3_4.md).

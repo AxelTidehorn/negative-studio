@@ -5,6 +5,7 @@ const files=fs.readdirSync(src);console.log('LibRaw-filer:',files);
 fs.mkdirSync('site/libraw/dist',{recursive:true});
 for(const file of files){if(fs.statSync(path.join(src,file)).isFile())if(src!=='site/libraw/dist')fs.copyFileSync(path.join(src,file),path.join('site/libraw/dist',file));}
 fs.copyFileSync('index.html','site/index.html');
+fs.copyFileSync('mobile-layout.css','site/mobile-layout.css');
 if(!fs.existsSync('site/libraw/dist/index.js'))throw Error('Paketet saknar dist/index.js');
 console.log('Klart: publicera hela site-mappen via HTTPS, och cachea lokalt för offlinebruk.');
 
