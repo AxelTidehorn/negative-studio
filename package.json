@@ -4,7 +4,7 @@
   "type": "module",
   "scripts": {
     "build": "node build.mjs",
-    "test": "node tests/smoke.mjs && node tests/color-engine.mjs && node tests/app-integration.mjs && node tests/beta38.mjs && node tests/reference38.mjs && node tests/export-snapshot38.mjs"
+    "test": "node test.mjs"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"
