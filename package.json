@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "build": "node build-root.mjs",
-    "test": "node verify-preview.mjs"
+    "test": "node verify-preview.mjs",
+    "test:legacy": "node verify-legacy.mjs"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"

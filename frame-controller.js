@@ -173,7 +173,7 @@ function exportReady(){if(exportBusy||rollLoading||!working)return false;if(!sta
 // Safari (especially iOS) may return null from canvas.toBlob when the canvas
 // exceeds its pixel/side budget. Render directly at the selected JPEG size;
 // never allocate a full-resolution RGBA buffer merely to shrink it afterwards.
-function makeExportCanvas(maxPixels=12000000){
+function makeSafeJpegExportCanvas(maxPixels=12000000){
  const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation);
  if(!Number.isSafeInteger(g.width*g.height)||g.width<1||g.height<1)throw Error('Ogiltig exportstorlek.');
  const factor=Math.min(1,8192/g.width,8192/g.height,Math.sqrt(maxPixels/(g.width*g.height)));
@@ -205,7 +205,7 @@ jpegBytes=async function(skipBusyCheck=false){
  for(const budget of [12000000,6000000,3000000]){
   let result;
   try{
-   result=makeExportCanvas(budget);
+   result=makeSafeJpegExportCanvas(budget);
    const blob=await new Promise((resolve,reject)=>{
     try{result.canvas.toBlob(resolve,'image/jpeg',.94);}catch(e){reject(e);}
    });
