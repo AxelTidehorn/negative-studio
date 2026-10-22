@@ -12,7 +12,7 @@ uniform highp sampler2D uSource;
 uniform vec2 uSourceSize,uOutputSize;
 uniform vec3 uLight,uBase,uOffset,uResponseSpan,uGains;
 uniform float uLo,uSpan,uExposure,uBlack,uWhiteRange,uInvGamma,uContrast,uSaturation,uShadows,uHighlights,uStrength;
-uniform int uMode,uAuto,uShoulder,uProfile,uPrint;
+uniform int uMode,uAuto,uShoulder,uProfile,uPrint,uWide;
 uniform mat3 uMatrix;
 uniform float uTone[9],uChroma[6];
 uniform vec3 uLow,uHigh,uMono;
@@ -48,15 +48,19 @@ vec3 creative(vec3 p){
  float s=mix(uChroma[i],uChroma[(i+1)%6],t);q=gamut(vec3(y)+(q-vec3(y))*s,y);q=tone(q);
  float z=luma(q),envelope=4.0*z*(1.0-z);q+=envelope*((1.0-z)*uLow+z*uHigh);return gamut(q,luma(q));
 }
+vec3 displayWide(vec3 p){
+  vec3 q=vec3(dot(vec3(1.6604910021084345,-.5876411387885495,-.0728498633198848),p),dot(vec3(-.1245504745215907,1.13289989712596,-.0083494226043694),p),dot(vec3(-.0181507633549052,-.1005788980080074,1.1187296613629127),p));
+  float l=max(0.0,luma(q)),m=min(q.r,min(q.g,q.b)),s=m<0.0?l/max(1e-12,l-m):1.0;return max(vec3(0.0),vec3(l)+(q-vec3(l))*s);
+ }
 void main(){
  // Texture row zero is the top source row; framebuffer row zero is bottom.
  vec2 pos=vec2(gl_FragCoord.x,uOutputSize.y-gl_FragCoord.y);
  ivec2 at=min(ivec2(uSourceSize)-ivec2(1),ivec2(floor(pos*uSourceSize/uOutputSize)));
  vec3 p=texelFetch(uSource,at,0).rgb;
- if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(p),1.0);return;}
+ if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(uWide==1?displayWide(p):p),1.0);return;}
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
  p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p)*uExposure*uGains;
- float y=luma(p);
+ float y=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);
  if(y>1e-12){
   float target=max(0.0,(y-uBlack)/uWhiteRange);
   if(uInvGamma!=1.0)target=pow(target,uInvGamma);
@@ -64,6 +68,7 @@ void main(){
   if(uShadows!=0.0||uHighlights!=0.0){float dy=encode(target),sw=pow(1.0-sat(dy/.65),2.0),hw=pow(sat((dy-.35)/.65),2.0);target*=exp2(-uShadows*sw*1.4+uHighlights*hw*1.4);}
   p=p*target/y;
  }
+ if(uWide==1)p=displayWide(p);
  if(uProfile==2){float neutral=luma(p),mixed=dot(p,uMono);p=vec3(mix(neutral,mixed,sat(uStrength)));}
  if(uSaturation!=1.0){y=luma(p);p=max(vec3(0.0),vec3(y)+(p-vec3(y))*uSaturation);}
  float peak=max(p.r,max(p.g,p.b));
@@ -140,7 +145,7 @@ function create(canvas){
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',2**o.exposure);f('uBlack',NSColorEngine.decode(o.shadow));f('uWhiteRange',Math.max(.01,NSColorEngine.decode(o.highlight)-NSColorEngine.decode(o.shadow)));
   f('uInvGamma',1/Math.max(.25,o.gamma));f('uContrast',o.contrast);f('uSaturation',bw?(p.creativeVersion===2?1:0):o.saturation);
   f('uShadows',(Number(o.shadows)||0)/100);f('uHighlights',(Number(o.highlights)||0)/100);f('uStrength',c.strength);
-  i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
+  i('uWide',c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
   const matrix=p.matrix||[[1,0,0],[0,1,0],[0,0,1]];gl.uniformMatrix3fv(location('uMatrix'),false,[0,1,2].flatMap(col=>matrix.map(row=>row[col])));
   gl.uniform1fv(location('uTone[0]'),p.tone||[0,.08,.18,.35,.5,.65,.8,.92,1]);gl.uniform1fv(location('uChroma[0]'),p.chroma||[1,1,1,1,1,1]);
   v('uLow',p.low||[0,0,0]);v('uHigh',p.high||[0,0,0]);v('uMono',p.mono||[.2126,.7152,.0722]);f('uBwCurve',p.bwCurve||1);f('uBwLift',p.bwLift||0);f('uPrintShoulder',c.print.shoulder||0);f('uPrintContrast',c.print.contrast);

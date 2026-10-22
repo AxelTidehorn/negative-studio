@@ -7,6 +7,7 @@
     "test": "node verify-preview.mjs",
     "test:legacy": "node verify-legacy.mjs",
     "test:tiff": "node verify-preview.mjs --tiff",
+    "test:next": "node verify-preview.mjs --next",
     "test:gpu": "node verify-preview.mjs --gpu"
   },
   "dependencies": {

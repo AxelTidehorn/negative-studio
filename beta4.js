@@ -28,7 +28,7 @@ analyzeLevels=function(){
  config38=null;technicalCache38=null;controls4();saveCurrentFrame();
  $('levelsInfo').textContent=`${calibration.beta4.count} motivprov · gemensamt tonomfång${calibration.beta4.weak?' · lågt omfång':''} · `+(calibration.beta4.clipped.some(v=>v>.005)?'klippta källkanaler':'ingen tydlig kanalklippning');
 };
-configuration38=function(opts=state){const c=configurationBefore4(opts);if(opts.engine==='calibrated4'){c.kind='calibrated4';c.cal={...calibration,beta4:calibration.beta4};}return c;};
+configuration38=function(opts=state){const c=configurationBefore4(opts);if(opts.engine==='calibrated4'){c.kind='calibrated4';c.workingSpace=sourceInfo.colorSpace||'srgb';c.cal={...calibration,beta4:calibration.beta4};}return c;};
 // Complete per-channel output tables are invalid for a hue-preserving RGB shoulder.
 const tablesBefore4=technicalTables38;
 technicalTables38=function(c){if(c.kind!=='calibrated4')return tablesBefore4(c);const a=c.cal.beta4,key='beta4:'+JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalCache38||technicalCache38.key!==key)technicalCache38={key,value:NSPixelKernel.tables(NSPixelKernel.compile(c)),complete:false};return technicalCache38.value;};
@@ -61,4 +61,4 @@ state.response4=null;state.useRollResponse4=false;
 try{if(!localStorage.getItem('filmlabb-default-engine4')){state.engine='calibrated4';localStorage.setItem('filmlabb-default-engine4','1');persist();}}catch{}
 $('engineMode').value=state.engine;controls4();
 
-$('rawMode4').onchange=async e=>{const mode=e.target.value==='reference'?'reference':'protected';if(rollLoading||exportBusy){e.target.value=state.rawMode4;return;}state.rawMode4=mode;const raw=activeFrame>=0&&NSFileFormats.isRaw(roll[activeFrame].file.name);if(raw){state.response4=null;state.useRollResponse4=false;state.manualCalibration=null;state.manualBase=null;state.useRollBase=false;state.auto=true;}saveCurrentFrame();persist();if(raw)await chooseFrame(activeFrame,{force:true});else controls4();};
+$('rawMode4').onchange=async e=>{const mode=['reference','wide'].includes(e.target.value)?e.target.value:'protected';if(rollLoading||exportBusy){e.target.value=state.rawMode4;return;}state.rawMode4=mode;const raw=activeFrame>=0&&NSFileFormats.isRaw(roll[activeFrame].file.name);if(raw){state.response4=null;state.useRollResponse4=false;state.manualCalibration=null;state.manualBase=null;state.useRollBase=false;state.auto=true;}saveCurrentFrame();persist();if(raw)await chooseFrame(activeFrame,{force:true});else controls4();};

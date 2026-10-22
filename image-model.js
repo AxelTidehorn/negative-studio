@@ -16,10 +16,10 @@ function pixel(im,x,y){const i=(y*im.width+x)*(im.channels||3),s=im.scale||1;
  // Keep wide-gamut TIFF values until a common, channel-independent normalization
  // has been applied. Per-channel clipping here destroys orange-mask information.
  const linear=im.encoding==='icc'?im.profile.toLinear(input):im.encoding==='linear'?input:input.map(decode);
- return linear.map(v=>clamp(v/(im.normalization||1)));
+ return linear.map((v,k)=>clamp(v/(im.normalization||1)*(im.flatField?NSFlatField.gain(im.flatField,x,y,im.width,im.height,k):1)));
 }
 function sample(im,r,margin=.012,limit=24000){const b=bounds(im,r,margin),out=[],step=Math.max(1,Math.ceil(Math.sqrt((b.x1-b.x0)*(b.y1-b.y0)/limit)));for(let y=b.y0;y<b.y1;y+=step)for(let x=b.x0;x<b.x1;x+=step)out.push(pixel(im,x,y));return out;}
-function preview(im,limit=1400){const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear'};}
+function preview(im,limit=1400){const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};}
 function detectFrame(im){
  const g=preview(im,180),w=g.width,h=g.height;
  function axis(horizontal){const n=horizontal?w:h,m=horizontal?h:w,scores=new Array(n).fill(0);for(let k=2;k<n-2;k++){const ds=[];for(let j=Math.floor(m*.08);j<m*.92;j+=2){const a=pixel(g,horizontal?k-2:j,horizontal?j:k-2),b=pixel(g,horizontal?k+2:j,horizontal?j:k+2);ds.push(Math.max(...a.map((v,c)=>Math.abs(v-b[c]))));}scores[k]=quantile(ds,.6);}

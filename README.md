@@ -1,3 +1,9 @@
+# FILMLABB 1.1 Beta 4 — utvecklingsprototyp
+
+Nytt: experimentell NEF/CR2/CR3/RW2-import, originaldetalj 100/200 %, större JPEG, valfri Rec.2020-färgväg i flyttal och rumslig belysningskorrigering.
+
+Se [funktioner, installation och begränsningar](RELEASE_1.1_BETA4.md). Börja med standardinställningarna; experimenten aktiveras separat.
+
 # FILMLABB 1.1 Beta 3.6.1 – GPU-prototyp 1
 
 3.6.1 rättar paketeringen av TIFF-testdata för GitHub Actions. Testpaketet återställer hela `tests/` inklusive fixtures före körning.

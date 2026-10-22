@@ -2,7 +2,7 @@
 'use strict';
 const CE=NSColorEngine,legacyDevelop=develop,legacyAnalyze=analyzeLevels;
 let working=null,workingPreview=null,calibration=null,legacyLevels=null,beta3Base=null,beta3Levels=null,sourceInfo={encoding:'srgb',label:'sRGB (webbläsare)'},sharedBase=null,sharedLight=null,cropDrag=null,exportBusy=false;
-function workingSource(){if(hires)return {width:hires.width,height:hires.height,channels:hires.channels,data:hires.data,scale:65535,encoding:hires.encoding||sourceInfo.encoding,profile:hires.profile,normalization:hires.normalization||1};return {width:src.width,height:src.height,channels:4,data:src.data,scale:255,encoding:'srgb'};}
+function workingSource(){if(hires)return {width:hires.width,height:hires.height,channels:hires.channels,data:hires.data,scale:hires.scale||65535,colorSpace:hires.colorSpace||'srgb',encoding:hires.encoding||sourceInfo.encoding,profile:hires.profile,normalization:hires.normalization||1};return {width:src.width,height:src.height,channels:4,data:src.data,scale:255,encoding:'srgb'};}
 function sourcePixel(im,x,y){return CE.pixel(im,x,y);}
 function calibrationBase(){const b=state.useRollBase&&sharedBase?sharedBase:state.manualCalibration;return b&&(!b.sourceEncoding||b.sourceEncoding===sourceInfo.encoding)&&(!sourceInfo.domain||b.sourceDomain===sourceInfo.domain||(!b.sourceDomain&&sourceInfo.rawMode4==='reference'))?b:null;}
 function currentLight(){return sharedLight&&sharedLight.encoding===sourceInfo.encoding&&(!sourceInfo.domain||sharedLight.domain===sourceInfo.domain||(!sharedLight.domain&&sourceInfo.rawMode4==='reference'))?sharedLight.gains:[1,1,1];}
@@ -40,7 +40,7 @@ finishImport=function(message){
  $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Kontrollera och bekräfta filmrutan före export.'));
 };
 const importRawOriginal=importRawRGB16;
-importRawRGB16=async function(im,name,meta){sourceInfo={encoding:'linear',domain:'raw-'+(im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};
+importRawRGB16=async function(im,name,meta){sourceInfo={encoding:'linear',domain:'raw-'+(im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',colorSpace:im.colorSpace||'srgb',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='wide'?'Experimentell RAW · Rec.2020 · flyttal · inversion före sRGB':im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};
 const importBrowserOriginal=importBrowserImage;
 importBrowserImage=async function(file,note=''){sourceInfo={encoding:'srgb',label:/JPEG-RESERV|inbäddad/i.test(note)?'INBÄDDAD JPEG · 8 bit · sRGB via webbläsaren · inte RAW':'8 bit · sRGB via webbläsarens färghantering'};await importBrowserOriginal(file,note);};
 // Normalize all channels together before quantizing the ICC result. A direct
@@ -176,7 +176,7 @@ function exportReady(){if(exportBusy||rollLoading||!working)return false;if(!sta
 async function makeSafeJpegExportCanvas(maxPixels=12000000,snapshot){
  const {im,g,pixels}=snapshot;
  if(!Number.isSafeInteger(g.width*g.height)||g.width<1||g.height<1)throw Error('Ogiltig exportstorlek.');
- const factor=Math.min(1,8192/g.width,8192/g.height,Math.sqrt(maxPixels/(g.width*g.height)));
+ const factor=Math.min(1,(maxPixels>12000000?16384:8192)/g.width,(maxPixels>12000000?16384:8192)/g.height,Math.sqrt(maxPixels/(g.width*g.height)));
  const w=Math.max(1,Math.floor(g.width*factor)),h=Math.max(1,Math.floor(g.height*factor));
  const c=document.createElement('canvas');
  try{c.width=w;c.height=h;
@@ -204,14 +204,14 @@ jpegBytes=async function(skipBusyCheck=false){
  const im=working,opts={...state},config=configuration38(opts);
  const snapshot={im,g:CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation),pixels:NSPixelKernel.prepare(im,config)};
  let lastError=null;
- for(const budget of [12000000,6000000,3000000]){
+ for(const budget of (state.jpegSize==='safe'?[12000000,6000000,3000000]:[Math.min(60000000,Number(navigator.deviceMemory)<4?24000000:40000000),12000000,6000000,3000000])){
   let result;
   try{
    result=await makeSafeJpegExportCanvas(budget,snapshot);
    const blob=await new Promise((resolve,reject)=>{
     try{result.canvas.toBlob(resolve,'image/jpeg',.94);}catch(e){reject(e);}
    });
-   if(blob&&blob.size>0){
+   if(blob&&blob.type==='image/jpeg'&&blob.size>0){
     jpegExportInfo={width:result.width,height:result.height,originalWidth:result.originalWidth,originalHeight:result.originalHeight};
     return new Uint8Array(await blob.arrayBuffer());
    }

@@ -11,7 +11,7 @@ function estimate(im,region,{base=[1,1,1],light=[1,1,1],domain='linear-srgb'}={}
 }
 function coordinate(p,r,base=r.base,light=r.light){return density(p,base,light).map((v,k)=>(v-r.offset[k])/r.span[k]);}
 function analyze(im,region,r,{base=r.base,light=r.light}={}){
- const ps=C.sample(im,region,.018,24000),values=ps.map(p=>coordinate(p,r,base,light)),lum=values.map(p=>p.reduce((v,x,k)=>v+x*weights[k],0));
+ const ps=C.sample(im,region,.018,24000),values=ps.map(p=>coordinate(p,r,base,light)),weights=im.colorSpace==='rec2020'?[.2627,.678,.0593]:[.2126,.7152,.0722],lum=values.map(p=>p.reduce((v,x,k)=>v+x*weights[k],0));
  // A common affine range changes brightness/contrast, never three channel slopes.
  const lo=C.quantile(lum,.015),hi=C.quantile(lum,.985);
  return {version:4,response:r,base:[...base],light:[...light],lo,span:Math.max(.15,hi-lo),count:ps.length,weak:hi-lo<.15,clipped:[0,1,2].map(k=>ps.filter(p=>p[k]>=.995).length/ps.length)};
