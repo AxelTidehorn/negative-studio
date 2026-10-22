@@ -48,3 +48,10 @@ for iPad Safari or Edge.
 An additional untouched-main browser run reproduces check-workflow-browser:20:
 confirmation is inside the existing collapsible film-frame section. The updated
 expectation opens that section and checks reachability; no UI change is needed.
+
+The remaining ZIP tools were assessed individually: check-engine.mjs only imports
+verify-unchanged.mjs, which requires the historical processing-invariants.json.
+That hash list already disagrees with unchanged Fix 11 modules such as
+raw-input.js, file-formats.js and render-core.js. Restoring it as a current gate
+would give misleading failures. make-profile-chart.mjs and review-profiles.mjs
+are profile-development tools; no profile or color-math work is in scope here.

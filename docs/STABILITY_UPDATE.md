@@ -97,3 +97,29 @@ Edge-specific download prompts and external camera corpora require device/manual
 validation. Chromium/SwiftShader parity checks validate rendering correctness and
 texture reuse, not physical-device speed. Offline updates become available after
 old clients close; users must close all tabs/installed-app windows for activation.
+
+## Final validation results
+
+Clean worktree /tmp/filmlabb-clean, Node 24.19.0, application commit 6b362b4:
+
+| Check | Result |
+| --- | --- |
+| npm ci --cache /tmp/filmlabb-npm-cache | PASS; 3 locked packages installed |
+| npm test | PASS; 27/27 groups, including the explicitly known #8 reproduction |
+| npm run test:legacy | PASS; 27/27 groups through the compatibility entry point |
+| npm run build | PASS; complete generated site and content-derived cache ID |
+| npm run test:build | PASS; stale output removed, manifest completeness, stable rebuild, CSS change invalidates cache, HTML parity |
+| npm run test:browser (system Chromium) | PASS; 5/5 groups: workflow, next/full-resolution, GPU, mobile, service-worker lifecycle |
+| git status --porcelain after tests/build | Empty; no tracked changes |
+| Color/GPU/RAW core diff against main | No changes to image-model.js, render-core.js, color-analysis.js, color-calibration.js, color-management.js, raw-input.js, raw-decoder.js, gpu-preview.js, gpu-renderer.js, export-plan.js or export-worker.js |
+
+GPU browser validation exercised 64 shader cases, observed a maximum error of one
+display level, and verified source texture reuse, context loss/recovery, crop and
+rotation, identical TIFF bytes with CPU/GPU selection, and mobile GPU operation.
+New TIFF regressions verify exact 16-bit payloads through four crop/rotation cases,
+prefix/default/batch names, propagated encoder errors, partial results, cancellation,
+restoration-error accounting, queue cap and both ZIP UTF-8 headers.
+
+No final self-contained or browser test failures remain. External camera tools and
+physical Safari/iPad/Edge validation were not run. The #8 reproduction passes by
+asserting the known current limitation; it does not claim aliasing has been fixed.
