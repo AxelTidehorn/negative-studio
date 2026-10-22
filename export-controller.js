@@ -130,7 +130,7 @@ ui('batchTiff').onclick=async()=>{
  const ids=roll.map((f,i)=>f.selected?i:-1).filter(i=>i>=0);
  if(!ids.length||ids.length>5){setStatus('Markera en till högst fem bilder.');return;}
  batch={cancelled:false,index:0,total:ids.length};rollingExport=true;lock();beginUI();
- const original=activeFrame,errors=[];let exported=0,aborted=false;
+ const original=activeFrame,errors=[];let exported=0,aborted=false,restoreError=null;
  try{
   for(let j=0;j<ids.length;j++){
    if(batch.cancelled){aborted=true;break;}batch.index=j;
@@ -141,11 +141,11 @@ ui('batchTiff').onclick=async()=>{
   aborted=aborted||batch.cancelled;
  }finally{
   rollingExport=false;
-  try{await chooseFrame(original,{force:true});}catch(e){errors.push('Återställning: '+e.message);}
+  try{await chooseFrame(original,{force:true});}catch(e){restoreError=e.message;}
   finally{batch=null;lock();}
  }
- const message=(aborted?'TIFF-export avbruten · ':'TIFF-export: ')+exported+' av '+ids.length+' exporterade, '+errors.length+' misslyckade'+(errors.length?' · '+errors.join('; '):'');
- doneUI(message,!aborted&&!errors.length);setStatus(message);
+ const message=(aborted?'TIFF-export avbruten · ':'TIFF-export: ')+exported+' av '+ids.length+' exporterade, '+errors.length+' misslyckade'+(errors.length?' · '+errors.join('; '):'')+(restoreError?' · Återställningsfel: '+restoreError:'');
+ doneUI(message,!aborted&&!errors.length&&!restoreError);setStatus(message);
 };
 globalThis.FILMLABB_EXPORT={cancel,snapshot:()=>({...stats,active:!!active,batch:!!batch,progress:Number(ui('exportProgress').value),sourceIntact:!!active?.im.data.byteLength})};
 })();
