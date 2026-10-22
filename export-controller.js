@@ -66,7 +66,7 @@ async function mainAttempt(job){
 }
 jpegBytes=async function(skipBusyCheck=false){
  if(active)throw Error('En export pågår redan.');
- if(!(skipBusyCheck?(!rollLoading&&working&&state.cropConfirmed):exportReady()))throw Error('Filmrutan måste bekräftas före export.');
+ if(!(skipBusyCheck?(!rollLoading&&working):exportReady()))throw Error('Ingen exportklar bild finns.');
  const job={id:++sequence,im:working,opts:{...state},region:{...cropRegion},config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
  job.g=geometry(job);job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});
  active=job;exportBusy=true;lock();beginUI();let workerUsable=typeof Worker!=='undefined'&&job.im.encoding!=='icc';
@@ -94,7 +94,7 @@ jpegBytes=async function(skipBusyCheck=false){
 };
 ui('export').onclick=async()=>{
  if(batch||!exportReady())return;
- try{const bytes=await jpegBytes();downloadBlob(new Blob([bytes],{type:'image/jpeg'}),'filmlabb-positive.jpg');const i=jpegExportInfo;setStatus('JPEG exporterad · sRGB · '+i.width+'×'+i.height+(i.width!==i.originalWidth||i.height!==i.originalHeight?' · anpassad storlek för webbläsaren':''));}
+ try{const bytes=await jpegBytes();downloadBlob(new Blob([bytes],{type:'image/jpeg'}),exportName(null,'jpg','filmlabb-positive.jpg'));const i=jpegExportInfo;setStatus('JPEG exporterad · sRGB · '+i.width+'×'+i.height+(i.width!==i.originalWidth||i.height!==i.originalHeight?' · anpassad storlek för webbläsaren':''));}
  catch(e){setStatus(e.name==='AbortError'?'JPEG-export avbruten.':'Exportfel: '+e.message);}
 };
 ui('batchJpeg').onclick=async()=>{
@@ -104,9 +104,9 @@ ui('batchJpeg').onclick=async()=>{
   for(let i=0;i<batch.total;i++){
    if(batch.cancelled)throw cancelled();batch.index=i;show(`Bild ${i+1}/${batch.total} · Läser in…`,0);
    await chooseFrame(i,{force:true});if(batch.cancelled)throw cancelled();if(!working)throw Error('Bilden kunde inte läsas.');
-   const bytes=await jpegBytes();if(batch.cancelled)throw cancelled();files.push([`bild_${String(i+1).padStart(3,'0')}.jpg`,bytes]);
+   const bytes=await jpegBytes();if(batch.cancelled)throw cancelled();files.push([exportName(i,'jpg',`bild_${String(i+1).padStart(3,'0')}.jpg`),bytes]);
   }
-  if(batch.cancelled)throw cancelled();downloadBlob(makeZip(files),'filmlabb-filmrulle.zip');doneUI('JPEG-ZIP klar · '+files.length+' bilder',true);setStatus('JPEG-ZIP färdig.');
+  if(batch.cancelled)throw cancelled();downloadBlob(makeZip(files),exportZipName());doneUI('JPEG-ZIP klar · '+files.length+' bilder',true);setStatus('JPEG-ZIP färdig.');
  }catch(e){doneUI(e.name==='AbortError'?'Batch-export avbruten. Ingen ZIP har hämtats.':'Batchfel: '+e.message);setStatus(e.name==='AbortError'?'Batch-export avbruten.':'Batchfel: '+e.message);}
  finally{files.length=0;rollingExport=false;try{await chooseFrame(original,{force:true});}finally{batch=null;lock();}}
 };

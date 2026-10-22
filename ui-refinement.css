@@ -242,3 +242,21 @@ body.filmlabb-ui-refresh #filmstrip .frame.active{
 body.filmlabb-ui-refresh #filmstrip .frame.active span{color:var(--ns-text)!important;font-weight:700!important}
 body.filmlabb-ui-refresh #cropOverlay{z-index:5!important}
 @media(max-width:600px){#exportProgressPanel{bottom:max(10px,env(safe-area-inset-bottom))!important;padding:11px 12px!important}}
+
+/* Beta 5 UI fix 10 — image switching feedback */
+#picture{position:relative}
+#frameLoadingOverlay.frame-loading-overlay{position:absolute;inset:0;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;pointer-events:none;background:rgba(18,17,16,.62);color:#f5f1ea;backdrop-filter:blur(2px)}
+#frameLoadingOverlay[hidden]{display:none!important}
+.frame-loading-spinner{display:block;width:30px;height:30px;border:3px solid rgba(245,241,234,.25);border-top-color:#e2a078;border-radius:50%;animation:filmlabb-frame-spin .8s linear infinite}
+.frame-loading-label{font-size:12px;font-weight:600;max-width:80%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@keyframes filmlabb-frame-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.frame-loading-spinner{animation-duration:2.2s}}
+
+/* Optional export naming, compact in existing advanced settings */
+.export-name-settings{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:7px;align-items:end;padding:12px 0 10px;border-top:1px solid var(--ns-border)}
+.export-name-settings h2,.export-name-settings .hint{grid-column:1/-1;margin:0}
+.export-name-settings label{font-size:12px;color:var(--ns-muted)}
+.export-name-settings label[for="exportDigits"]{grid-column:2;grid-row:2}
+.export-name-settings input{grid-column:1;grid-row:3;min-width:0;width:100%;padding:9px;background:var(--ns-panel-2);border:1px solid var(--ns-border);border-radius:4px;color:var(--ns-text)}
+.export-name-settings select{grid-column:2;grid-row:3;min-width:120px}
+@media(max-width:420px){.export-name-settings{grid-template-columns:1fr}.export-name-settings label[for="exportDigits"],.export-name-settings select,.export-name-settings input{grid-column:1;grid-row:auto}}
