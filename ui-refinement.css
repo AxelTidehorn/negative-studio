@@ -215,3 +215,30 @@ body.filmlabb-ui-refresh.light-theme{--ns-bg:#e9e6df;--ns-panel:#f4f1eb;--ns-pan
 body.filmlabb-ui-refresh .foot{margin-top:45dvh!important}
 body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height,calc(100dvh - 46px))!important}
 @media(max-width:760px){body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height-mobile,calc(100dvh - 44px))!important}body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important}body.filmlabb-ui-refresh .foot{margin-top:42dvh!important}}
+
+/* Beta 5 UI fix 8: persistent viewport-level export progress and active queue item. */
+#exportProgressPanel{
+ position:fixed!important;z-index:2147483000!important;
+ left:50%!important;right:auto!important;bottom:max(18px,env(safe-area-inset-bottom))!important;
+ top:auto!important;transform:translateX(-50%)!important;
+ width:min(440px,calc(100vw - 24px))!important;
+ box-sizing:border-box!important;display:block;
+ background:var(--ns-panel,#252525)!important;color:var(--ns-text,#f5f5f5)!important;
+ border:1px solid var(--ns-border,#555)!important;border-radius:5px!important;
+ padding:13px 15px!important;box-shadow:0 14px 40px rgba(0,0,0,.4)!important;
+ font:inherit;max-height:calc(100dvh - 36px);overflow-y:auto;
+}
+#exportProgressPanel[hidden]{display:none!important}
+#exportProgressPanel .export-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+#exportProgressPanel progress{display:block;width:100%;height:10px;margin:12px 0;accent-color:var(--ns-accent,#c07050)}
+#exportProgressPanel p{margin:6px 0;font-size:12px;line-height:1.4}
+#exportProgressPanel .btn{min-height:30px;padding:5px 10px}
+body.filmlabb-ui-refresh #filmstrip .frame.active{
+ border:2px solid var(--ns-accent)!important;
+ outline:2px solid var(--ns-accent)!important;outline-offset:-2px!important;
+ background:var(--ns-accent-soft)!important;
+ box-shadow:0 0 0 1px var(--ns-accent) inset!important;
+}
+body.filmlabb-ui-refresh #filmstrip .frame.active span{color:var(--ns-text)!important;font-weight:700!important}
+body.filmlabb-ui-refresh #cropOverlay{z-index:5!important}
+@media(max-width:600px){#exportProgressPanel{bottom:max(10px,env(safe-area-inset-bottom))!important;padding:11px 12px!important}}
