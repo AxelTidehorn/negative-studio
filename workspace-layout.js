@@ -21,9 +21,25 @@
  // The editor owns image geometry; sidebars only request a redraw.
  function fitPicture(){if(typeof drawCrop==='function')drawCrop();}
  function measureWorkspace(){
-  if(matchMedia('(max-width:760px)').matches){root.style.removeProperty('--fl-workspace-height');return}
-  const top=root.getBoundingClientRect().top;
-  root.style.setProperty('--fl-workspace-height',Math.max(300,window.innerHeight-top-8)+'px');
+  const header=document.querySelector('header');
+  const toolbar=document.querySelector('.workspace-toolbar');
+  const footer=document.querySelector('.foot');
+  const headerH=header?Math.round(header.getBoundingClientRect().height):0;
+  const toolbarH=toolbar?Math.round(toolbar.getBoundingClientRect().height):0;
+  document.documentElement.style.setProperty('--fl-header-height',headerH+'px');
+  document.documentElement.style.setProperty('--fl-toolbar-height',toolbarH+'px');
+  document.documentElement.style.setProperty('--fl-top-stack-height',(headerH+toolbarH)+'px');
+  if(matchMedia('(max-width:760px)').matches){
+   root.style.removeProperty('--fl-workspace-height');
+   root.style.setProperty('--fl-workspace-height-mobile',Math.max(420,window.innerHeight-(toolbarH||0)-14)+'px');
+   if(footer)footer.style.removeProperty('margin-top');
+   requestAnimationFrame(fitPicture);
+   return;
+  }
+  const toolbarBottom=toolbar?toolbar.getBoundingClientRect().bottom:root.getBoundingClientRect().top;
+  const target=Math.max(320,Math.round(window.innerHeight-toolbarBottom-10));
+  root.style.setProperty('--fl-workspace-height',target+'px');
+  if(footer)footer.style.marginTop='10px';
   requestAnimationFrame(fitPicture);
  }
  function render(){
@@ -55,8 +71,10 @@
  const picture=get('picture'),canvas=get('preview');
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>requestAnimationFrame(fitPicture)).observe(picture);
  if(typeof MutationObserver!=='undefined')new MutationObserver(()=>requestAnimationFrame(fitPicture)).observe(canvas,{attributes:true,attributeFilter:['width','height','class']});
+ function updateDockState(){document.body.classList.toggle('workspace-docked',window.scrollY>18);}
+ window.addEventListener('scroll',updateDockState,{passive:true});
  window.addEventListener('resize',measureWorkspace);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);
  window.addEventListener('filmlabb:view-change',()=>requestAnimationFrame(fitPicture));
- render();measureWorkspace();
+ render();measureWorkspace();updateDockState();
 })();

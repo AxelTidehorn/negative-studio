@@ -1,7 +1,7 @@
 /* FILMLABB mobile workstation. Image and adjustments remain visible together. */
 @media (max-width: 600px) {
-  html, body { min-width: 0; height: 100%; }
-  body { display: flex; flex-direction: column; height: 100vh; height: 100dvh; overflow: hidden; }
+  html, body { min-width: 0; min-height: 100%; height: auto; }
+  body { display: block; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
   header { flex: 0 0 52px; height: 52px!important; padding: 4px max(9px, env(safe-area-inset-left))!important; }
   .brand-logo { width: min(130px, 34vw); }
   .header-tools { min-width: 0; gap: 4px!important; }
@@ -23,8 +23,9 @@
   .fl-info-content { right: 0; width: min(360px, calc(100vw - 16px)); max-height: 60dvh; }
 
   main.workspace {
-    display: flex!important; flex: 1 1 auto; flex-direction: column;
-    min-height: 0!important; height: auto!important; overflow: hidden!important;
+    display: flex!important; flex-direction: column;
+    min-height: var(--fl-workspace-height-mobile, calc(100dvh - 68px))!important;
+    height: auto!important; overflow: visible!important;
     gap: 5px!important; padding: 5px max(5px, env(safe-area-inset-left)) 4px max(5px, env(safe-area-inset-right))!important;
   }
   main.workspace .image-panel {
@@ -77,7 +78,7 @@
   .editor-panel #simpleControls .control input::-moz-range-thumb { height: 21px; width: 21px; }
   .editor-panel .toolrow .btn, .editor-panel .row .btn { min-height: 38px; }
 
-  .foot { flex: 0 0 auto; margin: 0!important; padding: 4px 10px max(4px, env(safe-area-inset-bottom))!important; }
+  .foot { margin: 0!important; padding: 8px 10px max(8px, env(safe-area-inset-bottom))!important; }
   .foot .footer-links { margin: 0; font-size: 10px; }
   .foot .footer-links nav { gap: 10px; }
   .foot .foot-tech { display: none; }
