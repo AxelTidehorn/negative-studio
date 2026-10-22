@@ -33,7 +33,16 @@ if(frameQuick){
  frameQuick.setAttribute('data-density','compact');
 }
 if(imageControls)imageControls.classList.add('viewer-toolbar-row');
-if(backendStatus)backendStatus.classList.add('ui-badge','ui-badge--engine');
+if(backendStatus){
+ backendStatus.classList.add('ui-badge','ui-badge--engine');
+ const engineInfo=document.querySelector('#advancedSettings .frame-tools');
+ if(engineInfo){
+  const info=document.createElement('div');
+  info.className='hint engine-technical-status';
+  info.append('Förhandsvisning: ',backendStatus);
+  engineInfo.append(info);
+ }
+}
 if(zoomStatus)zoomStatus.classList.add('ui-meta-note');
 if(frameOptions){
  frameOptions.classList.add('frame-quick-panel');

@@ -126,7 +126,7 @@ body.filmlabb-ui-refresh .image-controls .ui-badge{
 body.filmlabb-ui-refresh .ui-badge--engine::before{content:''!important;margin:0!important}
 body.filmlabb-ui-refresh .frame{border-radius:4px!important}
 body.filmlabb-ui-refresh .histogram-panel{border-radius:4px!important}
-body.filmlabb-ui-refresh .foot{display:none!important}
+body.filmlabb-ui-refresh .foot{display:block!important;position:relative!important;margin:0!important;padding:13px 18px 22px!important;max-width:none!important;border-top:1px solid var(--ns-border)!important;background:var(--ns-bg)!important}
 body.filmlabb-ui-refresh .editor-panel{overflow-y:auto!important;overscroll-behavior:contain}
 body.filmlabb-ui-refresh .queue-panel{overflow:hidden!important}
 body.filmlabb-ui-refresh .advanced-settings,body.filmlabb-ui-refresh details{border-color:var(--ns-border)!important}
@@ -167,3 +167,33 @@ body.filmlabb-ui-refresh .advanced-settings,body.filmlabb-ui-refresh details{bor
  body.filmlabb-ui-refresh .panel{border-radius:4px!important}
 }
 @media(max-width:600px) and (max-height:660px){body.filmlabb-ui-refresh main.workspace .image-panel{flex-basis:38%!important}}
+
+/* Beta 5 UI alignment revision: keep view selection geometrically centred. */
+body.filmlabb-ui-refresh .image-controls{
+ display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
+ gap:5px!important;align-items:center!important;justify-content:normal!important;
+ height:34px!important;min-height:34px!important;overflow:visible!important;
+}
+body.filmlabb-ui-refresh .image-controls>.seg{grid-column:2;justify-self:center!important;flex:none!important;max-width:100%}
+body.filmlabb-ui-refresh .image-controls>.toolrow{
+ grid-column:3;justify-self:end!important;justify-content:flex-end!important;flex-wrap:nowrap!important;overflow-x:auto;max-width:100%;scrollbar-width:none;
+}
+body.filmlabb-ui-refresh .image-controls>.toolrow::-webkit-scrollbar{display:none}
+body.filmlabb-ui-refresh .image-controls .seg{border-radius:4px!important}
+body.filmlabb-ui-refresh .image-controls .seg button{white-space:nowrap}
+body.filmlabb-ui-refresh .engine-technical-status{font-size:11px;margin:8px 0}
+body.filmlabb-ui-refresh .engine-technical-status .ui-badge{border:0!important;display:inline!important;padding:0!important;background:none!important;font-size:11px;letter-spacing:0;font-weight:500;color:var(--ns-muted)!important}
+body.filmlabb-ui-refresh .engine-technical-status .ui-badge::before{content:none!important}
+body.filmlabb-ui-refresh .frame-quick{gap:5px!important}
+body.filmlabb-ui-refresh .image-controls .toolrow .btn{border-radius:4px!important}
+@media(max-width:1250px){
+ body.filmlabb-ui-refresh .image-controls{display:flex!important;justify-content:center!important;overflow-x:auto!important;scrollbar-width:thin;gap:7px!important}
+ body.filmlabb-ui-refresh .image-controls>.seg{flex:0 0 auto!important;margin:0 auto 0 0!important}
+ body.filmlabb-ui-refresh .image-controls>.toolrow{flex:0 0 auto!important;max-width:none!important;overflow:visible!important;margin:0 0 0 auto!important}
+}
+@media(max-width:760px){
+ body.filmlabb-ui-refresh .image-controls{display:flex!important;justify-content:flex-start!important;overflow-x:auto!important;scrollbar-width:none;gap:7px!important}
+ body.filmlabb-ui-refresh .image-controls>.seg{margin:0!important}
+ body.filmlabb-ui-refresh .image-controls>.toolrow{margin:0!important}
+ body.filmlabb-ui-refresh .foot{padding:12px 12px 22px!important}
+}
