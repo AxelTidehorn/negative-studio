@@ -22,7 +22,7 @@ try{
    state.cropExport=crop;state.rotation=q;saveCurrentFrame();
    roll[0].geometry=NSGeometry.create(q);
    const original=await tiff(),analysis=FILMLABB_PERFORMANCE.snapshot().analyses,settings=JSON.stringify(state),frame=JSON.stringify(cropRegion);
-   setCompositionCrop(0,{x:.15,y:.2,w:.6,h:.5});roll[0].geometry.rotation.fineDegrees=17.25;
+   setCompositionCrop(0,{cx:-.1,cy:.05,w:.6,h:.5});roll[0].geometry.rotation.fineDegrees=17.25;
    const composed=await tiff();
    cases.push({q,crop,identical:original===composed,noAnalysis:analysis===FILMLABB_PERFORMANCE.snapshot().analyses,noSettings:settings===JSON.stringify(state)&&frame===JSON.stringify(cropRegion)});
   }
@@ -37,9 +37,20 @@ try{
  await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));
  assert.equal(await page.evaluate(()=>roll[0].geometry.rotation.fineDegrees),-14.5);
  const snapshot=()=>page.evaluate(()=>JSON.stringify({state,roll:roll.map(f=>({settings:f.settings,crop:f.crop,geometry:f.geometry})),rollShared,cropRegion,name:$('exportName').value,activeFrame}));
- const before=await snapshot(),bad=structuredClone(result.project);bad.exportNaming.prefix='must-not-apply';bad.profile='gold';bad.frames[0].settings.exposure=2;bad.frames[1].geometry.compositionCrop={x:0,y:0,w:2,h:1};
+ const before=await snapshot(),bad=structuredClone(result.project);bad.exportNaming.prefix='must-not-apply';bad.profile='gold';bad.frames[0].settings.exposure=2;bad.frames[1].geometry.compositionCrop={cx:Infinity,cy:0,w:2,h:1};
  await page.locator('#settingsFile').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(bad))});
  await page.waitForFunction(()=>$('status').textContent.startsWith('Projektimport:'));
- assert.equal(await snapshot(),before);assert.deepEqual(errors,[]);
+ assert.equal(await snapshot(),before);
+ const old=structuredClone(result.project);old.format='negative-studio-roll-v08';delete old.geometryVersion;delete old.roll;old.frames.forEach(f=>delete f.geometry);
+ await page.locator('#settingsFile').setInputFiles({name:'mixed-old.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});
+ await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('beskärningar'));
+ const frozen=await page.evaluate(async()=>{
+  let blob;downloadBlob=b=>blob=b;const hash=async b=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).join(',');
+  await exportTiff();const tiff=await hash(await blob.arrayBuffer()),jpeg=await hash(await jpegBytes()),desired=JSON.stringify(roll[0].geometry.compositionCrop);
+  cropRegion={x:.2,y:.2,w:.5,h:.5};saveCurrentFrame();await exportTiff();
+  return {tiff:tiff===await hash(await blob.arrayBuffer()),jpeg:jpeg===await hash(await jpegBytes()),desired:desired===JSON.stringify(roll[0].geometry.compositionCrop),shared:rollShared.cropExportToFrame};
+ });
+ assert.deepEqual(frozen,{tiff:true,jpeg:true,desired:true,shared:false});assert.deepEqual(errors,[]);
+ console.log('PASS browser: mixed legacy migration uses frozen exact TIFF/JPEG ROI after technical frame metadata changes');
  console.log('PASS browser: Beta 6 project import retains dormant rotation; invalid later-frame geometry leaves queue, analysis, settings and export naming unchanged');
 }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}

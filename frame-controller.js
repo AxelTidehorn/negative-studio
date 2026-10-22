@@ -122,7 +122,7 @@ $('cropReset').onclick=()=>{if(cropDrag)return;if(state.cropLocked){setStatus('L
 $('cropConfirm').onclick=()=>{cropDisplayDismissed=true;state.cropConfirmed=true;$('frameOptions').open=false;updateCropUI();saveCurrentFrame();render();};
 $('cropLock').onclick=()=>{state.cropLocked=!state.cropLocked;updateCropUI();saveCurrentFrame();};
 $('cropVisible').onchange=e=>{state.cropVisible=e.target.checked;drawCrop();saveCurrentFrame();};
-$('cropExport').onchange=e=>{state.cropExport=e.target.checked;saveCurrentFrame();};
+$('cropExport').onchange=e=>setLegacyCropExport(e.target.checked);
 // One image-to-screen transform for canvas, overlay and inverse pointer mapping.
 function frameView(){
  const box=$('picture'),w=workingPreview.width,h=workingPreview.height;
@@ -224,7 +224,7 @@ async function makeSafeJpegExportCanvas(maxPixels=12000000,snapshot){
 jpegBytes=async function(skipBusyCheck=false){
  if(!(skipBusyCheck ? (!rollLoading&&working) : exportReady()))throw Error('Ingen exportklar bild finns.');
  const im=working,opts={...state},config=configuration38(opts);
- const snapshot={im,g:CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation),pixels:NSPixelKernel.prepare(im,config)};
+ const snapshot={im,g:exportGeometrySnapshot(im,opts).g,pixels:NSPixelKernel.prepare(im,config)};
  let lastError=null;
  for(const budget of (state.jpegSize==='safe'?[12000000,6000000,3000000]:[Math.min(60000000,Number(navigator.deviceMemory)<4?24000000:40000000),12000000,6000000,3000000])){
   let result;
@@ -256,6 +256,6 @@ $('export').onclick=async()=>{
  finally{exportBusy=false;$('export').disabled=false;}
 };
 function tiffHeader(w,h){const icc=NSSRGBProfile,nt=12,bitsOffset=8+2+nt*12+4,iccOffset=bitsOffset+6,pixelOffset=iccOffset+icc.length+(icc.length%2),ab=new ArrayBuffer(pixelOffset),v=new DataView(ab),tags=[[256,4,1,w],[257,4,1,h],[258,3,3,bitsOffset],[259,3,1,1],[262,3,1,2],[273,4,1,pixelOffset],[277,3,1,3],[278,4,1,h],[279,4,1,w*h*6],[284,3,1,1],[339,3,1,1],[34675,7,icc.length,iccOffset]];v.setUint16(0,0x4949,true);v.setUint16(2,42,true);v.setUint32(4,8,true);v.setUint16(8,nt,true);tags.forEach(([tag,type,n,value],i)=>{const p=10+i*12;v.setUint16(p,tag,true);v.setUint16(p+2,type,true);v.setUint32(p+4,n,true);v.setUint32(p+8,value,true);});for(let i=0;i<3;i++)v.setUint16(bitsOffset+i*2,16,true);new Uint8Array(ab).set(icc,iccOffset);return ab;}
-exportTiff=async function(){if(!exportReady())return;exportBusy=true;$('exportTiff').disabled=true;try{const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation),parts=[tiffHeader(g.width,g.height)];if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');const lookup=neutralLookup(state,working);for(let y0=0;y0<g.height;y0+=32){const rows=Math.min(32,g.height-y0),ab=new ArrayBuffer(g.width*rows*6),v=new DataView(ab);for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x++){const [sx,sy]=g.at(x,y0+dy),i=(dy*g.width+x)*6;if(lookup){const j=(sy*working.width+sx)*working.channels;for(let k=0;k<3;k++)v.setUint16(i+k*2,lookup[k][working.data[j+k]],true);}else{const p=technicalPositive(sourcePixel(working,sx,sy),state);for(let k=0;k<3;k++)v.setUint16(i+k*2,Math.round(p[k]*65535),true);}}parts.push(ab);setStatus(`TIFF ${Math.round(100*(y0+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}downloadBlob(new Blob(parts,{type:'image/tiff'}),exportName(rollingExport?activeFrame:null,'tif','negative-studio-positive-16bit.tif'));setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);}catch(e){setStatus('Exportfel: '+e.message);}finally{exportBusy=false;$('exportTiff').disabled=false;}};
+exportTiff=async function(){if(!exportReady())return;exportBusy=true;$('exportTiff').disabled=true;try{const g=exportGeometrySnapshot(working).g,parts=[tiffHeader(g.width,g.height)];if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');const lookup=neutralLookup(state,working);for(let y0=0;y0<g.height;y0+=32){const rows=Math.min(32,g.height-y0),ab=new ArrayBuffer(g.width*rows*6),v=new DataView(ab);for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x++){const [sx,sy]=g.at(x,y0+dy),i=(dy*g.width+x)*6;if(lookup){const j=(sy*working.width+sx)*working.channels;for(let k=0;k<3;k++)v.setUint16(i+k*2,lookup[k][working.data[j+k]],true);}else{const p=technicalPositive(sourcePixel(working,sx,sy),state);for(let k=0;k<3;k++)v.setUint16(i+k*2,Math.round(p[k]*65535),true);}}parts.push(ab);setStatus(`TIFF ${Math.round(100*(y0+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}downloadBlob(new Blob(parts,{type:'image/tiff'}),exportName(rollingExport?activeFrame:null,'tif','negative-studio-positive-16bit.tif'));setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);}catch(e){setStatus('Exportfel: '+e.message);}finally{exportBusy=false;$('exportTiff').disabled=false;}};
 
 $('clearQueue').addEventListener('click',()=>{frameLoadSequence++;setFrameLoading(false);});

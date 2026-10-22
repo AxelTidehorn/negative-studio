@@ -1,152 +1,144 @@
 # FILMLABB Beta 6 – steg 1: geometri och projekt
 
-Utgångspunkt: main 2773bb9, inklusive mergad PR #16. Den omnämnda förstudien
-FILMLABB_1.1_Beta6_Teknisk_forstudie.md finns inte i repositoryt. Modellen nedan
-utgår därför från uppdragets krav, inte från en antagen rapport.
+Tekniskt underlag: [förstudien](FILMLABB_1.1_Beta6_Teknisk_forstudie.md), särskilt
+avsnitt 4, 6, 7 och implementationsstegen 2–3. Branchen är uppdaterad med main
+9370c6d, inklusive PR #16 och förstudien. Detta ersätter första PR-utkastets
+antagande att rapporten saknades.
 
-## Data och ansvar
+## Modell och koordinater
 
-Filmrutan är fortsatt `frame.crop` / aktiv `cropRegion`: normaliserade koordinater
-i den oförändrade källbilden. Befintlig detektering, kantdragning, låsning,
-färgkalibrering och tonanalys använder samma data och kod som tidigare.
-
-Varje bild får ett separat fält:
+Filmrutan är fortfarande `frame.crop` / `cropRegion`, normaliserad till oroterad
+källa. Befintlig detektering, analys, basmätning, tonanalys och låsning behålls.
+Separat geometri lagras utanför `state` och dess färg-/worker-cachenycklar:
 
 ```js
 frame.geometry = {
   version: 1,
   rotation: { quarterTurns: 0, fineDegrees: 0 },
-  compositionCrop: null,
-  cropExportToFrameOverride: null
+  compositionCrop: null,           // annars {cx, cy, w, h} i R / max(W,H)
+  sourceSize: null,                // annars {width, height}, verklig källa
+  legacyCrop: null                 // annars {analysisFrame, edited}
 };
 rollShared.cropExportToFrame = false;
 ```
 
-`quarterTurns` är heltal 0–3; `fineDegrees` är ett ändligt tal inom ±45 grader.
-Kompositionen är `null` eller en positiv normaliserad rektangel `{x,y,w,h}`.
-Den lagras utanför färginställningarna. `setCompositionCrop(index, rect)` ändrar
-bara denna bilds modell; den anropar inte analys, render eller färgpersistens.
+Det finns ingen `cropExportToFrameOverride`. Projektets enda gemensamma bool
+lagras som `roll.cropExportToFrame`. Befintligt `settings.cropExport` är ett
+härlett kompatibilitetsfält för de gamla exportanropen, inte en andra auktoritet.
 
-Kompositionskoordinaterna avser den automatiskt giltiga, upprätade arbetsytan,
-inte boundingboxens tomma hörn. Hela den giltiga ytan representeras av `null`.
-En delrektangel inom denna yta kan därför alltid mappas tillbaka in i källdomänen.
-`compositionTransform` kombinerar giltigt utsnitt och frivillig komposition.
+Biblioteket `geometry.js` är rent, utan DOM, GPU eller färgkod. Det följer
+förstudiens S/R/O/V-plan: källpixlarnas kanter 0..W/H, centrum i `(i+.5,j+.5)`,
+positiv vinkel medurs. S→R roterar kring hela källans centrum. Kompositionens
+centrum och storlek divideras med **samma** L=max(W,H). Negativa centrum är giltiga.
+Data avser inte CSS, reducerad preview, roterad boundingbox eller automatiskt
+inpassat utsnitt. Kvartvarv roterar befintligt centrum och byter w/h när det behövs.
+Finvinkel ändrar inte den önskade rektangeln.
 
-Gemensamt beskärningsval: `null` som individuellt undantag betyder ärv köns val;
-`true`/`false` bevarar ett individuellt äldre val. Den interna funktionen
-`setQueueCropExportToFrame(bool)` gör ett uttryckligt gemensamt val och tar bort
-undantagen utan att ändra bildens filmruta, rotation eller komposition. Nya
-importerade bilder ärver köns val. Befintlig kryssruta fortsätter att fungera
-individuellt; ingen ny köfunktion visas i gränssnittet i detta steg.
-
-## Koordinater och säkert utsnitt
-
-`geometry.js` är ett rent bibliotek utan DOM-, färg- eller GPU-beroenden.
-Transformationsfunktionerna tar källdomänens bredd/höjd i pixlar. Punkter är
-normaliserade pixelkanter, x åt höger, y nedåt. Pixelcentrum är `(i+0.5)/storlek`.
-Positiv vinkel roterar medurs. Rotation sker kring domänens centrum.
-
-`transform` mappar från källdomänen till den roterade axelparallella boundingboxen;
-`forward` och `inverse` är varandras inverser. Kvartvarv har exakta 0/±1-matriser.
-`compositionTransform` mappar mellan källdomän och den färdiga kompositionsytan.
-Flyttalsavrundning hanteras med numeriska toleranser, inte genom pixelavrundning.
-
-För vinkel θ och källdomän W × H är boundingboxen:
+`effectiveComposition` beräknar ett separat begränsat utsnitt och ändrar aldrig
+önskad komposition. Giltig domän är hela källan eller filmrutans heltalspixelgränser.
+`validPolygon` transformerar domänens fyra hörn. För `null` komposition väljs den
+största centrerade rektangeln med domänens sidförhållande efter kvartvarv. Med
+bredd a·h och höjd h används samma hörnbegränsningar som rapportens sökförslag:
 
 ```
-B_w = |cos θ| W + |sin θ| H
-B_h = |sin θ| W + |cos θ| H
+h = min(domainWidth / (a |cos θ| + |sin θ|),
+        domainHeight / (a |sin θ| + |cos θ|))
 ```
 
-`autoValidCrop` väljer största **centrerade** rektangel med ett bestämt
-sidförhållande a. Standard är källdomänens sidförhållande efter kvartvarvet.
-Med höjd h och bredd a·h gäller:
+För önskad komposition begränsas storleken likformigt och centrum klampas i den
+inversroterade, eroderade källdomänen. `isValidCrop` verifierar alla fyra hörn.
+Detta är inte största area över godtyckliga sidförhållanden.
 
-```
-h = min(W / (a |cos θ| + |sin θ|),
-        H / (a |sin θ| + |cos θ|))
-```
+`compositionTransform` ger R-rektangel, framtida utbildimensioner och inversa
+pixelcentrum; fria dimensioner följer rapportens floor/minst-en-pixel-regel.
+Exakta kvartvarv och migrerade legacy-planer behåller heltalsdimensionerna direkt,
+utan en normaliserings-/avrundningsrundresa. `viewTransform` lägger separat till
+fit, zoom och panorering. Dessa nya planfunktioner används inte av preview eller
+nya exportlägen i steg 1.
 
-Detta är inte ett påstående om största möjliga area vid valfritt sidförhållande.
-Alla fyra hörn kontrolleras genom inversmappning med `isValidCrop`. Kompositionen
-mappas sedan inom denna giltiga rektangel, så att inga tomma hörn tillkommer.
+## Migration och projektimport
 
-Vid senare inkoppling måste en gemensam adapter välja källdomän: hela bilden eller
-filmrutans befintliga heltalspixelgränser. Analysrektangeln förblir i originalets
-koordinater. Biblioteket gör inte detta domänval, ändrar inte filmrutan och
-avrundar inte exportstorlekar. Det ersätter ingen produktionsgeometri i steg 1.
+Nytt format är `negative-studio-roll-beta6`, `geometryVersion:1`. Båda tidigare
+stödda rullformaten (`negative-studio-roll-v08`, `negative-studio-roll-beta3`)
+importeras med samma färg-/RAW-kompatibilitetsregler som i main. Source calibration,
+profilversion, RAW-läge, sampling, responsdata, metadata och exportnamn bevaras.
+`negative-studio-v03` blir inte ett nytt stödd importformat.
 
-## Projekt och atomär geometrivalidering
+Enligt förstudiens 7.3:
 
-Nya projekt har format `negative-studio-roll-beta6`, `geometryVersion: 1`,
-`cropExportToFrame` på kön samt `geometry` på varje bild. Befintliga metadata,
-RAW-val, profiler, kalibreringsdata, exportnamn och filmrutor följer med.
-Tidigare stödda `negative-studio-roll-v08` och `negative-studio-roll-beta3`
-importeras fortsatt med samma färg-/RAW-migrering som i main.
+- Alla äldre booler true: gemensamt true, ingen extra komposition.
+- Alla false/saknas: gemensamt false, ingen extra komposition.
+- Blandat: gemensamt false; tidigare true får en fryst legacy-utsnittsplan som
+  materialiseras till R/L-komposition med exakt samma CE.bounds-pixelgränser.
 
-Äldre `settings.rotation` blir kvartvarv med noll finvinkel. Första bildens äldre
-`settings.cropExport` bestämmer köstandard; avvikande bilder får individuella
-undantag. Det behåller varje tidigare export, även för blandade val. Vid delvis
-matchande projekt får även omatchade köbilder rätt undantag för att deras
-befintliga exportval inte ska ändras av den nya köstandarden.
+Legacy-planen innehåller en **kopia** av den gamla analysrektangeln. Senare ändrad
+analysram flyttar inte detta utsnitt. Dess centrum/storlek härleds från den gamla
+heltalspixelrektangeln och kvartvarvet. Om en sparad bild inte har lästs in saknas
+W/H, ibland även en detekterad filmruta. Då behålls ett uttryckligt väntande
+underlag, som löses efter avkodning/detektering. Inga dimensioner gissas från
+preview eller en annan bild. Projekt roundtrippar även väntande bildposter.
 
-`settings.rotation` och `settings.cropExport` är fortfarande produktionsvägarnas
-kompatibilitetsfält. Nya projekt måste vara förenliga med modellens kvartvarv och
-effektiva beskärningsval. Finvinkel och komposition är vilande metadata. Vanliga
-kvartvarvsändringar uppdaterar modellens kvartvarv och bevarar finvinkeln internt.
-Version 1 betyder vilande finrotation: en senare ändring av rendersemantik måste
-versionshanteras och migreras uttryckligen, inte antas ha gällt tidigare export.
-Main/Beta 5 kan inte läsa det nya formatet; äldre projekt får inte omtolkas som
-ett nytt format genom att endast byta formatnamn.
+Vid äldre delimport räknas även befintliga omatchade köbilders exportval in när
+köns standard väljs; annars skulle en gemensam true tyst beskära deras tidigare
+fullbildsexport. Detta är en konservativ precisering av rapportens projektregel.
+Ett nytt Beta 6-projekts uttryckliga köval gäller däremot hela kön.
 
-`prepareProject` validerar alla bildposter före tillståndsändringar, även
-omatchade filnamn: versioner, ändliga tal, kvartvarv, normaliserade rektanglar,
-positiv area och kompatibilitetsfält. Importen förbereder även köbildernas
-geometrier innan gemensamma inställningar ändras. Fel lämnar kö, aktiv bild,
-färginställningar, kalibrering och exportnamn orörda; endast felstatus/input ändras.
-Valideringen garanterar geometriatomik, inte rollback för avkodningsfel efter att
-ett giltigt projekt har accepterats. Sådana fel hanteras som tidigare av importen.
+Alla inkommande bildposter valideras före tillståndsändring, även om filnamnet
+inte finns i kön. Okänd version, icke-ändliga tal, orimliga källstorlekar,
+rektanglar utan yta och motstridiga legacy-/kompatibilitetsfält avvisas. Källa
+begränsas till 1..1 000 000 pixlar per sida och högst 1 miljard källpixlar;
+R/L-centrum till ±2 och storlek till (0,4]. Det är koordinatgränser, inte höjda
+export-/minnesbudgetar. Tvetydiga filnamn i projekt eller matchad kö avvisas med
+felstatus före import; de läggs inte längre tyst på första träffen.
 
-## Avgränsning och verifiering
+Gränssnittets befintliga individuella kryssruta får en kompatibilitetsadapter:
+individuella gamla val representeras som legacy-utsnitt, aldrig som sparade
+booleska undantag. Ingen ny kökontroll visas. Den interna gemensamma mutatorn
+bevarar önskad komposition och nya bilder ärver köns aktuella bool direkt.
+Färgreglagens återställning bevarar nu även rotationen enligt rapportens avsnitt 7,
+samt båda ramarna och kövalet; återställning av färgreglage ändrar inte geometrin.
 
-Ingen finrotation, automatisk upprätning, kompositionsbeskärning eller rutnät
-aktiveras i UI, preview eller export. Ingen ny resampling, encoder, GPU-kod eller
-färgmatematik införs. `NSColorEngine.exportGeometry` och alla exportalgoritmer är
-oförändrade. Fem-bildersgränsen kvarstår. Inga nya beroenden.
+Importens geometridel är atomär: kö, aktiv bild, färgdata, kalibrering och namn
+lämnas orörda vid fel. Avkodningsfel efter ett godkänt projekt har accepterats
+hanteras fortfarande av befintlig import, utan ett nytt generellt rollback-system.
+Det tidigare **omergade PR-utkastets** boundingboxschema och individuella override
+är inte detta format och avvisas uttryckligen, så koordinater aldrig misstolkas.
 
-Nya tester är läsbara i `test/beta6-geometry.mjs`, `test/beta6-project.mjs` och
-`test/beta6-browser.mjs`. De körs via befintliga `npm test` respektive
-`npm run test:browser`. Testharnessen laddar de nya modulerna i samma ordning som
-appen; dess ändring sparas i repositoryts befintliga testpaket.
+## Produktionsgräns i steg 1
 
-Nästa steg måste koppla **samma** domänval, inversmappning, interpolering och
-pixelkonvention till preview, JPEG-worker, reservexport och TIFF innan finrotation
-kan aktiveras. Därefter tillkommer upprätningsalgoritm, UI, tredjedelsrutnät och
-bildkvalitets-/prestandavalidering, inklusive fysiska Safari/iPad- och Edge-prov.
+Finrotation och **ny manuell** komposition är fortfarande vilande. Endast gamla
+kvartvarv och gamla legacy-utsnitt får gå till export. En liten snapshot-adapter
+väljer deras oförändrade källrektangel och anropar samma `CE.exportGeometry`.
+Det behövs för blandade projekt: deras gamla true-utsnitt får inte börja följa
+en senare teknisk analysram bara för att köns bool nu är false. JPEG-worker får
+samma frysta region/crop i sitt befintliga protokoll; TIFF och reservvägar får
+samma heltalsgeometri. Samplingsloopar, encoder, ICC, färgmatematik, GPU-kod och
+exportbudgetar är oförändrade. Fem-bildersgränsen består.
 
-## Slutresultat
+Ny önskad komposition kan ändras internt utan analys/render och utan att en enda
+ny presentationspixel aktiveras i exporten. Legacy-markören behålls som fryst
+kompatibilitetsplan även när önskad ny geometri ändras. Vid uttrycklig gemensam
+true används tills vidare den befintliga analysramens exportväg; begränsning av
+ny manuell komposition enligt det effektiva utsnittet aktiveras först tillsammans
+med alla backends. Detta är en uttrycklig fasgräns, inte slutlig Beta 6-rendering.
 
-Verifierad kod: `0fccf88`. Lokal Node 24.19.0; Chromium med SwiftShader.
+Nästa steg enligt förstudien är en gemensam presentationssampler **efter** färg,
+med originalkoordinater för flat-field, begränsat grann-/stripeprotokoll, samma
+kantpolicy och samtliga exportvägar. Därefter cacheat geometripass i preview,
+verktyg/pipetter/lupp, upprätning och tredjedelsnät. Ingen generell downscaling-
+eller färgfilterändring görs här. Version 1 är vilande geometri; rendersemantiken
+måste migreras uttryckligen när presentationen aktiveras.
 
-| Kontroll | Resultat |
+## Jämförelse med första PR-utkastet
+
+| Förstudie | Justering |
 | --- | --- |
-| npm ci i separat ren checkout | Godkänd, samma låsta beroenden som main |
-| npm test | 29/29 grupper godkända, inklusive befintliga kompatibilitetsprov |
-| npm run build | Godkänd |
-| npm run test:build | Godkänd: rent bygge, komplett cachelista, reproducerbar hash och korrekt invalidering |
-| npm run test:browser | 6/6 grupper godkända, inklusive befintliga GPU-, export-, mobil- och cacheprov |
-| git status efter test och bygge i ren checkout | Inga ändringar |
+| 6.1–6.3: S/R-plan och R/L-komposition | Ersätter normaliserad auto-canvas; negativa centrum, rotationsordning, pixelcentrum och S→R→V→S testas |
+| 6.4: domän/polygon och önskat/effektivt utsnitt | Hela källa eller off-center CE.bounds-domän; separata effektiva planer utan datamutation |
+| 7.2–7.3: en köbool och blandad migration | `roll.cropExportToFrame`, inga individuella booleska undantag, frysta/lazy legacy-kompositioner |
+| 7: validering, dubletter och reset | Import avvisar tvetydiga namn och osäkra storlekar atomärt; färg-reset bevarar rotation |
+| 9: ingen halvfärdig fri rotation | Ingen ny UI-/GPU-/samplingsväg; bara gammal exportgeometris input väljs via snapshot-adapter |
 
-Geometriproven täcker 140 kombinationer av bildformat och rotationsparametrar,
-ytterligare sidförhållanden och kompositionsinverser. Oberoende pixelmatriser
-kontrollerar kvartvarv med/utan filmruta. Native webbläsarprov jämför identiska
-TIFF-bytes för åtta kombinationer av kvartvarv/beskärning trots ändrad vilande
-finrotation/komposition; JPEG-provet verifierar samma avgränsning. GPU-proven
-behåller texturåteranvändning och observerar högst en visningsnivås avvikelse.
-Dubbla filnamn behåller tidigare matchning till första köbilden och får inte dela
-geometriobjekt. Felaktiga geometriposter ändrar inte projektets övriga tillstånd.
-
-Byggregressionens första underprocessstart nekades med EPERM av den lokala
-sandboxen. Omkörning med utökad sandboxbehörighet godkändes; ingen kodändring
-behövdes. Fysiska Safari/iPad- och Edge-prov samt externa kamerakorpusar kördes
-inte. Main-uppdateringens dokumenterade nedskalningsbegränsning är oförändrad.
+Testerna finns i `test/beta6-geometry.mjs`, `test/beta6-project.mjs` och
+`test/beta6-browser.mjs`; de körs via de befintliga Node-/browser-skripten.
+Tidigare utkastets testresultat ersätts av slutverifieringen efter denna anpassning.
