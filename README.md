@@ -1,3 +1,9 @@
+# FILMLABB 1.1 Beta 5 — enklare arbetsyta och bakgrundsexport
+
+Histogram och bildreglage först, avancerade inställningar samlade och stängda från början. JPEG/JPEG-ZIP får export i en worker, progress och avbrytning, med reservläge för andra webbläsare.
+
+Se [installation, funktioner och begränsningar](RELEASE_1.1_BETA5.md). Rootinstallation och paketberoenden är samma som tidigare.
+
 # FILMLABB 1.1 Beta 4 — utvecklingsprototyp
 
 Nytt: experimentell NEF/CR2/CR3/RW2-import, originaldetalj 100/200 %, större JPEG, valfri Rec.2020-färgväg i flyttal och rumslig belysningskorrigering.

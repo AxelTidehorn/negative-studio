@@ -66,10 +66,6 @@
   main.workspace .workspace-divider { display: none!important; }
   main.workspace .queue-panel:has(#filmstrip:empty) { display: none!important; }
   main.workspace .editor-panel > * { flex-shrink: 0; }
-  main.workspace .editor-panel .adjustment-head { order: -4; }
-  main.workspace .editor-panel #simpleControls { order: -3; }
-  main.workspace .editor-panel .sidebar-profile { order: -2; }
-  main.workspace .editor-panel .frame-tools { order: -1; }
   main.workspace.queue-collapsed .queue-panel,
   main.workspace.adjust-collapsed .editor-panel { display: none!important; }
   main.workspace.adjust-collapsed .image-panel { flex: 1 1 auto; }

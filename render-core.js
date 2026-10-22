@@ -89,7 +89,7 @@ function completeTables(config,kernel){
 let renderCache=null,technicalRenderCache4=null;
 function cachedRender(config){const key=JSON.stringify(config);if(!renderCache||renderCache.key!==key){const kernel=compile(config);let technical=null;if(config.kind==='calibrated4'){const a=config.cal.beta4,tkey=JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalRenderCache4||technicalRenderCache4.key!==tkey)technicalRenderCache4={key:tkey,table:tables(kernel)};technical=technicalRenderCache4.table;}renderCache={key,kernel,table:completeTables(config,kernel),technical};}return renderCache;}
 function lookup(t,v,c){const u=clamp(v)*65535,a=Math.floor(u),b=Math.min(65535,a+1);return t[c][a]+(t[c][b]-t[c][a])*(u-a);}
-function read(im,i){if(im.flatField){const n=i/im.channels;return NSColorEngine.pixel(im,n%im.width,Math.floor(n/im.width));}const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
+function read(im,i,x,y){if(im.flatField){const n=i/im.channels,s=im.scale||1;return NSColorEngine.linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x??n%im.width,y??Math.floor(n/im.width));}const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
 function render(im,config,mode='positive',limit=1400,cache){
  const cached=cachedRender(config),kernel=cached.kernel,table=cached.table,technical=cached.technical,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256);
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
@@ -111,7 +111,7 @@ function prepare(im,config){
    for(let c=0;c<3;c++)table[c][v]=kernel.technical(value,c);
   }
  }
- return {pixel(i){return table?kernel.finish([table[0][im.data[i]],table[1][im.data[i+1]],table[2][im.data[i+2]]]):kernel.pixel(read(im,i));}};
+ return {pixel(i,x,y){return table?kernel.finish([table[0][im.data[i]],table[1][im.data[i+1]],table[2][im.data[i+2]]]):kernel.pixel(read(im,i,x,y));}};
 }
 function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
  const k=prepared?null:compile(config),out=new Uint16Array(geometry.width*rows*3);

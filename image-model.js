@@ -11,13 +11,13 @@ function rect(r={x:0,y:0,w:1,h:1}){
  return {x,y,w:clamp(Number(r.w)||eps,eps,1-x),h:clamp(Number(r.h)||eps,eps,1-y)};
 }
 function bounds(im,r,margin=0){r=rect(r);return {x0:Math.min(im.width-1,Math.ceil((r.x+r.w*margin)*im.width)),y0:Math.min(im.height-1,Math.ceil((r.y+r.h*margin)*im.height)),x1:Math.min(im.width,Math.max(Math.min(im.width-1,Math.ceil((r.x+r.w*margin)*im.width))+1,Math.floor((r.x+r.w*(1-margin))*im.width))),y1:Math.min(im.height,Math.max(Math.min(im.height-1,Math.ceil((r.y+r.h*margin)*im.height))+1,Math.floor((r.y+r.h*(1-margin))*im.height)))};}
-function pixel(im,x,y){const i=(y*im.width+x)*(im.channels||3),s=im.scale||1;
- const input=[0,1,2].map(c=>im.data[i+c]/s);
+function linearPixel(im,input,x,y){
  // Keep wide-gamut TIFF values until a common, channel-independent normalization
  // has been applied. Per-channel clipping here destroys orange-mask information.
  const linear=im.encoding==='icc'?im.profile.toLinear(input):im.encoding==='linear'?input:input.map(decode);
  return linear.map((v,k)=>clamp(v/(im.normalization||1)*(im.flatField?NSFlatField.gain(im.flatField,x,y,im.width,im.height,k):1)));
 }
+function pixel(im,x,y){const i=(y*im.width+x)*(im.channels||3),s=im.scale||1;return linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x,y);}
 function sample(im,r,margin=.012,limit=24000){const b=bounds(im,r,margin),out=[],step=Math.max(1,Math.ceil(Math.sqrt((b.x1-b.x0)*(b.y1-b.y0)/limit)));for(let y=b.y0;y<b.y1;y+=step)for(let x=b.x0;x<b.x1;x+=step)out.push(pixel(im,x,y));return out;}
 function preview(im,limit=1400){const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};}
 function detectFrame(im){
@@ -59,5 +59,5 @@ function density(p,shape,exposure){return p.map((v,c)=>-Math.log10(Math.max(1e-8
 function positive(p,cal,auto=true,strength=1){const d=density(p.map((v,c)=>v*cal.light[c]),cal.baseShape,cal.exposure);return d.map((v,c)=>{const u=auto?(v-cal.lo-(cal.balance[c]||0)*strength)/cal.span:v;return clamp(Math.expm1(clamp(u)*1.6)/Math.expm1(1.6));});}
 function sampleBase(im,x,y){const p=[],cx=Math.min(im.width-1,Math.floor(clamp(x)*im.width)),cy=Math.min(im.height-1,Math.floor(clamp(y)*im.height));for(let yy=Math.max(0,cy-3);yy<=Math.min(im.height-1,cy+3);yy++)for(let xx=Math.max(0,cx-3);xx<=Math.min(im.width-1,cx+3);xx++)p.push(pixel(im,xx,yy));const measured=[0,1,2].map(c=>median(p.map(v=>v[c])));if(Math.min(...measured)<1e-5||Math.max(...measured)>.995)throw Error('Filmbasprovet är klippt eller för mörkt. Välj en annan yta.');return {shape:normalizeBase(measured),measured,kind:'manual',confidence:1};}
 function exportGeometry(im,region,crop,rotation=0){const b=crop?bounds(im,region):{x0:0,y0:0,x1:im.width,y1:im.height},sw=b.x1-b.x0,sh=b.y1-b.y0,rot=((rotation%360)+360)%360;return {width:rot%180?sh:sw,height:rot%180?sw:sh,at(x,y){return [b.x0+(rot===90?y:rot===180?sw-1-x:rot===270?sw-1-y:x),b.y0+(rot===90?sh-1-x:rot===180?sh-1-y:rot===270?x:y)];}};}
-root.NSColorEngine={clamp,decode,encode,rect,bounds,pixel,sample,preview,detectFrame,findBase,analyze,positive,sampleBase,exportGeometry,quantile,normalizeBase};
+root.NSColorEngine={clamp,decode,encode,rect,bounds,pixel,linearPixel,sample,preview,detectFrame,findBase,analyze,positive,sampleBase,exportGeometry,quantile,normalizeBase};
 })(globalThis);
