@@ -15,7 +15,7 @@ function check(job){if(job.cancelled||active!==job||batch?.cancelled)throw cance
 function cancel(){if(batch)batch.cancelled=true;if(active){active.cancelled=true;active.worker?.terminate();active.rejectCancel(cancelled());}if(batch&&!active)show('Avbryter efter pågående inläsning…');}
 ui('cancelExport').onclick=cancel;ui('closeExportProgress').onclick=()=>{panel.hidden=true;};
 function doneUI(message,ok=false){show(message,ok?100:undefined);ui('cancelExport').hidden=true;ui('closeExportProgress').hidden=false;}
-function beginUI(){panel.hidden=false;ui('cancelExport').hidden=false;ui('closeExportProgress').hidden=true;ui('exportSnapshotNote').textContent='Exporterar inställningarna som gällde vid start.';}
+function beginUI(){ui('exportProgressTitle').textContent='JPEG-export';panel.hidden=false;ui('cancelExport').hidden=false;ui('closeExportProgress').hidden=true;ui('exportSnapshotNote').textContent='Exporterar inställningarna som gällde vid start.';}
 function description(job){return (batch?`Bild ${batch.index+1}/${batch.total} · `:'')+job.target.width+'×'+job.target.height;}
 function progress(job,done,total){check(job);const value=Math.min(95,Math.floor(95*done/total));show(description(job)+' · '+value+' %',value);}
 function geometry(job){return CE.exportGeometry(job.im,job.region,job.opts.cropExport,job.opts.rotation);}
@@ -109,6 +109,43 @@ ui('batchJpeg').onclick=async()=>{
   if(batch.cancelled)throw cancelled();downloadBlob(makeZip(files),exportZipName());doneUI('JPEG-ZIP klar · '+files.length+' bilder',true);setStatus('JPEG-ZIP färdig.');
  }catch(e){doneUI(e.name==='AbortError'?'Batch-export avbruten. Ingen ZIP har hämtats.':'Batchfel: '+e.message);setStatus(e.name==='AbortError'?'Batch-export avbruten.':'Batchfel: '+e.message);}
  finally{files.length=0;rollingExport=false;try{await chooseFrame(original,{force:true});}finally{batch=null;lock();}}
+};
+// Keep the existing TIFF pixel writer; share only locking, progress and cancellation.
+const writeTiff=exportTiff;
+exportTiff=async function(){
+ if(active||!exportReady())throw Error('Ingen exportklar bild finns.');
+ const job={id:++sequence,cancelled:false,worker:null,rejectCancel:()=>{}};
+ active=job;lock();beginUI();ui('exportProgressTitle').textContent='TIFF-export';
+ try{
+  await writeTiff({check:()=>check(job),progress:(done,total)=>{
+   check(job);show((batch?`Bild ${batch.index+1}/${batch.total} · `:'')+'TIFF '+Math.floor(100*done/total)+' %',100*done/total);
+  }});
+  if(!batch)doneUI('TIFF klar',true);
+ }catch(e){if(!batch)doneUI(e.name==='AbortError'?'TIFF-export avbruten.':'Exportfel: '+e.message);throw e;}
+ finally{active=null;exportBusy=false;lock();}
+};
+ui('exportTiff').onclick=async()=>{if(batch||active||!exportReady())return;try{await exportTiff();}catch(e){setStatus(e.name==='AbortError'?'TIFF-export avbruten.':'Exportfel: '+e.message);}};
+ui('batchTiff').onclick=async()=>{
+ if(batch||active||rollingExport||exportBusy||rollLoading)return;
+ const ids=roll.map((f,i)=>f.selected?i:-1).filter(i=>i>=0);
+ if(!ids.length||ids.length>5){setStatus('Markera en till högst fem bilder.');return;}
+ batch={cancelled:false,index:0,total:ids.length};rollingExport=true;lock();beginUI();
+ const original=activeFrame,errors=[];let exported=0,aborted=false;
+ try{
+  for(let j=0;j<ids.length;j++){
+   if(batch.cancelled){aborted=true;break;}batch.index=j;
+   show(`Bild ${j+1}/${ids.length} · Läser in…`,0);
+   try{await exportFrameTiff(ids[j]);exported++;}
+   catch(e){if(e.name==='AbortError'||batch.cancelled){aborted=true;break;}errors.push(roll[ids[j]].file.name+': '+e.message);}
+  }
+  aborted=aborted||batch.cancelled;
+ }finally{
+  rollingExport=false;
+  try{await chooseFrame(original,{force:true});}catch(e){errors.push('Återställning: '+e.message);}
+  finally{batch=null;lock();}
+ }
+ const message=(aborted?'TIFF-export avbruten · ':'TIFF-export: ')+exported+' av '+ids.length+' exporterade, '+errors.length+' misslyckade'+(errors.length?' · '+errors.join('; '):'');
+ doneUI(message,!aborted&&!errors.length);setStatus(message);
 };
 globalThis.FILMLABB_EXPORT={cancel,snapshot:()=>({...stats,active:!!active,batch:!!batch,progress:Number(ui('exportProgress').value),sourceIntact:!!active?.im.data.byteLength})};
 })();

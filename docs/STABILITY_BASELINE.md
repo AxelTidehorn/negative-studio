@@ -20,7 +20,7 @@ old hash invariants and profile-review tools are not required by current runners
   check-project4 FAIL (invalid response retained); check-profiles-next FAIL
   (old project stays profile version 2); check-manual-frame FAIL (slider reset
   changes manual crop mode to auto); check-i18n-static FAIL (expects i18n.js
-  in the delegating sw.js). Raw-fixture result recorded in final validation.
+  in the delegating sw.js). check-raw-fixture PASS (actual WASM/DNG decode).
 
 The crop export-blocking assertion predates Fix 11 and is obsolete. The service
 worker assertion predates delegation to cache-worker.js and is obsolete. The
@@ -33,7 +33,7 @@ render-worker.js, workspace.js and old test/ sources for now. They are legacy
 artifacts, not current entry-point modules; removing them is outside this repair.
 The old test/ tree is not the active bundled tests/ tree.
 
-Stop tracking generated site/ assets except site/libraw/dist, which is an existing
+Stop tracking generated site/ assets and move the unchanged site/libraw/dist to vendor/libraw/dist as the existing
 fallback for builds without installed dependencies. Build a clean site/ to prevent
 old scripts from surviving a deploy. No original images or project files removed.
 
@@ -44,3 +44,7 @@ RAW inputs and explicit output paths. These must be reported separately from the
 self-contained suite, never silently treated as passing. No camera corpus or
 historical logs are copied from the ZIP. Browser timing is not device validation
 for iPad Safari or Edge.
+
+An additional untouched-main browser run reproduces check-workflow-browser:20:
+confirmation is inside the existing collapsible film-frame section. The updated
+expectation opens that section and checks reachability; no UI change is needed.
