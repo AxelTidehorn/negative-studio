@@ -42,6 +42,11 @@ await load(partial,one);assert.deepEqual(json(partial,'roll[1].geometry'),untouc
 partial.run('state.rotation=90;state.exposure=1;saveCurrentFrame();setCompositionCrop(0,{cx:-.1,cy:.1,w:.5,h:.3});roll[0].geometry.rotation.fineDegrees=7;');
 const resetGeometry=json(partial,'({g:roll[0].geometry,crop:cropRegion,shared:rollShared.cropExportToFrame})');partial.elements.get('reset').onclick();assert.equal(partial.run('state.rotation'),90);assert.equal(partial.run('state.exposure'),0);assert.deepEqual(json(partial,'({g:roll[0].geometry,crop:cropRegion,shared:rollShared.cropExportToFrame})'),resetGeometry);
 console.log('PASS partial import preserves unmatched desired composition/fine angle, and color reset preserves both frames and all rotation');
+// Existing control edits remain possible during export, but cannot alter its snapshot.
+const job=setup();await save(job);job.run('downloadBlob=b=>globalThis.jobBlob=b;');await job.run('exportTiff()');const expectedBytes=await job.context.jobBlob.arrayBuffer();
+const pending=job.run('exportTiff()');job.elements.get('cropExport').onchange({target:{checked:false}});assert.equal(job.run('state.cropExport'),false);await pending;
+assert.deepEqual(new Uint8Array(await job.context.jobBlob.arrayBuffer()),new Uint8Array(expectedBytes));
+console.log('PASS late legacy-control edits are retained while in-flight TIFF geometry stays frozen');
 const a=setup(),valid=await save(a);a.run("$('exportName').value='original';");const snapshot=()=>json(a,'({state,roll,rollShared,activeFrame,cropRegion,calibration,sharedResponse4,name:$("exportName").value})'),original=snapshot();
 for(const mutate of [
  p=>p.frames[1].crop={x:0,y:0,w:0,h:1},p=>p.frames[1].geometry.version=9,p=>p.geometryVersion=9,p=>p.frames[1].geometry.rotation.fineDegrees=Infinity,p=>p.frames[1].geometry.rotation.fineDegrees=46,p=>p.frames[1].geometry.rotation.quarterTurns=1.5,p=>p.frames[1].geometry.compositionCrop={cx:0,cy:0,w:0,h:1},p=>p.frames[1].geometry.sourceSize={width:1e9,height:1e9},p=>p.frames[1].settings.rotation=90.5,p=>p.roll.cropExportToFrame='yes',p=>{p.frames[1].filename='unmatched.tif';p.frames[1].geometry.compositionCrop={};},p=>{p.frames[1].filename=p.frames[0].filename;},p=>{delete p.roll;p.cropExportToFrame=false;}

@@ -142,3 +142,22 @@ måste migreras uttryckligen när presentationen aktiveras.
 Testerna finns i `test/beta6-geometry.mjs`, `test/beta6-project.mjs` och
 `test/beta6-browser.mjs`; de körs via de befintliga Node-/browser-skripten.
 Tidigare utkastets testresultat ersätts av slutverifieringen efter denna anpassning.
+
+## Slutverifiering mot förstudien
+
+Verifierat med Node 24.19 och systemets Chromium:
+
+- Ren checkout: `npm ci`, `npm test` (29/29 grupper), `npm run build` och
+  `npm run test:build` passerade.
+- `FILMLABB_CHROMIUM_BIN=/usr/bin/chromium npm run test:browser` passerade
+  samtliga 6 grupper, inklusive GPU-, mobil- och legacy-exportprov.
+- Efter slutgranskningen passerade även det riktade projektprovet med en
+  kontrolländring under pågående TIFF-export: nästa inställning behålls medan
+  exportens snapshot förblir oförändrad.
+- Regression för exakt legacy-geometri täcker även en 3×22-källa där
+  normaliserad avrundning annars kunde tappa en rad vid gemensam begränsning.
+
+Chromium-proven ersätter inte verkliga iPad Safari- och Edge-enheter. Tidigare
+identifierad aliasing vid downscaling kvarstår avsiktligt; ingen filtrering
+eller färgmatematik ändras i detta steg. Finrotation, kompositionsgränssnitt och
+samordnad preview/export aktiveras först i senare steg.

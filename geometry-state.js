@@ -28,7 +28,7 @@ function reconcileLegacyCrop(index,value){
  if(activeFrame>=0)state.cropExport=roll[activeFrame].settings.cropExport;
 }
 function setLegacyCropExport(value){
- if(rollLoading||exportBusy||rollingExport)return;
+ if(rollLoading){$('cropExport').checked=!!state.cropExport;return;}
  reconcileLegacyCrop(activeFrame,value);state.cropExport=value;saveCurrentFrame();
 }
 function setCompositionCrop(index,crop){
