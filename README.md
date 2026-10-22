@@ -1,4 +1,6 @@
-# FILMLABB 1.1 Beta 3.6 – GPU-prototyp 1
+# FILMLABB 1.1 Beta 3.6.1 – GPU-prototyp 1
+
+3.6.1 rättar paketeringen av TIFF-testdata för GitHub Actions. Testpaketet återställer hela `tests/` inklusive fixtures före körning.
 
 GPU-förhandsvisning med CPU-reserv: se [funktioner, testresultat och installation](RELEASE_1.1_BETA3_6_GPU.md).
 
