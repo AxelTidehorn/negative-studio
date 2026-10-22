@@ -9,9 +9,14 @@
     "test:tiff": "node verify-preview.mjs --tiff",
     "test:workflow": "node verify-preview.mjs --workflow",
     "test:next": "node verify-preview.mjs --next",
-    "test:gpu": "node verify-preview.mjs --gpu"
+    "test:gpu": "node verify-preview.mjs --gpu",
+    "test:build": "node test/stability-build.mjs",
+    "test:browser": "npm run build && node verify-preview.mjs --browser"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.64.1"
   }
 }

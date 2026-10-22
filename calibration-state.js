@@ -63,8 +63,33 @@ function technicalTables38(config){
 }
 // TIFF chunking keeps the UI responsive. The table is technical-only: profiles,
 // saturation, shadows and highlights all retain the exact shared final pixel path.
-exportTiff=async function(){if(!exportReady())return;exportBusy=true;$('exportTiff').disabled=true;const im=working,opts={...state},c=configuration38(opts),g=CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation);try{if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');const parts=[tiffHeader(g.width,g.height)],prepared=NSPixelKernel.prepare(im,c);for(let y=0;y<g.height;y+=16){const rows=Math.min(16,g.height-y),out=NSPixelKernel.exportRows(im,c,g,y,rows,null,false,prepared);if(new Uint8Array(new Uint16Array([1]).buffer)[0]===1)parts.push(out);else{const bytes=new Uint8Array(out.length*2),dv=new DataView(bytes.buffer);for(let i=0;i<out.length;i++)dv.setUint16(i*2,out[i],true);parts.push(bytes);}if(y%64===0){setStatus(`TIFF ${Math.round(100*(y+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}}downloadBlob(new Blob(parts,{type:'image/tiff'}),'filmlabb-positive-16bit.tif');setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);}catch(e){setStatus('Exportfel: '+e.message);}finally{exportBusy=false;$('exportTiff').disabled=false;}};
-$('exportTiff').onclick=()=>exportTiff();
+exportTiff=async function(control={}){
+ if(!exportReady())throw Error('Ingen exportklar bild finns.');
+ exportBusy=true;$('exportTiff').disabled=true;
+ try{
+  const im=working,opts={...state},c=configuration38(opts),g=CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation);
+  control.check?.();
+  if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');
+  const parts=[tiffHeader(g.width,g.height)],prepared=NSPixelKernel.prepare(im,c);
+  for(let y=0;y<g.height;y+=16){
+   control.check?.();
+   const rows=Math.min(16,g.height-y),out=NSPixelKernel.exportRows(im,c,g,y,rows,null,false,prepared);
+   if(new Uint8Array(new Uint16Array([1]).buffer)[0]===1)parts.push(out);
+   else{
+    const bytes=new Uint8Array(out.length*2),dv=new DataView(bytes.buffer);
+    for(let i=0;i<out.length;i++)dv.setUint16(i*2,out[i],true);
+    parts.push(bytes);
+   }
+   if(y%64===0){setStatus(`TIFF ${Math.round(100*(y+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}
+   control.progress?.(y+rows,g.height);
+  }
+  control.check?.();
+  downloadBlob(new Blob(parts,{type:'image/tiff'}),exportName(rollingExport?activeFrame:null,'tif','filmlabb-positive-16bit.tif'));
+  setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);
+ }catch(e){setStatus('Exportfel: '+e.message);throw e;}
+ finally{exportBusy=false;$('exportTiff').disabled=false;}
+};
+$('exportTiff').onclick=async()=>{try{await exportTiff();}catch(e){setStatus('Exportfel: '+e.message);}};
 const clear38=$('clearQueue').onclick;
 $('clearQueue').onclick=()=>{++request38;queued38=null;lastPreview38=null;technicalCache38=null;config38=null;clearTimeout(previewTick38);clearTimeout(dragTimer38);if(previewWorker38){previewWorker38.terminate();previewWorker38=null;}workerBusy38=false;workerVersion38=-1;clear38();};
 // Small diagnostics surface, no source pixels or files exposed.

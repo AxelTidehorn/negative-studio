@@ -1,5 +1,7 @@
 name: Build Negative Studio Beta 3
 on:
+  pull_request:
+    branches: [main]
   workflow_dispatch:
   push:
     branches: [main]
@@ -15,6 +17,9 @@ jobs:
       - run: npm test
       - run: node tests/raw-fixture.mjs
       - run: npm run build
+      - run: npm run test:build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
       - uses: actions/upload-artifact@v4
         with:
           name: Negative-Studio-Beta-3-WASM
