@@ -94,6 +94,8 @@ befintliga exportval inte ska ändras av den nya köstandarden.
 kompatibilitetsfält. Nya projekt måste vara förenliga med modellens kvartvarv och
 effektiva beskärningsval. Finvinkel och komposition är vilande metadata. Vanliga
 kvartvarvsändringar uppdaterar modellens kvartvarv och bevarar finvinkeln internt.
+Version 1 betyder vilande finrotation: en senare ändring av rendersemantik måste
+versionshanteras och migreras uttryckligen, inte antas ha gällt tidigare export.
 Main/Beta 5 kan inte läsa det nya formatet; äldre projekt får inte omtolkas som
 ett nytt format genom att endast byta formatnamn.
 
@@ -121,3 +123,30 @@ Nästa steg måste koppla **samma** domänval, inversmappning, interpolering och
 pixelkonvention till preview, JPEG-worker, reservexport och TIFF innan finrotation
 kan aktiveras. Därefter tillkommer upprätningsalgoritm, UI, tredjedelsrutnät och
 bildkvalitets-/prestandavalidering, inklusive fysiska Safari/iPad- och Edge-prov.
+
+## Slutresultat
+
+Verifierad kod: `0fccf88`. Lokal Node 24.19.0; Chromium med SwiftShader.
+
+| Kontroll | Resultat |
+| --- | --- |
+| npm ci i separat ren checkout | Godkänd, samma låsta beroenden som main |
+| npm test | 29/29 grupper godkända, inklusive befintliga kompatibilitetsprov |
+| npm run build | Godkänd |
+| npm run test:build | Godkänd: rent bygge, komplett cachelista, reproducerbar hash och korrekt invalidering |
+| npm run test:browser | 6/6 grupper godkända, inklusive befintliga GPU-, export-, mobil- och cacheprov |
+| git status efter test och bygge i ren checkout | Inga ändringar |
+
+Geometriproven täcker 140 kombinationer av bildformat och rotationsparametrar,
+ytterligare sidförhållanden och kompositionsinverser. Oberoende pixelmatriser
+kontrollerar kvartvarv med/utan filmruta. Native webbläsarprov jämför identiska
+TIFF-bytes för åtta kombinationer av kvartvarv/beskärning trots ändrad vilande
+finrotation/komposition; JPEG-provet verifierar samma avgränsning. GPU-proven
+behåller texturåteranvändning och observerar högst en visningsnivås avvikelse.
+Dubbla filnamn behåller tidigare matchning till första köbilden och får inte dela
+geometriobjekt. Felaktiga geometriposter ändrar inte projektets övriga tillstånd.
+
+Byggregressionens första underprocessstart nekades med EPERM av den lokala
+sandboxen. Omkörning med utökad sandboxbehörighet godkändes; ingen kodändring
+behövdes. Fysiska Safari/iPad- och Edge-prov samt externa kamerakorpusar kördes
+inte. Main-uppdateringens dokumenterade nedskalningsbegränsning är oförändrad.
