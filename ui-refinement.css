@@ -211,10 +211,10 @@ body.filmlabb-ui-refresh .image-controls{margin-top:0!important}
 /* A consistent warm monochrome identity; subtle vermilion is reserved for actions. */
 body.filmlabb-ui-refresh{--ns-bg:#222120;--ns-panel:#2d2b29;--ns-panel-2:#242322;--ns-text:#eeeae2;--ns-muted:#b2aca2;--ns-border:#56514b;--ns-btn:#36332f;--ns-btn-border:#655e56;--ns-btn-text:#eeeae2;--ns-accent:#c78154;--ns-accent-ink:#211b17;--ns-accent-soft:rgba(199,129,84,.13);--ns-accent-line:#c78154}
 body.filmlabb-ui-refresh.light-theme{--ns-bg:#e9e6df;--ns-panel:#f4f1eb;--ns-panel-2:#e9e6df;--ns-text:#282521;--ns-muted:#6f6960;--ns-border:#c0b9ae;--ns-btn:#e4dfd6;--ns-btn-border:#b3aa9d;--ns-btn-text:#292620;--ns-accent:#a45b34;--ns-accent-ink:#fff8ed;--ns-accent-soft:rgba(164,91,52,.12);--ns-accent-line:#a45b34}
-/* Footer remains part of document but is beyond a deliberate additional scroll. */
-body.filmlabb-ui-refresh .foot{margin-top:45dvh!important}
+/* Footer: a short, intentional scroll beyond the docked workspace (not a half-screen gap). */
+body.filmlabb-ui-refresh .foot{margin-top:12dvh!important}
 body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height,calc(100dvh - 46px))!important}
-@media(max-width:760px){body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height-mobile,calc(100dvh - 44px))!important}body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important}body.filmlabb-ui-refresh .foot{margin-top:42dvh!important}}
+@media(max-width:760px){body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height-mobile,calc(100dvh - 44px))!important}body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important}body.filmlabb-ui-refresh .foot{margin-top:12dvh!important}}
 
 /* Beta 5 UI fix 8: persistent viewport-level export progress and active queue item. */
 #exportProgressPanel{
