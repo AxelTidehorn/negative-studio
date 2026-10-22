@@ -85,19 +85,20 @@ convertImage=function(image,mode,params){const im=image===previewSrc?workingPrev
 const oldRender=render;render=function(){oldRender();drawCrop();};
 chooseFrame=async function(i,{force=false}={}){
  if(i<0||i>=roll.length||rollLoading||exportBusy||cropDrag||(!force&&i===activeFrame))return;saveCurrentFrame();rollLoading=true;
- const f=roll[i];activeFrame=i;state={...defaultState(),...f.settings};cropRegion=f.crop?CE.rect(f.crop):{x:0,y:0,w:1,h:1};syncControls();
+ $('frameOptions').open=false;const f=roll[i];activeFrame=i;state={...defaultState(),...f.settings};cropRegion=f.crop?CE.rect(f.crop):{x:0,y:0,w:1,h:1};syncControls();
  src=null;hires=null;previewSrc=null;working=null;workingPreview=null;calibration=null;legacyLevels=null;beta3Base=null;beta3Levels=null;zoom=1;panX=0;panY=0;applyView();
  try{await readFile(f.file);if(!working)throw Error('Ingen bild avkodades.');rawLoadedIndex=sourceInfo.encoding==='linear'?i:-1;$('qualityInfo').textContent=sourceInfo.label+' · samma färgkedja i förhandsvisning och export';saveCurrentFrame();}
  catch(e){src=null;hires=null;previewSrc=null;working=null;workingPreview=null;$('preview').classList.add('hidden');$('cropOverlay').classList.add('hidden');for(const id of ['export','exportTiff'])$(id).disabled=true;setStatus('Importfel: '+e.message);}
  finally{rollLoading=false;refreshRollUI();}
 };
 const saveFrameOriginal=saveCurrentFrame;saveCurrentFrame=function(){saveFrameOriginal();};
+$('frameOptions').addEventListener('toggle',drawCrop);
 function updateCropUI(){$('cropStatus').textContent=(state.cropMethod==='manual'?'Manuell filmruta':'Automatisk filmruta')+(state.cropConfirmed?' · bekräftad':' · osäker, kontrollera rektangeln');$('cropConfirm').hidden=!!state.cropConfirmed;$('cropLock').textContent=state.cropLocked?'Lås upp filmruta':'Lås filmruta';$('cropVisible').checked=state.cropVisible!==false;$('cropExport').checked=!!state.cropExport;drawCrop();}
 function cropChanged(method='manual'){state.cropMethod=method;state.cropConfirmed=method==='manual';saveCrop();updateCropUI();updateBase();analyzeLevels();scheduleRender(true);}
 setCropByInset=function(v){if(state.cropLocked)return;const n=Number(v)/100;cropRegion={x:n,y:n,w:1-2*n,h:1-2*n};updateCropLabel();cropChanged();};
 $('cropAuto').onclick=()=>{if(!workingPreview||cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före automatisk detektering.');return;}const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.cropConfidence=d.confidence;state.cropConfirmed=d.confidence>=.7;state.cropMethod='auto';saveCrop();updateCropUI();updateBase();analyzeLevels();};
 $('cropReset').onclick=()=>{if(cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före återställning.');return;}cropRegion={x:0,y:0,w:1,h:1};cropChanged();};
-$('cropConfirm').onclick=()=>{state.cropConfirmed=true;updateCropUI();saveCurrentFrame();render();};
+$('cropConfirm').onclick=()=>{state.cropConfirmed=true;$('frameOptions').open=false;updateCropUI();saveCurrentFrame();render();};
 $('cropLock').onclick=()=>{state.cropLocked=!state.cropLocked;updateCropUI();saveCurrentFrame();};
 $('cropVisible').onchange=e=>{state.cropVisible=e.target.checked;drawCrop();saveCurrentFrame();};
 $('cropExport').onchange=e=>{state.cropExport=e.target.checked;saveCurrentFrame();};
@@ -120,7 +121,7 @@ function drawCrop(){
  const transform=`translate(-50%, -50%) translate(${panX}px,${panY}px) scale(${zoom}) rotate(${state.rotation||0}deg)`;
  canvas.style.setProperty('width',w*fit+'px','important');canvas.style.setProperty('height',h*fit+'px','important');
  canvas.style.transform=transform;
- svg.classList.toggle('hidden',state.cropVisible===false);
+ svg.classList.toggle('hidden',state.cropVisible===false||!$('frameOptions').open);
  svg.setAttribute('viewBox',`0 0 ${w} ${h}`);
  svg.style.width=w*fit+'px';svg.style.height=h*fit+'px';svg.style.left='50%';svg.style.top='50%';svg.style.transform=transform;
  const r=cropRegion,x=r.x*w,y=r.y*h,rw=r.w*w,rh=r.h*h;
