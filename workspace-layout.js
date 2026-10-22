@@ -26,18 +26,20 @@
   const footer=document.querySelector('.foot');
   const headerH=header?Math.round(header.getBoundingClientRect().height):0;
   const toolbarH=toolbar?Math.round(toolbar.getBoundingClientRect().height):0;
-  document.documentElement.style.setProperty('--fl-header-height',headerH+'px');
-  document.documentElement.style.setProperty('--fl-toolbar-height',toolbarH+'px');
-  document.documentElement.style.setProperty('--fl-top-stack-height',(headerH+toolbarH)+'px');
+  if(document.documentElement?.style){
+   document.documentElement.style.setProperty('--fl-header-height',headerH+'px');
+   document.documentElement.style.setProperty('--fl-toolbar-height',toolbarH+'px');
+   document.documentElement.style.setProperty('--fl-top-stack-height',(headerH+toolbarH)+'px');
+  }
   if(matchMedia('(max-width:760px)').matches){
    root.style.removeProperty('--fl-workspace-height');
-   root.style.setProperty('--fl-workspace-height-mobile',Math.max(420,window.innerHeight-(toolbarH||0)-14)+'px');
+   root.style.setProperty('--fl-workspace-height-mobile',Math.max(300,window.innerHeight-(toolbarH||0)-6)+'px');
    if(footer)footer.style.removeProperty('margin-top');
    requestAnimationFrame(fitPicture);
    return;
   }
   const toolbarBottom=toolbar?toolbar.getBoundingClientRect().bottom:root.getBoundingClientRect().top;
-  const target=Math.max(320,Math.round(window.innerHeight-toolbarBottom-10));
+  const target=Math.max(320,Math.round(window.innerHeight-toolbarH-6));
   root.style.setProperty('--fl-workspace-height',target+'px');
   if(footer)footer.style.marginTop='10px';
   requestAnimationFrame(fitPicture);

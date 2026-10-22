@@ -307,9 +307,9 @@ for(const id of [...controls.map(c=>c[0]),'profileStrength','cropInset']){
   else previousTap=now;
  },{passive:false});
 }
-const themeKey='negative-studio-theme-v094';
+const themeKey='negative-studio-theme-v092';
 let currentTheme='dark';try{currentTheme=localStorage.getItem(themeKey)||'dark'}catch(e){}
-function applyTheme(theme){currentTheme=theme;document.body.classList.toggle('light-theme',theme==='light');const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',theme==='light'?'#ecefe9':'#0f1519');if($('themeToggle'))$('themeToggle').textContent=theme==='light'?'Nattläge':'Dagläge';}
+function applyTheme(theme){currentTheme=theme;document.body.classList.toggle('light-theme',theme==='light');const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',theme==='light'?'#e9e8e3':'#1c1c1c');if($('themeToggle'))$('themeToggle').textContent=theme==='light'?'Nattläge':'Dagläge';}
 applyTheme(currentTheme);
 $('themeToggle').onclick=()=>{applyTheme(currentTheme==='light'?'dark':'light');try{localStorage.setItem(themeKey,currentTheme)}catch(e){}};
 
