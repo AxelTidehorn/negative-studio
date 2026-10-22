@@ -52,6 +52,11 @@ const partial=structuredClone(initial);partial.format='negative-studio-roll-v08'
 await load(h,partial);assert.equal(h.run('rollShared.cropExportToFrame'),true);
 assert.deepEqual(json(h,'roll.map(f=>NSGeometry.effectiveCrop(f.geometry,rollShared.cropExportToFrame))'),[true,false,true,false]);
 console.log('PASS partial imports keep unmatched frame exports coherent with the new queue default');
+// Preserve the old filename matcher (first queued match) and never share models.
+const duplicates=setup();duplicates.run('roll[0].file.name="same.tif";roll[1].file.name="same.tif";roll[1].geometry=NSGeometry.create(90);roll[1].geometry.rotation.fineDegrees=-3;');
+const duplicateProject=await save(duplicates);duplicateProject.frames=duplicateProject.frames.slice(0,1);duplicateProject.frames[0].geometry.rotation.fineDegrees=9;
+await load(duplicates,duplicateProject);assert.equal(duplicates.run('roll[0].geometry.rotation.fineDegrees'),9);assert.equal(duplicates.run('roll[1].geometry.rotation.fineDegrees'),-3);assert.equal(duplicates.run('roll[1].settings.rotation'),90);assert.equal(duplicates.run('roll[0].geometry===roll[1].geometry'),false);
+console.log('PASS duplicate filenames retain existing first-match behavior and independent per-image models');
 // Explicit queue-wide edits clear migration overrides, but never individual geometry.
 h.run('roll[0].geometry.rotation.fineDegrees=7;setCompositionCrop(0,{x:.1,y:.2,w:.7,h:.6});');
 const own=json(h,'roll.map(f=>({crop:f.crop,rotation:f.geometry.rotation,composition:f.geometry.compositionCrop}))');
