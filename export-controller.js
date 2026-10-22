@@ -114,7 +114,7 @@ ui('batchJpeg').onclick=async()=>{
 const writeTiff=exportTiff;
 exportTiff=async function(){
  if(active||!exportReady())throw Error('Ingen exportklar bild finns.');
- const job={id:++sequence,cancelled:false,worker:null,rejectCancel:()=>{}};
+ const job={id:++sequence,im:working,cancelled:false,worker:null,rejectCancel:()=>{}};
  active=job;lock();beginUI();ui('exportProgressTitle').textContent='TIFF-export';
  try{
   await writeTiff({check:()=>check(job),progress:(done,total)=>{

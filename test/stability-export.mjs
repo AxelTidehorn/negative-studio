@@ -46,7 +46,7 @@ await test('batch TIFF cancel stops before next frame',async()=>{
 await test('TIFF cancellation between stripes releases busy state without download',async()=>{
  const h=setup();vm.runInContext(fs.readFileSync('export-controller.js','utf8'),h.context);
  h.run('working={...working,height:40,data:new Uint16Array(4*40*3).fill(20000)};');
- const p=h.run('exportTiff()');h.context.FILMLABB_EXPORT.cancel();await assert.rejects(p,{name:'AbortError'});assert.equal(h.context.downloads.length,0);assert.equal(h.run('exportBusy'),false);
+ const p=h.run('exportTiff()');assert.equal(h.context.FILMLABB_EXPORT.snapshot().sourceIntact,true);h.context.FILMLABB_EXPORT.cancel();await assert.rejects(p,{name:'AbortError'});assert.equal(h.context.downloads.length,0);assert.equal(h.run('exportBusy'),false);
 });
 await test('TIFF batch retains the five-image limit',async()=>{
  const h=setup();vm.runInContext(fs.readFileSync('export-controller.js','utf8'),h.context);
