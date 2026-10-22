@@ -5,7 +5,8 @@
   "scripts": {
     "build": "node build-root.mjs",
     "test": "node verify-preview.mjs",
-    "test:legacy": "node verify-legacy.mjs"
+    "test:legacy": "node verify-legacy.mjs",
+    "test:tiff": "node tests/check-tiff-codec.mjs && node tests/check-export-tiff-perf.mjs"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"

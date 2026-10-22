@@ -1,4 +1,7 @@
-# FILMLABB 1.1 Beta 3.4.1
+# FILMLABB 1.1 Beta 3.5
+
+TIFF-kompatibilitet och exportprestanda: se [ändringar, testresultat och begränsningar](RELEASE_1.1_BETA3_5.md).
+
 
 Befintliga kreativa profiler har fått tydligare karaktär. Standardmotorn analyserar nu originaldata; visningsbildens nedskalning används inte längre för ny färgkalibrering. Äldre projekt behåller tidigare profiler, motor och analysmetod.
 

@@ -44,23 +44,22 @@ function compile(c){
  function finish4(p){
   const a=c.cal.beta4;
   // Keep signed density coordinates until the shared range has been applied.
-  p=p.map((v,k)=>Math.max(0,o.autoLevels?(v-a.lo)/a.span:v)*ev*gains[k]);
-  let y=.2126*p[0]+.7152*p[1]+.0722*p[2];
+  let r=Math.max(0,o.autoLevels?(p[0]-a.lo)/a.span:p[0])*ev*gains[0],
+      g=Math.max(0,o.autoLevels?(p[1]-a.lo)/a.span:p[1])*ev*gains[1],
+      b=Math.max(0,o.autoLevels?(p[2]-a.lo)/a.span:p[2])*ev*gains[2];
+  let y=.2126*r+.7152*g+.0722*b;
   if(y>1e-12){
    let target=Math.max(0,(y-black4)/whiteRange4);
    if(o.gamma!==1)target=target**invGamma;
    if(o.contrast!==1)target=.18*(target/.18)**o.contrast;
    if(o.shadows||o.highlights){const displayY=encode(target),sw=(1-clamp(displayY/.65))**2,hw=clamp((displayY-.35)/.65)**2;target*=2**(-(o.shadows/100)*sw*1.4+(o.highlights/100)*hw*1.4);}
-   p=p.map(v=>v*target/y);
+   r=r*target/y;g=g*target/y;b=b*target/y;
   }
-  // New monochrome mixing precedes highlight compression; zero strength is neutral.
-  if(bw&&f.creativeVersion===2){const neutral=.2126*p[0]+.7152*p[1]+.0722*p[2],mixed=p.reduce((v,x,k)=>v+x*f.mono[k],0),gray=neutral+(mixed-neutral)*clamp(c.strength);p=[gray,gray,gray];}
-  if(sat!==1){y=.2126*p[0]+.7152*p[1]+.0722*p[2];p=p.map(v=>Math.max(0,y+(v-y)*sat));}
-  const peak=Math.max(...p);
-  // Smooth path to display white, applied by one RGB scale, before output encoding.
-  const mapped=o.toneMode4==='reference'?Math.min(1,peak):peak<=.8?peak:.8+.2*(-Math.expm1(-Math.min(100,(peak-.8)/.2)));
-  if(peak>0)p=p.map(v=>v*mapped/peak);
-  p=p.map(encode);
+  if(bw&&f.creativeVersion===2){const neutral=.2126*r+.7152*g+.0722*b,mixed=r*f.mono[0]+g*f.mono[1]+b*f.mono[2],gray=neutral+(mixed-neutral)*clamp(c.strength);r=g=b=gray;}
+  if(sat!==1){y=.2126*r+.7152*g+.0722*b;r=Math.max(0,y+(r-y)*sat);g=Math.max(0,y+(g-y)*sat);b=Math.max(0,y+(b-y)*sat);}
+  const peak=Math.max(r,g,b),mapped=o.toneMode4==='reference'?Math.min(1,peak):peak<=.8?peak:.8+.2*(-Math.expm1(-Math.min(100,(peak-.8)/.2)));
+  if(peak>0){r=r*mapped/peak;g=g*mapped/peak;b=b*mapped/peak;}
+  p=[encode(r),encode(g),encode(b)];
   // Existing creative profiles remain downstream and do not enter calibration.
   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
   if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
@@ -96,15 +95,32 @@ function render(im,config,mode='positive',limit=1400,cache){
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/h)),j=(sy*im.width+sx)*im.channels,p=read(im,j),q=mode==='negative'||mode==='split'&&x<w/2?p.map(encode):table?[lookup(table,p[0],0),lookup(table,p[1],1),lookup(table,p[2],2)]:technical?kernel.finish(p.map((v,k)=>lookup(technical,v,k))):kernel.pixel(p),i=(y*w+x)*4;for(let k=0;k<3;k++)data[i+k]=Math.round(q[k]*255);data[i+3]=255;if((y*w+x)%Math.max(1,Math.floor(w*h/25000))===0)bins[Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2])]++;}
  return {width:w,height:h,data,bins};
 }
-function exportRows(im,config,geometry,y0,rows,table,complete=false){
- const k=compile(config),out=new Uint16Array(geometry.width*rows*3);
+// Compile once per export. Integer source tables include sRGB decoding and the
+// technical stage; RGB-coupled tones/profiles remain evaluated without approximation.
+function prepare(im,config){
+ const kernel=compile(config),integer=(im.scale===255||im.scale===65535)&&im.data.BYTES_PER_ELEMENT<=2;
+ let table=null;
+ if(integer){
+  const n=im.scale+1;table=[new Float64Array(n),new Float64Array(n),new Float64Array(n)];
+  for(let v=0;v<n;v++){
+   let value=v/im.scale;
+   if(im.encoding==='srgb')value=value<=.04045?value/12.92:((value+.055)/1.055)**2.4;
+   else value=clamp(value/(im.normalization||1));
+   if(config.kind==='reference'&&config.referenceEncoding!=='linear')value=value<=.0031308?12.92*value:1.055*value**(1/2.4)-.055;
+   for(let c=0;c<3;c++)table[c][v]=kernel.technical(value,c);
+  }
+ }
+ return {pixel(i){return table?kernel.finish([table[0][im.data[i]],table[1][im.data[i+1]],table[2][im.data[i+2]]]):kernel.pixel(read(im,i));}};
+}
+function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
+ const k=prepared?null:compile(config),out=new Uint16Array(geometry.width*rows*3);
  for(let y=0;y<rows;y++)for(let x=0;x<geometry.width;x++){
   const [sx,sy]=geometry.at(x,y0+y),j=(sy*im.width+sx)*im.channels,i=(y*geometry.width+x)*3;
   if(complete){out[i]=table[0][im.data[j]];out[i+1]=table[1][im.data[j+1]];out[i+2]=table[2][im.data[j+2]];continue;}
-  const p=table?k.finish([table[0][im.data[j]],table[1][im.data[j+1]],table[2][im.data[j+2]]]):k.pixel(read(im,j));
+  const p=prepared?prepared.pixel(j):table?k.finish([table[0][im.data[j]],table[1][im.data[j+1]],table[2][im.data[j+2]]]):k.pixel(read(im,j));
   for(let c=0;c<3;c++)out[i+c]=Math.round(p[c]*65535);
  }
  return out;
 }
-root.NSPixelKernel={compile,tables,completeTables,render,exportRows};
+root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare};
 })(globalThis);

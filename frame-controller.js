@@ -173,15 +173,15 @@ function exportReady(){if(exportBusy||rollLoading||!working)return false;if(!sta
 // Safari (especially iOS) may return null from canvas.toBlob when the canvas
 // exceeds its pixel/side budget. Render directly at the selected JPEG size;
 // never allocate a full-resolution RGBA buffer merely to shrink it afterwards.
-function makeSafeJpegExportCanvas(maxPixels=12000000){
- const g=CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation);
+async function makeSafeJpegExportCanvas(maxPixels=12000000,snapshot){
+ const {im,g,pixels}=snapshot;
  if(!Number.isSafeInteger(g.width*g.height)||g.width<1||g.height<1)throw Error('Ogiltig exportstorlek.');
  const factor=Math.min(1,8192/g.width,8192/g.height,Math.sqrt(maxPixels/(g.width*g.height)));
  const w=Math.max(1,Math.floor(g.width*factor)),h=Math.max(1,Math.floor(g.height*factor));
- const c=document.createElement('canvas');c.width=w;c.height=h;
+ const c=document.createElement('canvas');
+ try{c.width=w;c.height=h;
  const cx=c.getContext('2d',{colorSpace:'srgb'});
  if(!cx)throw Error('Kunde inte skapa JPEG-canvas.');
- const lookup=neutralLookup(state,working);
  // Drawing in strips avoids allocating an additional full-frame ImageData.
  for(let y0=0;y0<h;y0+=128){
   const rows=Math.min(128,h-y0),out=cx.createImageData(w,rows);
@@ -189,23 +189,25 @@ function makeSafeJpegExportCanvas(maxPixels=12000000){
    const gx=Math.min(g.width-1,Math.floor((x+.5)*g.width/w));
    const gy=Math.min(g.height-1,Math.floor((y0+dy+.5)*g.height/h));
    const [sx,sy]=g.at(gx,gy),i=(dy*w+x)*4;
-   if(lookup){const j=(sy*working.width+sx)*working.channels;
-    for(let k=0;k<3;k++)out.data[i+k]=Math.round(lookup[k][working.data[j+k]]/257);
-   }else{const p=technicalPositive(sourcePixel(working,sx,sy),state);
-    for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);}
+   const p=pixels.pixel((sy*im.width+sx)*im.channels);
+   for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);
    out.data[i+3]=255;
   }
   cx.putImageData(out,0,y0);
+  if(y0%256===0)await new Promise(r=>setTimeout(r,0));
  }
  return {canvas:c,width:w,height:h,originalWidth:g.width,originalHeight:g.height};
+ }catch(e){c.width=0;c.height=0;throw e;}
 }
 jpegBytes=async function(skipBusyCheck=false){
  if(!(skipBusyCheck ? (!rollLoading&&working&&state.cropConfirmed) : exportReady()))throw Error('Filmrutan måste bekräftas före export.');
+ const im=working,opts={...state},config=configuration38(opts);
+ const snapshot={im,g:CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation),pixels:NSPixelKernel.prepare(im,config)};
  let lastError=null;
  for(const budget of [12000000,6000000,3000000]){
   let result;
   try{
-   result=makeSafeJpegExportCanvas(budget);
+   result=await makeSafeJpegExportCanvas(budget,snapshot);
    const blob=await new Promise((resolve,reject)=>{
     try{result.canvas.toBlob(resolve,'image/jpeg',.94);}catch(e){reject(e);}
    });
