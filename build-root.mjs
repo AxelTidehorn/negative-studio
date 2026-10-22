@@ -18,7 +18,7 @@ fs.copyFileSync('cache-worker.js','site/cache-worker.js');
 
 fs.copyFileSync('demo-negative.png','site/demo-negative.png');
 
-for(const f of ['compact-ui.js','export-plan.js','export-worker.js','export-controller.js','flat-field.js','next-workflow.js','gpu-renderer.js','gpu-preview.js','tiff-codec.js','creative-profiles.js','source-analysis.js','slider-response.js','file-formats.js','raw-decoder.js','image-model.js','color-management.js','srgb-profile.js','frame-controller.js','calibration-state.js','beta39.js','beta4.js','color-calibration.js','raw-input.js','color-analysis.js','render-core.js','preview-worker.js','i18n.js','workspace-layout.js'])fs.copyFileSync(f,'site/'+f);
+for(const f of ['geometry.js','geometry-state.js','compact-ui.js','export-plan.js','export-worker.js','export-controller.js','flat-field.js','next-workflow.js','gpu-renderer.js','gpu-preview.js','tiff-codec.js','creative-profiles.js','source-analysis.js','slider-response.js','file-formats.js','raw-decoder.js','image-model.js','color-management.js','srgb-profile.js','frame-controller.js','calibration-state.js','beta39.js','beta4.js','color-calibration.js','raw-input.js','color-analysis.js','render-core.js','preview-worker.js','i18n.js','workspace-layout.js'])fs.copyFileSync(f,'site/'+f);
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);
 
