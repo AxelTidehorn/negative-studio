@@ -29,6 +29,26 @@ const frameOptions=document.getElementById('frameOptions');
 const cropConfirm=document.getElementById('cropConfirm');
 const cropStatus=document.getElementById('cropStatus');
 if(frameQuick){
+ // Keep all existing IDs, event handlers and crop state; move only the controls.
+ const editor=document.getElementById('adjustmentPanel');
+ const advanced=document.getElementById('advancedSettings');
+ if(editor&&advanced){
+  const frameGroup=document.createElement('details');
+  frameGroup.id='frameSettingsGroup';
+  frameGroup.className='frame-settings-group';
+  const title=document.createElement('summary');
+  title.textContent='Filmruta';
+  frameGroup.append(title,frameQuick);
+  editor.insertBefore(frameGroup,advanced);
+  const confirm=cropConfirm;
+  if(confirm){
+   const openOnPending=()=>{
+    if(!confirm.hidden && typeof working!=='undefined' && working){frameGroup.open=true;}
+   };
+   // A confirmation still appears in the crop section, but does not consume viewer height.
+   new MutationObserver(openOnPending).observe(confirm,{attributes:true,attributeFilter:['hidden']});
+  }
+ }
  frameQuick.classList.add('viewer-toolbar-row');
  frameQuick.setAttribute('data-density','compact');
 }
@@ -52,6 +72,6 @@ if(frameOptions){
 if(cropConfirm){cropConfirm.classList.add('frame-confirm');cropConfirm.textContent='Bekräfta';}
 if(cropStatus){cropStatus.classList.add('frame-status-inline');}
 
-const css=document.createElement('link');css.rel='stylesheet';css.href='./ui-refinement.css';document.head.append(css);summary();
+summary();
 
 })();

@@ -74,6 +74,25 @@
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>requestAnimationFrame(fitPicture)).observe(picture);
  if(typeof MutationObserver!=='undefined')new MutationObserver(()=>requestAnimationFrame(fitPicture)).observe(canvas,{attributes:true,attributeFilter:['width','height','class']});
  function updateDockState(){document.body.classList.toggle('workspace-docked',window.scrollY>18);}
+ // Two discrete mouse-wheel stages: landing -> workstation, workstation -> landing.
+ // Do not hijack scrolling in controls, queue, editor or nested popovers.
+ let inTransition=false;
+ const dockOffset=()=>Math.round(document.querySelector('header')?.getBoundingClientRect().height||58);
+ let fixedDock=0;
+ function stageScroll(e){
+  if(e.ctrlKey||e.metaKey||e.shiftKey||Math.abs(e.deltaY)<3)return;
+  const element=e.target;
+  if(element instanceof Element&&element.closest('.editor-panel,.queue-panel,.fl-info-content,details[open],select,input,textarea,[contenteditable="true"]'))return;
+  const header=document.querySelector('header');
+  fixedDock=header?.offsetHeight||fixedDock||58;
+  const y=window.scrollY;
+  if(e.deltaY>0 && y<fixedDock-2){
+   e.preventDefault();if(!inTransition){inTransition=true;window.scrollTo({top:fixedDock,behavior:'smooth'});setTimeout(()=>inTransition=false,430);}
+  }else if(e.deltaY<0 && y>1 && y<=fixedDock+16){
+   e.preventDefault();if(!inTransition){inTransition=true;window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>inTransition=false,430);}
+  }else if(inTransition){e.preventDefault();}
+ }
+ window.addEventListener('wheel',stageScroll,{passive:false});
  window.addEventListener('scroll',updateDockState,{passive:true});
  window.addEventListener('resize',measureWorkspace);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);

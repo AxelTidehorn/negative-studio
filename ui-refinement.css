@@ -197,3 +197,21 @@ body.filmlabb-ui-refresh .image-controls .toolrow .btn{border-radius:4px!importa
  body.filmlabb-ui-refresh .image-controls>.toolrow{margin:0!important}
  body.filmlabb-ui-refresh .foot{padding:12px 12px 22px!important}
 }
+
+/* Beta 5 / layout v7: photographic work surface, not a permanent crop bar. */
+body.filmlabb-ui-refresh .image-panel>.frame-quick{display:none!important}
+body.filmlabb-ui-refresh .image-panel{gap:6px!important}
+body.filmlabb-ui-refresh .frame-settings-group{margin:11px 0 0!important;padding:8px 0 0!important;border-top:1px solid var(--ns-border)!important}
+body.filmlabb-ui-refresh .frame-settings-group>summary{cursor:pointer;font-size:13px;font-weight:600;padding:7px 0!important;color:var(--ns-text)!important}
+body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important;align-items:flex-start!important;gap:8px!important;margin:7px 0 3px!important;padding:0!important;background:none!important;border:0!important;flex-wrap:wrap!important}
+body.filmlabb-ui-refresh .frame-settings-group #frameOptions{flex:1 1 180px;min-width:0}
+body.filmlabb-ui-refresh .frame-settings-group #frameOptions>summary{border-radius:3px!important}
+body.filmlabb-ui-refresh .frame-settings-group .frame-confirm{margin-left:auto!important}
+body.filmlabb-ui-refresh .image-controls{margin-top:0!important}
+/* A consistent warm monochrome identity; subtle vermilion is reserved for actions. */
+body.filmlabb-ui-refresh{--ns-bg:#222120;--ns-panel:#2d2b29;--ns-panel-2:#242322;--ns-text:#eeeae2;--ns-muted:#b2aca2;--ns-border:#56514b;--ns-btn:#36332f;--ns-btn-border:#655e56;--ns-btn-text:#eeeae2;--ns-accent:#c78154;--ns-accent-ink:#211b17;--ns-accent-soft:rgba(199,129,84,.13);--ns-accent-line:#c78154}
+body.filmlabb-ui-refresh.light-theme{--ns-bg:#e9e6df;--ns-panel:#f4f1eb;--ns-panel-2:#e9e6df;--ns-text:#282521;--ns-muted:#6f6960;--ns-border:#c0b9ae;--ns-btn:#e4dfd6;--ns-btn-border:#b3aa9d;--ns-btn-text:#292620;--ns-accent:#a45b34;--ns-accent-ink:#fff8ed;--ns-accent-soft:rgba(164,91,52,.12);--ns-accent-line:#a45b34}
+/* Footer remains part of document but is beyond a deliberate additional scroll. */
+body.filmlabb-ui-refresh .foot{margin-top:45dvh!important}
+body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height,calc(100dvh - 46px))!important}
+@media(max-width:760px){body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height-mobile,calc(100dvh - 44px))!important}body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important}body.filmlabb-ui-refresh .foot{margin-top:42dvh!important}}
