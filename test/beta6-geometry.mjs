@@ -50,4 +50,9 @@ assert.throws(()=>G.validate({...G.create(),cropExportToFrameOverride:null}));
 const pending=G.legacyFrame({rotation:90,cropExport:true},null,false);assert.throws(()=>G.compositionTransform(5,4,pending));
 const hydrated=G.resolve(pending,{width:5,height:4},{x:.2,y:.25,w:.6,h:.5});assert.deepEqual(G.compositionTransform(5,4,hydrated).output,{width:2,height:3});
 assert.throws(()=>G.validate({...hydrated,compositionCrop:{cx:0,cy:0,w:1,h:1}}));
+// Previously generic normalized->pixel rounding lost a row when the same global
+// constraint was switched on. Keep the exact legacy path while it remains valid.
+const thinFrame={x:.13,y:.11,w:.72,h:.73},thin=G.resolve(G.legacyFrame({rotation:90,cropExport:true},thinFrame,false),{width:3,height:22},thinFrame);
+assert.deepEqual(G.compositionTransform(3,22,thin,{cropExportToFrame:true,analysisFrame:thinFrame}).output,{width:15,height:1});
+
 console.log('PASS finite/bounded coordinates, source sizes, schema, pending legacy plans and inconsistent legacy snapshots rejected');

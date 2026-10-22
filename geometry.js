@@ -116,9 +116,11 @@ function compositionTransform(width,height,value,options={}){
  let area={left:(e.crop.cx-e.crop.w/2)*L,top:(e.crop.cy-e.crop.h/2)*L,width:e.crop.w*L,height:e.crop.h*L};
  let output={width:Math.max(1,Math.floor(area.width)),height:Math.max(1,Math.floor(area.height))};
  // Exact legacy/quarter-turn plan. Never round-trip integer sizes via normalized floats.
- const legacy=g.legacyCrop&&!g.legacyCrop.edited&&g.legacyCrop.analysisFrame&&!options.cropExportToFrame;
- if(g.rotation.fineDegrees===0&&(legacy||g.compositionCrop===null)){
-  const b=legacy?pixelBounds(width,height,g.legacyCrop.analysisFrame):domain(width,height,options),p=t.forward({x:(b.x0+b.x1)/2,y:(b.y0+b.y1)/2});
+ const legacy=g.legacyCrop&&!g.legacyCrop.edited&&g.legacyCrop.analysisFrame;
+ const valid=domain(width,height,options),oldBounds=legacy?pixelBounds(width,height,g.legacyCrop.analysisFrame):null;
+ const exactLegacy=oldBounds&&oldBounds.x0>=valid.x0&&oldBounds.y0>=valid.y0&&oldBounds.x1<=valid.x1&&oldBounds.y1<=valid.y1;
+ if(g.rotation.fineDegrees===0&&(exactLegacy||g.compositionCrop===null)){
+  const b=exactLegacy?oldBounds:valid,p=t.forward({x:(b.x0+b.x1)/2,y:(b.y0+b.y1)/2});
   const w=g.rotation.quarterTurns%2?b.y1-b.y0:b.x1-b.x0,h=g.rotation.quarterTurns%2?b.x1-b.x0:b.y1-b.y0;
   area={left:p.x-w/2,top:p.y-h/2,width:w,height:h};output={width:w,height:h};
  }
