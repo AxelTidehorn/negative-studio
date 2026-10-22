@@ -67,7 +67,7 @@ exportTiff=async function(control={}){
  if(!exportReady())throw Error('Ingen exportklar bild finns.');
  exportBusy=true;$('exportTiff').disabled=true;
  try{
-  const im=working,opts={...state},c=configuration38(opts),g=CE.exportGeometry(im,{...cropRegion},opts.cropExport,opts.rotation);
+  const im=working,opts={...state},c=configuration38(opts),g=exportGeometrySnapshot(im,opts).g;
   control.check?.();
   if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');
   const parts=[tiffHeader(g.width,g.height)],prepared=NSPixelKernel.prepare(im,c);
@@ -94,7 +94,7 @@ const clear38=$('clearQueue').onclick;
 $('clearQueue').onclick=()=>{++request38;queued38=null;lastPreview38=null;technicalCache38=null;config38=null;clearTimeout(previewTick38);clearTimeout(dragTimer38);if(previewWorker38){previewWorker38.terminate();previewWorker38=null;}workerBusy38=false;workerVersion38=-1;clear38();};
 // Small diagnostics surface, no source pixels or files exposed.
 globalThis.FILMLABB_PERFORMANCE={snapshot:()=>({...stats38,analyses:analysisCount38,worker:!!previewWorker38})};
-function makeExportCanvas(){const im=working,c=configuration38(),g=CE.exportGeometry(im,{...cropRegion},state.cropExport,state.rotation),canvas=document.createElement('canvas');canvas.width=g.width;canvas.height=g.height;const cx=canvas.getContext('2d',{colorSpace:'srgb'}),out=cx.createImageData(g.width,g.height),table=im.encoding==='linear'&&im.scale===65535&&(im.normalization||1)===1&&c.kind!=='reference'?technicalTables38(c):null,complete=!!(table&&technicalCache38?.complete);for(let y=0;y<g.height;y+=32){const rows=Math.min(32,g.height-y),samples=NSPixelKernel.exportRows(im,c,g,y,rows,table,complete);for(let i=0;i<samples.length;i+=3){const j=(y*g.width+i/3)*4;out.data[j]=Math.round(samples[i]/257);out.data[j+1]=Math.round(samples[i+1]/257);out.data[j+2]=Math.round(samples[i+2]/257);out.data[j+3]=255;}}cx.putImageData(out,0,0);return canvas;};
+function makeExportCanvas(){const im=working,c=configuration38(),g=exportGeometrySnapshot(im).g,canvas=document.createElement('canvas');canvas.width=g.width;canvas.height=g.height;const cx=canvas.getContext('2d',{colorSpace:'srgb'}),out=cx.createImageData(g.width,g.height),table=im.encoding==='linear'&&im.scale===65535&&(im.normalization||1)===1&&c.kind!=='reference'?technicalTables38(c):null,complete=!!(table&&technicalCache38?.complete);for(let y=0;y<g.height;y+=32){const rows=Math.min(32,g.height-y),samples=NSPixelKernel.exportRows(im,c,g,y,rows,table,complete);for(let i=0;i<samples.length;i+=3){const j=(y*g.width+i/3)*4;out.data[j]=Math.round(samples[i]/257);out.data[j+1]=Math.round(samples[i+1]/257);out.data[j+2]=Math.round(samples[i+2]/257);out.data[j+3]=255;}}cx.putImageData(out,0,0);return canvas;};
 const choose38=chooseFrame;
 chooseFrame=async function(i,opts){if(i<0||i>=roll.length||rollLoading||exportBusy)return;++request38;queued38=null;return choose38(i,opts);};
 

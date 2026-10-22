@@ -67,7 +67,8 @@ async function mainAttempt(job){
 jpegBytes=async function(skipBusyCheck=false){
  if(active)throw Error('En export pågår redan.');
  if(!(skipBusyCheck?(!rollLoading&&working):exportReady()))throw Error('Ingen exportklar bild finns.');
- const job={id:++sequence,im:working,opts:{...state},region:{...cropRegion},config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
+ const selection=exportGeometrySnapshot(working);
+ const job={id:++sequence,im:working,opts:{...state,cropExport:selection.crop},region:selection.region,config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
  job.g=geometry(job);job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});
  active=job;exportBusy=true;lock();beginUI();let workerUsable=typeof Worker!=='undefined'&&job.im.encoding!=='icc';
  try{
