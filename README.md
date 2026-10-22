@@ -1,6 +1,8 @@
-# FILMLABB 1.1 Beta 3.5
+# FILMLABB 1.1 Beta 3.6 – GPU-prototyp 1
 
-TIFF-kompatibilitet och exportprestanda: se [ändringar, testresultat och begränsningar](RELEASE_1.1_BETA3_5.md).
+GPU-förhandsvisning med CPU-reserv: se [funktioner, testresultat och installation](RELEASE_1.1_BETA3_6_GPU.md).
+
+Tidigare TIFF-kompatibilitet och exportprestanda: se [ändringar, testresultat och begränsningar](RELEASE_1.1_BETA3_5.md).
 
 
 Befintliga kreativa profiler har fått tydligare karaktär. Standardmotorn analyserar nu originaldata; visningsbildens nedskalning används inte längre för ny färgkalibrering. Äldre projekt behåller tidigare profiler, motor och analysmetod.
