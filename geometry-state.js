@@ -1,4 +1,4 @@
-/* Beta 6 internal data adapters. No fine rotation/composition renderer is enabled. */
+/* Beta 6 data adapters. Presentation geometry is export-only; preview is unchanged. */
 'use strict';
 function geometryForFrame(frame,settings,analysisFrame){
  let g=frame.geometry?NSGeometry.syncLegacy(frame.geometry,settings.rotation??0):NSGeometry.legacyFrame(settings,analysisFrame,rollShared.cropExportToFrame);
@@ -46,15 +46,15 @@ function setQueueCropExportToFrame(value){
  roll.forEach((f,i)=>{f.geometry=staged[i];f.settings.cropExport=NSGeometry.effectiveCrop(staged[i],value);});
  state.cropExport=activeFrame>=0?roll[activeFrame].settings.cropExport:value;$('cropExport').checked=state.cropExport;
 }
-// Only chooses inputs for CE's unchanged exact quarter-turn algorithm. New fine
-// angles/manual composition remain dormant. Frozen legacy crops preserve old files.
+// Freeze export geometry independently of color state and later queue edits.
 function exportGeometrySnapshot(im,opts=state,region=cropRegion){
- let r={...region},crop=!!opts.cropExport;
+ let r={...region},crop=!!opts.cropExport,model=null;
  if(roll[activeFrame]){
   reconcileLegacyCrop(activeFrame,crop);
-  const g=roll[activeFrame].geometry;
+  const g=geometryForFrame(roll[activeFrame],opts,region);
+  model=g;
   if(!rollShared.cropExportToFrame&&g?.legacyCrop?.analysisFrame)r={...g.legacyCrop.analysisFrame};
   crop=g?NSGeometry.effectiveCrop(g,rollShared.cropExportToFrame):crop;
  }
- return {region:r,crop,rotation:opts.rotation,g:CE.exportGeometry(im,r,crop,opts.rotation)};
+ return {region:r,crop,rotation:opts.rotation,g:model?NSPresentation.plan(im,model,rollShared.cropExportToFrame,region):CE.exportGeometry(im,r,crop,opts.rotation)};
 }

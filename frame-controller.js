@@ -205,18 +205,11 @@ async function makeSafeJpegExportCanvas(maxPixels=12000000,snapshot){
  const cx=c.getContext('2d',{colorSpace:'srgb'});
  if(!cx)throw Error('Kunde inte skapa JPEG-canvas.');
  // Drawing in strips avoids allocating an additional full-frame ImageData.
- for(let y0=0;y0<h;y0+=128){
-  const rows=Math.min(128,h-y0),out=cx.createImageData(w,rows);
-  for(let dy=0;dy<rows;dy++)for(let x=0;x<w;x++){
-   const gx=Math.min(g.width-1,Math.floor((x+.5)*g.width/w));
-   const gy=Math.min(g.height-1,Math.floor((y0+dy+.5)*g.height/h));
-   const [sx,sy]=g.at(gx,gy),i=(dy*w+x)*4;
-   const p=pixels.pixel((sy*im.width+sx)*im.channels);
-   for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);
-   out.data[i+3]=255;
-  }
-  cx.putImageData(out,0,y0);
-  if(y0%256===0)await new Promise(r=>setTimeout(r,0));
+ for(let y0=0;y0<h;){
+  const rows=NSPresentation.rows(im,g,{width:w,height:h},h-y0),out=cx.createImageData(w,rows);
+  NSPresentation.rgba(im,pixels,g,{width:w,height:h},y0,rows,false,out.data);
+  cx.putImageData(out,0,y0);y0+=rows;
+  await new Promise(r=>setTimeout(r,0));
  }
  return {canvas:c,width:w,height:h,originalWidth:g.width,originalHeight:g.height};
  }catch(e){c.width=0;c.height=0;throw e;}

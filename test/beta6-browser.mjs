@@ -24,15 +24,15 @@ try{
    const original=await tiff(),analysis=FILMLABB_PERFORMANCE.snapshot().analyses,settings=JSON.stringify(state),frame=JSON.stringify(cropRegion);
    setCompositionCrop(0,{cx:-.1,cy:.05,w:.6,h:.5});roll[0].geometry.rotation.fineDegrees=17.25;
    const composed=await tiff();
-   cases.push({q,crop,identical:original===composed,noAnalysis:analysis===FILMLABB_PERFORMANCE.snapshot().analyses,noSettings:settings===JSON.stringify(state)&&frame===JSON.stringify(cropRegion)});
+   cases.push({q,crop,changed:original!==composed,noAnalysis:analysis===FILMLABB_PERFORMANCE.snapshot().analyses,noSettings:settings===JSON.stringify(state)&&frame===JSON.stringify(cropRegion)});
   }
   const a=await jpegBytes();setCompositionCrop(0,null);roll[0].geometry.rotation.fineDegrees=-14.5;const b=await jpegBytes();
   $('saveSettings').onclick();const project=JSON.parse(await downloaded.blob.text());
   return {cases,jpegIdentical:await hash(a)===await hash(b),project};
  });
- assert.ok(result.cases.every(c=>c.identical&&c.noAnalysis&&c.noSettings),JSON.stringify(result.cases));assert.equal(result.jpegIdentical,true);
+ assert.ok(result.cases.every(c=>c.changed&&c.noAnalysis&&c.noSettings),JSON.stringify(result.cases));assert.equal(result.jpegIdentical,false);
  assert.equal(result.project.geometryVersion,1);assert.equal(result.project.frames[0].geometry.rotation.fineDegrees,-14.5);
- console.log('PASS browser: eight native TIFF exports preserve exact bytes for full/cropped 0/90/180/270°, no extra analysis; JPEG ignores dormant fine/composition geometry');
+ console.log('PASS browser: eight TIFF/JPEG presentation cases activate fine/composition geometry without analysis or color changes');
  await page.locator('#settingsFile').setInputFiles({name:'beta6.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(result.project))});
  await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));
  assert.equal(await page.evaluate(()=>roll[0].geometry.rotation.fineDegrees),-14.5);
@@ -50,7 +50,42 @@ try{
   cropRegion={x:.2,y:.2,w:.5,h:.5};saveCurrentFrame();await exportTiff();
   return {tiff:tiff===await hash(await blob.arrayBuffer()),jpeg:jpeg===await hash(await jpegBytes()),desired:desired===JSON.stringify(roll[0].geometry.compositionCrop),shared:rollShared.cropExportToFrame};
  });
- assert.deepEqual(frozen,{tiff:true,jpeg:true,desired:true,shared:false});assert.deepEqual(errors,[]);
+ assert.deepEqual(frozen,{tiff:true,jpeg:true,desired:true,shared:false});
+ // Let pending preview/histogram work settle before measuring geometry-only work.
+ await page.waitForTimeout(700);
+ const parity=await page.evaluate(async()=>{
+  state.cropExport=false;state.rotation=0;saveCurrentFrame();
+  roll[0].geometry=NSGeometry.create();roll[0].geometry.rotation.fineDegrees=2;
+  setCompositionCrop(0,{cx:0,cy:0,w:.6,h:.4});
+  const before={analyses:FILMLABB_PERFORMANCE.snapshot().analyses,gpu:FILMLABB_GPU.snapshot(),preview:$('preview').toDataURL()},color=JSON.stringify({state,calibration,base,sharedResponse4,cropRegion});
+  const a=await jpegBytes(),worker=FILMLABB_EXPORT.snapshot(),NativeWorker=Worker;
+  globalThis.Worker=class{constructor(){throw Error('forced export worker unavailable');}};
+  let b;try{b=await jpegBytes();}finally{globalThis.Worker=NativeWorker;}
+  const fallback=FILMLABB_EXPORT.snapshot(),jpeg=await createImageBitmap(new Blob([b],{type:'image/jpeg'}));
+  let blob;downloadBlob=b=>blob=b;await exportTiff();const tiff=await NSTiff.decode(await blob.arrayBuffer());
+  const same=a.length===b.length&&a.every((v,i)=>v===b[i]),after=FILMLABB_GPU.snapshot();
+  return {same,worker:worker.lastBackend,fallback:fallback.lastBackend,jpeg:[jpeg.width,jpeg.height],tiff:[tiff.width,tiff.height],
+   analysis:before.analyses===FILMLABB_PERFORMANCE.snapshot().analyses,color:color===JSON.stringify({state,calibration,base,sharedResponse4,cropRegion}),
+   preview:before.preview===$('preview').toDataURL(),gpu:before.gpu.frames===after.frames&&before.gpu.sourceUploads===after.sourceUploads};
+ });
+ assert.equal(parity.same,true);assert.equal(parity.worker,'worker');assert.equal(parity.fallback,'main');assert.deepEqual(parity.jpeg,parity.tiff);assert.ok(parity.analysis&&parity.color&&parity.preview&&parity.gpu,JSON.stringify(parity));
+ console.log('PASS browser: native free-rotation JPEG worker and forced main fallback are byte-identical; TIFF dimensions agree; CPU/GPU preview and calibration unchanged');
+ const cancelled=await page.evaluate(async()=>{
+  let downloads=0;downloadBlob=()=>downloads++;
+  const tiff=exportTiff();FILMLABB_EXPORT.cancel();let aborted=false;try{await tiff;}catch(e){aborted=e.name==='AbortError';}
+  return {aborted,downloads,busy:exportBusy,active:FILMLABB_EXPORT.snapshot().active};
+ });
+ assert.deepEqual(cancelled,{aborted:true,downloads:0,busy:false,active:false});
+ const zipped=await page.evaluate(async()=>{
+  let blob,name;downloadBlob=(b,n)=>{blob=b;name=n;};
+  await $('batchJpeg').onclick();
+  const bytes=new Uint8Array(await blob.arrayBuffer()),v=new DataView(bytes.buffer);let pos=0,count=0;
+  while(v.getUint32(pos,true)===0x04034b50){count++;const size=v.getUint32(pos+18,true),len=v.getUint16(pos+26,true),extra=v.getUint16(pos+28,true);pos+=30+len+extra+size;}
+  return {count,name,activeFrame,busy:exportBusy,batch:FILMLABB_EXPORT.snapshot().batch};
+ });
+ assert.equal(zipped.count,2);assert.match(zipped.name,/\.zip$/);assert.equal(zipped.activeFrame,0);assert.equal(zipped.busy,false);assert.equal(zipped.batch,false);
+ console.log('PASS browser: free-rotation TIFF cancellation downloads nothing and releases locks; mixed-geometry JPEG ZIP exports both images and restores selection');
+ assert.deepEqual(errors,[]);
  console.log('PASS browser: mixed legacy migration uses frozen exact TIFF/JPEG ROI after technical frame metadata changes');
- console.log('PASS browser: Beta 6 project import retains dormant rotation; invalid later-frame geometry leaves queue, analysis, settings and export naming unchanged');
+ console.log('PASS browser: Beta 6 project import retains internal rotation; invalid later-frame geometry leaves queue, analysis, settings and export naming unchanged');
 }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
