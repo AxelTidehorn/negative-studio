@@ -1,5 +1,8 @@
 # FILMLABB Beta 6 – steg 1: geometri och projekt
 
+Steg 1-dokumentation. Exportens tidigare vilande fasgräns ersätts i steg 2 av
+[BETA6_EXPORT_SAMPLING.md](BETA6_EXPORT_SAMPLING.md); UI och preview är fortsatt oförändrade.
+
 Tekniskt underlag: [förstudien](FILMLABB_1.1_Beta6_Teknisk_forstudie.md), särskilt
 avsnitt 4, 6, 7 och implementationsstegen 2–3. Branchen är uppdaterad med main
 9370c6d, inklusive PR #16 och förstudien. Detta ersätter första PR-utkastets

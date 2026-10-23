@@ -1,25 +1,22 @@
 /* One export per worker. Only one input stripe is in flight at a time. */
-importScripts('./creative-profiles.js','./raw-input.js','./flat-field.js','./image-model.js','./render-core.js','./export-plan.js');
+importScripts('./creative-profiles.js','./raw-input.js','./flat-field.js','./image-model.js','./render-core.js','./export-plan.js','./geometry.js','./presentation-sampler.js');
 'use strict';
 let job=null;
-function need(){const j=job;if(j.y<j.target.height)postMessage({type:'need',id:j.id,y:j.y,rows:NSExportPlan.rows(j.target.width,j.target.height-j.y)});}
+function need(){const j=job;if(j.y<j.target.height)postMessage({type:'need',id:j.id,y:j.y,rows:NSPresentation.rows(j.im,j.g,j.target,j.target.height-j.y)});}
 self.onmessage=async({data:m})=>{
  let stage='init';
  try{
   if(m.type==='start'){
    if(typeof OffscreenCanvas==='undefined'||typeof OffscreenCanvas.prototype.convertToBlob!=='function')throw Error('Bakgrundskodning saknas i webbläsaren.');
    const canvas=new OffscreenCanvas(m.target.width,m.target.height),ctx=canvas.getContext('2d',{colorSpace:'srgb'});if(!ctx)throw Error('Kunde inte skapa exportyta.');
-   const im={...m.source,data:new Uint8Array(0)},g=NSColorEngine.exportGeometry(im,m.region,m.crop,m.rotation);
+   const im={...m.source,data:new (globalThis[m.source.dataType]||Uint8Array)(0)},g=NSPresentation.restore(im,m.presentation,m.region,m.crop,m.rotation);
    job={id:m.id,im,g,target:m.target,canvas,ctx,y:0,prepared:NSPixelKernel.prepare(im,m.config)};need();return;
   }
   const j=job;if(!j||m.id!==j.id||m.type!=='stripe')return;stage='pixels';
-  if(m.y!==j.y||m.rows!==NSExportPlan.rows(j.target.width,j.target.height-j.y)||m.data.length!==j.target.width*m.rows*3)throw Error('Fel ordning eller storlek på exportdata.');
+  if(m.y!==j.y||m.rows!==NSPresentation.rows(j.im,j.g,j.target,j.target.height-j.y)||m.data.length!==j.target.width*m.rows*(j.g.presentation?12:3))throw Error('Fel ordning eller storlek på exportdata.');
   j.im.data=m.data;const out=j.ctx.createImageData(j.target.width,m.rows);
-  for(let dy=0;dy<m.rows;dy++)for(let x=0;x<j.target.width;x++){
-   const [sx,sy]=NSExportPlan.at(j.g,j.target,x,j.y+dy),i=(dy*j.target.width+x)*4,p=j.prepared.pixel((dy*j.target.width+x)*3,sx,sy);
-   for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);out.data[i+3]=255;
-  }
-  j.ctx.putImageData(out,0,j.y);j.im.data=new Uint8Array(0);j.y+=m.rows;
+  NSPresentation.rgba(j.im,j.prepared,j.g,j.target,j.y,m.rows,true,out.data);
+  j.ctx.putImageData(out,0,j.y);j.im.data=new j.im.data.constructor(0);j.y+=m.rows;
   postMessage({type:'progress',id:j.id,done:j.y,total:j.target.height});
   if(j.y<j.target.height){need();return;}
   stage='encode';postMessage({type:'encoding',id:j.id});

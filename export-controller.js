@@ -18,7 +18,6 @@ function doneUI(message,ok=false){show(message,ok?100:undefined);ui('cancelExpor
 function beginUI(){ui('exportProgressTitle').textContent='JPEG-export';panel.hidden=false;ui('cancelExport').hidden=false;ui('closeExportProgress').hidden=true;ui('exportSnapshotNote').textContent='Exporterar inställningarna som gällde vid start.';}
 function description(job){return (batch?`Bild ${batch.index+1}/${batch.total} · `:'')+job.target.width+'×'+job.target.height;}
 function progress(job,done,total){check(job);const value=Math.min(95,Math.floor(95*done/total));show(description(job)+' · '+value+' %',value);}
-function geometry(job){return CE.exportGeometry(job.im,job.region,job.opts.cropExport,job.opts.rotation);}
 function workerAttempt(job){return new Promise((resolve,reject)=>{
  let worker,timer=null,settled=false;
  const fail=e=>{if(settled)return;settled=true;clearTimeout(timer);reject(e instanceof Error?e:Error(String(e)));};
@@ -32,9 +31,9 @@ function workerAttempt(job){return new Promise((resolve,reject)=>{
   try{
    watch(m.type==='encoding'?120000:45000);
    if(m.type==='need'){
-    if(m.y!==job.nextY||m.rows!==NSExportPlan.rows(job.target.width,job.target.height-m.y))throw Error('Felaktig begäran om exportdata.');
+    if(m.y!==job.nextY||m.rows!==NSPresentation.rows(job.im,job.g,job.target,job.target.height-m.y))throw Error('Felaktig begäran om exportdata.');
     // Yield before each bounded copy so paint, input and cancellation can run.
-    await tick();if(settled)return;check(job);const data=NSExportPlan.pack(job.im,job.g,job.target,m.y,m.rows);job.nextY+=m.rows;
+    await tick();if(settled)return;check(job);const data=NSPresentation.pack(job.im,job.g,job.target,m.y,m.rows);job.nextY+=m.rows;
     stats.maxStripeBytes=Math.max(stats.maxStripeBytes,data.byteLength);stats.transferredBytes+=data.byteLength;
     worker.postMessage({type:'stripe',id:job.id,y:m.y,rows:m.rows,data},[data.buffer]);
    }else if(m.type==='progress')progress(job,m.done,m.total);
@@ -43,7 +42,7 @@ function workerAttempt(job){return new Promise((resolve,reject)=>{
    else if(m.type==='done'){settled=true;clearTimeout(timer);resolve(m.blob);}
   }catch(e){fail(e);}
  };
- try{worker.postMessage({type:'start',id:job.id,source:NSExportPlan.metadata(job.im),config:job.config,region:job.region,crop:job.opts.cropExport,rotation:job.opts.rotation,target:job.target});}catch(e){e.stage='init';fail(e);}
+ try{worker.postMessage({type:'start',id:job.id,source:NSExportPlan.metadata(job.im),config:job.config,region:job.region,crop:job.opts.cropExport,rotation:job.opts.rotation,target:job.target,presentation:job.g.spec||null});}catch(e){e.stage='init';fail(e);}
  // Cancel rejects immediately even when the native JPEG encoder is busy.
  job.cancelPromise.catch(fail);
  }).finally(()=>{job.worker?.terminate();job.worker=null;});}
@@ -53,11 +52,8 @@ async function mainAttempt(job){
   c.width=job.target.width;c.height=job.target.height;const ctx=c.getContext('2d',{colorSpace:'srgb'});if(!ctx)throw Error('Kunde inte skapa JPEG-yta.');
   if(!job.prepared)job.prepared=NSPixelKernel.prepare(job.im,job.config);
   for(let y=0;y<c.height;){
-   check(job);const rows=NSExportPlan.rows(c.width,c.height-y,16384),out=ctx.createImageData(c.width,rows);
-   for(let dy=0;dy<rows;dy++)for(let x=0;x<c.width;x++){
-    const [sx,sy]=NSExportPlan.at(job.g,job.target,x,y+dy),p=job.prepared.pixel((sy*job.im.width+sx)*job.im.channels),i=(dy*c.width+x)*4;
-    for(let k=0;k<3;k++)out.data[i+k]=Math.round(p[k]*255);out.data[i+3]=255;
-   }
+   check(job);const rows=NSPresentation.rows(job.im,job.g,job.target,c.height-y,16384),out=ctx.createImageData(c.width,rows);
+   NSPresentation.rgba(job.im,job.prepared,job.g,job.target,y,rows,false,out.data);
    ctx.putImageData(out,0,y);y+=rows;progress(job,y,c.height);await tick();
   }
   check(job);show(description(job)+' · JPEG-kodning i reservläge…',97);
@@ -69,7 +65,7 @@ jpegBytes=async function(skipBusyCheck=false){
  if(!(skipBusyCheck?(!rollLoading&&working):exportReady()))throw Error('Ingen exportklar bild finns.');
  const selection=exportGeometrySnapshot(working);
  const job={id:++sequence,im:working,opts:{...state,cropExport:selection.crop},region:selection.region,config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
- job.g=geometry(job);job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});
+ job.g=selection.g;job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});
  active=job;exportBusy=true;lock();beginUI();let workerUsable=typeof Worker!=='undefined'&&job.im.encoding!=='icc';
  try{
   let error;

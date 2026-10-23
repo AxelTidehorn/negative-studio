@@ -13,7 +13,7 @@ assert.deepEqual(json(h,'({state,calibration,cropRegion,sharedResponse4,sourceIn
 assert.deepEqual(h.run('Array.from(NSPixelKernel.exportRows(working,configuration38(),CE.exportGeometry(working,cropRegion,true,0),0,24))'),pixels);
 h.run('analyzeLevels=originalAnalysis;render=()=>{};');const composed=await save(h);composed.frames[0].geometry.rotation.fineDegrees=12.5;await load(h,composed);const restored=await save(h);
 assert.deepEqual(restored.frames.map(f=>f.settings),composed.frames.map(f=>f.settings));assert.deepEqual(restored.frames.map(f=>f.sourceMetadata),composed.frames.map(f=>f.sourceMetadata));assert.deepEqual(restored.frames[0].geometry,composed.frames[0].geometry);assert.equal(h.run('state.rotation'),0);
-console.log('PASS composition/fine metadata independent of all color/analysis/source settings, persistent R/L coordinates and dormant production rotation');
+console.log('PASS composition/fine metadata independent of all color/analysis/source settings, persistent R/L coordinates and unchanged legacy quarter-turn control');
 for(const format of ['negative-studio-roll-v08','negative-studio-roll-beta3'])for(const flags of [[true,true,true,true],[false,false,false,false],[true,false,true,false]]){
  const a=setup(),old=structuredClone(initial);old.format=format;delete old.geometryVersion;delete old.roll;old.frames.forEach((f,i)=>{delete f.geometry;f.settings.cropExport=flags[i];});await load(a,old);const now=await save(a),shared=flags.every(Boolean);
  assert.equal(now.roll.cropExportToFrame,shared);assert.deepEqual(now.frames.map(f=>f.settings),old.frames.map(f=>f.settings));assert.ok(now.frames.every(f=>!('cropExportToFrameOverride' in f.geometry)));
