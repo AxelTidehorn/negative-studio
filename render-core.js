@@ -2,6 +2,7 @@
 (function(root){
 'use strict';
 const clamp=v=>Math.max(0,Math.min(1,v));
+const colorVariant4=value=>value==='original'||value==='robust'?value:'legacy';
 // Experimental color-confidence knee in source transmission, not display white.
 // These are bounded experimental normalized signal thresholds, not a measured camera noise model.
 // Express the bounds in the unchanged calibrated coordinates so every LUT/export
@@ -10,14 +11,17 @@ function lowSignal4(c){
  const a=c.cal.beta4,r=a.response;
  const coordinate=(v,k)=>(-Math.log10(v*a.light[k]/a.base[k])-r.offset[k])/r.span[k];
  const start=[0,1,2].map(k=>coordinate(64/65535,k));
- return {start,invRange:start.map((v,k)=>1/(coordinate(4/65535,k)-v)),strength:.85};
+ return {start,invRange:start.map((v,k)=>1/(coordinate(4/65535,k)-v)),strength:.85,robustStrength:.5};
 }
 function compile(c){
  const o=c.opts,f=c.profile,print=c.print,bw=f.type==='bw',ev=2**o.exposure,
  gains=bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],
  invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?(f.creativeVersion===2?1:0):o.saturation,
- confidence=c.kind==='calibrated4'&&!bw?lowSignal4(c):null,
- lowStart=confidence?.start;
+ variant=colorVariant4(o.colorMode4),confidence=c.kind==='calibrated4'&&!bw&&variant!=='original'?lowSignal4(c):null,
+ lowStart=confidence?.start,
+ knee=variant==='robust'&&confidence?confidence.invRange.map(v=>1/v/(o.autoLevels?c.cal.beta4.span:1)):null,
+ kneeStart=knee?lowStart.map(v=>Math.max(0,o.autoLevels?(v-c.cal.beta4.lo)/c.cal.beta4.span:v)):null;
+ function softDensity4(x,k){const d=Math.max(0,x-kneeStart[k]);return x-d-knee[k]*Math.expm1(-d/knee[k]);}
  function technical(v,k){
   if(c.kind==='calibrated4'){
    const a=c.cal.beta4,r=a.response;
@@ -62,10 +66,18 @@ function compile(c){
   if(confidence&&(p[0]>lowStart[0]||p[1]>lowStart[1]||p[2]>lowStart[2])){
    const t=clamp(Math.max((p[0]-confidence.start[0])*confidence.invRange[0],(p[1]-confidence.start[1])*confidence.invRange[1],(p[2]-confidence.start[2])*confidence.invRange[2]));
    if(t>0){
-    const fade=confidence.strength*t*t*(3-2*t),neutral=c.workingSpace==='rec2020'?.2627*r+.678*g+.0593*b:.2126*r+.7152*g+.0722*b;
-    // Same factor on all chroma components: retain hue, common density detail
-    // and at least 15% of chroma, rather than pushing highlights to white.
-    r+=fade*(neutral-r);g+=fade*(neutral-g);b+=fade*(neutral-b);
+    const fade=t*t*(3-2*t),wide=c.workingSpace==='rec2020',neutral=wide?.2627*r+.678*g+.0593*b:.2126*r+.7152*g+.0722*b;
+    if(variant==='robust'){
+     // Bound density-channel deviations before tone rendering. Centering the
+     // soft response on the same neutral preserves calibrated neutral values.
+     let dr=softDensity4(r,0)-softDensity4(neutral,0),dg=softDensity4(g,1)-softDensity4(neutral,1),db=softDensity4(b,2)-softDensity4(neutral,2);
+     const mean=wide?.2627*dr+.678*dg+.0593*db:.2126*dr+.7152*dg+.0722*db;dr-=mean;dg-=mean;db-=mean;
+     const minimum=neutral+Math.min(dr,dg,db),s=minimum<0?neutral/Math.max(1e-12,neutral-minimum):1,w=confidence.robustStrength*fade;
+     r+=w*(neutral+dr*s-r);g+=w*(neutral+dg*s-g);b+=w*(neutral+db*s-b);
+    }else{
+     // Preserve the merged #22 result, including its operation order.
+     const w=confidence.strength*t*t*(3-2*t);r+=w*(neutral-r);g+=w*(neutral-g);b+=w*(neutral-b);
+    }
    }
   }
   r=r*ev*gains[0];g=g*ev*gains[1];b=b*ev*gains[2];
@@ -85,7 +97,7 @@ function compile(c){
   // Experiment: roll saturated highlights gently toward neutral white rather
   // than preserving tiny chroma differences that become blue/magenta specks.
   // Only the calibrated4 standard shoulder is affected; reference stays intact.
-  if(!bw&&o.toneMode4==='experimental'&&peak>.85){
+  if(variant==='legacy'&&!bw&&o.toneMode4==='experimental'&&peak>.85){
    const t=clamp((peak-.85)/.45),fade=t*t*(3-2*t);
    r+=fade*(mapped-r);g+=fade*(mapped-g);b+=fade*(mapped-b);
   }
@@ -152,5 +164,5 @@ function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
  }
  return out;
 }
-root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4};
+root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4,colorVariant4};
 })(globalThis);
