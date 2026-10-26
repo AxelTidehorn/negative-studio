@@ -63,7 +63,7 @@ function compile(c){
   // Experiment: roll saturated highlights gently toward neutral white rather
   // than preserving tiny chroma differences that become blue/magenta specks.
   // Only the calibrated4 standard shoulder is affected; reference stays intact.
-  if(!bw&&o.toneMode4!=='reference'&&peak>.85){
+  if(!bw&&o.toneMode4==='experimental'&&peak>.85){
    const t=clamp((peak-.85)/.45),fade=t*t*(3-2*t);
    r+=fade*(mapped-r);g+=fade*(mapped-g);b+=fade*(mapped-b);
   }
