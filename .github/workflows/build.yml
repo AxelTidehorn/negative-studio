@@ -17,7 +17,15 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run test:build
-      - run: npx playwright install --with-deps chromium
+      - name: Prepare browser
+        run: |
+          filmlabb_chrome_bin="$(command -v google-chrome || command -v chromium || true)"
+          if [ -n "$filmlabb_chrome_bin" ]; then
+            printf 'FILMLABB_CHROMIUM_BIN=%s\n' "$filmlabb_chrome_bin" >> "$GITHUB_ENV"
+            "$filmlabb_chrome_bin" --version
+          else
+            npx playwright install --with-deps chromium
+          fi
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
         with:

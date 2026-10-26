@@ -20,6 +20,7 @@ Ingen avsiktlig ändring av funktionalitet, färgmatematik eller bildresultat.
   tabeller, samplingsordning och kvantisering är kvar.
 - Testarkiven `slider-regression-suite.json`/`test-suite.json` och packverktyget
   är ersatta med direkt versionshanterade testkällor och oförändrade fixtures.
+  CI använder tillgänglig system-Chrome med Playwright-installation som reserv.
   En katalog grupperar sviterna; DOM- och vanliga browserserverhjälpare är samlade.
 
 ## Verifierat borttaget
