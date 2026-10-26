@@ -1,0 +1,35 @@
+{
+  "level": "fast",
+  "engine": "all",
+  "node": "v24.19.0",
+  "jobs": 1,
+  "tests": [
+    {
+      "file": "tests/conversion3-numeric.mjs",
+      "ms": 1451.3717199999999,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-reference.mjs",
+      "ms": 276.916604,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-neutral.mjs",
+      "ms": 202.41215399999987,
+      "status": 0
+    },
+    {
+      "file": "tests/test-infrastructure.mjs",
+      "ms": 173.49089900000035,
+      "status": 0
+    },
+    {
+      "file": "tests/ui-i18n.mjs",
+      "ms": 151.45215099999996,
+      "status": 0
+    }
+  ],
+  "ms": 2266.197203,
+  "failures": 0
+}

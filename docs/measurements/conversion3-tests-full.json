@@ -1,0 +1,320 @@
+{
+  "level": "full",
+  "engine": "all",
+  "node": "v24.19.0",
+  "jobs": 2,
+  "tests": [
+    {
+      "file": "tests/conversion3-neutral.mjs",
+      "ms": 488.22786899999994,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-integration.mjs",
+      "ms": 1982.791986,
+      "status": 0
+    },
+    {
+      "file": "tests/check-smoke.mjs",
+      "ms": 79.54790999999977,
+      "status": 0
+    },
+    {
+      "file": "tests/architecture.mjs",
+      "ms": 557.0939189999999,
+      "status": 0
+    },
+    {
+      "file": "tests/maintenance-lifecycle.mjs",
+      "ms": 158.9760769999998,
+      "status": 0
+    },
+    {
+      "file": "tests/check-project39.mjs",
+      "ms": 114.79712400000017,
+      "status": 0
+    },
+    {
+      "file": "tests/check-project4.mjs",
+      "ms": 267.75058100000024,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-project.mjs",
+      "ms": 1299.793638,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-artifacts.mjs",
+      "ms": 212.3676430000005,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-numeric.mjs",
+      "ms": 1739.2034099999992,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-reference.mjs",
+      "ms": 260.6666830000004,
+      "status": 0
+    },
+    {
+      "file": "tests/check-app-integration.mjs",
+      "ms": 6424.645899,
+      "status": 0
+    },
+    {
+      "file": "tests/check-profiles-next.mjs",
+      "ms": 2989.7619830000012,
+      "status": 0
+    },
+    {
+      "file": "tests/check-color-engine.mjs",
+      "ms": 320.38583299999846,
+      "status": 0
+    },
+    {
+      "file": "tests/editing-engine.mjs",
+      "ms": 6947.813563,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta39.mjs",
+      "ms": 2845.4935380000006,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta38.mjs",
+      "ms": 10208.854466,
+      "status": 0
+    },
+    {
+      "file": "tests/check-reference38.mjs",
+      "ms": 206.40691999999763,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-snapshot38.mjs",
+      "ms": 729.5550580000017,
+      "status": 0
+    },
+    {
+      "file": "tests/check-comparison.mjs",
+      "ms": 103.37370500000179,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta4.mjs",
+      "ms": 5104.602202000002,
+      "status": 0
+    },
+    {
+      "file": "tests/color-boundary-investigation.mjs",
+      "ms": 387.3867480000008,
+      "status": 0
+    },
+    {
+      "file": "tests/check-compatibility-next.mjs",
+      "ms": 910.4579420000009,
+      "status": 0
+    },
+    {
+      "file": "tests/standard-engine-experiment.mjs",
+      "ms": 1098.5854409999993,
+      "status": 0
+    },
+    {
+      "file": "tests/color-ab.mjs",
+      "ms": 2117.2842139999993,
+      "status": 0
+    },
+    {
+      "file": "tests/check-source-analysis.mjs",
+      "ms": 3572.411318000002,
+      "status": 0
+    },
+    {
+      "file": "tests/check-source-border.mjs",
+      "ms": 5317.014990000003,
+      "status": 0
+    },
+    {
+      "file": "tests/raf-preview-io.mjs",
+      "ms": 336.33389600000373,
+      "status": 0
+    },
+    {
+      "file": "tests/check-raw-fixture.mjs",
+      "ms": 479.87674799999513,
+      "status": 0
+    },
+    {
+      "file": "tests/check-raw-support.mjs",
+      "ms": 162.34423699999752,
+      "status": 0
+    },
+    {
+      "file": "tests/check-next.mjs",
+      "ms": 1639.6112779999967,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-geometry.mjs",
+      "ms": 139.21441100000084,
+      "status": 0
+    },
+    {
+      "file": "tests/preview-geometry.mjs",
+      "ms": 171.86896200000047,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-plan.mjs",
+      "ms": 9350.153781,
+      "status": 0
+    },
+    {
+      "file": "tests/check-tiff-codec.mjs",
+      "ms": 854.0072729999956,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-tiff-perf.mjs",
+      "ms": 24076.398578,
+      "status": 0
+    },
+    {
+      "file": "tests/check-manual-frame.mjs",
+      "ms": 89599.848023,
+      "status": 0
+    },
+    {
+      "file": "tests/presentation-worker.mjs",
+      "ms": 15367.121416000009,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-export.mjs",
+      "ms": 850.282527000003,
+      "status": 0
+    },
+    {
+      "file": "tests/downscale-investigation.mjs",
+      "ms": 92.21962200000416,
+      "status": 0
+    },
+    {
+      "file": "tests/check-preview-performance.mjs",
+      "ms": 1640.5476460000064,
+      "status": 0
+    },
+    {
+      "file": "tests/test-infrastructure.mjs",
+      "ms": 82.05623499999638,
+      "status": 0
+    },
+    {
+      "file": "tests/ui-i18n.mjs",
+      "ms": 89.32715099999041,
+      "status": 0
+    },
+    {
+      "file": "tests/check-i18n-static.mjs",
+      "ms": 58.5983380000107,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-cache.mjs",
+      "ms": 129.12799999999697,
+      "status": 0
+    },
+    {
+      "file": "tests/presentation-sampling.mjs",
+      "ms": 96037.22305800002,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-build.mjs",
+      "ms": 603.8190339999855,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-browser.mjs",
+      "ms": 30687.962932000024,
+      "status": 0
+    },
+    {
+      "file": "tests/ui-ux-browser.mjs",
+      "ms": 58187.25440399998,
+      "status": 0
+    },
+    {
+      "file": "tests/check-workflow-browser.mjs",
+      "ms": 44167.318108999985,
+      "status": 0
+    },
+    {
+      "file": "tests/check-next-browser.mjs",
+      "ms": 41047.85011400003,
+      "status": 0
+    },
+    {
+      "file": "tests/check-gpu-browser.mjs",
+      "ms": 29180.140521000023,
+      "status": 0
+    },
+    {
+      "file": "tests/check-mobile-order.mjs",
+      "ms": 5884.9050130000105,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-browser.mjs",
+      "ms": 3664.9876470000017,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-browser.mjs",
+      "ms": 27169.955725999956,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-complete-browser.mjs",
+      "ms": 36556.79323499999,
+      "status": 0
+    },
+    {
+      "file": "tests/quality-workflow-browser.mjs",
+      "ms": 6941.4678419999545,
+      "status": 0
+    },
+    {
+      "file": "tests/standard-engine-browser.mjs",
+      "ms": 8253.029838999966,
+      "status": 0
+    },
+    {
+      "file": "tests/color-ab-browser.mjs",
+      "ms": 46430.66831700003,
+      "status": 0
+    },
+    {
+      "file": "tests/maintenance-browser.mjs",
+      "ms": 15005.53695899999,
+      "status": 0
+    },
+    {
+      "file": "tests/editing-browser.mjs",
+      "ms": 32359.640738999937,
+      "status": 0
+    }
+  ],
+  "build": {
+    "rebuilt": false,
+    "input": "81928f8a810f476bb6ca5ee5127bf03e1efac845e78d9ec22d89f64953cb6b5c"
+  },
+  "browserProcesses": 1,
+  "ms": 554574.328568,
+  "failures": 0
+}

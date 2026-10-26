@@ -114,6 +114,8 @@ whitening gains are limited to [.96, 1.04]. No measured scene mean is forced gra
 The reconstructed RGB matrix preserves the neutral axis and weighted luminance;
 its deviation from identity has Frobenius norm at most .075. Thus its spectral
 noise gain is bounded by 1.075 and its condition by 1.1622 before output mapping.
+These are bounds on the matrix operator, not on source-to-output noise: the
+upstream logarithm can still amplify small low-transmission source variations.
 
 Fewer than 128 usable samples, negligible signal or isotropic covariance use
 identity, with that limitation shown in the status. Mixed synthetic scenes give
@@ -195,6 +197,16 @@ sensitivity relative to each engine's clean output. This distinguishes known sma
 channel perturbations from intended tone steps. It neither diagnoses the original
 RAF photographs nor proves that a lower synthetic response looks better.
 
+In this fixed diagnostic, Standard's dense-low-transmission chroma-noise RMS is
+.003217 in linear-display units, while Original is zero because it is already
+clipped white. That zero is not evidence of recovered information. At a single
+source-channel floor, Density still has chroma RMS .004495 and maximum channel
+error .014788: preserving signed density does **not** eliminate extreme-signal
+sensitivity. Matrix uses its identity fallback on this neutral calibration;
+separate mixed-scene tests verify a nontrivial bounded transform. These results
+support keeping all methods experimental and do not establish the cause of the
+reported blue/violet dots in unavailable RAF originals.
+
 Generate a self-contained, labeled five-way contact sheet:
 
 ```sh
@@ -209,7 +221,91 @@ and versions are included in the artifact. Compare real negatives with neutral
 and matched-brightness edits, inspect source detail, skin/sky/strongly colored
 scenes and both tails. Synthetic contacts establish reproducibility, not quality.
 
-Performance and test-run measurements are recorded below after final validation.
+The final regression passed **61/61 groups** (46 Node, clean-build/cache, 14 browser)
+in 554.57s. Fast passed 5/5 in 2.27s; Integration passed 5/5 in 27.23s. The complete old
+suite took 538.20s on frozen main: no total Full speedup is claimed. See
+[test measurements and bottlenecks](TESTING.md#recorded-final-run).
 Physical iPad Safari, Windows/Edge and representative real-negative review remain
 required; SwiftShader numbers cannot establish device responsiveness or preferred
 photographic rendering. All five engines remain available for that evaluation.
+
+## Recorded performance
+
+Seven warm samples per path, Linux headless Chromium 154.0.8037.57/SwiftShader,
+Node 24.19, 900×600 demo, same source/frame and Editing 2.0 on both checkouts.
+Numbers below are **median [min–max] milliseconds**. CPU preview renders to a
+480-pixel maximum side; GPU draws use 700. Exports retain the application’s existing geometry/crop defaults. JPEG includes native worker encoding.
+
+| Engine | Edits | CPU preview | GPU draw + finish | JPEG | TIFF16 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Original | Neutral | 28.7 [18.8–62.5] | CPU fallback | 397.0 [369.1–519.8] | 200.0 [155.1–297.0] |
+| Original | Fixed edited | 218.3 [142.5–278.8] | CPU fallback | 538.3 [484.4–602.8] | 327.3 [253.0–459.3] |
+| Standard | Neutral | 69.1 [67.7–85.1] | 0.5 [0.4–1.2] | 218.2 [208.9–280.3] | 109.6 [95.9–156.4] |
+| Standard | Fixed edited | 146.9 [107.8–444.0] | 0.4 [0.2–1.9] | 368.7 [339.8–452.9] | 221.7 [174.7–284.2] |
+| Curve | Neutral | 145.0 [122.7–180.4] | 0.6 [0.3–1.4] | 466.6 [377.7–569.0] | 274.4 [213.7–315.9] |
+| Curve | Fixed edited | 246.7 [195.5–291.5] | 0.5 [0.3–1.0] | 606.8 [480.3–746.1] | 469.7 [344.0–490.4] |
+| Density | Neutral | 226.2 [185.4–306.5] | 0.6 [0.2–2.0] | 541.4 [388.9–734.5] | 329.2 [289.9–626.9] |
+| Density | Fixed edited | 338.0 [214.8–494.7] | 0.7 [0.5–1.7] | 826.3 [652.4–1243.6] | 662.4 [377.7–1799.3] |
+| Matrix | Neutral | 315.9 [231.3–387.5] | 0.8 [0.3–1.5] | 648.4 [614.2–704.8] | 501.9 [415.1–645.4] |
+| Matrix | Fixed edited | 383.6 [292.0–6740.5] | 0.6 [0.4–1.6] | 727.8 [640.4–9093.1] | 716.8 [508.6–2030.6] |
+
+Frozen main reference with the same Editing 2.0 settings:
+
+| Engine | Edits | CPU preview | GPU draw + finish | JPEG | TIFF16 |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Original | Neutral | 42.1 [21.2–83.9] | CPU fallback | 449.4 [308.3–524.2] | 284.3 [238.5–364.5] |
+| Original | Fixed edited | 206.6 [155.4–245.3] | CPU fallback | 531.0 [428.9–561.5] | 344.1 [278.3–478.6] |
+| Standard | Neutral | 96.5 [63.4–217.1] | 0.4 [0.3–2.9] | 301.3 [211.4–1029.1] | 150.6 [82.4–251.7] |
+| Standard | Fixed edited | 154.7 [123.6–245.9] | 0.5 [0.2–1.7] | 434.3 [392.7–511.3] | 302.0 [202.7–550.2] |
+
+Preparation versus pixel work:
+
+| Engine | First analysis, once | Repeated analysis (cached new model) | Compile neutral / edited | Prepare uint16 tables neutral / edited |
+| --- | ---: | ---: | ---: | ---: |
+| Original | 113.7 | 98.9 [68.8–105.4] | 0.1 / 0.1 | 10.8 / 10.4 |
+| Standard | 181.4 | 121.1 [81.1–137.7] | 0.1 / 0.1 | 12.2 / 14.2 |
+| Curve | 90.2 | 50.1 [48.0–85.2] | 0.2 / 0.3 | 9.2 / 10.7 |
+| Density | 103.3 | 65.7 [54.8–73.0] | 0.2 / 0.2 | 10.2 / 9.9 |
+| Matrix | 58.9 | 53.8 [42.0–60.0] | 0.2 / 0.3 | 10.1 / 10.7 |
+
+Raw data: [frozen main](measurements/conversion3-benchmark-baseline.json),
+[candidate](measurements/conversion3-benchmark-candidate.json). Candidate production
+input fingerprint: `81928f8a810f476bb6ca5ee5127bf03e1efac845e78d9ec22d89f64953cb6b5c`. The recorded candidate
+commit is `8634001`; subsequent changes are documentation and
+measurement artifacts. The baseline dirty flag comes only from the new driver's
+untracked build-cache directory, not modified baseline source.
+
+The new conversions cost more CPU/export time than Standard in this run, especially
+Matrix and adjusted Density. They preserve different technical responses; no
+quality-for-speed approximation was introduced. The old engine bodies are unchanged
+and their benchmark ranges overlap in many paths; lower candidate medians do not
+establish an engine speedup. A 6.74s Matrix CPU sample and 9.09s JPEG sample show
+large host/scheduling tails; all samples remain in the report rather than being
+discarded. Repeated analysis still includes the pre-existing shared passes; normal
+slider changes perform no analysis, as asserted separately.
+
+GPU constructor observations were 9.9–34.0ms. First new-engine draws, including
+source upload/software shader specialization, took 715–2851ms; warm draws reused
+one source upload per renderer across all samples. Standard first draws were
+84–268ms (baseline 56–114ms). These are single cold observations, not median first-
+preview latency. The substantial software-GPU first-use cost needs physical-device
+validation; sub-millisecond warm submissions cannot predict iPad/Edge performance.
+
+The benchmark source uses 2,160,000 bytes and preview 6,480,000 bytes (the existing linear RGB float preview of the same
+900×600 demo); the existing export reports a largest stripe of 81,600 bytes in
+all engine cases. Observed JS heaps span approximately 37–60MB in this run, but
+GC timing, final output and native encoder/GPU/WASM memory make those point samples
+unsuitable as peak-memory or leak estimates. No new production full-size buffer
+is introduced; the benchmark's extra uint16 source is only a preparation probe.
+
+[Generated five-engine synthetic contact sheet](measurements/conversion3-benchmark-candidate.html)
+contains actual neutral/edited CPU renders and calibration metadata. Download the
+self-contained HTML for viewing. It is not evidence of photographic superiority.
+
+A second [mixed-color synthetic contact](measurements/conversion3-mixed-reference.html)
+was generated through the standalone reference command, using the procedural
+`negative({width:192,height:128})` fixture from
+`tests/helpers/conversion3-fixtures.mjs`, sRGB-encoded to PNG for actual browser
+import. It exercises the nontrivial Matrix prior on a colored field rather than
+only the demo's neutral ramps. Its 8-bit source is not a banding or photographic
+quality reference.

@@ -1,0 +1,40 @@
+{
+  "level": "integration",
+  "engine": "all",
+  "node": "v24.19.0",
+  "jobs": 2,
+  "tests": [
+    {
+      "file": "tests/conversion3-numeric.mjs",
+      "ms": 1492.1848479999999,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-reference.mjs",
+      "ms": 162.94379800000002,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-neutral.mjs",
+      "ms": 145.0847839999999,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-integration.mjs",
+      "ms": 2413.888191,
+      "status": 0
+    },
+    {
+      "file": "tests/conversion3-browser.mjs",
+      "ms": 21905.849607,
+      "status": 0
+    }
+  ],
+  "build": {
+    "rebuilt": true,
+    "input": "81928f8a810f476bb6ca5ee5127bf03e1efac845e78d9ec22d89f64953cb6b5c"
+  },
+  "browserProcesses": 1,
+  "ms": 27227.889686000002,
+  "failures": 0
+}
