@@ -74,6 +74,12 @@ void main(){
  float peak=max(p.r,max(p.g,p.b));
  float mapped=uShoulder==0?min(1.0,peak):peak<=.8?peak:.8+.2*(1.0-exp(-min(100.0,(peak-.8)/.2)));
  if(peak>0.0)p=p*mapped/peak;
+ // Mirror the calibrated4 CPU highlight-chroma experiment exactly.
+ // uShoulder == 0 is the reference mode, left unchanged.
+ if(uProfile!=2&&uProfile!=3&&uShoulder==1&&peak>.85){
+  float t=sat((peak-.85)/.45),fade=t*t*(3.0-2.0*t);
+  p=mix(p,vec3(mapped),fade);
+ }
  p=encode3(p);
  if(uProfile==2||uProfile==3)p=creative(p);else if(uProfile==1&&uStrength>0.0)p=mix(p,creative(p),uStrength);
  if(uPrint==1){if(uPrintShoulder!=0.0)p=p/(vec3(1.0)+uPrintShoulder*(vec3(1.0)-p));p=clamp(vec3(.5)+(p-vec3(.5))*uPrintContrast,0.0,1.0);}
