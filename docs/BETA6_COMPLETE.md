@@ -121,17 +121,16 @@ minnes- och nedladdningsverifiering. Chromium-touch är ingen fysisk iPad-mätni
 
 ### Verifierat resultat
 
-- Baslinjens 31 Node-grupper passerade. Efter implementationen passerade samma
-  fullsvit och det nya 72-fallsprovet separat; slutlig ren-checkout-körning
-  inkluderar det som grupp 32.
+- Baslinjens 31 Node-grupper passerade. Slutlig körning från separat ren
+  checkout: **32/32 Node-grupper godkända**, inklusive det nya 72-fallsprovet.
 - Webbläsarsvit: **7/7 grupper godkända**, inklusive GPU/CPU, exportreservlägen,
   avbrott, RAW/TIFF-regressioner, batch/ZIP och offlineversionering.
 - Produktionsbygge och byggtester passerade. Nya JS-/CSS-resurser ingår i
   bygglistan och det innehållshashade precache-manifestet.
 - `node --check` för tillagda/ändrade kontrollmoduler: godkänd syntaxkontroll.
-- 24 geometriändringar i Chromium/SwiftShader: cirka **3,2 ms median och
-  25,3 ms p95** i geometripassets JavaScript-inskickning, noll nya analyser,
-  färgrenderingar eller källuppladdningar. Detta är inte total GPU-tid eller
+- 24 geometriändringar i Chromium/SwiftShader: cirka **11,1 ms median och
+  29 ms p95** i geometripassets JavaScript-inskickning, noll nya analyser,
+  färgrenderingar eller källuppladdningar. En tidigare körning gav 3,2/25,3 ms; miljön varierar. Detta är inte total GPU-tid eller
   hårdvaruprestanda på Edge/iPad. Exportens tidigare uppmätta merkostnad vid
   fri rotation påverkas inte; den direkta legacy-exporten är fortsatt kvar.
 

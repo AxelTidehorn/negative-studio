@@ -7,7 +7,7 @@
  const canvas=document.createElement('canvas');canvas.id='presentationPreview';canvas.hidden=true;picture.append(canvas);
  const fallback=document.createElement('canvas');fallback.id='presentationFallback';fallback.hidden=true;picture.append(fallback);
  const ns='http://www.w3.org/2000/svg',overlay=document.createElementNS(ns,'svg');overlay.id='geometryOverlay';overlay.setAttribute('aria-label','Bildgeometri');picture.append(overlay);
- let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorVersion=-1,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null;
+ let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorVersion=-1,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null;
  // New rolls start with the entire exposed frame; imported projects keep their explicit choice.
  if(!roll.length){rollShared.cropExportToFrame=true;state.cropExport=true;}
  const metrics={draws:0,colorUploads:0,cpuPasses:0,lastMs:0,lastError:null};
@@ -36,6 +36,8 @@
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
+  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
+  if(key===overlayKey)return;overlayKey=key;
   overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
   const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
   const corners=rectPoints(p,effective).map(s=>v.toView(s));
@@ -51,7 +53,7 @@
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
  function draw(){
-  scheduled=null;if(!working||!src){canvas.hidden=fallback.hidden=true;overlay.replaceChildren();return;}
+  scheduled=null;if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();return;}
   const p=plan(),v=styleView(p);drawOverlay(p,v);controls();
   if(colorSource!==workingPreview||colorVersion!==sourceVersion38)return;
   const t=performance.now(),ratio=Math.min(1,(failed?cpuLimit:1400)/Math.max(p.area.width,p.area.height)),width=Math.max(1,Math.round(p.area.width*ratio)),height=Math.max(1,Math.round(p.area.height*ratio));
