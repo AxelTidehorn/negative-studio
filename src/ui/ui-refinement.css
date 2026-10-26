@@ -1,16 +1,16 @@
 /* Semantic palette data. Components/layout are defined once in application.css.
-Classic preserves the previous final graphite/terracotta palette. */
+Dark surfaces are restrained; Burgundy and all light palettes retain their colors. */
 :root,:root[data-theme="classic"] {
-  --ui-bg:#222120;
-  --ui-panel:#2d2b29;
-  --ui-surface:#242322;
+  --ui-bg:#20201f;
+  --ui-panel:#292927;
+  --ui-surface:#232321;
   --ui-text:#eeeae2;
-  --ui-muted:#b2aca2;
-  --ui-border:#655e56;
-  --ui-accent:#c78154;
+  --ui-muted:#bab4aa;
+  --ui-border:#55534c;
+  --ui-accent:#c18f70;
   --ui-accent-text:#211b17;
-  --ui-accent-label:#e0a477;
-  --ui-active:#49372c
+  --ui-accent-label:#d6a98c;
+  --ui-active:#38322c
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
@@ -25,16 +25,16 @@ Classic preserves the previous final graphite/terracotta palette. */
   --ui-active:#e4cdbb
 }
 :root[data-theme="olive"] {
-  --ui-bg:#181d18;
-  --ui-panel:#232b23;
-  --ui-surface:#1d241d;
+  --ui-bg:#1d1f1b;
+  --ui-panel:#282b25;
+  --ui-surface:#22251f;
   --ui-text:#eceee3;
-  --ui-muted:#b1b9a8;
-  --ui-border:#64715b;
-  --ui-accent:#b3bd91;
+  --ui-muted:#b7baab;
+  --ui-border:#555b4d;
+  --ui-accent:#abb395;
   --ui-accent-text:#1c2317;
-  --ui-accent-label:#c0cca3;
-  --ui-active:#394630
+  --ui-accent-label:#c2caab;
+  --ui-active:#353b2d
 }
 :root[data-theme="olive"][data-mode="light"] {
   --ui-bg:#e8eadf;
@@ -73,16 +73,16 @@ Classic preserves the previous final graphite/terracotta palette. */
   --ui-active:#ead0d3
 }
 :root[data-theme="industrial"] {
-  --ui-bg:#191919;
-  --ui-panel:#252525;
-  --ui-surface:#1e1e1e;
-  --ui-text:#f1f0e4;
-  --ui-muted:#b3b2a8;
-  --ui-border:#707067;
-  --ui-accent:#d4ce94;
+  --ui-bg:#1d1d1c;
+  --ui-panel:#292928;
+  --ui-surface:#222221;
+  --ui-text:#eeeee9;
+  --ui-muted:#b7b7ae;
+  --ui-border:#5b5b55;
+  --ui-accent:#c3bc87;
   --ui-accent-text:#202017;
-  --ui-accent-label:#ded9aa;
-  --ui-active:#424132
+  --ui-accent-label:#d5cfa4;
+  --ui-active:#37372f
 }
 :root[data-theme="industrial"][data-mode="light"] {
   --ui-bg:#e4e4df;
@@ -97,16 +97,16 @@ Classic preserves the previous final graphite/terracotta palette. */
   --ui-active:#dfddbd
 }
 :root[data-theme="paper"] {
-  --ui-bg:#211f1a;
-  --ui-panel:#2d2921;
-  --ui-surface:#242018;
-  --ui-text:#f5eedc;
-  --ui-muted:#c4b89d;
-  --ui-border:#80745b;
-  --ui-accent:#c6af76;
+  --ui-bg:#211f1c;
+  --ui-panel:#2c2925;
+  --ui-surface:#25231f;
+  --ui-text:#f1ece2;
+  --ui-muted:#c0b6a7;
+  --ui-border:#62594d;
+  --ui-accent:#a99a79;
   --ui-accent-text:#262016;
-  --ui-accent-label:#dac38b;
-  --ui-active:#48402d
+  --ui-accent-label:#cfc0a1;
+  --ui-active:#3d362c
 }
 :root[data-theme="paper"][data-mode="light"] {
   --ui-bg:#eee9dd;
@@ -121,16 +121,16 @@ Classic preserves the previous final graphite/terracotta palette. */
   --ui-active:#e6dabd
 }
 :root[data-theme="aubergine"] {
-  --ui-bg:#201e24;
-  --ui-panel:#2c2931;
-  --ui-surface:#24212a;
-  --ui-text:#f1edf1;
-  --ui-muted:#b7aebb;
-  --ui-border:#796f80;
-  --ui-accent:#b7a2bd;
+  --ui-bg:#211f22;
+  --ui-panel:#2b282d;
+  --ui-surface:#252327;
+  --ui-text:#efebef;
+  --ui-muted:#bcb2bf;
+  --ui-border:#625a66;
+  --ui-accent:#aa97af;
   --ui-accent-text:#211b25;
-  --ui-accent-label:#cab7cf;
-  --ui-active:#45394c
+  --ui-accent-label:#c8b7cc;
+  --ui-active:#3b323f
 }
 :root[data-theme="aubergine"][data-mode="light"] {
   --ui-bg:#ece7ed;

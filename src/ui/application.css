@@ -1,7 +1,7 @@
 :root {
   --ui-radius:4px;
   --ui-gap:8px;
-  --ui-touch:36px;
+  --ui-touch:34px;
 }
 /* One component and desktop-layout layer. Palette data lives in ui-refinement.css. */
 * {
@@ -17,7 +17,7 @@ body {
   margin:0;
   background:var(--ui-bg);
   color:var(--ui-text);
-  font-size:13px;
+  font-size:14px;
   line-height:1.4
 }
 [hidden],.hidden {
@@ -65,8 +65,9 @@ small,.muted,.hint,.status,.eyebrow {
   clip:rect(0,0,0,0)
 }
 header {
-  height:56px;
-  padding:7px 16px;
+  height:52px;
+  min-height:calc(var(--ui-touch) + 9px);
+  padding:4px 12px;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -160,7 +161,8 @@ input[type=checkbox] {
   width:18px;
   height:18px;
   flex:none;
-  accent-color:var(--ui-accent)
+  accent-color:var(--ui-accent);
+  margin:0
 }
 .switch {
   display:flex;
@@ -174,7 +176,7 @@ input[type=checkbox] {
   gap:5px
 }
 .field label,label.eyebrow {
-  font-size:12px
+  font-size:13px
 }
 .eyebrow {
   display:block;
@@ -213,8 +215,8 @@ input[type=checkbox] {
   display:flex;
   align-items:center;
   gap:7px;
-  padding:6px 10px;
-  min-height:48px;
+  padding:4px 8px;
+  min-height:44px;
   background:var(--ui-bg);
   border-bottom:1px solid var(--ui-border);
   position:sticky;
@@ -299,8 +301,8 @@ main.workspace {
   display:grid;
   grid-template-columns:var(--effective-queue) var(--left-grip) minmax(0,1fr) var(--right-grip) var(--effective-adjust);
   gap:0;
-  height:var(--fl-workspace-height,calc(100dvh - 170px));
-  min-height:320px;
+  height:var(--fl-workspace-height,calc(100dvh - var(--fl-header-height,52px) - var(--fl-toolbar-height,45px)));
+  min-height:240px;
   padding:6px;
   max-width:none
 }
@@ -329,8 +331,14 @@ main.workspace.adjust-collapsed {
   gap:8px;
   overflow:hidden
 }
+.queue-heading {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px
+}
 .queue-panel h2 {
-  font-size:12px
+  font-size:13px
 }
 .filmstrip {
   display:flex;
@@ -351,7 +359,7 @@ main.workspace.adjust-collapsed {
   border-radius:var(--ui-radius);
   background:var(--ui-surface);
   cursor:pointer;
-  font-size:11px
+  font-size:12px
 }
 .frame.active {
   border-color:var(--ui-accent);
@@ -486,19 +494,23 @@ main.workspace.adjust-collapsed {
   overflow-x:clip;
   overscroll-behavior:contain;
   scrollbar-gutter:stable;
-  padding:12px
+  padding:10px
 }
 .tool-section,.frame-settings-group {
-  margin:0 0 12px;
-  padding:0 0 12px;
+  margin:0 0 8px;
+  padding:0 0 8px;
   border:0;
   border-bottom:1px solid var(--ui-border)
 }
 .tool-section>summary,.frame-settings-group>summary {
-  font-size:13px;
+  font-size:14px;
   font-weight:700;
-  padding:9px 0;
+  padding:6px 0;
   min-height:36px
+}
+details.tool-section:not([open]),.frame-settings-group:not([open]) {
+  padding-bottom:0;
+  margin-bottom:6px
 }
 .tool-section>h2 {
   padding:7px 0 9px
@@ -525,15 +537,15 @@ details[open]>:not(summary) {
   margin-top:8px
 }
 .control {
-  margin:9px 0
+  margin:6px 0
 }
 .control label,.profile-strength label {
   display:flex;
   align-items:center;
   justify-content:space-between;
   gap:8px;
-  margin-bottom:3px;
-  font-size:12px
+  margin-bottom:2px;
+  font-size:13px
 }
 .control output,output {
   font-variant-numeric:tabular-nums;
@@ -595,7 +607,7 @@ input[type=range]::-moz-range-thumb {
   display:flex;
   justify-content:space-between;
   gap:6px;
-  font-size:11px
+  font-size:12px
 }
 .histogram-heading #histogramInfo {
   font-weight:400;
@@ -628,7 +640,7 @@ input[type=range]::-moz-range-thumb {
   gap:7px
 }
 .advanced-settings-body .switch,.advancedInner .switch {
-  font-size:12px
+  font-size:13px
 }
 .advancedInner>.status {
   margin:7px 0
@@ -655,7 +667,7 @@ input[type=range]::-moz-range-thumb {
   margin:5px 0
 }
 .export-name-settings label {
-  font-size:12px
+  font-size:13px
 }
 .compact-separator {
   border:0;
@@ -751,11 +763,12 @@ input[type=range]::-moz-range-thumb {
   }
 }
 .foot {
-  padding:8px 16px 12px;
+  margin-top:12px;
+  padding:10px 0 0;
   border-top:1px solid var(--ui-border);
   color:var(--ui-muted);
-  font-size:11px;
-  background:var(--ui-bg)
+  font-size:12px;
+  background:var(--ui-panel)
 }
 .footer-links {
   display:flex;
@@ -772,8 +785,8 @@ input[type=range]::-moz-range-thumb {
   text-decoration:none
 }
 .foot-tech {
-  margin-top:5px;
-  font-size:11px
+  margin-top:7px;
+  font-size:12px
 }
 @media(pointer:fine) {
   * {

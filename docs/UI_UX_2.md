@@ -1,5 +1,10 @@
 # UI/UX 2.0
 
+This document records the original UI/UX update. See [targeted UI stabilization](UI_STABILITY.md)
+for the current footer placement, mobile scrolling, control binding and revised
+dark palettes. Conversion 3.0 also moved the engine selector beside the image
+adjustments and made Editing 2.0 the new-image default.
+
 This update changes presentation and device preferences. Conversion, editing,
 calibration, import, geometry calculations, pixel sampling and project schemas are
 unchanged. It starts from main `d43ea0b` (including Editing 2.0, PR #27). The

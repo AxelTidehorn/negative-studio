@@ -1,0 +1,400 @@
+{
+  "baselineCommit": "6ff131a20989afca44e6f56bb32ab8e08ccaba92",
+  "fast": {
+    "level": "fast",
+    "engine": "all",
+    "node": "v24.19.0",
+    "jobs": 1,
+    "tests": [
+      {
+        "file": "tests/ui-controls.mjs",
+        "ms": 183.31466899999998,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-numeric.mjs",
+        "ms": 1419.0695059999998,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-reference.mjs",
+        "ms": 202.79840400000012,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-neutral.mjs",
+        "ms": 136.9855839999998,
+        "status": 0
+      },
+      {
+        "file": "tests/test-infrastructure.mjs",
+        "ms": 117.57022099999995,
+        "status": 0
+      },
+      {
+        "file": "tests/ui-i18n.mjs",
+        "ms": 114.739149,
+        "status": 0
+      }
+    ],
+    "ms": 2182.313987,
+    "failures": 0
+  },
+  "focused": {
+    "controls": "passed",
+    "uiStabilityBrowser": "passed",
+    "uiUxBrowser": "passed",
+    "nodeSyntax": "passed",
+    "htmlStructure": "passed",
+    "diffCheck": "passed"
+  },
+  "safari": {
+    "webkitDownloaded": true,
+    "launch": "blocked by missing system libraries",
+    "physicalIPad": "not tested"
+  },
+  "edge": {
+    "installed": false,
+    "physicalWindows": "not tested"
+  },
+  "candidateInputBeforeTouchReveal": "b4dfd07dda1849f7e79fb8c909f4cc811d40582849eb58c1fd37da18cd57cb89",
+  "firstFull": {
+    "level": "full",
+    "engine": "all",
+    "node": "v24.19.0",
+    "jobs": 2,
+    "tests": [
+      {
+        "file": "tests/conversion3-neutral.mjs",
+        "ms": 289.148454,
+        "status": 0
+      },
+      {
+        "file": "tests/ui-controls.mjs",
+        "ms": 315.597075,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-integration.mjs",
+        "ms": 2688.454701,
+        "status": 0
+      },
+      {
+        "file": "tests/check-smoke.mjs",
+        "ms": 94.75087299999996,
+        "status": 0
+      },
+      {
+        "file": "tests/architecture.mjs",
+        "ms": 398.66568700000016,
+        "status": 0
+      },
+      {
+        "file": "tests/maintenance-lifecycle.mjs",
+        "ms": 183.20632699999987,
+        "status": 0
+      },
+      {
+        "file": "tests/check-project39.mjs",
+        "ms": 95.36213700000008,
+        "status": 0
+      },
+      {
+        "file": "tests/check-project4.mjs",
+        "ms": 325.66417100000035,
+        "status": 0
+      },
+      {
+        "file": "tests/check-app-integration.mjs",
+        "ms": 3969.252463,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-artifacts.mjs",
+        "ms": 220.63773000000037,
+        "status": 0
+      },
+      {
+        "file": "tests/beta6-project.mjs",
+        "ms": 1396.3683460000002,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-reference.mjs",
+        "ms": 373.0303439999998,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-numeric.mjs",
+        "ms": 2396.1986039999992,
+        "status": 0
+      },
+      {
+        "file": "tests/check-profiles-next.mjs",
+        "ms": 4362.735651999999,
+        "status": 0
+      },
+      {
+        "file": "tests/check-color-engine.mjs",
+        "ms": 501.45150699999976,
+        "status": 0
+      },
+      {
+        "file": "tests/editing-engine.mjs",
+        "ms": 8900.445938,
+        "status": 0
+      },
+      {
+        "file": "tests/check-beta39.mjs",
+        "ms": 3361.7778050000015,
+        "status": 0
+      },
+      {
+        "file": "tests/check-beta38.mjs",
+        "ms": 6745.31172,
+        "status": 0
+      },
+      {
+        "file": "tests/check-reference38.mjs",
+        "ms": 157.6177549999993,
+        "status": 0
+      },
+      {
+        "file": "tests/check-export-snapshot38.mjs",
+        "ms": 322.6739099999977,
+        "status": 0
+      },
+      {
+        "file": "tests/check-comparison.mjs",
+        "ms": 125.7146329999996,
+        "status": 0
+      },
+      {
+        "file": "tests/check-compatibility-next.mjs",
+        "ms": 579.4089619999977,
+        "status": 0
+      },
+      {
+        "file": "tests/color-boundary-investigation.mjs",
+        "ms": 217.96078300000227,
+        "status": 0
+      },
+      {
+        "file": "tests/standard-engine-experiment.mjs",
+        "ms": 981.3265219999994,
+        "status": 0
+      },
+      {
+        "file": "tests/color-ab.mjs",
+        "ms": 1682.5359500000013,
+        "status": 0
+      },
+      {
+        "file": "tests/check-beta4.mjs",
+        "ms": 4951.737911,
+        "status": 0
+      },
+      {
+        "file": "tests/check-source-analysis.mjs",
+        "ms": 2859.2316299999984,
+        "status": 0
+      },
+      {
+        "file": "tests/check-source-border.mjs",
+        "ms": 5598.964857999999,
+        "status": 0
+      },
+      {
+        "file": "tests/raf-preview-io.mjs",
+        "ms": 156.57710399999996,
+        "status": 0
+      },
+      {
+        "file": "tests/check-raw-fixture.mjs",
+        "ms": 329.26845500000127,
+        "status": 0
+      },
+      {
+        "file": "tests/check-raw-support.mjs",
+        "ms": 95.44626699999935,
+        "status": 0
+      },
+      {
+        "file": "tests/check-next.mjs",
+        "ms": 1207.5627330000025,
+        "status": 0
+      },
+      {
+        "file": "tests/beta6-geometry.mjs",
+        "ms": 155.99847799999407,
+        "status": 0
+      },
+      {
+        "file": "tests/preview-geometry.mjs",
+        "ms": 130.71114600000146,
+        "status": 0
+      },
+      {
+        "file": "tests/check-export-plan.mjs",
+        "ms": 9307.927789999994,
+        "status": 0
+      },
+      {
+        "file": "tests/check-tiff-codec.mjs",
+        "ms": 594.2522210000025,
+        "status": 0
+      },
+      {
+        "file": "tests/check-export-tiff-perf.mjs",
+        "ms": 14787.272512000003,
+        "status": 0
+      },
+      {
+        "file": "tests/check-manual-frame.mjs",
+        "ms": 44975.611139,
+        "status": 0
+      },
+      {
+        "file": "tests/presentation-worker.mjs",
+        "ms": 14348.436916999999,
+        "status": 0
+      },
+      {
+        "file": "tests/stability-export.mjs",
+        "ms": 1066.0690299999987,
+        "status": 0
+      },
+      {
+        "file": "tests/downscale-investigation.mjs",
+        "ms": 58.613535999989836,
+        "status": 0
+      },
+      {
+        "file": "tests/check-preview-performance.mjs",
+        "ms": 2382.849504999991,
+        "status": 0
+      },
+      {
+        "file": "tests/test-infrastructure.mjs",
+        "ms": 110.76978600000439,
+        "status": 0
+      },
+      {
+        "file": "tests/ui-i18n.mjs",
+        "ms": 69.72334499999124,
+        "status": 0
+      },
+      {
+        "file": "tests/check-i18n-static.mjs",
+        "ms": 54.352304000000004,
+        "status": 0
+      },
+      {
+        "file": "tests/stability-cache.mjs",
+        "ms": 114.20648799999617,
+        "status": 0
+      },
+      {
+        "file": "tests/presentation-sampling.mjs",
+        "ms": 53944.127834,
+        "status": 0
+      },
+      {
+        "file": "tests/stability-build.mjs",
+        "ms": 592.8737970000075,
+        "status": 0
+      },
+      {
+        "file": "tests/ui-stability-browser.mjs",
+        "ms": 33784.482575,
+        "status": 0
+      },
+      {
+        "file": "tests/conversion3-browser.mjs",
+        "ms": 30593.656675000006,
+        "status": 0
+      },
+      {
+        "file": "tests/ui-ux-browser.mjs",
+        "ms": 69663.96603099999,
+        "status": 0
+      },
+      {
+        "file": "tests/check-workflow-browser.mjs",
+        "ms": 72609.36872200001,
+        "status": 0
+      },
+      {
+        "file": "tests/check-next-browser.mjs",
+        "ms": 53254.397880000004,
+        "status": 0
+      },
+      {
+        "file": "tests/check-gpu-browser.mjs",
+        "ms": 25761.245705999958,
+        "status": 0
+      },
+      {
+        "file": "tests/check-mobile-order.mjs",
+        "ms": 5678.982567000028,
+        "status": 0
+      },
+      {
+        "file": "tests/stability-browser.mjs",
+        "ms": 3665.100096000009,
+        "status": 0
+      },
+      {
+        "file": "tests/beta6-browser.mjs",
+        "ms": 23569.365705000004,
+        "status": 0
+      },
+      {
+        "file": "tests/beta6-complete-browser.mjs",
+        "ms": 26600.714671999973,
+        "status": 1
+      },
+      {
+        "file": "tests/quality-workflow-browser.mjs",
+        "ms": 6648.083372999972,
+        "status": 0
+      },
+      {
+        "file": "tests/standard-engine-browser.mjs",
+        "ms": 6088.925960999972,
+        "status": 0
+      },
+      {
+        "file": "tests/color-ab-browser.mjs",
+        "ms": 18147.474847000034,
+        "status": 0
+      },
+      {
+        "file": "tests/maintenance-browser.mjs",
+        "ms": 13204.064696000016,
+        "status": 0
+      },
+      {
+        "file": "tests/editing-browser.mjs",
+        "ms": 26309.18745899998,
+        "status": 0
+      }
+    ],
+    "build": {
+      "rebuilt": false,
+      "input": "b4dfd07dda1849f7e79fb8c909f4cc811d40582849eb58c1fd37da18cd57cb89"
+    },
+    "browserProcesses": 1,
+    "ms": 529868.307083,
+    "failures": 1
+  },
+  "touchRegression": {
+    "initialFailure": "beta6-complete-browser: offscreen mobile composition handle after entering the tool",
+    "fix": "Reveal the photograph on mobile when entering the existing direct-manipulation geometry modes",
+    "focusedReruns": {
+      "beta6CompleteBrowser": "passed with unchanged assertions",
+      "uiStabilityBrowser": "passed including actual image-handle hit testing"
+    },
+    "finalFull": "Enforced by the clean Node 22 PR CI; see PR check result."
+  }
+}
