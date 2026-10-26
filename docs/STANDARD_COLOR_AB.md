@@ -101,7 +101,10 @@ mer brusdämpning, men större bias i cyan och täta färger; därför halverad 
 - **35/35 Node-grupper, 10/10 browsergrupper, produktionsbygge och byggtester
   passerar.** Baseline main: 34/34 Node-grupper. Inga gamla referenser/toleranser ändras.
 - Nya historiska referenser är genererade från kärnorna vid 3a24fcd/b2b7f87,
-  med 36 konfigurationer av arbetsrymd, profil, tonläge och reglage.
+  med 36 konfigurationer av arbetsrymd, profil, tonläge och reglage. De historiska
+  kärnorna jämförs exakt i samma Node-version; frysta JSON-värden kontrolleras
+  dessutom exakt efter 8/16-bitarskvantisering. Detta undviker en ULP-skillnad
+  mellan Node 22 och 24 utan att införa en tolerans eller ändra bildbehandlingen.
 - Oberoende skalära A-orakel, neutrala/mättade färger, jämna gradienter,
   gemensam intensitet, låg transmission, klippning och flat-field testas.
 - Testerna följer den valda punktsamplingen genom CPU, GPU, faktisk preview-

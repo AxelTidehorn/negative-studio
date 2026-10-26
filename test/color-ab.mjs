@@ -1,14 +1,27 @@
-import assert from 'node:assert/strict';import fs from 'node:fs';import {harness} from '../tests/check-app-harness.mjs';
+import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {createHash} from 'node:crypto';import {harness} from '../tests/check-app-harness.mjs';
 import {fixtureConfig,field,robust,localChroma,density,positive,lum,W} from './helpers/color-ab-candidates.mjs';
 const h=harness(),K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,P=h.context.NSPresentation,G=h.context.NSGeometry;
 const close=(a,b,t=1e-12)=>a.forEach((v,k)=>assert.ok(Math.abs(v-b[k])<=t,`${a} != ${b}`));
 const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
 const historical=JSON.parse(fs.readFileSync(new URL('./fixtures/color-ab-reference.json',import.meta.url)));
+// Compare unmodified historical kernels in the SAME runtime: stored IEEE-754
+// doubles can differ by one ULP between Node/V8 versions. Keep exact regression
+// checks, and independently require identical 8/16-bit output to the frozen JSON.
+const referenceKernels={};
+for(const [variant,fixture] of Object.entries(historical.kernels)){
+ const source=fs.readFileSync(new URL('./fixtures/'+fixture.file,import.meta.url),'utf8');
+ assert.equal(createHash('sha256').update(source).digest('hex'),fixture.sha256);
+ const ctx={NSCreativeProfiles:h.context.NSCreativeProfiles,NSRawInput:h.context.NSRawInput};vm.createContext(ctx);vm.runInContext(source,ctx);referenceKernels[variant]=ctx.NSPixelKernel;
+}
 function historicalConfig(row){const c=structuredClone(fixtureConfig);Object.assign(c,{workingSpace:row.space,profile:h.context.NSCreativeProfiles.resolve(h.run('filmProfiles'),row.profile,2),neutralProfile:row.profile==='generic',strength:.7});Object.assign(c.opts,{toneMode4:row.tone,...(row.edit?{autoLevels:true,exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})});Object.assign(c.cal.beta4,{lo:.08,span:1.1,base:[.7,.4,.2],light:[.8,1.2,1.1],response:{offset:[.1,-.2,.15],span:[2.5,3.2,4.8]}});return c;}
 for(const row of historical.cases)for(const variant of ['original','legacy']){
  const c=historicalConfig(row);c.opts.colorMode4=variant;const k=K.compile(c);
- historical.sources.forEach((p,i)=>assert.deepEqual(Array.from(k.pixel(p)),row.expected[variant][i]));
- if(variant==='legacy'){delete c.opts.colorMode4;historical.sources.forEach((p,i)=>assert.deepEqual(Array.from(K.compile(c).pixel(p)),row.expected.legacy[i]));c.opts.colorMode4='invalid';historical.sources.forEach((p,i)=>assert.deepEqual(Array.from(K.compile(c).pixel(p)),row.expected.legacy[i]));}
+ const ref=referenceKernels[variant].compile(c),expected=historical.sources.map(p=>Array.from(ref.pixel(p)));
+ historical.sources.forEach((p,i)=>{
+  assert.deepEqual(Array.from(k.pixel(p)),expected[i]);
+  for(const scale of [255,65535])assert.deepEqual(expected[i].map(v=>Math.round(v*scale)),row.expected[variant][i].map(v=>Math.round(v*scale)));
+ });
+ if(variant==='legacy'){delete c.opts.colorMode4;historical.sources.forEach((p,i)=>assert.deepEqual(Array.from(K.compile(c).pixel(p)),expected[i]));c.opts.colorMode4='invalid';historical.sources.forEach((p,i)=>assert.deepEqual(Array.from(K.compile(c).pixel(p)),expected[i]));}
 }
 console.log('PASS original matches pre-#21',historical.original,'and default/missing/unknown variant matches main',historical.legacy,'exactly across 36 configs, including BW and #21 experimental tone');
 const original=structuredClone(fixtureConfig);original.opts.colorMode4='original';const selected=structuredClone(original);selected.opts.colorMode4='robust';const ko=K.compile(original),ka=K.compile(selected),report=[];
