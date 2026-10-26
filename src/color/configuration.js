@@ -18,7 +18,7 @@ function technicalTables38(config){
   if(!technicalCache38||technicalCache38.key!==key)technicalCache38={key,value:NSPixelKernel.tables(NSPixelKernel.compile(config)),complete:false};
   return technicalCache38.value;
  }
- const complete=NSEditing2.version(config.opts.editVersion)!==2&&config.neutralProfile&&config.neutralPrint&&config.opts.saturation===1&&!config.opts.shadows&&!config.opts.highlights;
+ const complete=(NSEditing2.version(config.opts.editVersion)!==2||NSEditing2.prepare(config.opts,config.profile.type==='bw').identity)&&config.neutralProfile&&config.neutralPrint&&config.opts.saturation===1&&!config.opts.shadows&&!config.opts.highlights;
  const key=JSON.stringify({kind:config.kind,levels:config.levels,base:config.base,light:config.light,noBase:config.noBase,cal:config.cal,slopes:config.slopes,auto:config.opts.autoLevels,balance:config.opts.balanceStrength,final:complete?config:null});
  if(!technicalCache38||technicalCache38.key!==key){const k=NSPixelKernel.compile(config),t=complete?NSPixelKernel.completeTables(config,k).map(a=>Uint16Array.from(a,v=>Math.round(v*65535))):NSPixelKernel.tables(k);technicalCache38={key,value:t,complete};}
  return technicalCache38.value;

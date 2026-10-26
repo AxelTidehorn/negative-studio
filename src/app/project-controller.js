@@ -3,7 +3,7 @@
 $('saveSettings').onclick=()=>{saveCurrentFrame();downloadBlob(new Blob([JSON.stringify({format:roll.some(f=>f.settings.editVersion===2)?NSEditing2.PROJECT_FORMAT:NSGeometry.FORMAT,geometryVersion:NSGeometry.VERSION,roll:{cropExportToFrame:rollShared.cropExportToFrame},sourceCalibrationVersion:39,creativeProfileVersion:rollShared.profileVersion,flatField:typeof sharedFlatField!=='undefined'&&NSFlatField.valid(sharedFlatField)?sharedFlatField:null,profile:rollShared.profile,print:rollShared.print,strength:rollShared.strength,exportNaming:{prefix:$('exportName').value,digits:$('exportDigits').value},sharedResponse4:typeof sharedResponse4!=='undefined'&&CC4.valid(sharedResponse4)?sharedResponse4:null,frames:roll.map(f=>({filename:f.file.name,settings:f.settings,base:f.base,levels:f.levels,crop:f.crop,geometry:geometryForFrame(f,f.settings,f.crop),sourceMetadata:f.sourceMetadata||null}))},null,2)],{type:'application/json'}),'filmlabb-rullprojekt.json')};
 $('settingsFile').onchange=async e=>{try{
  const parsed=JSON.parse(await e.target.files[0].text());
- // Old builds reject the new file tag instead of silently ignoring Editing 2.0.
+ // Earlier Beta 6 builds reject the new file tag instead of silently ignoring Editing 2.0.
  if(parsed.format===NSEditing2.PROJECT_FORMAT)parsed.format=NSGeometry.FORMAT;
  const data=NSGeometry.prepareProject(parsed,roll.map(f=>({filename:f.file.name,settings:f.settings})));
  for(const f of data.frames)if(f.settings?.editVersion!==undefined&&![1,2].includes(f.settings.editVersion))throw Error('Unsupported editing version.');

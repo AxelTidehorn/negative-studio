@@ -58,6 +58,11 @@ for(const engine of ['calibrated4','log39','legacy','reference','beta2','density
 }
 h.run(`state={...state,editVersion:2,temperature:35,tint:-35,saturation:1.8};rollShared.profile='hp5';`);const mono=K.compile(h.run('configuration38()')).pixel([.1,.2,.3]);assert.ok(Math.max(...mono)-Math.min(...mono)<1e-7);
 console.log('PASS',checked,'conversion/profile/color variants: original and neutral Editing 2.0 exact against frozen main; technical conversion unchanged under editing');
+for(const engine of ['calibrated4','log39','legacy','reference','beta2','density38']){
+ h.run(`state={...defaultState(),engine:'${engine}',cropConfirmed:true};rollShared.profile='generic';analyzeLevels();`);const c=h.run('configuration38()'),image=h.run('workingPreview');
+ assert.deepEqual(Array.from(K.render(image,{...c,opts:{...c.opts,editVersion:2}},'positive',23).data),Array.from(K.render(image,c,'positive',23).data),'neutral preview retains exact original lookup/sampling');
+}
+console.log('PASS exact neutral CPU preview including original separable lookup paths');
 // Save/restore is per-image; missing version always uses original.
 h.run(`roll=[{file:{name:'a.tif'},settings:{...state,editVersion:2},geometry:NSGeometry.create(),crop:{...cropRegion}},{file:{name:'b.tif'},settings:{...state,editVersion:1},geometry:NSGeometry.create(),crop:{...cropRegion}}];activeFrame=-1;downloadBlob=b=>globalThis.savedProject=b;chooseFrame=async i=>{activeFrame=i;state={...roll[i].settings};};$('saveSettings').onclick();`);
 const project=JSON.parse(await h.context.savedProject.text());assert.equal(project.format,E.PROJECT_FORMAT);assert.throws(()=>h.context.NSGeometry.prepareProject(project),/okänt projektformat/);await h.elements.get('settingsFile').onchange({target:{files:[{text:async()=>JSON.stringify(project)}]}});assert.equal(h.run('roll[0].settings.editVersion'),2);assert.equal(h.run('roll[1].settings.editVersion'),1);

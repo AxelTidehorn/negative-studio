@@ -56,7 +56,7 @@ RAF embedded JPEG is used for thumbnails or as an explicit fallback after RAW de
 3. Use Standard conversion, or compare the earlier automatic engine. Automatic film-base/color estimates can be refined with measured film-base or neutral references. Roll calibration assumes consistent film and capture conditions.
 4. Adjust the positive and optionally apply a creative profile. Creative edits do not feed back into technical film-base analysis.
 5. Rotate, straighten or choose a composition. These operations do not recalibrate color. The queue-wide frame-crop choice determines whether the technical frame also limits export; each image keeps its own rotation and composition.
-6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 use a new file tag that older app builds reject safely.
+6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 use a new file tag that earlier Beta 6 builds reject safely.
 
 ## Getting started
 

@@ -142,13 +142,13 @@ colors in linear display light, then quantizes according to format.
 New image settings default to `editVersion: 1`. JSON stores the version per image.
 Mixed queues retain both versions. Original-only projects keep the existing
 `negative-studio-roll-beta6` tag. Projects containing version 2 use
-`negative-studio-roll-beta6-edit2`; older builds reject that tag instead of silently
+`negative-studio-roll-beta6-edit2`; earlier Beta 6 builds reject that tag instead of silently
 rendering new settings with Original. The current project controller adapts this
 file tag to the same validated geometry schema (geometry version 1).
 
 All previously supported project formats, RAW settings, color experiments,
 calibration/profiles and geometry migrations remain. No automatic conversion or
-upgrading of old edits occurs. Do not expect an older app to render a new editing
+upgrading of old edits occurs. Do not expect an earlier app to render a new editing
 project. Keep original files and the matching application version for reproducibility.
 
 ## Verification and measurements
