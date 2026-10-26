@@ -171,4 +171,48 @@ and candidate sequentially. It records CPU preview, synchronized software GPU,
 TIFF and worker JPEG times with warm-up and all samples, checks analysis stability,
 and generates an HTML comparison from the actual synthetic demo renders. This
 is not a benchmark on a physical GPU/iPad, and synthetic demo images are not a
-photographic quality assessment. Detailed results are recorded with final checks.
+photographic quality assessment. The recorded results follow below.
+
+### Recorded performance
+
+Seven warm samples, Chromium **154.0.8037.57**, Linux/SwiftShader, 900×600 synthetic
+demo, same compiled source/calibration. Timings are **median [min–max] ms**.
+The frozen main run is `2e82ad6`; final scalar candidate is `eda17dd` (later detail
+precision revalidation only affects an open detail panel, not these probes).
+
+| Path | Original neutral | 2.0 neutral | Original adjusted | 2.0 adjusted |
+| --- | ---: | ---: | ---: | ---: |
+| CPU preview, max side 480 | 88.9 [65.9–96.6] | 89.3 [79.7–160.6] | 121.2 [109.6–142.5] | 144.9 [132.9–148.0] |
+| GPU draw + finish, max side 700 | .5 [.3–1.3] | .4 [.2–1.5] | .2 [.1–.9] | .3 [.2–2.1] |
+| JPEG worker export | 319.7 [263.9–1353.1] | 409.3 [286.2–1073.8] | 380.8 [345.6–1489.8] | 539.0 [440.8–1303.3] |
+| TIFF export | 180.4 [125.2–900.6] | 134.8 [119.0–946.9] | 266.9 [203.2–626.0] | 306.2 [287.3–1321.2] |
+
+Adjusted values are EV .7, contrast 1.2, gamma 1.1, shadows/highlights +30 and
+saturation 1.4. These intentionally have different visual strength between versions.
+In this run 2.0 adjusted costs about **20% CPU preview, 42% JPEG and 15% TIFF**
+relative to Original adjusted. This is a cost report, not a speedup claim. Native
+encoder/worker startup and host scheduling have large tails. Sub-millisecond
+software GPU observations do not establish physical GPU speed or iPad latency.
+
+Frozen main Original adjusted measured 123.8 [107.2–133.6] ms CPU and 253.6
+[220.8–796.7] ms TIFF, consistent with the candidate Original path within observed
+variation. It does not prove every device is regression-free. Neutral CPU follows
+the original path; the independent image/kernel tests, not timing, prove identity.
+Each benchmark renderer uploads the source once across all samples; analysis and
+the source buffer remain unchanged. No total/native peak-memory figure is claimed.
+
+An initial vector-heavy prototype measured 783.0 [400.5–2027.8] ms for adjusted
+2.0 CPU preview. The scalar hot path removes its per-pixel matrix/vector temporaries
+and matches an independent matrix reference within 1e-12. Final 144.9 ms shows why
+this simplification was retained; the final run is still more expensive than Original.
+The prototype report records the then-current HEAD (`2e82ad6`) plus uncommitted
+implementation, not a separate released engine.
+
+Raw data: [frozen main](measurements/editing2-baseline.json),
+[initial vector prototype](measurements/editing2-vector-prototype.json),
+[final scalar candidate](measurements/editing2-candidate.json).
+[Generated synthetic A/B renders](measurements/editing2-synthetic.html) use actual
+CPU/demo output. Original-neutral and 2.0-neutral PNGs are identical. Inspection
+shows the different tone strengths; it is not a photographic preference ranking.
+The demo source is 8-bit, so source quantization is visible and is not evidence
+of newly introduced 16-bit curve banding.

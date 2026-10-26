@@ -44,18 +44,18 @@ $('flatFieldFile').onchange=async e=>{
  }catch(err){setStatus('Belysningsreferens: '+err.message);}finally{flatFieldBusy=false;e.target.value='';nextControls();}
 };
 // A dedicated loupe samples the original, without changing crop or analysis.
-let detailOpen=false,detailAt={x:.5,y:.5},detailSource=null,detailROI=null,detailVersion=-1,detailTimer=null,detailScale=1,detailGPU=null,detailFrame=null;
+let detailOpen=false,detailAt={x:.5,y:.5},detailSource=null,detailROI=null,detailVersion=-1,detailTimer=null,detailScale=1,detailGPU=null,detailFrame=null,detailEditingVersion=-1;
 const detailPanel=document.createElement('section');detailPanel.id='originalDetailPanel';detailPanel.hidden=true;detailPanel.setAttribute('aria-label','Originaldetalj');
 detailPanel.innerHTML='<div class="toolrow"><strong id="detailTitle">Originaldetalj · 100 %</strong><button class="btn" id="detailScale">200 %</button><button class="btn" id="detailClose">Stäng</button></div><p class="hint">En originalpixel per CSS-pixel vid 100 %. Välj plats med pilknapparna eller klicka i huvudbilden. Visas före rotation.</p><div class="detail-scroll"><canvas id="detailCanvas"></canvas></div><p class="hint" id="detailPosition"></p><div class="toolrow"><button class="btn" id="detailLeft" aria-label="Detalj åt vänster">←</button><button class="btn" id="detailUp" aria-label="Detalj uppåt">↑</button><button class="btn" id="detailDown" aria-label="Detalj nedåt">↓</button><button class="btn" id="detailRight" aria-label="Detalj åt höger">→</button></div>';
 document.body.appendChild(detailPanel);
-function closeDetailNext(){detailOpen=false;detailPanel.hidden=true;clearTimeout(detailTimer);cancelAnimationFrame(detailFrame);detailFrame=null;detailROI=null;detailSource=null;detailVersion=-1;if(detailGPU){detailGPU.destroy();detailGPU=null;}const c=$('detailCanvas');c.width=c.height=1;}
+function closeDetailNext(){detailOpen=false;detailPanel.hidden=true;clearTimeout(detailTimer);cancelAnimationFrame(detailFrame);detailFrame=null;detailROI=null;detailSource=null;detailVersion=-1;detailEditingVersion=-1;if(detailGPU){detailGPU.destroy();detailGPU=null;}const c=$('detailCanvas');c.width=c.height=1;}
 function detailCanvasNext(){const old=$('detailCanvas'),c=document.createElement('canvas');c.id='detailCanvas';old.replaceWith(c);return c;}
 function drawDetailNext(){
  if(!detailOpen||!working)return;
  const version=sourceVersion38;
  if(detailSource!==working||detailVersion!==version||!detailROI){detailROI=NSFlatField.region(working,detailAt.x,detailAt.y,320);detailSource=working;detailVersion=version;}
  const c=configuration38();let canvas=$('detailCanvas'),usedGPU=false;
- if(NSGpuPreview.supports(c)){try{if(!detailGPU){canvas=detailCanvasNext();detailGPU=NSGpuPreview.create(canvas);detailGPU.validate(c);}detailGPU.draw(detailROI,c,display,320,version);usedGPU=true;}catch{if(detailGPU)detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}}
+ if(NSGpuPreview.supports(c)){try{if(!detailGPU){canvas=detailCanvasNext();detailGPU=NSGpuPreview.create(canvas);detailEditingVersion=-1;}const editVersion=NSEditing2.version(c.opts.editVersion);if(detailEditingVersion!==editVersion){detailGPU.validate(c);detailEditingVersion=editVersion;}detailGPU.draw(detailROI,c,display,320,version);usedGPU=true;}catch{if(detailGPU)detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}}
  if(!usedGPU){if(detailGPU){detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}const r=NSPixelKernel.render(detailROI,c,display,320),ctx=canvas.getContext('2d');canvas.width=r.width;canvas.height=r.height;ctx.putImageData(new ImageData(r.data,r.width,r.height),0,0);}
  canvas.style.width=detailROI.width*detailScale+'px';canvas.style.height=detailROI.height*detailScale+'px';
  $('detailTitle').textContent='Originaldetalj · '+detailScale*100+' %';$('detailScale').textContent=detailScale===1?'200 %':'100 %';
