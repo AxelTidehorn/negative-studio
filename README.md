@@ -151,3 +151,5 @@ The AGPL includes network-interaction source availability requirements for modif
 
 **Important distribution limitation:** The precompiled LibRaw/WASM decoder bundle has not yet undergone a complete component-level source/build/relinkability and notices review. The package's ISC declaration does not establish the license of every binary component. Review and satisfy the applicable LGPL-2.1 or CDDL-1.0 obligations and other component notices before treating a redistributed WASM bundle as fully audited.
 
+
+The hosted app's footer links to the project's AGPL source, and the build includes the license and provisional notices in its offline cache. Detailed WASM build provenance and remaining source/relinkability checks are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
