@@ -1,5 +1,9 @@
 # FILMLABB Beta 6 – steg 1: geometri och projekt
 
+För den färdiga UI-/previewintegrationen, se [BETA6_COMPLETE.md](BETA6_COMPLETE.md).
+Tidigare fasgränser nedan beskriver respektive implementationssteg.
+
+
 Steg 1-dokumentation. Exportens tidigare vilande fasgräns ersätts i steg 2 av
 [BETA6_EXPORT_SAMPLING.md](BETA6_EXPORT_SAMPLING.md); UI och preview är fortsatt oförändrade.
 

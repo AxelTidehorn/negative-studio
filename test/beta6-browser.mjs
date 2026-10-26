@@ -13,7 +13,7 @@ try{
  const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'a.png',mimeType:'image/png',buffer},{name:'b.png',mimeType:'image/png',buffer}]);
  await page.waitForFunction(()=>roll.length===2&&working&&!rollLoading);
  const result=await page.evaluate(async()=>{
-  state.cropConfirmed=true;cropRegion={x:.1,y:.125,w:.8,h:.75};state.response4=null;analyzeLevels();saveCurrentFrame();
+  setQueueCropExportToFrame(false);state.cropConfirmed=true;cropRegion={x:.1,y:.125,w:.8,h:.75};state.response4=null;analyzeLevels();saveCurrentFrame();
   let downloaded;downloadBlob=(blob,name)=>downloaded={blob,name};
   const hash=async bytes=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes))).join(',');
   const tiff=async()=>{await exportTiff();return hash(await downloaded.blob.arrayBuffer());};

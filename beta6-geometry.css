@@ -1,0 +1,18 @@
+.geometry-tools{margin:10px 0;padding:0;border:1px solid var(--ns-border,#536468);border-radius:8px}
+.geometry-tools>summary{padding:10px 12px;display:list-item;font-size:13px}.geometry-tools summary output{float:right;font-variant-numeric:tabular-nums;font-weight:400}
+.geometry-body{padding:0 10px 10px}.geometry-body>label:first-child{display:flex;justify-content:space-between;font-size:12px}.geometry-body .switch{font-size:12px;margin:8px 0}
+.rotation-inputs{display:grid;grid-template-columns:minmax(0,1fr) 76px;gap:8px;align-items:center}.rotation-inputs input{min-width:0;width:100%;height:36px;accent-color:var(--ns-accent,#bfd6bf)}.rotation-inputs input[type=number]{background:var(--ns-panel-2,#172023);color:var(--ns-text,#eef);border:1px solid var(--ns-border,#536468);border-radius:6px;padding:4px}
+.geometry-body .btn{min-height:36px;font-size:12px;padding:6px 8px}.geometry-body .hint{margin:5px 0;line-height:1.4}
+#presentationPreview,#presentationFallback{position:absolute!important;left:50%;top:50%;max-height:none!important;max-width:none!important;object-fit:fill!important;transform-origin:center;pointer-events:none;z-index:2}
+#geometryOverlay{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible;touch-action:none}
+#geometryOverlay .frame-line{fill:none;stroke:#ffbe58;stroke-width:1.5;filter:drop-shadow(0 1px 1px #000)}
+#geometryOverlay .composition-line{fill:none;stroke:#f4f4f4;stroke-width:1.5;filter:drop-shadow(0 1px 2px #000)}
+#geometryOverlay .grid-line{stroke:#fff9;stroke-width:1;filter:drop-shadow(0 1px 1px #000b)}
+#geometryOverlay .hit{stroke:transparent;stroke-width:28;pointer-events:stroke;cursor:move;touch-action:none}
+#geometryOverlay .composition-handle{fill:white;stroke:#30393d;stroke-width:1;pointer-events:all;touch-action:none;cursor:nwse-resize}
+#geometryOverlay .straight-line{stroke:#ffbe58;stroke-width:2;stroke-dasharray:6 3}
+.frame-settings-group .frame-quick{display:block!important}.frame-settings-group #frameOptions>summary{display:none}.frame-settings-group #frameOptions{border:0;margin:0;padding:0}.frame-settings-group .toolrow{gap:5px;margin:5px 0}.frame-settings-group .btn{min-height:36px;padding:6px 8px;font-size:12px}.frame-settings-group .switch{font-size:12px;margin:7px 0}.frame-settings-group>summary{font-size:13px;padding:9px 0}.frame-settings-group #cropConfirm{margin-top:5px;min-height:34px}
+.queue-crop-option{padding:8px 0;border-top:1px solid var(--ns-border,#536468);font-size:12px}.queue-crop-option .switch{font-size:12px}.queue-crop-option .hint{margin:5px 0}
+#picture.geometry-line-tool{cursor:crosshair}
+
+#geometryOverlay .composition-touch{fill:transparent;stroke:none;pointer-events:all;touch-action:none;cursor:nwse-resize}#geometryOverlay .composition-handle{pointer-events:none}

@@ -39,14 +39,15 @@ if(frameQuick){
   const title=document.createElement('summary');
   title.textContent='Filmruta';
   frameGroup.append(title,frameQuick);
+  const queueOption=document.createElement('div');queueOption.className='queue-crop-option';
+  const cropLabel=document.getElementById('cropExport')?.closest('label');
+  if(cropLabel){cropLabel.lastChild.textContent=' Hela kön: beskär till filmrutan';queueOption.append(cropLabel);frameGroup.append(queueOption);}
   editor.insertBefore(frameGroup,advanced);
   const confirm=cropConfirm;
   if(confirm){
-   const openOnPending=()=>{
-    if(!confirm.hidden && typeof working!=='undefined' && working){frameGroup.open=true;}
-   };
-   // A confirmation still appears in the crop section, but does not consume viewer height.
-   new MutationObserver(openOnPending).observe(confirm,{attributes:true,attributeFilter:['hidden']});
+   const markPending=()=>{title.textContent=typeof working!=='undefined'&&working&&!confirm.hidden?'Filmruta · kontrollera':'Filmruta';};
+   // Signal uncertainty without replacing the final export view with edit context.
+   new MutationObserver(markPending).observe(confirm,{attributes:true,attributeFilter:['hidden']});markPending();
   }
  }
  frameQuick.classList.add('viewer-toolbar-row');
