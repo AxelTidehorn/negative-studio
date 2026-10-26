@@ -12,6 +12,7 @@ function controls4(){
  for(const id of ['neutralPair4','resetResponse4','saveResponse4'])$(id).disabled=!enabled;
  $('useResponse4').checked=!!state.useRollResponse4;$('useResponse4').disabled=!sharedResponse4;
  $('rawMode4').value=state.rawMode4||'protected';$('toneMode4').value=state.toneMode4||'smooth';$('toneMode4').disabled=state.engine!=='calibrated4';
+ $('colorMode4').value=NSPixelKernel.colorVariant4(state.colorMode4);$('colorMode4').disabled=!enabled||rollLoading||exportBusy;
  $('balanceStrength').disabled=state.engine==='calibrated4'||$('balanceStrength').disabled;
  if(sharedLight&&sourceInfo.domain&&sharedLight.domain!==sourceInfo.domain&&!(!sharedLight.domain&&sourceInfo.rawMode4==='reference'))$('referenceStatus').textContent='Ljuskälla pausad · annan kamera eller RAW-import';
  if(state.useRollBase&&sharedBase&&sourceInfo.domain&&sharedBase.sourceDomain!==sourceInfo.domain&&!(!sharedBase.sourceDomain&&sourceInfo.rawMode4==='reference'))$('rollBaseStatus').textContent='Filmbas pausad · annan kamera eller RAW-import';
@@ -34,6 +35,7 @@ const tablesBefore4=technicalTables38;
 technicalTables38=function(c){if(c.kind!=='calibrated4')return tablesBefore4(c);const a=c.cal.beta4,key='beta4:'+JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalCache38||technicalCache38.key!==key)technicalCache38={key,value:NSPixelKernel.tables(NSPixelKernel.compile(c)),complete:false};return technicalCache38.value;};
 const lookupBefore4=neutralLookup;
 neutralLookup=function(opts,im){return opts.engine==='calibrated4'?null:lookupBefore4(opts,im);};
+$('colorMode4').onchange=e=>{if(state.engine!=='calibrated4'||rollLoading||exportBusy){controls4();return;}state.colorMode4=NSPixelKernel.colorVariant4(e.target.value);config38=null;saveCurrentFrame();persist();controls4();render();};
 $('toneMode4').onchange=e=>{state.toneMode4=e.target.value==='reference'?'reference':'smooth';config38=null;saveCurrentFrame();persist();render();};
 $('resetResponse4').onclick=()=>{if(!workingPreview)return;cancelPair4();state.response4=null;state.useRollResponse4=false;analyzeLevels();persist();render();setStatus('Färgkurvor uppskattade från den aktuella filmrutan.');};
 $('saveResponse4').onclick=()=>{const r=calibration?.beta4?.response;if(!CC4.valid(r))return;sharedResponse4=JSON.parse(JSON.stringify(r));state.useRollResponse4=true;analyzeLevels();persist();render();setStatus('Rullkalibrering sparad. Använd på bilder från samma film och samma avfotografering.');};
@@ -55,7 +57,7 @@ const chooseBefore4=chooseFrame;
 chooseFrame=async function(i,opts){cancelPair4();try{return await chooseBefore4(i,opts);}finally{controls4();}};
 const clearBefore4=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(rollLoading||exportBusy)return;cancelPair4();sharedResponse4=null;clearBefore4();controls4();};
 const confirmBefore4=$('cropConfirm').onclick;$('cropConfirm').onclick=()=>{confirmBefore4();if(state.engine==='calibrated4'){analyzeLevels();render();}};
-const engineBefore4=$('engineMode').onchange;$('engineMode').onchange=e=>{cancelPair4();engineBefore4(e);};
+const engineBefore4=$('engineMode').onchange;$('engineMode').onchange=e=>{cancelPair4();engineBefore4(e);controls4();};
 // Global preferences must not seed a different imported image with an old response.
 state.response4=null;state.useRollResponse4=false;
 try{if(!localStorage.getItem('filmlabb-default-engine4')){state.engine='calibrated4';localStorage.setItem('filmlabb-default-engine4','1');persist();}}catch{}

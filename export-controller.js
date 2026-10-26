@@ -3,7 +3,7 @@
 'use strict';
 let active=null,sequence=0,batch=null;
 const stats={workerJobs:0,fallbackJobs:0,cancelled:0,maxStripeBytes:0,transferredBytes:0,lastBackend:null,lastSize:null};
-const locked=new Map(),lockIds=['imageFile','settingsFile','referenceFile','flatFieldFile','rawMode4','tiffEncoding','export','exportTiff','batchJpeg','batchTiff','clearQueue','loadFullRaw','clearFlatField','useFlatField','clearReference','reset','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport','rotateLeft','rotateRight'];
+const locked=new Map(),lockIds=['imageFile','settingsFile','referenceFile','flatFieldFile','rawMode4','colorMode4','tiffEncoding','export','exportTiff','batchJpeg','batchTiff','clearQueue','loadFullRaw','clearFlatField','useFlatField','clearReference','reset','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport','rotateLeft','rotateRight'];
 const panel=document.createElement('section');panel.id='exportProgressPanel';panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby','exportProgressTitle');
 panel.innerHTML='<div class="export-top"><strong id="exportProgressTitle">JPEG-export</strong><button class="btn" id="cancelExport">Avbryt</button><button class="btn" id="closeExportProgress" hidden>Stäng</button></div><progress id="exportProgress" max="100" value="0" aria-label="Exportförlopp"></progress><p id="exportProgressText" role="status" aria-live="polite"></p><p class="hint" id="exportSnapshotNote">Exporterar inställningarna som gällde vid start.</p>';
 document.body.appendChild(panel);

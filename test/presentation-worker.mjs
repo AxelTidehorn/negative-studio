@@ -3,7 +3,7 @@ import {harness} from '../tests/check-app-harness.mjs';
 const h=harness(),P=h.context.NSPresentation,E=h.context.NSExportPlan,G=h.context.NSGeometry,K=h.context.NSPixelKernel;
 h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),cropConfirmed:true};sourceInfo={encoding:'linear'};cropRegion={x:0,y:0,w:1,h:1};working={width:13,height:11,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:13*11*3},(_,i)=>1000+(i*173)%52000)};workingPreview=CE.preview(working);analyzeLevels();`);
 const config=JSON.parse(h.run('JSON.stringify(configuration38())'));
-async function worker(im,g,target,corrupt=false,legacy={}){
+async function worker(im,g,target,corrupt=false,legacy={},colorConfig=config){
  const messages=[],stripes=[];
  class Canvas{
   constructor(w,h){this.width=w;this.height=h;}
@@ -12,7 +12,7 @@ async function worker(im,g,target,corrupt=false,legacy={}){
  }
  const c={console,Blob,Uint8Array,Uint8ClampedArray,Uint16Array,Float32Array,Float64Array,OffscreenCanvas:Canvas,postMessage:m=>messages.push(m)};c.self=c;
  vm.createContext(c);c.importScripts=(...files)=>{for(const f of files)vm.runInContext(fs.readFileSync(f.replace('./',''),'utf8'),c);};vm.runInContext(fs.readFileSync('export-worker.js','utf8'),c);
- await c.onmessage({data:{type:'start',id:1,source:E.metadata(im),config,region:legacy.region||{x:0,y:0,w:1,h:1},crop:legacy.crop||false,rotation:legacy.rotation||0,target,presentation:g.spec||null}});
+ await c.onmessage({data:{type:'start',id:1,source:E.metadata(im),config:colorConfig,region:legacy.region||{x:0,y:0,w:1,h:1},crop:legacy.crop||false,rotation:legacy.rotation||0,target,presentation:g.spec||null}});
  let transferred=0;
  while(true){
   const m=messages.shift();assert.ok(m,'worker stalled');
@@ -24,7 +24,7 @@ async function worker(im,g,target,corrupt=false,legacy={}){
   await c.onmessage({data:{type:'stripe',id:1,y:m.y+(corrupt?1:0),rows:m.rows,data:packed}});
  }
  const actual=new Uint8ClampedArray(target.width*target.height*4);for(const s of stripes)actual.set(s.data,s.y*target.width*4);
- assert.ok(Buffer.from(actual).equals(Buffer.from(P.rgba(im,K.prepare(im,config),g,target,0,target.height))),`worker/main mismatch (${im.encoding}, ${im.scale}, flat=${!!im.flatField}, fine=${g.spec?.model.rotation.fineDegrees??0})`);assert.ok(transferred>0);
+ assert.ok(Buffer.from(actual).equals(Buffer.from(P.rgba(im,K.prepare(im,colorConfig),g,target,0,target.height))),`worker/main mismatch (${im.encoding}, ${im.scale}, flat=${!!im.flatField}, fine=${g.spec?.model.rotation.fineDegrees??0})`);assert.ok(transferred>0);
 }
 let cases=0;
 for(const Type of [Uint8Array,Uint16Array,Float32Array])for(const flat of [false,true])for(const fine of [0,-15,-2,-.1,.1,2,15]){
@@ -39,6 +39,10 @@ for(const Type of [Uint16Array,Float32Array])for(const flat of [false,true])for(
  const scale=Type===Uint16Array?65535:1,low={width:37,height:25,channels:3,scale,encoding:'linear',data:Type.from({length:37*25*3},(_,i)=>scale*(i%3===0?.002:i%3===1?.001:(i%67)/65535))};
  if(flat)low.flatField={size:2,gains:Array(12).fill(1.1)};
  const model=G.create();model.rotation.fineDegrees=fine;const g=P.plan(low,model,false,null);await worker(low,g,g);cases++;
+}
+for(const colorMode4 of ['original','robust'])for(const fine of [0,2]){
+ const low={width:37,height:25,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:37*25*3},(_,i)=>i%3===0?131:i%3===1?66:i%67)};
+ const model=G.create();model.rotation.fineDegrees=fine;const g=P.plan(low,model,false,null);await worker(low,g,g,false,{}, {...config,opts:{...config.opts,colorMode4}});cases++;
 }
 const im=h.run('working'),model=G.create();model.rotation.fineDegrees=2;const g=P.plan(im,model,false,null);await worker(im,g,g,true);
 console.log('PASS',cases,'actual JPEG-worker protocol cases match main pre-encode pixels, including flat-field, resized geometry and stripe seams; malformed stripe rejected');

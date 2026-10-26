@@ -13,6 +13,8 @@ uniform vec2 uSourceSize,uOutputSize;
 uniform vec3 uLight,uBase,uOffset,uResponseSpan,uGains;
 uniform vec3 uChromaStart,uChromaInvRange;
 uniform float uChromaLimit;
+uniform float uRobustStrength;
+uniform int uColorVariant;
 uniform float uLo,uSpan,uExposure,uBlack,uWhiteRange,uInvGamma,uContrast,uSaturation,uShadows,uHighlights,uStrength;
 uniform int uMode,uAuto,uShoulder,uProfile,uPrint,uWide;
 uniform mat3 uMatrix;
@@ -54,6 +56,7 @@ vec3 displayWide(vec3 p){
   vec3 q=vec3(dot(vec3(1.6604910021084345,-.5876411387885495,-.0728498633198848),p),dot(vec3(-.1245504745215907,1.13289989712596,-.0083494226043694),p),dot(vec3(-.0181507633549052,-.1005788980080074,1.1187296613629127),p));
   float l=max(0.0,luma(q)),m=min(q.r,min(q.g,q.b)),s=m<0.0?l/max(1e-12,l-m):1.0;return max(vec3(0.0),vec3(l)+(q-vec3(l))*s);
  }
+vec3 softDensity(vec3 p,vec3 start,vec3 range){vec3 d=max(vec3(0.0),p-start);return p-d+range*(vec3(1.0)-exp(-d/range));}
 void main(){
  // Texture row zero is the top source row; framebuffer row zero is bottom.
  vec2 pos=vec2(gl_FragCoord.x,uOutputSize.y-gl_FragCoord.y);
@@ -63,10 +66,18 @@ void main(){
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
  vec3 density=p;
  p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p);
- if(uProfile!=2&&uProfile!=3){
+ if(uColorVariant!=1&&uProfile!=2&&uProfile!=3){
   vec3 uncertainty=(density-uChromaStart)*uChromaInvRange;
   float t=sat(max(uncertainty.r,max(uncertainty.g,uncertainty.b)));
-  if(t>0.0){float fade=uChromaLimit*t*t*(3.0-2.0*t),neutral=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);p=mix(p,vec3(neutral),fade);}
+  if(t>0.0){
+   float neutral=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);
+   if(uColorVariant==2){
+    float scale=uAuto==1?uSpan:1.0;vec3 start=max(vec3(0.0),(uChromaStart-vec3(uAuto==1?uLo:0.0))/scale),range=vec3(1.0)/uChromaInvRange/scale;
+    vec3 d=softDensity(p,start,range)-softDensity(vec3(neutral),start,range);float mean=uWide==1?dot(vec3(.2627,.678,.0593),d):luma(d);d-=vec3(mean);
+    float minimum=neutral+min(d.r,min(d.g,d.b)),s=minimum<0.0?neutral/max(1e-12,neutral-minimum):1.0;
+    p=mix(p,vec3(neutral)+d*s,uRobustStrength*t*t*(3.0-2.0*t));
+   }else{float fade=uChromaLimit*t*t*(3.0-2.0*t);p=mix(p,vec3(neutral),fade);}
+  }
  }
  p=p*uExposure*uGains;
  float y=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);
@@ -85,7 +96,7 @@ void main(){
  if(peak>0.0)p=p*mapped/peak;
  // Mirror the calibrated4 CPU highlight-chroma experiment exactly.
  // uShoulder == 0 is the reference mode, left unchanged.
- if(uProfile!=2&&uProfile!=3&&uShoulder==2&&peak>.85){
+ if(uColorVariant==0&&uProfile!=2&&uProfile!=3&&uShoulder==2&&peak>.85){
   float t=sat((peak-.85)/.45),fade=t*t*(3.0-2.0*t);
   p=mix(p,vec3(mapped),fade);
  }
@@ -157,6 +168,7 @@ function create(canvas){
   const a=c.cal.beta4,o=c.opts,p=c.profile,bw=p.type==='bw',profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
   const confidence=NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
+  const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
   v('uGains',bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)]);
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',2**o.exposure);f('uBlack',NSColorEngine.decode(o.shadow));f('uWhiteRange',Math.max(.01,NSColorEngine.decode(o.highlight)-NSColorEngine.decode(o.shadow)));
   f('uInvGamma',1/Math.max(.25,o.gamma));f('uContrast',o.contrast);f('uSaturation',bw?(p.creativeVersion===2?1:0):o.saturation);
