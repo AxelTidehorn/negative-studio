@@ -1,0 +1,7 @@
+import {readSource} from './helpers/source.mjs';
+/* Optional native Node timing of real WASM + original RAW transform; not browser timing. */
+import fs from 'node:fs';import crypto from 'node:crypto';import {performance} from 'node:perf_hooks';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import '../src/import/raw-input.js';
+const [input,output]=process.argv.slice(2);if(!output)throw Error('Usage: node tests/check-decode-benchmark.mjs FILE result.json');
+const data=readSource(input),sha256=b=>crypto.createHash('sha256').update(b).digest('hex'),m=await factory({wasmBinary:readSource('node_modules/libraw-wasm/dist/libraw.wasm')}),results=[];
+for(let run=0;run<2;run++){const d=new m.LibRaw(),t=performance.now();try{d.open(new Uint8Array(data),NSRawInput.options('protected'));const opened=performance.now(),meta=d.metadata(),im=d.imageData(),decoded=performance.now();NSRawInput.convert(im,'protected');const converted=performance.now();results.push({run,camera:meta.camera_model,width:im.width,height:im.height,openMs:opened-t,decodeMs:decoded-opened,transformMs:converted-decoded,sha256:sha256(new Uint8Array(im.data.buffer,im.data.byteOffset,im.data.byteLength))});}finally{d.delete();}}
+if(results[0].sha256!==results[1].sha256)throw Error('Repeated decode differs');fs.writeFileSync(output,JSON.stringify({sourceSha256:sha256(data),method:'Node direct WASM core; two sequential runs, not browser decode',results,peakRssKiB:process.resourceUsage().maxRSS},null,2));console.log(JSON.stringify(results));

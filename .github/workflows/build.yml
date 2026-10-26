@@ -1,4 +1,4 @@
-name: Build Negative Studio Beta 3
+name: Build FILMLABB
 on:
   pull_request:
     branches: [main]
@@ -15,12 +15,19 @@ jobs:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
       - run: npm test
-      - run: node tests/raw-fixture.mjs
       - run: npm run build
       - run: npm run test:build
-      - run: npx playwright install --with-deps chromium
+      - name: Prepare browser
+        run: |
+          filmlabb_chrome_bin="$(command -v google-chrome || command -v chromium || true)"
+          if [ -n "$filmlabb_chrome_bin" ]; then
+            printf 'FILMLABB_CHROMIUM_BIN=%s\n' "$filmlabb_chrome_bin" >> "$GITHUB_ENV"
+            "$filmlabb_chrome_bin" --version
+          else
+            npx playwright install --with-deps chromium
+          fi
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
         with:
-          name: Negative-Studio-Beta-3-WASM
+          name: FILMLABB-WASM
           path: site/

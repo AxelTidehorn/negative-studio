@@ -1,5 +1,5 @@
 {
-  "name": "filmlabb-1-1-beta3",
+  "name": "filmlabb",
   "private": true,
   "type": "module",
   "scripts": {
@@ -10,7 +10,7 @@
     "test:workflow": "node verify-preview.mjs --workflow",
     "test:next": "node verify-preview.mjs --next",
     "test:gpu": "node verify-preview.mjs --gpu",
-    "test:build": "node test/stability-build.mjs",
+    "test:build": "node tests/stability-build.mjs",
     "test:browser": "npm run build && node verify-preview.mjs --browser"
   },
   "dependencies": {

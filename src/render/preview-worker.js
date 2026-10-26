@@ -1,0 +1,3 @@
+importScripts('./raw-input.js','./creative-profiles.js','./color-parameters.js','./render-core.js');
+let source=null;
+self.onmessage=({data:m})=>{try{if(m.type==='source'){source=m.image;return;}if(!source)throw Error('Missing preview source');const start=performance.now();const r=NSPixelKernel.render(source,m.config,m.mode,m.limit);const transfer=[r.data.buffer,r.bins.buffer];if(m.mode==='split'){r.positive=NSPixelKernel.render(source,m.config,'positive',m.limit).data;r.negative=NSPixelKernel.render(source,m.config,'negative',m.limit).data;transfer.push(r.positive.buffer,r.negative.buffer);}self.postMessage({id:m.id,renderMs:performance.now()-start,...r},transfer);}catch(e){self.postMessage({id:m.id,error:e.message});}};
