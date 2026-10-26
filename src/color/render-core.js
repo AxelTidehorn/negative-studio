@@ -14,6 +14,10 @@ function lowSignal4(c){
  return {start,invRange:start.map((v,k)=>1/(coordinate(4/65535,k)-v)),strength:.85,robustStrength:.5};
 }
 function compile(c){
+ if(root.NSEditing2?.version(c.opts.editVersion)===2){
+  const base=compile({...c,opts:{...c.opts,...NSEditing2.neutral}}),edit=NSEditing2.compile(c.opts,c.profile.type==='bw');
+  return {technical:base.technical,finish:p=>edit.pixel(base.finish(p)),pixel:p=>edit.pixel(base.pixel(p))};
+ }
  const o=c.opts,f=c.profile,print=c.print,parameters=NSColorParameters.prepare(c),bw=parameters.bw,ev=parameters.exposureGain,
  gains=parameters.gains,invGamma=parameters.inverseGamma,range=parameters.displayRange,sat=parameters.saturation,
  variant=colorVariant4(o.colorMode4),confidence=c.kind==='calibrated4'&&!bw&&variant!=='original'?lowSignal4(c):null,
@@ -121,7 +125,7 @@ function compile(c){
 // Cache only the separable technical stage. Creative mixing and tonal zones remain exact.
 function tables(kernel){const a=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let k=0;k<3;k++)for(let i=0;i<65536;i++)a[k][i]=kernel.technical(i/65535,k);return a;}
 function completeTables(config,kernel){
- if(config.kind==='calibrated4')return null;
+ if(config.kind==='calibrated4'||root.NSEditing2?.version(config.opts.editVersion)===2)return null;
  if(!config.neutralProfile||!config.neutralPrint||config.opts.saturation!==1||config.opts.shadows||config.opts.highlights)return null;
  const t=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let i=0;i<65536;i++){const p=kernel.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=p[c];}return t;
 }
