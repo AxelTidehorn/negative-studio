@@ -75,7 +75,9 @@
    if(!active){stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=dragTimer38=null;}
    const ms=renderer.metrics.gpuMs;
    if(ms!==null){if(ms>25)interactiveLimit=Math.max(400,Math.round(interactiveLimit*.75));else if(ms<10)interactiveLimit=Math.min(1400,interactiveLimit+100);}
-   const start=now38(),r=renderer.draw(workingPreview,config,display,interactive?interactiveLimit:1400,sourceVersion38);
+   const start=now38(),r=renderer.draw(workingPreview,config,display==='split'&&globalThis.FILMLABB_GEOMETRY?'positive':display,interactive?interactiveLimit:1400,sourceVersion38);
+   globalThis.FILMLABB_GEOMETRY?.colorGpu(canvas,r,sourceVersion38);
+   if(display==='split'&&globalThis.FILMLABB_GEOMETRY){renderer.draw(workingPreview,config,'negative',interactive?interactiveLimit:1400,sourceVersion38);FILMLABB_GEOMETRY.colorGpu(canvas,r,sourceVersion38,true);}
    active=true;lastSource=workingPreview;lastVersion=sourceVersion38;++request38;stats38.renders++;metrics.frames++;
    metrics.sourceUploads=renderer.metrics.uploads;metrics.lastSubmitMs=now38()-start;metrics.lastGpuMs=renderer.metrics.gpuMs;
    // Geometry and all click-to-source mappings retain their original dimensions.

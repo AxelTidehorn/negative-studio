@@ -1,5 +1,9 @@
 # Beta 6 steg 2: exportens presentationsgeometri
 
+För den färdiga UI-/previewintegrationen, se [BETA6_COMPLETE.md](BETA6_COMPLETE.md).
+Tidigare fasgränser nedan beskriver respektive implementationssteg.
+
+
 Bas: main `77ea9f2`, inklusive stabilisering PR #16, geometrigrund PR #17 och
 [förstudien](FILMLABB_1.1_Beta6_Teknisk_forstudie.md), särskilt 6.1–6.5.
 Datamodell och migrering följer [steg 1](BETA6_GEOMETRY.md). Detta dokument

@@ -130,6 +130,14 @@ function compositionTransform(width,height,value,options={}){
   sample(x,y){return t.inverse({x:area.left+(x+.5)*area.width/output.width,y:area.top+(y+.5)*area.height/output.height});}
  };
 }
+// Full rotated source context for technical-frame/composition editing only.
+// Final preview/export still use compositionTransform, without empty corners.
+function contextTransform(width,height,value){
+ const g=validate(value),t=transform(width,height,g.rotation),area={left:-t.bounds.width/2,top:-t.bounds.height/2,width:t.bounds.width,height:t.bounds.height};
+ return {area,output:{width:Math.max(1,Math.floor(area.width)),height:Math.max(1,Math.floor(area.height))},
+  inverse(p){return t.inverse({x:area.left+p.x*area.width,y:area.top+p.y*area.height});},
+  forward(p){const q=t.forward(p);return {x:(q.x-area.left)/area.width,y:(q.y-area.top)/area.height};}};
+}
 function viewTransform(width,height,value,view,options={}){
  if(!object(view)||!['width','height','zoom','panX','panY'].every(k=>finite(view[k]))||view.width<=0||view.height<=0||view.zoom<=0)fail('ogiltig visningsmatris.');
  const p=compositionTransform(width,height,value,options),scale=Math.min(view.width/p.area.width,view.height/p.area.height)*view.zoom;
@@ -159,5 +167,5 @@ function prepareProject(data,queue=[]){
  });
  return {...data,geometryVersion:VERSION,roll:{...data.roll,cropExportToFrame:shared},frames,migratedIndividualCrops:!modern&&!shared&&flags.some(Boolean)};
 }
-root.NSGeometry=Object.freeze({VERSION,FORMAT,rect,composition,sourceSize,rotation,fromLegacy,create,validate,transform,pixelBounds,resolve,syncLegacy,withComposition,legacyFrame,effectiveCrop,isValidCrop,validPolygon,autoValidCrop,effectiveComposition,compositionTransform,viewTransform,prepareProject});
+root.NSGeometry=Object.freeze({VERSION,FORMAT,rect,composition,sourceSize,rotation,fromLegacy,create,validate,transform,pixelBounds,resolve,syncLegacy,withComposition,legacyFrame,effectiveCrop,isValidCrop,validPolygon,autoValidCrop,effectiveComposition,compositionTransform,contextTransform,viewTransform,prepareProject});
 })(globalThis);
