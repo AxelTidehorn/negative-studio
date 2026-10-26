@@ -18,12 +18,15 @@ fs.copyFileSync('manifest.webmanifest','site/manifest.webmanifest');
 for(const [file,source] of Object.entries(sourceAssets))fs.copyFileSync(source,'site/'+file);
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);
+for(const legalFile of ['LICENSE','THIRD_PARTY_NOTICES.md'])fs.copyFileSync(legalFile,'site/'+legalFile);
+fs.mkdirSync('site/legal',{recursive:true});
+for(const legalFile of fs.readdirSync('legal'))if(fs.statSync(path.join('legal',legalFile)).isFile())fs.copyFileSync(path.join('legal',legalFile),path.join('site/legal',legalFile));
 
 // Include the worker implementation and every deployed asset, with stable ordering.
 const hash=crypto.createHash('sha256'),assets=['./'];
 function fingerprint(dir){for(const name of fs.readdirSync(dir).sort()){
  const file=path.join(dir,name);if(fs.statSync(file).isDirectory())fingerprint(file);
- else{if(/\.(html|css|js|wasm|png|webmanifest)$/.test(file))assets.push('./'+path.relative('site',file).split(path.sep).join('/'));hash.update(path.relative('site',file));hash.update('\0');hash.update(fs.readFileSync(file));hash.update('\0');}
+ else{if(/\.(html|css|js|wasm|png|webmanifest|md|txt)$/.test(file)||path.basename(file)==='LICENSE')assets.push('./'+path.relative('site',file).split(path.sep).join('/'));hash.update(path.relative('site',file));hash.update('\0');hash.update(fs.readFileSync(file));hash.update('\0');}
 }}
 fingerprint('site');
 const cacheName='filmlabb-stability-'+hash.digest('hex').slice(0,24);

@@ -143,15 +143,13 @@ No version or delivery date is committed here for future editing features.
 
 ## Licensing
 
-**FILMLABB currently has no declared project license.** There is no root license file or license field granting general reuse rights. Public source availability does not by itself make the application freely reusable under an open-source license. Contact the owner about permission; this README does not choose a license for the project or its images/assets.
+FILMLABB's original project code is licensed under the **GNU Affero General Public License, version 3 only (AGPL-3.0-only)**. See the complete [LICENSE](LICENSE) text. Copyright © 2026 Axel Tidehorn and contributors, subject to the rights held by each contributor.
 
-Dependency licenses are separate:
+The AGPL includes network-interaction source availability requirements for modified versions offered to users over a network. If you distribute modified versions or provide modified network services, read the license and provide the corresponding source code as required. The license does not grant rights to photographs, sample images, trademarks or other material owned by third parties.
 
-| Component | Declared/upstream license |
-| --- | --- |
-| [`libraw-wasm` 1.6.0](https://www.npmjs.com/package/libraw-wasm/v/1.6.0), runtime binding | Package metadata declares ISC; native library licenses apply separately. |
-| [LibRaw](https://github.com/LibRaw/LibRaw) | Upstream offers [LGPL 2.1](https://github.com/LibRaw/LibRaw/blob/master/LICENSE.LGPL) or [CDDL 1.0](https://github.com/LibRaw/LibRaw/blob/master/LICENSE.CDDL). |
-| [Little CMS](https://github.com/mm2/Little-CMS/blob/master/LICENSE), used by the RAW build | MIT. |
-| [Playwright](https://github.com/microsoft/playwright/blob/main/LICENSE), development only | Apache 2.0; the installed browser has its own terms/notices. |
+**Third-party components retain their own licenses**; FILMLABB's AGPL grant does not relicense bundled dependencies. Refer to [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for attribution and the current decoder compliance review.
 
-The repository includes a vendored decoder fallback as well as the npm dependency. Its existing binary distribution does not contain a complete third-party license inventory. Package metadata alone is not a redistribution audit of the WASM binary and its compiled components; consult applicable upstream source, notices and obligations before redistribution.
+**Important distribution limitation:** The precompiled LibRaw/WASM decoder bundle has not yet undergone a complete component-level source/build/relinkability and notices review. The package's ISC declaration does not establish the license of every binary component. Review and satisfy the applicable LGPL-2.1 or CDDL-1.0 obligations and other component notices before treating a redistributed WASM bundle as fully audited.
+
+
+The hosted app's footer links to the project's AGPL source, and the build includes the license and provisional notices in its offline cache. Detailed WASM build provenance and remaining source/relinkability checks are listed in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
