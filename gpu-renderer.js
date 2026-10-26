@@ -76,7 +76,7 @@ void main(){
  if(peak>0.0)p=p*mapped/peak;
  // Mirror the calibrated4 CPU highlight-chroma experiment exactly.
  // uShoulder == 0 is the reference mode, left unchanged.
- if(uProfile!=2&&uProfile!=3&&uShoulder==1&&peak>.85){
+ if(uProfile!=2&&uProfile!=3&&uShoulder==2&&peak>.85){
   float t=sat((peak-.85)/.45),fade=t*t*(3.0-2.0*t);
   p=mix(p,vec3(mapped),fade);
  }
@@ -151,7 +151,7 @@ function create(canvas){
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',2**o.exposure);f('uBlack',NSColorEngine.decode(o.shadow));f('uWhiteRange',Math.max(.01,NSColorEngine.decode(o.highlight)-NSColorEngine.decode(o.shadow)));
   f('uInvGamma',1/Math.max(.25,o.gamma));f('uContrast',o.contrast);f('uSaturation',bw?(p.creativeVersion===2?1:0):o.saturation);
   f('uShadows',(Number(o.shadows)||0)/100);f('uHighlights',(Number(o.highlights)||0)/100);f('uStrength',c.strength);
-  i('uWide',c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
+  i('uWide',c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:o.toneMode4==='experimental'?2:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
   const matrix=p.matrix||[[1,0,0],[0,1,0],[0,0,1]];gl.uniformMatrix3fv(location('uMatrix'),false,[0,1,2].flatMap(col=>matrix.map(row=>row[col])));
   gl.uniform1fv(location('uTone[0]'),p.tone||[0,.08,.18,.35,.5,.65,.8,.92,1]);gl.uniform1fv(location('uChroma[0]'),p.chroma||[1,1,1,1,1,1]);
   v('uLow',p.low||[0,0,0]);v('uHigh',p.high||[0,0,0]);v('uMono',p.mono||[.2126,.7152,.0722]);f('uBwCurve',p.bwCurve||1);f('uBwLift',p.bwLift||0);f('uPrintShoulder',c.print.shoulder||0);f('uPrintContrast',c.print.contrast);
