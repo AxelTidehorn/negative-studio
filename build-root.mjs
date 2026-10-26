@@ -19,6 +19,8 @@ for(const [file,source] of Object.entries(sourceAssets))fs.copyFileSync(source,'
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);
 for(const legalFile of ['LICENSE','THIRD_PARTY_NOTICES.md'])fs.copyFileSync(legalFile,'site/'+legalFile);
+fs.mkdirSync('site/legal',{recursive:true});
+for(const legalFile of fs.readdirSync('legal'))if(fs.statSync(path.join('legal',legalFile)).isFile())fs.copyFileSync(path.join('legal',legalFile),path.join('site/legal',legalFile));
 
 // Include the worker implementation and every deployed asset, with stable ordering.
 const hash=crypto.createHash('sha256'),assets=['./'];
