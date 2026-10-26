@@ -6,5 +6,6 @@ for(const lang of api.languages){api.setLocale(lang);const expected=api.t('frame
 const loading=['Laddar Åsa.RAF…','Loading Åsa.RAF…','Chargement de Åsa.RAF…','Cargando Åsa.RAF…','Åsa.RAF wird geladen…'];
 api.languages.forEach((lang,i)=>assert.equal(api.fromSource('Laddar Åsa.RAF…',lang),loading[i]));
 for(const lang of api.languages){const error=api.fromSource('TIFF-komprimering 7 stöds inte (välj LZW, ZIP eller okomprimerad)',lang);assert.equal(error,api.t('TIFF-komprimering {count} stöds inte (välj LZW, ZIP eller okomprimerad)',{count:7},lang));}
+for(const lang of ['en','fr','es','de']){assert.notEqual(api.fromSource('Beta 1 · tidigare färgmotor',lang),'Beta 1 · tidigare färgmotor');assert.ok(!api.fromSource('Äldre projekt · densitet',lang).includes('densitet'));}
 api.setLocale('xx');assert.equal(api.get(),'en');
 console.log('PASS five complete catalogues, template parameters, nested errors, punctuation, opaque filenames, whitespace and locale fallback');

@@ -537,7 +537,13 @@ const rows=[
 ["TIFF-komprimering {count} stöds inte (välj LZW, ZIP eller okomprimerad)", "TIFF compression {count} is unsupported (choose LZW, ZIP or uncompressed)", "Compression TIFF {count} non prise en charge (choisir LZW, ZIP ou sans compression)", "Compresión TIFF {count} no admitida (elige LZW, ZIP o sin comprimir)", "TIFF-Kompression {count} nicht unterstützt (LZW, ZIP oder unkomprimiert wählen)"],
 ["Webbläsaren kunde inte JPEG-koda {width}×{height}.", "Browser could not JPEG-encode {width}×{height}.", "Le navigateur n’a pas pu encoder {width}×{height} en JPEG.", "El navegador no pudo codificar {width}×{height} como JPEG.", "Browser konnte {width}×{height} nicht als JPEG kodieren."],
 ["Motivnivåer (1,5–98,5 %): {details}", "Scene levels (1.5–98.5%): {details}", "Niveaux du sujet (1,5–98,5 %) : {details}", "Niveles del motivo (1,5–98,5 %): {details}", "Motivpegel (1,5–98,5 %): {details}"],
-["Bilden saknas.", "Image is missing.", "L’image est absente.", "Falta la imagen.", "Bild fehlt."]
+["Bilden saknas.", "Image is missing.", "L’image est absente.", "Falta la imagen.", "Bild fehlt."],
+["Beta 2 använder filmbasen för färgbalans. Justera Varm/kall och Grön/magenta manuellt.", "Beta 2 uses the film base for color balance. Adjust warm/cool and green/magenta manually.", "Bêta 2 utilise la base du film pour la balance des couleurs. Réglez chaud/froid et vert/magenta manuellement.", "Beta 2 usa la base para el balance de color. Ajusta cálido/frío y verde/magenta manualmente.", "Beta 2 nutzt die Filmbasis für den Farbabgleich. Warm/kalt und Grün/Magenta manuell einstellen."],
+["Beta 3 · Beta 1-färg med filmruteberoende kalibrering (utvärdering)", "Beta 3 · Beta 1 color with frame-dependent calibration (evaluation)", "Bêta 3 · couleur Bêta 1 et étalonnage selon la vue (évaluation)", "Beta 3 · color Beta 1 y calibración según fotograma (evaluación)", "Beta 3 · Beta-1-Farbe mit rahmenabhängiger Kalibrierung (Auswertung)"],
+["Beta 2 · tidigare densitetsmotor (utvärdering)", "Beta 2 · earlier density engine (evaluation)", "Bêta 2 · ancien moteur de densité (évaluation)", "Beta 2 · motor de densidad anterior (evaluación)", "Beta 2 · ältere Dichte-Engine (Auswertung)"],
+["Beta 1 · tidigare färgmotor", "Beta 1 · earlier color engine", "Bêta 1 · ancien moteur couleur", "Beta 1 · motor de color anterior", "Beta 1 · ältere Farb-Engine"],
+["densitet", "density", "densité", "densidad", "Dichte"],
+["srgb:8 bit · sRGB via webbläsarens färghantering", "srgb:8 bit · browser color-managed sRGB", "srgb:8 bits · sRGB géré par le navigateur", "srgb:8 bits · sRGB gestionado por el navegador", "srgb:8 Bit · sRGB über Browser-Farbverwaltung"]
 ];
 const languages=['sv','en','fr','es','de'],dictionary=new Map(),reverse=new Map(),missing=new Set();
 for(const row of rows){dictionary.set(row[0],row);for(const value of row)if(!reverse.has(value))reverse.set(value,row[0]);}
