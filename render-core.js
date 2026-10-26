@@ -60,6 +60,13 @@ function compile(c){
   if(sat!==1){y=.2126*r+.7152*g+.0722*b;r=Math.max(0,y+(r-y)*sat);g=Math.max(0,y+(g-y)*sat);b=Math.max(0,y+(b-y)*sat);}
   const peak=Math.max(r,g,b),mapped=o.toneMode4==='reference'?Math.min(1,peak):peak<=.8?peak:.8+.2*(-Math.expm1(-Math.min(100,(peak-.8)/.2)));
   if(peak>0){r=r*mapped/peak;g=g*mapped/peak;b=b*mapped/peak;}
+  // Experiment: roll saturated highlights gently toward neutral white rather
+  // than preserving tiny chroma differences that become blue/magenta specks.
+  // Only the calibrated4 standard shoulder is affected; reference stays intact.
+  if(!bw&&o.toneMode4==='experimental'&&peak>.85){
+   const t=clamp((peak-.85)/.45),fade=t*t*(3-2*t);
+   r+=fade*(mapped-r);g+=fade*(mapped-g);b+=fade*(mapped-b);
+  }
   p=[encode(r),encode(g),encode(b)];
   // Existing creative profiles remain downstream and do not enter calibration.
   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
