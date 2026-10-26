@@ -165,13 +165,13 @@ function create(canvas){
   if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
   gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
-  const a=c.cal.beta4,o=c.opts,p=c.profile,bw=p.type==='bw',profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
+  const a=c.cal.beta4,o=c.opts,p=c.profile,parameters=NSColorParameters.prepare(c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
   const confidence=NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
-  v('uGains',bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)]);
-  f('uLo',a.lo);f('uSpan',a.span);f('uExposure',2**o.exposure);f('uBlack',NSColorEngine.decode(o.shadow));f('uWhiteRange',Math.max(.01,NSColorEngine.decode(o.highlight)-NSColorEngine.decode(o.shadow)));
-  f('uInvGamma',1/Math.max(.25,o.gamma));f('uContrast',o.contrast);f('uSaturation',bw?(p.creativeVersion===2?1:0):o.saturation);
+  v('uGains',parameters.gains);
+  f('uLo',a.lo);f('uSpan',a.span);f('uExposure',parameters.exposureGain);f('uBlack',parameters.black);f('uWhiteRange',parameters.whiteRange);
+  f('uInvGamma',parameters.inverseGamma);f('uContrast',o.contrast);f('uSaturation',parameters.saturation);
   f('uShadows',(Number(o.shadows)||0)/100);f('uHighlights',(Number(o.highlights)||0)/100);f('uStrength',c.strength);
   i('uWide',c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:o.toneMode4==='experimental'?2:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
   const matrix=p.matrix||[[1,0,0],[0,1,0],[0,0,1]];gl.uniformMatrix3fv(location('uMatrix'),false,[0,1,2].flatMap(col=>matrix.map(row=>row[col])));

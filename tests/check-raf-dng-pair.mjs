@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import assert from 'node:assert/strict';
 import factory from '../node_modules/libraw-wasm/dist/libraw.js';
 const [raf,dng]=process.argv.slice(2);
-if(!raf||!dng)throw Error('Usage: node tests/raf-dng-pair.mjs image.RAF image.dng');
+if(!raf||!dng)throw Error('Usage: node tests/check-raf-dng-pair.mjs image.RAF image.dng');
 const mod=await factory({wasmBinary:readSource(new URL('../node_modules/libraw-wasm/dist/libraw.wasm',import.meta.url))});
 const options={outputBps:16,outputColor:1,useCameraWb:true,noAutoBright:true,gamm:[1,1,0,0,0,0],bright:1};
 function stats(file){const decoder=new mod.LibRaw();try{

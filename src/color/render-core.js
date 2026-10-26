@@ -14,9 +14,8 @@ function lowSignal4(c){
  return {start,invRange:start.map((v,k)=>1/(coordinate(4/65535,k)-v)),strength:.85,robustStrength:.5};
 }
 function compile(c){
- const o=c.opts,f=c.profile,print=c.print,bw=f.type==='bw',ev=2**o.exposure,
- gains=bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],
- invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?(f.creativeVersion===2?1:0):o.saturation,
+ const o=c.opts,f=c.profile,print=c.print,parameters=NSColorParameters.prepare(c),bw=parameters.bw,ev=parameters.exposureGain,
+ gains=parameters.gains,invGamma=parameters.inverseGamma,range=parameters.displayRange,sat=parameters.saturation,
  variant=colorVariant4(o.colorMode4),confidence=c.kind==='calibrated4'&&!bw&&variant!=='original'?lowSignal4(c):null,
  lowStart=confidence?.start,
  knee=variant==='robust'&&confidence?confidence.invRange.map(v=>1/v/(o.autoLevels?c.cal.beta4.span:1)):null,
@@ -55,8 +54,7 @@ function compile(c){
   return q.map(v=>{v=clamp(v+(f.lift||0));if(f.shoulder)v=v/(1+f.shoulder*(1-v));if(f.toe)v=v**(1/(1+f.toe));if(f.curve&&f.curve!==1)v=v**(1/f.curve);return clamp(v);});
  }
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
- const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
- const black4=decode(o.shadow),whiteRange4=Math.max(.01,decode(o.highlight)-black4);
+ const black4=parameters.black,whiteRange4=parameters.whiteRange;
  function finish4(p){
   const a=c.cal.beta4;
   // Keep signed density coordinates until the shared range has been applied.

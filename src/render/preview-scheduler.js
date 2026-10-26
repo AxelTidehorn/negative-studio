@@ -1,5 +1,14 @@
 /* Preview scheduling only. The color kernel, source pixels and export stay unchanged. */
 'use strict';
+let sourceVersion38=0,previewWorker38=null,workerBusy38=false,queued38=null,request38=0,lastPreview38=null;
+const stats38={renders:0,stale:0,lastRenderMs:0,lastDispatchMs:0,analysisMs:0};
+const now38=()=>globalThis.performance?.now?.()||Date.now();
+let workerVersion38=-1,workerDisabled38=false;
+let dragTimer38=null,previewTick38=null;
+let ensureWorker38,sendPreview38;
+convertImage=function(image,mode,params){const im=image===previewSrc?workingPreview:working;if(!im)return new ImageData(1,1);const r=NSPixelKernel.render(im,configuration38(params),mode,Math.max(im.width,im.height));const out=new ImageData(r.width,r.height);out.data.set(r.data);return out;};
+function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;drawHistogram38(r.bins);drawCrop();}
+function drawHistogram38(bins){const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);const a=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,a[Math.floor(a.length*.99)]);cx.fillStyle=globalThis.getComputedStyle?.(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';for(let i=0;i<256;i++){const v=Math.min(1,bins[i]/max);cx.fillRect(i*w/256,h-v*(h-4),Math.ceil(w/256),v*(h-4));}$('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';}
 const previewPerf={cancelledDetail:0,intermediateShown:0,deduplicated:0,workerFailures:0,lastWorkerError:null};
 let previewActive=null,previewInteractive=false,previewShown=-1;
 function stopPreviewWork(){

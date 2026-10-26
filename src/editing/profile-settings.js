@@ -1,6 +1,5 @@
 'use strict';
-// -------- Negative Studio 0.6: roll coordinator --------
-// v0.9: film models are intentionally modest, bounded mathematical hypotheses.
+// Legacy profile version 1 values are retained for existing projects.
 // Source data: Kodak E-4050 / E-7022 characteristic and spectral-dye curves; RawPedia;
 // darktable Negadoctor. Manufacturer graphs are NOT RGB calibration matrices.
 // Stock differences below are provisional look hypotheses, not spectrophotometric matches.
@@ -30,28 +29,8 @@ function syncEngineSelector(){
  if(typeof document.querySelectorAll==='function')for(const el of document.querySelectorAll('[data-legacy-slope]'))el.hidden=state.engine!=='density38';
 }
 function activeFilmProfile(opts=state){return NSCreativeProfiles.resolve(filmProfiles,rollShared.profile,opts.engine==='reference'?1:rollShared.profileVersion);}
-function applyEmulsion(p){const f=activeFilmProfile();
- if(f.creativeVersion===2)return NSCreativeProfiles.apply(p,f,f.type==='bw'?rollShared.strength:1);
- if(f.type==='bw'){
-  const gray=clamp(.2126*p[0]+.7152*p[1]+.0722*p[2],0,1);const shaped=clamp(Math.pow(gray,1/Math.max(.7,f.bwCurve||1))+(f.bwLift||0),0,1);return [shaped,shaped,shaped];
- }
- const matrix=f.matrix||[[1,0,0],[0,1,0],[0,0,1]];
- let q=[
-  clamp(matrix[0][0]*p[0]+matrix[0][1]*p[1]+matrix[0][2]*p[2],0,1),
-  clamp(matrix[1][0]*p[0]+matrix[1][1]*p[1]+matrix[1][2]*p[2],0,1),
-  clamp(matrix[2][0]*p[0]+matrix[2][1]*p[1]+matrix[2][2]*p[2],0,1)
- ];
- let lum=.2126*q[0]+.7152*q[1]+.0722*q[2];
- q=q.map((v,c)=>Math.pow(clamp(v+(v-lum)*(f.mix||0),0,1),1/(f.gamma?.[c]||1)));
- lum=.2126*q[0]+.7152*q[1]+.0722*q[2];
- if(f.sat&&f.sat!==1)q=q.map(v=>clamp(lum+(v-lum)*f.sat,0,1));
- lum=.2126*q[0]+.7152*q[1]+.0722*q[2];
- if(f.shadowTint){const w=Math.pow(1-lum,1.15);q=q.map((v,c)=>clamp(v*(1+((f.shadowTint[c]||1)-1)*w),0,1));}
- if(f.highlightTint){const w=Math.pow(lum,1.35)*.75;q=q.map((v,c)=>clamp(v*(1+((f.highlightTint[c]||1)-1)*w),0,1));}
- q=q.map(v=>{v=clamp(v+(f.lift||0),0,1);if(f.shoulder)v=v/(1+f.shoulder*(1-v));if(f.toe)v=Math.pow(v,1/(1+f.toe));if(f.curve&&f.curve!==1)v=Math.pow(clamp(v,0,1),1/f.curve);return clamp(v,0,1)});
- return q;
-}
-function applyPrint(p){const f=printStyles[rollShared.print]||printStyles.neutral;return p.map(v=>{v=clamp(v,0,1);if(f.shoulder)v=v/(1+f.shoulder*(1-v));return clamp(.5+(v-.5)*f.contrast,0,1)});}
+
+
 function refreshProfileInfo(){const f=activeFilmProfile();
  $('profileEvidence').textContent=f.note+(rollShared.profileVersion===1?' · Äldre profil bevarad. Byt profil för den nya tolkningen.':' · Kreativ tolkning, inte en uppmätt filmsimulering.');
  $('profileTypeNote').textContent=f.type==='bw'?'Svartvitt: färgkorrigering av positivet är avaktiverad; negativets densitet används.':'Färg: basprofil + valfri positiv återgivning. Profilerna är experimentella.';

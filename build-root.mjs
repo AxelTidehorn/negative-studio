@@ -27,6 +27,6 @@ function fingerprint(dir){for(const name of fs.readdirSync(dir).sort()){
 }}
 fingerprint('site');
 const cacheName='filmlabb-stability-'+hash.digest('hex').slice(0,24);
-const worker=fs.readFileSync('cache-worker.js','utf8').replace(/const CACHE='[^']+';/,`const CACHE='${cacheName}';`).replace(/const ASSETS=\[[^;]+;/,`const ASSETS=${JSON.stringify(assets)};`);
+const worker=fs.readFileSync(sourceAssets['cache-worker.js'],'utf8').replace(/const CACHE='[^']+';/,`const CACHE='${cacheName}';`).replace(/const ASSETS=\[[^;]+;/,`const ASSETS=${JSON.stringify(assets)};`);
 fs.writeFileSync('site/cache-worker.js',worker);
 console.log('Offline cache:',cacheName);

@@ -1,9 +1,8 @@
-/* 3.9: log-channel response, central-frame detection and source diagnostics. */
+/* Comparison-engine response and neutral-sampling controls. */
 'use strict';
-const analyzeBefore39=analyzeLevels,configBefore39=configuration38;
 NSColorEngine.detectFrame=NSColorAnalysis.detect;
-analyzeLevels=function(){
- analyzeBefore39();if(!workingPreview||!calibration)return;
+function analyzeComparisonLevels(){
+if(!workingPreview||!calibration)return;
  calibration.log39=NSColorAnalysis.analyze(workingPreview,cropRegion);config38=null;technicalCache38=null;
  const s=calibration.log39,labels=['R','G','B'],warnings=s.clipped.map((v,c)=>v>.005?`${labels[c]} ${Math.round(v*1000)/10} %`:null).filter(Boolean);
  $('levelsInfo').textContent=`${s.count} motivprov · ${s.weak?'lågt tonomfång · ':''}${warnings.length?'Klippt RGB: '+warnings.join(' / '):'Ingen tydlig kanalklippning'} · ${state.engine==='log39'?'densitetskurvor':'jämförelse'}`;
@@ -11,7 +10,6 @@ analyzeLevels=function(){
  $('balanceStrength').title=state.engine==='log39'?'Kanalkurvorna balanseras separat. Varm/kall och Grön/magenta justerar den positiva färgen.':'';
  for(const id of ['redSlope','blueSlope'])$(id).disabled=state.engine!=='density38';
 };
-configuration38=function(opts=state){const c=configBefore39(opts);if(opts.engine==='log39'){c.kind='log39';c.cal={...calibration,log39:calibration?.log39||NSColorAnalysis.analyze(workingPreview,cropRegion)};}return c;};
 try{const previous=JSON.parse(localStorage.getItem('negative-studio-v03')||'null');if(previous&&previous.sourceCalibrationVersion!==39&&previous.manualCalibration?.sourceEncoding==='linear'){state.manualCalibration=null;state.manualBase=null;state.useRollBase=false;state.auto=true;}state.sourceCalibrationVersion=39;}catch{}
 try{if(!localStorage.getItem('filmlabb-default-engine39')){if(state.engine==='legacy'||state.engine==='beta3')state.engine='log39';localStorage.setItem('filmlabb-default-engine39','1');persist();}}catch{}
 $('engineMode').value=state.engine;

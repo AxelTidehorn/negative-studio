@@ -9,7 +9,8 @@ if(typeof document.addEventListener==='function'){
 }
 const $=id=>document.getElementById(id);
 const controls=[['exposure','Exponering',-2,2,.05,0,' EV'],['contrast','Kontrast',.5,1.7,.02,1,'×'],['temperature','Varm / kall',-35,35,1,0,''],['tint','Grön / magenta',-35,35,1,0,''],['saturation','Färgmättnad',0,1.8,.02,1,'×'],['balanceStrength','Autofärgbalans',0,1,.05,.75,'×'],['shadow','Svartpunkt',0,.12,.005,.015,''],['highlight','Vitpunkt',.85,1,.005,.99,''],['gamma','Mellantoner',.65,1.6,.025,1,'×'],['shadows','Skuggor',-100,100,1,0,''],['highlights','Högdagrar',-100,100,1,0,''],['redSlope','Röd kanallutning',.7,1.3,.01,1,'×'],['blueSlope','Blå kanallutning',.7,1.3,.01,1,'×']];
-const defaultState=()=>({auto:true,exposure:0,contrast:1,temperature:0,tint:0,saturation:1,balanceStrength:.75,shadow:.015,highlight:.99,gamma:1,shadows:0,highlights:0,noBase:false,autoLevels:true,manualBase:null,rotation:0,engine:"calibrated4",analysisSampling:"source",useFlatField:false,jpegSize:"original",rawMode4:"protected",toneMode4:"smooth",colorMode4:"legacy",response4:null,useRollResponse4:false,sourceCalibrationVersion:39,redSlope:1,blueSlope:1,cropConfirmed:false,cropVisible:true,cropLocked:false,cropExport:false,cropMethod:"auto",manualCalibration:null,useRollBase:false,tiffEncoding:"srgb"});
+const defaultState=NSProjectSettings.imageDefaults;
+let analyzeLevels,finishImport,chooseFrame,setCropByInset,updateBase,render,scheduleRender,convertImage,technicalPositive,neutralLookup,exportTiff,exportFrameTiff,jpegBytes;
 let state=defaultState(),src=null,previewSrc=null,hires=null,display='positive',base=[235,167,105],sampleMode=false,fullWidth=0,fullHeight=0,levels=null;
 const clamp=(x,min=0,max=255)=>Math.max(min,Math.min(max,x));
 try{const prev=JSON.parse(localStorage.getItem('negative-studio-v03')||'null');if(prev&&typeof prev==='object')state={...state,...prev,analysisSampling:prev.analysisSampling==='source'?'source':'preview'}}catch(e){}
@@ -38,13 +39,6 @@ for(const id of [...controls.map(c=>c[0]),'profileStrength','cropInset']){
   else previousTap=now;
  },{passive:false});
 }
-// Optional naming is independent of per-frame processing settings.
-function safeExportPrefix(value){return String(value||'').normalize('NFC').replace(/[\\/:*?"<>|\x00-\x1F]/g,'_').replace(/\s+/g,' ').replace(/[. ]+$/g,'').trim().slice(0,100);}
-function exportName(index,extension,legacy){const prefix=safeExportPrefix($('exportName')?.value);if(!prefix)return legacy;return prefix+(index===null?'':'_'+String(index+1).padStart(Number($('exportDigits')?.value)||3,'0'))+'.'+extension;}
-function exportZipName(){const prefix=safeExportPrefix($('exportName')?.value);return prefix?prefix+'.zip':'filmlabb-filmrulle.zip';}
-function syncExportNaming(){const prefix=safeExportPrefix($('exportName').value);$('exportNamePreview').textContent=prefix?'Exempel: '+exportName(0,'jpg','bild_001.jpg')+' · '+exportName(1,'jpg','bild_002.jpg'):'Standardnamn används: bild_001.jpg, bild_002.jpg …';try{localStorage.setItem('filmlabb-export-name-v1',JSON.stringify({prefix:$('exportName').value,digits:$('exportDigits').value}))}catch{}}
-try{const prior=JSON.parse(localStorage.getItem('filmlabb-export-name-v1')||'null');if(prior){$('exportName').value=prior.prefix||'';$('exportDigits').value=String(prior.digits||3);}}catch{}
-$('exportName').addEventListener('input',syncExportNaming);$('exportDigits').addEventListener('change',syncExportNaming);syncExportNaming();
 const themeKey='negative-studio-theme-v092';
 let currentTheme='dark';try{currentTheme=localStorage.getItem(themeKey)||'dark'}catch(e){}
 function applyTheme(theme){currentTheme=theme;document.body.classList.toggle('light-theme',theme==='light');const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',theme==='light'?'#e9e8e3':'#1c1c1c');if($('themeToggle'))$('themeToggle').textContent=theme==='light'?'Nattläge':'Dagläge';}
@@ -58,3 +52,9 @@ function persist(){clearTimeout(persistTimer);try{localStorage.setItem('negative
 updateValues();
 for(const id of ['imageFile','referenceFile'])$(id).accept=NSFileFormats.accept;
 function setStatus(s){$('status').textContent=s}
+
+function setDisplay(mode){display=mode;for(const [id,value] of [['tabPos','positive'],['tabNeg','negative'],['tabSplit','split']])$(id).classList.toggle('active',mode===value);render()}
+$('tabPos').onclick=()=>setDisplay('positive');$('tabNeg').onclick=()=>setDisplay('negative');$('tabSplit').onclick=()=>setDisplay('split');
+$('auto').onchange=()=>{state.auto=$('auto').checked;updateBase();analyzeLevels();persist();render()};$('noBase').onchange=()=>{state.noBase=$('noBase').checked;updateBase();analyzeLevels();persist();render()};$('autoLevels').onchange=()=>{state.autoLevels=$('autoLevels').checked;persist();render()};$('analyzeLevels').onclick=()=>analyzeLevels();$('recalc').onclick=()=>{state.auto=true;state.manualBase=null;$('auto').checked=true;updateBase();analyzeLevels();persist();render()};
+$('sample').onclick=()=>{sampleMode=!sampleMode;$('sample').textContent=sampleMode?'Tryck på en oexponerad filmkant…':'Välj filmbas med pipett';setStatus(sampleMode?'Tryck på en tydligt oexponerad filmkant i bilden för att välja basfärg.':'Pipetten avbruten.')};
+$('reset').onclick=()=>{const frame=Object.fromEntries(['rotation','cropMethod','cropConfirmed','cropConfidence','cropLocked','cropExport','cropVisible'].map(k=>[k,state[k]])),keepBase=state.manualBase,keepAuto=state.auto,keepNoBase=state.noBase;state={...defaultState(),...frame,manualBase:keepBase,auto:keepAuto,noBase:keepNoBase};for(const [id] of controls)$(id).value=state[id];updateValues();analyzeLevels();persist();render()};

@@ -1,5 +1,5 @@
 /* One export per worker. Only one input stripe is in flight at a time. */
-importScripts('./creative-profiles.js','./raw-input.js','./flat-field.js','./image-model.js','./render-core.js','./export-plan.js','./geometry.js','./presentation-sampler.js');
+importScripts('./creative-profiles.js','./raw-input.js','./flat-field.js','./image-model.js','./color-parameters.js','./render-core.js','./export-plan.js','./geometry.js','./presentation-sampler.js');
 'use strict';
 let job=null;
 function need(){const j=job;if(j.y<j.target.height)postMessage({type:'need',id:j.id,y:j.y,rows:NSPresentation.rows(j.im,j.g,j.target,j.target.height-j.y)});}

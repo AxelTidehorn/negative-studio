@@ -1,4 +1,4 @@
-name: Publish Negative Studio (optional GitHub Pages)
+name: Publish FILMLABB (optional GitHub Pages)
 on:
   workflow_dispatch:
   push:

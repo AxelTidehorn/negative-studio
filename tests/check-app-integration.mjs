@@ -1,6 +1,7 @@
+import {makeTiffHeader} from './helpers/legacy-tiff.mjs';
 import {readSource,sourcePath} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';import {harness} from './helpers/app-harness.mjs';
-const h=harness();let n=0;async function test(name,fn){await fn();console.log('PASS',name);n++;}
+const h=harness();h.context.makeTiffHeader=makeTiffHeader;let n=0;async function test(name,fn){await fn();console.log('PASS',name);n++;}
 h.run(`src=new ImageData(60,40);for(let y=0;y<40;y++)for(let x=0;x<60;x++){const i=(y*60+x)*4;src.data.set([80+x*2,60+x,20+y,255],i);}state.engine='beta2';roll=[{file:{name:'test.jpg'},settings:{...state},crop:{x:.1,y:.1,w:.8,h:.8},selected:true},{file:{name:'second.jpg'},settings:defaultState(),crop:{x:.2,y:.2,w:.6,h:.6},selected:true}];activeFrame=0;cropRegion=roll[0].crop;state.cropConfirmed=true;finishImport('test');`);
 await test('Application initializes all scripts without runtime errors',()=>assert.ok(h.run('workingPreview.data.length>0')));
 await test('New default uses log-channel conversion after comparison',()=>assert.equal(h.run('defaultState().engine'),'calibrated4'));
@@ -31,12 +32,12 @@ await test('8-bit TIFF remains readable',()=>{h.run(`const head8=makeTiffHeader(
 await test('Theme and rotation preserve crop and calibration',()=>{const before=h.run('JSON.stringify(calibration)'),crop=h.run('JSON.stringify(cropRegion)');h.run(`applyTheme('light');rotateBy(90);applyTheme('dark');`);assert.equal(h.run('state.rotation'),90);assert.equal(h.run('JSON.stringify(calibration)'),before);assert.equal(h.run('JSON.stringify(cropRegion)'),crop);});
 await test('Color reset returns controls to defaults and preserves geometry',()=>{h.run(`state.exposure=1;state.manualCalibration={shape:[1,.5,.2],kind:'manual'};$('reset').onclick();`);assert.equal(h.run('state.exposure'),0);assert.equal(h.run('state.engine'),'calibrated4');assert.equal(h.run('state.rotation'),90);assert.equal(h.run('state.manualCalibration'),null);});
 await test('Contrast increases dark/light separation toward the right and decreases to the left',()=>{
- const vals=h.run(`(()=>{rollShared.profile='generic';rollShared.strength=0;rollShared.print='neutral';const opts={...defaultState(),autoLevels:false};const evaluate=(contrast)=>{opts.contrast=contrast;return [.25,.75].map(v=>develop([v*255,v*255,v*255],[255,255,255],{...opts,noBase:true},255)[0]);};return {low:evaluate(.7),neutral:evaluate(1),high:evaluate(1.4)};})()`);
+ const vals=h.run(`(()=>{rollShared.profile='generic';rollShared.strength=0;rollShared.print='neutral';const opts={...defaultState(),autoLevels:false,engine:'legacy'};const evaluate=(contrast)=>{opts.contrast=contrast;return [.25,.75].map(v=>NSPixelKernel.compile({...configuration38({...opts,noBase:true}),base:[1,1,1],light:[1,1,1]}).pixel([v,v,v])[0]);};return {low:evaluate(.7),neutral:evaluate(1),high:evaluate(1.4)};})()`);
  assert.ok(Math.abs(vals.high[1]-vals.high[0])>Math.abs(vals.neutral[1]-vals.neutral[0]));
  assert.ok(Math.abs(vals.low[1]-vals.low[0])<Math.abs(vals.neutral[1]-vals.neutral[0]));
 });
-await test('Increasing Shadows darkens shadows in both tonal implementations',()=>{
- const result=h.run(`(()=>{const opts={...defaultState()};const test=(fn)=>{opts.shadows=-60;const lighter=fn([.2,.2,.2],opts)[0];opts.shadows=60;const darker=fn([.2,.2,.2],opts)[0];return {lighter,darker};};return [test(applyTonalZones),test(applyTonalZones)];})()`);
+await test('Increasing Shadows darkens shadows in standard and legacy engines',()=>{
+ const result=h.run(`['legacy','calibrated4'].map(engine=>{const opts={...defaultState(),engine,autoLevels:false};opts.shadows=-60;const lighter=NSPixelKernel.compile(configuration38(opts)).finish([.2,.2,.2])[0];opts.shadows=60;const darker=NSPixelKernel.compile(configuration38(opts)).finish([.2,.2,.2])[0];return {lighter,darker};})`);
  assert.ok(result.every(x=>x.darker<x.lighter));
 });
 await test('Double-click restoration uses each original slider default and saves active frame',()=>{

@@ -1,5 +1,5 @@
 import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';import '../src/editing/creative-profiles.js';import '../src/color/render-core.js';
+import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';import '../src/editing/creative-profiles.js';import '../src/color/parameters.js';import '../src/color/render-core.js';
 const P=NSCreativeProfiles,h=harness();h.run('render=()=>{};scheduleRender=()=>{};');
 const ids=Object.keys(P.definitions),color=ids.filter(id=>P.definitions[id].type!=='bw');
 const resolve=id=>P.resolve(h.run('filmProfiles'),id,2),chart=[];

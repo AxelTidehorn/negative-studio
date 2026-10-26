@@ -1,4 +1,4 @@
-name: Build Negative Studio Beta 3
+name: Build FILMLABB
 on:
   pull_request:
     branches: [main]
@@ -21,5 +21,5 @@ jobs:
       - run: npm run test:browser
       - uses: actions/upload-artifact@v4
         with:
-          name: Negative-Studio-Beta-3-WASM
+          name: FILMLABB-WASM
           path: site/

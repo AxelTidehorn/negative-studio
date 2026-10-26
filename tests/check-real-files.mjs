@@ -1,5 +1,5 @@
 import {readSource,sourcePath} from './helpers/source.mjs';
-/* Optional: node tests/real-files.mjs /absolute/input-directory /absolute/output-directory */
+/* Optional: node tests/check-real-files.mjs /absolute/input-directory /absolute/output-directory */
 import fs from 'node:fs';import path from 'node:path';import assert from 'node:assert/strict';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import {harness} from './helpers/app-harness.mjs';
 const dir=path.resolve(process.argv[2]||'../../inputs'),out=path.resolve(process.argv[3]||'../../qa');fs.mkdirSync(out,{recursive:true});
 const h=harness(),C=h.context.NSColorEngine,mod=await factory({wasmBinary:readSource(new URL('../node_modules/libraw-wasm/dist/libraw.wasm',import.meta.url))}),report=[];

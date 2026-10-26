@@ -1,6 +1,6 @@
-/* Beta 4 controller. Beta 3.9 remains an unchanged color-method reference. */
+/* Standard-engine controls and persistent channel response. */
 'use strict';
-const CC4=NSColorCalibration,analyzeBefore4=analyzeLevels,configurationBefore4=configuration38;
+const CC4=NSColorCalibration;
 let sharedResponse4=null,neutralPair4=null;
 function domain4(){return sourceInfo.domain||sourceInfo.label||sourceInfo.encoding;}
 function explicitBase4(){return !state.noBase&&(state.useRollBase||!state.auto)?calibrationBase()?.measured:null;}
@@ -19,8 +19,8 @@ function controls4(){
  const diag=sourceInfo.diagnostics4;if(diag)$('sourceStatus').textContent=sourceInfo.label+' · klippt i Rec.2020 (hela bilden): '+diag.clipped.map(v=>(100*v/diag.pixels).toFixed(2)+' %').join(' / ');
  const r=response4()||calibration?.beta4?.response;$('calibrationStatus4').textContent=!working?'Ingen bild inläst':state.engine!=='calibrated4'?'Jämförelseläge · Beta 4-kalibrering pausad':r?(state.useRollResponse4?'Gemensam rullkalibrering · ':'')+(r.kind==='two-neutral'?'Två neutrala ytor uppmätta':'Motivbaserad uppskattning · ingen uppmätt färgreferens')+(state.cropConfirmed?' · färgkurvor sparade':' · kontrollera filmrutan'):'Kalibrering saknas eller tillhör annan källa';
 }
-analyzeLevels=function(){
- analyzeBefore4();if(!workingPreview||!calibration)return;
+function analyzeStandardLevels(){
+if(!workingPreview||!calibration)return;
  if(state.engine!=='calibrated4'){controls4();return;}
  let r=response4();
  if(!r){state.useRollResponse4=false;const measured=!state.noBase&&calibration.base?.measured;r=CC4.estimate(workingPreview,cropRegion,{base:measured||[1,1,1],light:measured?[1,1,1]:currentLight(),domain:domain4()});r.hasBase=!!measured;if(state.cropConfirmed)state.response4=r;}
@@ -29,12 +29,6 @@ analyzeLevels=function(){
  config38=null;technicalCache38=null;controls4();saveCurrentFrame();
  $('levelsInfo').textContent=`${calibration.beta4.count} motivprov · gemensamt tonomfång${calibration.beta4.weak?' · lågt omfång':''} · `+(calibration.beta4.clipped.some(v=>v>.005)?'klippta källkanaler':'ingen tydlig kanalklippning');
 };
-configuration38=function(opts=state){const c=configurationBefore4(opts);if(opts.engine==='calibrated4'){c.kind='calibrated4';c.workingSpace=sourceInfo.colorSpace||'srgb';c.cal={...calibration,beta4:calibration.beta4};}return c;};
-// Complete per-channel output tables are invalid for a hue-preserving RGB shoulder.
-const tablesBefore4=technicalTables38;
-technicalTables38=function(c){if(c.kind!=='calibrated4')return tablesBefore4(c);const a=c.cal.beta4,key='beta4:'+JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalCache38||technicalCache38.key!==key)technicalCache38={key,value:NSPixelKernel.tables(NSPixelKernel.compile(c)),complete:false};return technicalCache38.value;};
-const lookupBefore4=neutralLookup;
-neutralLookup=function(opts,im){return opts.engine==='calibrated4'?null:lookupBefore4(opts,im);};
 $('colorMode4').onchange=e=>{if(state.engine!=='calibrated4'||rollLoading||exportBusy){controls4();return;}state.colorMode4=NSPixelKernel.colorVariant4(e.target.value);config38=null;saveCurrentFrame();persist();controls4();render();};
 $('toneMode4').onchange=e=>{state.toneMode4=e.target.value==='reference'?'reference':'smooth';config38=null;saveCurrentFrame();persist();render();};
 $('resetResponse4').onclick=()=>{if(!workingPreview)return;cancelPair4();state.response4=null;state.useRollResponse4=false;analyzeLevels();persist();render();setStatus('Färgkurvor uppskattade från den aktuella filmrutan.');};

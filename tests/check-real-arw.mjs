@@ -1,7 +1,7 @@
 import {readSource,sourcePath} from './helpers/source.mjs';
-/* Optional: node tests/real-arw.mjs FILE.ARW RESULT.json. Real WASM + DOM harness, not a browser test. */
+/* Optional: node tests/check-real-arw.mjs FILE.ARW RESULT.json. Real WASM + DOM harness, not a browser test. */
 import fs from 'node:fs';import assert from 'node:assert/strict';import crypto from 'node:crypto';import {performance} from 'node:perf_hooks';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import {harness} from './helpers/app-harness.mjs';
-const [filePath,outPath]=process.argv.slice(2);if(!outPath)throw Error('Usage: node tests/real-arw.mjs FILE.ARW RESULT.json');
+const [filePath,outPath]=process.argv.slice(2);if(!outPath)throw Error('Usage: node tests/check-real-arw.mjs FILE.ARW RESULT.json');
 const h=harness(),bytes=readSource(filePath),stages={},hash=d=>crypto.createHash('sha256').update(new Uint8Array(d.buffer,d.byteOffset,d.byteLength)).digest('hex');
 const report={environment:{platform:process.platform,arch:process.arch,node:process.version},file:{name:filePath.split('/').pop(),bytes:bytes.length,sha256:hash(bytes)},method:'real libraw-wasm 1.6.0 core + Node DOM harness; no browser worker test',stages};
 let t=performance.now();const m=await factory({wasmBinary:readSource('node_modules/libraw-wasm/dist/libraw.wasm')});stages.wasmInitMs=performance.now()-t;

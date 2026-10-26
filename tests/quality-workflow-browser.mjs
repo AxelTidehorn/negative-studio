@@ -1,12 +1,10 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import {chromium} from 'playwright';
-const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
-const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,p=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!p.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');res.end(readSource(p));}catch{res.writeHead(404);res.end();}});
-await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+import {browserHarness} from './helpers/browser.mjs';
+const {browser,url,close}=await browserHarness();
 try{
- const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port+'/');
+ const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  await page.evaluate(()=>{const create=NSGpuPreview.create;NSGpuPreview.create=c=>{const r=create(c),draw=r.draw;r.draw=(im,config,mode,limit,version)=>draw(im,config,mode,Math.min(limit,240),version);return r;};setQueueCropExportToFrame(false);});
- const buffer=readSource('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'quality-a.png',mimeType:'image/png',buffer},{name:'quality-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
+ const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'quality-a.png',mimeType:'image/png',buffer},{name:'quality-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
  const defaults=await page.evaluate(()=>({model:roll[0].geometry,mode:FILMLABB_GEOMETRY.mode(),open:$('geometryTools').open,color:[$('gpuPreview').width,$('gpuPreview').height],presentation:[$('presentationPreview').width,$('presentationPreview').height],order:['frameSettingsGroup','histogram','simpleControls','filmProfile','geometryTools','advancedSettings'].map(id=>$(id).getBoundingClientRect().top)}));
  assert.deepEqual(defaults.model.rotation,{quarterTurns:0,fineDegrees:0});assert.equal(defaults.model.compositionCrop,null);assert.equal(defaults.mode,null);assert.equal(defaults.open,false);assert.deepEqual(defaults.color,[240,160]);assert.deepEqual(defaults.presentation,defaults.color);assert.ok(defaults.order.every((v,i,a)=>!i||v>a[i-1]),JSON.stringify(defaults.order));
  console.log('PASS film analysis precedes histogram/color/tools; import is neutral and low-resolution color cache is not enlarged/resampled');
@@ -25,4 +23,4 @@ try{
  await page.locator('#geometryTools').evaluate(el=>el.open=true);await page.locator('#fineRotation').evaluate(el=>{el.value='2';el.dispatchEvent(new Event('input'));});assert.equal(await page.evaluate(()=>roll[0].geometry.compositionCrop),null);await page.locator('#compositionEdit').click();await page.waitForFunction(()=>roll[0].geometry.compositionCrop!==null);await page.locator('#geometryDone').click();await page.locator('#rotationReset').click();assert.ok(await page.evaluate(()=>roll[0].geometry.compositionCrop!==null));
  const project=await page.evaluate(async()=>{let b;downloadBlob=v=>b=v;$('saveSettings').onclick();return JSON.parse(await b.text());});await page.locator('#settingsFile').setInputFiles({name:'saved.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));assert.deepEqual(await page.evaluate(()=>roll[0].geometry.compositionCrop),project.frames[0].geometry.compositionCrop);
  assert.deepEqual(errors,[]);console.log('PASS rotation does not activate composition, rotation reset does not clear composition, and existing project edits survive defaults');
-}finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
+}finally{await close();}

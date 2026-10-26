@@ -1,12 +1,8 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-/* Real WebGL and workers in the signal interval the experiment changes. */
-import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import {chromium} from 'playwright';
-const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
-const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,p=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!p.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');res.end(readSource(p));}catch{res.writeHead(404);res.end();}});
-await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+import {browserHarness} from './helpers/browser.mjs';
+const {browser,url,close}=await browserHarness();
 try{
- browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
- const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port+'/');
+ const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  await page.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');
  await page.locator('#advancedSettings').evaluate(el=>el.open=true);await page.locator('details.sidebar-details').filter({has:page.locator('#colorMode4')}).evaluate(el=>el.open=true);
  const unchanged=await page.evaluate(()=>JSON.stringify({calibration,stateResponse:state.response4,cropRegion,geometry:roll[activeFrame].geometry,analyses:analysisCount38}));
@@ -49,4 +45,4 @@ try{
  });
  console.log('Low-signal GPU/worker/export report',JSON.stringify(report));assert.ok(report.worst<=2,JSON.stringify(report.failures));assert.equal(report.cases,108);for(const key of ['workerExact','fallbackExact','jpegValid','jpegWorkerValid','reused','unchanged'])assert.equal(report[key],true,key);assert.deepEqual(errors,[]);
  console.log('PASS low-signal shader parity, actual CPU/JPEG workers and fallback encoding, source texture reuse and unchanged analysis');
-}finally{if(browser)await browser.close();await new Promise(r=>server.close(r));}
+}finally{await close();}
