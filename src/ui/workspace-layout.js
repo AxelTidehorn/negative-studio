@@ -12,12 +12,13 @@
  // The editor owns image geometry; sidebars only request a redraw.
  function fitPicture(){if(typeof drawCrop==='function')drawCrop();}
  function measureWorkspace(){
-  const header=document.querySelector('header'),toolbar=document.querySelector('.workspace-toolbar'),footer=document.querySelector('.foot');
-  const hh=Math.ceil(header?.getBoundingClientRect().height||0),th=Math.ceil(toolbar?.getBoundingClientRect().height||0),fh=Math.ceil(footer?.getBoundingClientRect().height||0);
+  const header=document.querySelector('header'),toolbar=document.querySelector('.workspace-toolbar');
+  const hh=Math.ceil(header?.getBoundingClientRect().height||0),th=Math.ceil(toolbar?.getBoundingClientRect().height||0);
+  const viewportHeight=Math.min(window.innerHeight,window.visualViewport?.height||window.innerHeight);
   document.documentElement.style.setProperty('--fl-toolbar-height',th+'px');
   document.documentElement.style.setProperty('--fl-header-height',hh+'px');
   if(matchMedia('(max-width:760px)').matches)root.style.removeProperty('--fl-workspace-height');
-  else root.style.setProperty('--fl-workspace-height',Math.max(320,window.innerHeight-hh-th-fh-8)+'px');
+  else root.style.setProperty('--fl-workspace-height',Math.max(240,Math.floor(viewportHeight)-hh-th)+'px');
   requestAnimationFrame(fitPicture);
  }
  function render(){
@@ -53,7 +54,7 @@
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);
  window.addEventListener('filmlabb:view-change',()=>requestAnimationFrame(fitPicture));
  if(typeof ResizeObserver!=='undefined'){
-  const observer=new ResizeObserver(measureWorkspace);for(const el of document.querySelectorAll('header,.workspace-toolbar,.foot'))observer.observe(el);
+  const observer=new ResizeObserver(measureWorkspace);for(const el of document.querySelectorAll('header,.workspace-toolbar'))observer.observe(el);
  }
  render();measureWorkspace();
 })();

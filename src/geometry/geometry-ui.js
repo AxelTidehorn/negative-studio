@@ -101,6 +101,8 @@
   if(mode!=='frame'){$('frameOptions').open=false;const group=$('frameSettingsGroup');if(group)group.open=false;}
   $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Orange filmruta används för analys. Dra en sida.':'Komposition ändrar inte färgkalibreringen.';
   controls();queue();
+  // Direct manipulation needs the photograph in view on the page-scrolling phone layout.
+  if(mode&&working&&matchMedia('(max-width:760px)').matches)picture.closest('.image-panel')?.scrollIntoView({block:'start',behavior:'auto'});
  }
  $('geometryDone').onclick=()=>setMode(null);
  $('geometryTools').addEventListener('toggle',()=>{if(!$('geometryTools').open&&(mode==='composition'||mode==='straighten'))setMode(null);});

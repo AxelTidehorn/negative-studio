@@ -40,7 +40,7 @@ for(const id of [...controls.map(c=>c[0]),'profileStrength','cropInset']){
  },{passive:false});
 }
 $('auto').checked=!!state.auto;$('noBase').checked=!!state.noBase;$('autoLevels').checked=!!state.autoLevels;
-function updateValues(){for(const [id,,min,max,step,,unit] of controls){const v=Number(state[id]);$(id+'Value').textContent=(id==='exposure'&&v>0?'+':'')+v.toFixed(step<1?2:0)+unit}}
+function updateValues(){for(const [id,,min,max,step,,unit] of controls){const v=Number(state[id]);$(id+'Value').textContent=(id==='exposure'&&v>0?'+':'')+v.toFixed(Math.max(step<1?2:0,(String(step).split('.')[1]||'').length))+unit}}
 let persistTimer=null;function schedulePersist(){clearTimeout(persistTimer);persistTimer=setTimeout(persist,450)}
 function persist(){clearTimeout(persistTimer);try{localStorage.setItem('negative-studio-v03',JSON.stringify(state))}catch(e){}}
 updateValues();
@@ -51,4 +51,4 @@ function setDisplay(mode){display=mode;for(const [id,value] of [['tabPos','posit
 $('tabPos').onclick=()=>setDisplay('positive');$('tabNeg').onclick=()=>setDisplay('negative');$('tabSplit').onclick=()=>setDisplay('split');
 $('auto').onchange=()=>{state.auto=$('auto').checked;updateBase();analyzeLevels();persist();render()};$('noBase').onchange=()=>{state.noBase=$('noBase').checked;updateBase();analyzeLevels();persist();render()};$('autoLevels').onchange=()=>{state.autoLevels=$('autoLevels').checked;persist();render()};$('analyzeLevels').onclick=()=>analyzeLevels();$('recalc').onclick=()=>{state.auto=true;state.manualBase=null;$('auto').checked=true;updateBase();analyzeLevels();persist();render()};
 $('sample').onclick=()=>{sampleMode=!sampleMode;$('sample').textContent=sampleMode?'Tryck på en oexponerad filmkant…':'Välj filmbas med pipett';setStatus(sampleMode?'Tryck på en tydligt oexponerad filmkant i bilden för att välja basfärg.':'Pipetten avbruten.')};
-$('reset').onclick=()=>{const frame=Object.fromEntries(['editVersion','conversionVersion','rotation','cropMethod','cropConfirmed','cropConfidence','cropLocked','cropExport','cropVisible'].map(k=>[k,state[k]])),keepBase=state.manualBase,keepAuto=state.auto,keepNoBase=state.noBase;if(NSConversion3.is(state.engine))frame.engine=state.engine;state={...defaultState(),...frame,manualBase:keepBase,auto:keepAuto,noBase:keepNoBase};for(const [id] of controls)$(id).value=state[id];updateValues();analyzeLevels();persist();render()};
+$('reset').onclick=()=>{const frame=Object.fromEntries(['editVersion','conversionVersion','rotation','cropMethod','cropConfirmed','cropConfidence','cropLocked','cropExport','cropVisible'].map(k=>[k,state[k]])),keepBase=state.manualBase,keepAuto=state.auto,keepNoBase=state.noBase;if(NSConversion3.is(state.engine))frame.engine=state.engine;state={...defaultState(),...frame,manualBase:keepBase,auto:keepAuto,noBase:keepNoBase};syncControls();analyzeLevels();persist();render()};

@@ -1,0 +1,724 @@
+{
+  "baselineCommit": "6ff131a20989afca44e6f56bb32ab8e08ccaba92",
+  "environment": "Chromium 154.0.8037.57 headless / Linux, synthetic demo-negative.png; CSS pixels; touch emulation for iPad/phone, not Safari or physical Edge validation",
+  "before": [
+    {
+      "name": "desktop",
+      "picture": {
+        "top": 119,
+        "bottom": 752.203125,
+        "width": 910,
+        "height": 633.203125
+      },
+      "workspace": {
+        "top": 105,
+        "bottom": 835,
+        "width": 1440,
+        "height": 730
+      },
+      "editor": {
+        "top": 111,
+        "bottom": 829,
+        "width": 320,
+        "height": 718
+      },
+      "footer": {
+        "top": 835,
+        "bottom": 891.78125,
+        "width": 1440,
+        "height": 56.78125
+      },
+      "header": {
+        "top": 0,
+        "bottom": 56,
+        "width": 1440,
+        "height": 56
+      },
+      "toolbar": {
+        "top": 56,
+        "bottom": 105,
+        "width": 1440,
+        "height": 49
+      },
+      "pageHeight": 900,
+      "viewport": 900,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "12px",
+      "zoomHeight": 36,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "reset",
+      "controls": [
+        {
+          "id": "exposure",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0.00 EV"
+        },
+        {
+          "id": "contrast",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 1,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "temperature",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "tint",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "saturation",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 1,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "balanceStrength",
+          "value": 0.75,
+          "neutral": 0.75,
+          "thumb": 1,
+          "expected": 500,
+          "label": "0.75\u00d7"
+        },
+        {
+          "id": "shadow",
+          "value": 0.015,
+          "neutral": 0.015,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0.01"
+        },
+        {
+          "id": "highlight",
+          "value": 0.99,
+          "neutral": 0.99,
+          "thumb": 1,
+          "expected": 499.99999999999994,
+          "label": "0.99"
+        },
+        {
+          "id": "gamma",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 1,
+          "expected": 500.00000000000006,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "shadows",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "highlights",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 0,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "redSlope",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 1,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "blueSlope",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 1,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        }
+      ]
+    },
+    {
+      "name": "short-desktop",
+      "picture": {
+        "top": 119,
+        "bottom": 452.203125,
+        "width": 750,
+        "height": 333.203125
+      },
+      "workspace": {
+        "top": 105,
+        "bottom": 535,
+        "width": 1280,
+        "height": 430
+      },
+      "editor": {
+        "top": 111,
+        "bottom": 529,
+        "width": 320,
+        "height": 418
+      },
+      "footer": {
+        "top": 535,
+        "bottom": 591.78125,
+        "width": 1280,
+        "height": 56.78125
+      },
+      "header": {
+        "top": 0,
+        "bottom": 56,
+        "width": 1280,
+        "height": 56
+      },
+      "toolbar": {
+        "top": 56,
+        "bottom": 105,
+        "width": 1280,
+        "height": 49
+      },
+      "pageHeight": 600,
+      "viewport": 600,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "12px",
+      "zoomHeight": 36,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "ipad-landscape",
+      "picture": {
+        "top": 127,
+        "bottom": 641.40625,
+        "width": 650,
+        "height": 514.40625
+      },
+      "workspace": {
+        "top": 113,
+        "bottom": 755,
+        "width": 1180,
+        "height": 642
+      },
+      "editor": {
+        "top": 119,
+        "bottom": 749,
+        "width": 320,
+        "height": 630
+      },
+      "footer": {
+        "top": 755,
+        "bottom": 811.78125,
+        "width": 1180,
+        "height": 56.78125
+      },
+      "header": {
+        "top": 0,
+        "bottom": 56,
+        "width": 1180,
+        "height": 56
+      },
+      "toolbar": {
+        "top": 56,
+        "bottom": 113,
+        "width": 1180,
+        "height": 57
+      },
+      "pageHeight": 820,
+      "viewport": 820,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "13px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "ipad-portrait",
+      "picture": {
+        "top": 127,
+        "bottom": 935.40625,
+        "width": 380,
+        "height": 808.40625
+      },
+      "workspace": {
+        "top": 113,
+        "bottom": 1099,
+        "width": 820,
+        "height": 986
+      },
+      "editor": {
+        "top": 119,
+        "bottom": 1093,
+        "width": 290,
+        "height": 974
+      },
+      "footer": {
+        "top": 1099,
+        "bottom": 1171.171875,
+        "width": 820,
+        "height": 72.171875
+      },
+      "header": {
+        "top": 0,
+        "bottom": 56,
+        "width": 820,
+        "height": 56
+      },
+      "toolbar": {
+        "top": 56,
+        "bottom": 113,
+        "width": 820,
+        "height": 57
+      },
+      "pageHeight": 1180,
+      "viewport": 1180,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "13px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "mobile",
+      "picture": {
+        "top": 178,
+        "bottom": 381.125,
+        "width": 364,
+        "height": 203.125
+      },
+      "workspace": {
+        "top": 165,
+        "bottom": 1988.578125,
+        "width": 390,
+        "height": 1823.578125
+      },
+      "editor": {
+        "top": 704.484375,
+        "bottom": 1982.578125,
+        "width": 378,
+        "height": 1278.09375
+      },
+      "footer": {
+        "top": 1988.578125,
+        "bottom": 2102.53125,
+        "width": 390,
+        "height": 113.953125
+      },
+      "header": {
+        "top": 0,
+        "bottom": 59,
+        "width": 390,
+        "height": 59
+      },
+      "toolbar": {
+        "top": 59,
+        "bottom": 165,
+        "width": 390,
+        "height": 106
+      },
+      "pageHeight": 2103,
+      "viewport": 844,
+      "editorScroll": "visible",
+      "pageOverflow": false,
+      "rangeFont": "13px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "mobile-scrolled",
+      "metrics": {
+        "picture": {
+          "top": 113,
+          "bottom": 316.125
+        },
+        "editor": {
+          "top": -554.515625,
+          "bottom": 723.578125
+        },
+        "pageY": 1259
+      }
+    }
+  ],
+  "after": [
+    {
+      "name": "desktop",
+      "picture": {
+        "top": 110,
+        "bottom": 817.203125,
+        "width": 910,
+        "height": 707.203125
+      },
+      "workspace": {
+        "top": 96,
+        "bottom": 900,
+        "width": 1440,
+        "height": 804
+      },
+      "editor": {
+        "top": 102,
+        "bottom": 894,
+        "width": 320,
+        "height": 792
+      },
+      "footer": {
+        "top": 430.046875,
+        "bottom": 540.03125,
+        "width": 340,
+        "height": 109.984375
+      },
+      "header": {
+        "top": 0,
+        "bottom": 52,
+        "width": 1440,
+        "height": 52
+      },
+      "toolbar": {
+        "top": 52,
+        "bottom": 96,
+        "width": 1440,
+        "height": 44
+      },
+      "pageHeight": 900,
+      "viewport": 900,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "13px",
+      "zoomHeight": 34,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "reset",
+      "controls": [
+        {
+          "id": "exposure",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0.00 EV"
+        },
+        {
+          "id": "contrast",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 500,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "temperature",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "tint",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "saturation",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 500,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "balanceStrength",
+          "value": 0.75,
+          "neutral": 0.75,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0.75\u00d7"
+        },
+        {
+          "id": "shadow",
+          "value": 0.015,
+          "neutral": 0.015,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0.015"
+        },
+        {
+          "id": "highlight",
+          "value": 0.99,
+          "neutral": 0.99,
+          "thumb": 500,
+          "expected": 499.99999999999994,
+          "label": "0.990"
+        },
+        {
+          "id": "gamma",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 500,
+          "expected": 500.00000000000006,
+          "label": "1.000\u00d7"
+        },
+        {
+          "id": "shadows",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "highlights",
+          "value": 0,
+          "neutral": 0,
+          "thumb": 500,
+          "expected": 500,
+          "label": "0"
+        },
+        {
+          "id": "redSlope",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 500,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        },
+        {
+          "id": "blueSlope",
+          "value": 1,
+          "neutral": 1,
+          "thumb": 500,
+          "expected": 500,
+          "label": "1.00\u00d7"
+        }
+      ]
+    },
+    {
+      "name": "short-desktop",
+      "picture": {
+        "top": 110,
+        "bottom": 517.203125,
+        "width": 750,
+        "height": 407.203125
+      },
+      "workspace": {
+        "top": 96,
+        "bottom": 600,
+        "width": 1280,
+        "height": 504
+      },
+      "editor": {
+        "top": 102,
+        "bottom": 594,
+        "width": 320,
+        "height": 492
+      },
+      "footer": {
+        "top": 430.046875,
+        "bottom": 540.03125,
+        "width": 340,
+        "height": 109.984375
+      },
+      "header": {
+        "top": 0,
+        "bottom": 52,
+        "width": 1280,
+        "height": 52
+      },
+      "toolbar": {
+        "top": 52,
+        "bottom": 96,
+        "width": 1280,
+        "height": 44
+      },
+      "pageHeight": 600,
+      "viewport": 600,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "13px",
+      "zoomHeight": 34,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "ipad-landscape",
+      "picture": {
+        "top": 120,
+        "bottom": 706.40625,
+        "width": 650,
+        "height": 586.40625
+      },
+      "workspace": {
+        "top": 106,
+        "bottom": 820,
+        "width": 1180,
+        "height": 714
+      },
+      "editor": {
+        "top": 112,
+        "bottom": 814,
+        "width": 320,
+        "height": 702
+      },
+      "footer": {
+        "top": 470.546875,
+        "bottom": 580.53125,
+        "width": 340,
+        "height": 109.984375
+      },
+      "header": {
+        "top": 0,
+        "bottom": 53,
+        "width": 1180,
+        "height": 53
+      },
+      "toolbar": {
+        "top": 53,
+        "bottom": 106,
+        "width": 1180,
+        "height": 53
+      },
+      "pageHeight": 820,
+      "viewport": 820,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "14px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "ipad-portrait",
+      "picture": {
+        "top": 120,
+        "bottom": 1016.40625,
+        "width": 380,
+        "height": 896.40625
+      },
+      "workspace": {
+        "top": 106,
+        "bottom": 1180,
+        "width": 820,
+        "height": 1074
+      },
+      "editor": {
+        "top": 112,
+        "bottom": 1174,
+        "width": 290,
+        "height": 1062
+      },
+      "footer": {
+        "top": 470.546875,
+        "bottom": 580.53125,
+        "width": 340,
+        "height": 109.984375
+      },
+      "header": {
+        "top": 0,
+        "bottom": 53,
+        "width": 820,
+        "height": 53
+      },
+      "toolbar": {
+        "top": 53,
+        "bottom": 106,
+        "width": 820,
+        "height": 53
+      },
+      "pageHeight": 1180,
+      "viewport": 1180,
+      "editorScroll": "auto",
+      "pageOverflow": false,
+      "rangeFont": "14px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "mobile",
+      "picture": {
+        "top": 170,
+        "bottom": 429.40625,
+        "width": 364,
+        "height": 259.40625
+      },
+      "workspace": {
+        "top": 157,
+        "bottom": 1918.125,
+        "width": 390,
+        "height": 1761.125
+      },
+      "editor": {
+        "top": 758.390625,
+        "bottom": 1912.125,
+        "width": 378,
+        "height": 1153.734375
+      },
+      "footer": {
+        "top": 521.546875,
+        "bottom": 631.53125,
+        "width": 340,
+        "height": 109.984375
+      },
+      "header": {
+        "top": 0,
+        "bottom": 56,
+        "width": 390,
+        "height": 56
+      },
+      "toolbar": {
+        "top": 56,
+        "bottom": 157,
+        "width": 390,
+        "height": 101
+      },
+      "pageHeight": 1918,
+      "viewport": 844,
+      "editorScroll": "visible",
+      "pageOverflow": false,
+      "rangeFont": "14px",
+      "zoomHeight": 44,
+      "footerPosition": "static",
+      "toolbarPosition": "sticky"
+    },
+    {
+      "name": "mobile-scrolled",
+      "metrics": {
+        "picture": {
+          "top": -904,
+          "bottom": -644.59375
+        },
+        "editor": {
+          "top": -315.609375,
+          "bottom": 838.125
+        },
+        "pageY": 1074
+      }
+    }
+  ]
+}

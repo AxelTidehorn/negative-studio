@@ -40,10 +40,10 @@
     min-height:44px
   }
   .control {
-    margin:7px 0
+    margin:4px 0
   }
   .control label {
-    font-size:13px
+    font-size:14px
   }
   summary,.tool-section>summary,.frame-settings-group>summary {
     min-height:44px
@@ -53,10 +53,13 @@
   }
 }
 @media(max-width:760px) {
+  html {
+    scroll-padding-top:calc(var(--fl-toolbar-height,100px) + 8px)
+  }
   header {
     height:auto;
     min-height:56px;
-    padding:7px 10px;
+    padding:4px 8px;
     gap:7px
   }
   .brand-logo {
@@ -83,8 +86,8 @@
     top:0;
     display:flex;
     flex-wrap:wrap;
-    gap:5px;
-    padding:6px 8px
+    gap:4px;
+    padding:4px 6px
   }
   .workspace-toolbar .actions {
     flex:1 1 100%
@@ -125,10 +128,8 @@
   .image-panel {
     order:0;
     flex:none;
-    height:clamp(250px,43dvh,400px);
-    position:sticky;
-    top:var(--fl-toolbar-height,94px);
-    z-index:15;
+    height:clamp(300px,50dvh,500px);
+    position:static;
     padding:6px
   }
   .picture {
@@ -148,7 +149,7 @@
   }
   .image-controls .btn,.image-controls .seg button {
     min-height:36px;
-    font-size:12px;
+    font-size:13px;
     padding:5px 8px
   }
   .queue-panel {
@@ -182,7 +183,7 @@
     order:2;
     overflow:visible;
     overscroll-behavior:auto;
-    padding:12px;
+    padding:10px;
     scrollbar-gutter:auto
   }
   .adjust-collapsed .image-panel {
@@ -191,17 +192,11 @@
   .queue-collapsed>.queue-panel,.adjust-collapsed>.editor-panel {
     display:none
   }
-  .foot {
-    padding:9px 10px 14px
-  }
-  .footer-links {
-    font-size:11px
-  }
   .image-status {
-    font-size:11px
+    font-size:12px
   }
   .tool-section {
-    margin-bottom:14px
+    margin-bottom:8px
   }
 }
 @media(max-width:370px) {
@@ -221,8 +216,8 @@
     padding:5px 8px
   }
   .image-panel {
-    height:45dvh;
-    min-height:265px
+    height:50dvh;
+    min-height:300px
   }
 }
 @media(pointer:coarse) {
