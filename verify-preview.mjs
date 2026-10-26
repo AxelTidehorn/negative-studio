@@ -9,8 +9,8 @@ const allTests=['check-app-integration.mjs','check-project39.mjs','check-project
 const selected=process.argv.includes('--browser')?['check-workflow-browser.mjs','check-next-browser.mjs','check-gpu-browser.mjs','check-mobile-order.mjs']:process.argv.includes('--workflow')?['check-workflow-browser.mjs']:process.argv.includes('--next')?['check-next-browser.mjs']:process.argv.includes('--tiff')?['check-tiff-codec.mjs','check-export-tiff-perf.mjs']:process.argv.includes('--gpu')?['check-gpu-browser.mjs']:allTests;
 let failures=0;
 const files=selected.map(file=>'tests/'+file);
-if(process.argv.includes('--browser'))files.push('test/stability-browser.mjs','test/beta6-browser.mjs','test/beta6-complete-browser.mjs','test/quality-workflow-browser.mjs');
-if(selected===allTests)files.push('test/beta6-geometry.mjs','test/beta6-project.mjs','test/presentation-sampling.mjs','test/presentation-worker.mjs','test/preview-geometry.mjs','test/color-boundary-investigation.mjs','test/stability-export.mjs','test/stability-cache.mjs','test/downscale-investigation.mjs');
+if(process.argv.includes('--browser'))files.push('test/stability-browser.mjs','test/beta6-browser.mjs','test/beta6-complete-browser.mjs','test/quality-workflow-browser.mjs','test/standard-engine-browser.mjs');
+if(selected===allTests)files.push('test/beta6-geometry.mjs','test/beta6-project.mjs','test/presentation-sampling.mjs','test/presentation-worker.mjs','test/preview-geometry.mjs','test/color-boundary-investigation.mjs','test/standard-engine-experiment.mjs','test/stability-export.mjs','test/stability-cache.mjs','test/downscale-investigation.mjs');
 for(const file of files){
  console.log('RUN TEST '+file);const result=spawnSync(process.execPath,[file],{stdio:'inherit'});
  if(result.error)throw result.error;
