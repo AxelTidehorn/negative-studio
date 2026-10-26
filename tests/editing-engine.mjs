@@ -34,7 +34,9 @@ console.log('PASS',cases.length,'tone combinations: dense monotonicity, finite e
 const colors=[[0,0,0],[1,1,1],[1,0,0],[0,1,0],[0,0,1],[1,1,0],[0,1,1],[1,0,1],[.62,.34,.22],[.2,.11,.075],[.95,.72,.6],[.00001,.00002,.0001]];
 for(let i=0;i<128;i++)colors.push([i/127,.3*(i/127)**2,1-i/127]);
 for(const o of cases.slice(0,80)){
- const edit=E.compile(o);for(const p of colors){const q=edit.pixel(p);assert.ok(q.every(v=>Number.isFinite(v)&&v>=0&&v<=1+1e-12));}
+ const edit=E.compile(o),compiled=E.prepare(o);for(const p of colors){const q=edit.pixel(p);assert.ok(q.every(v=>Number.isFinite(v)&&v>=0&&v<=1+1e-12));
+  if(!compiled.identity){const balanced=p.map((v,k)=>decode(v)*compiled.gains[k]),y=dot(balanced),floor=compiled.tone.values[0],target=E.evaluate(compiled.tone,y),scale=y>1e-12?(target-floor)/y:compiled.tone.slopes[0];const reference=E.gamut(E.saturation(balanced.map(v=>floor+v*scale),compiled.saturation),compiled.knee).map(v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055);assert.ok(q.every((v,k)=>Math.abs(v-reference[k])<1e-12),'scalar/reference equivalence');}
+ }
  let last=-1;for(let i=0;i<2048;i++){const q=edit.pixel([i/2047,i/2047,i/2047]);if(!o.temperature&&!o.tint){assert.ok(Math.max(...q)-Math.min(...q)<1e-7);const y=dot(q.map(decode));assert.ok(y>=last-1e-9);last=y;}}
 }
 for(const p of [[.3,.15,.1],[.1,.2,.15],[.2,.25,.3]]){

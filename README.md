@@ -12,7 +12,7 @@ The current development line is **FILMLABB 1.1 Beta 6**, including the subsequen
 
 The version is identified by the [Beta 6 integration documentation](docs/BETA6_COMPLETE.md) and the active project format, `negative-studio-roll-beta6` (geometry version 1). There is no separate stable release number in `package.json`. Older names in public script URLs and saved settings are retained for compatibility and do not identify the current application version. A hosted deployment may lag `main`; the source commit identifies the code used in a local build.
 
-Free rotation and composition are integrated into preview and export. The optional **robust density** color mode, wide-gamut RAW import and flat-field correction remain experiments. Editing engine 2.0 has not been implemented.
+Free rotation and composition are integrated into preview and export. The optional **robust density** color mode, wide-gamut RAW import and flat-field correction remain experiments. Editing 2.0 is now an opt-in experiment with a shared monotone tone curve, OKLab saturation and soft gamut limiting. It is not the default and needs photographic/device evaluation.
 
 ## Features
 
@@ -21,7 +21,7 @@ Free rotation and composition are integrated into preview and export. The option
 | Import | Local RAW, RGB/grayscale TIFF, JPEG, PNG and WebP; LibRaw/WASM decodes RAW in a worker. |
 | Technical analysis | Automatic film-frame detection, manual edge correction and locking, film-base sampling, automatic calibration, optional two-neutral-patch and shared roll calibration. |
 | Color conversion | Standard calibrated engine and Comparison engine; older algorithms remain available when loading compatible projects. Standard has explicit original/current/experimental A/B choices. |
-| Editing | Exposure, contrast, gamma, black/white points, shadows/highlights, temperature, tint, saturation, creative color/monochrome profiles and print styles. |
+| Editing | Original editing or opt-in Editing 2.0; exposure, contrast, gamma, black/white points, shadows/highlights, temperature, tint, saturation, creative color/monochrome profiles and print styles. |
 | Preview | WebGL 2 acceleration for supported configurations; worker-based CPU rendering and a bounded main-thread fallback. Interactive feedback and final detail are rendered separately. |
 | Original detail | A separate 100%/200% view samples a small region of the working original, before presentation rotation. It does not change calibration. |
 | Composition | Quarter turns plus fine rotation, straighten by drawing a line, optional composition crop and thirds grid. Rotation limits output to a valid area without empty corners. |
@@ -56,7 +56,7 @@ RAF embedded JPEG is used for thumbnails or as an explicit fallback after RAW de
 3. Use Standard conversion, or compare the earlier automatic engine. Automatic film-base/color estimates can be refined with measured film-base or neutral references. Roll calibration assumes consistent film and capture conditions.
 4. Adjust the positive and optionally apply a creative profile. Creative edits do not feed back into technical film-base analysis.
 5. Rotate, straighten or choose a composition. These operations do not recalibrate color. The queue-wide frame-crop choice determines whether the technical frame also limits export; each image keeps its own rotation and composition.
-6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON.
+6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 use a new file tag that older app builds reject safely.
 
 ## Getting started
 
@@ -94,9 +94,13 @@ Open `http://localhost:8000`. **`site/` is the built web application. Do not ser
 | `src/app/`, `src/ui/`, `src/platform/` | Queue/projects, controls/layout/languages and offline lifecycle. |
 | `tests/`, `tools/` | Regression fixtures, automated tests and explicit diagnostic/benchmark tools. |
 
-Technical conversion and creative editing are distinct responsibilities within the existing pixel pipeline. Editing engine 2.0 is a future development area, not an extra stage already running today. Preview/export share color configuration and CPU definitions; the GPU shader implements corresponding formulas and is checked against CPU output. Geometry has its own shared coordinate model.
+Technical conversion and creative editing are distinct responsibilities within the existing pixel pipeline. Editing 2.0 runs after a frozen original positive through a compatibility adapter; its version is independent of negative conversion. Preview/export share color configuration and CPU definitions; the GPU shader implements corresponding formulas and is checked against CPU output. Geometry has its own shared coordinate model.
 
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the call chain, state scope, resources and project compatibility, and [REFACTORING.md](docs/REFACTORING.md) for the cleanup inventory and deliberately retained legacy behavior.
+
+### Comparing Editing 2.0
+
+Choose **Original editing** or **Editing 2.0 (experimental)** above the existing sliders. The choice is per image and does not change calibration or the conversion engine. Neutral 2.0 controls preserve the original neutral output exactly; the same non-neutral numbers can have different visual strength. In 2.0, positive Shadows lifts and positive Highlights compresses. Original keeps its earlier behavior. See [algorithm, project and evaluation details](docs/EDITING2.md).
 
 ## Image quality and limitations
 
@@ -136,7 +140,7 @@ Bug reports should include the commit/deployment, browser/OS/device, format and 
 ## Roadmap
 
 - **Current work:** maintain existing engines, improve stability/resource use, and validate color/RAW behavior with reproducible images and devices.
-- **Planned development area:** editing engine 2.0, with better tone curves and color adjustments while keeping creative editing separate from conversion.
+- **Planned development area:** photographic evaluation and refinement of experimental Editing 2.0 while keeping creative editing separate from conversion. No default-version change is promised.
 - **Ideas requiring investigation:** broader camera/device reference coverage and improved downscale filtering. These are not promised release features.
 
 No version or delivery date is committed here for future editing features.

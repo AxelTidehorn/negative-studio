@@ -56,7 +56,13 @@ sessionsbindningar; detta är inte ett nytt ES-modul- eller komponentramverk.
 Färgkärnan innehåller fortfarande Standard (`calibrated4`), Jämförelse (`log39`)
 och nödvändiga äldre projektalgoritmer. De mergade färgexperimenten och deras
 A/B-val behåller samma beteende. Refaktoreringen ändrar inga färgformler.
-Redigeringsmotor 2.0 har inte införts.
+`settings.editVersion` väljer Original (1, även saknat värde) eller experimentell
+Redigering 2.0 (2), oberoende av konverteringsmotorn. `editing-engine.js` fryser
+originalets positiva bas med neutrala redigeringsreglage och applicerar en gemensam
+monoton luminanskurva, OKLab-mättnad och mjuk gamutbegränsning. Neutral 2.0 returnerar
+basen exakt. CPU/workers och samma GPU-pass använder delade kurvkoefficienter och
+matriser. Inga ytterligare fullstora bildbuffertar eller GPU-pass tillkommer.
+Se [algoritm, kompatibilitet och utvärdering](EDITING2.md).
 
 ## CPU, GPU och resurser
 
@@ -105,6 +111,11 @@ Projektkontrollern validerar all geometri före mutation. Tidigare stödda forma
 RAW-/profilversioner och kalibreringar behålls. Äldre `base`/`levels`-fält och
 versionsidentifierare som `response4`, `log39`, `beta4` samt lagringsnycklar är
 kompatibilitetsdata och byter inte namn vid kosmetisk städning.
+
+Projekt med 2.0-bilder sparas som `negative-studio-roll-beta6-edit2`; äldre appbyggen
+avvisar filtaggen. Projektkontrollern normaliserar den till den oförändrade
+geometrimodellen och validerar alla redigeringsversioner före mutation. Original-
+projekt behåller sin tidigare filtagg och sitt utseende. Versionsvalet är bildspecifikt.
 
 ## Utveckling och verifiering
 

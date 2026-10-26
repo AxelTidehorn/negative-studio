@@ -56,12 +56,23 @@ function compile(input,monochrome=false){
  const p=prepare(input,monochrome),black=p.tone.values[0];
  return {parameters:p,pixel(encoded){
   if(p.identity)return encoded;
-  const balanced=encoded.map((v,k)=>decode(v)*p.gains[k]),y=dot(W,balanced),target=evaluate(p.tone,y);
-  // Remove the lifted black floor before ratio scaling; at zero use the exact
-  // endpoint slope instead of an epsilon division/noisy chroma amplification.
-  const scale=y>1e-12?(target-black)/y:p.tone.slopes[0];
-  const toned=balanced.map(v=>black+v*scale);
-  return gamut(saturation(toned,p.saturation),p.knee).map(encode);
+  let r=decode(encoded[0])*p.gains[0],g=decode(encoded[1])*p.gains[1],b=decode(encoded[2])*p.gains[2];
+  const y=.2126*r+.7152*g+.0722*b,target=evaluate(p.tone,y),scale=y>1e-12?(target-black)/y:p.tone.slopes[0];
+  r=black+r*scale;g=black+g*scale;b=black+b*scale;
+  // Scalar hot path: no per-pixel matrix/vector temporaries. Coefficients are
+  // the same shared matrices used to generate GLSL and the reference helpers.
+  if(p.saturation!==1&&Math.max(r,g,b)-Math.min(r,g,b)>=1e-7){
+   const l=Math.cbrt(M1[0][0]*r+M1[0][1]*g+M1[0][2]*b),m=Math.cbrt(M1[1][0]*r+M1[1][1]*g+M1[1][2]*b),s=Math.cbrt(M1[2][0]*r+M1[2][1]*g+M1[2][2]*b);
+   const L=M2[0][0]*l+M2[0][1]*m+M2[0][2]*s,a=(M2[1][0]*l+M2[1][1]*m+M2[1][2]*s)*p.saturation,c=(M2[2][0]*l+M2[2][1]*m+M2[2][2]*s)*p.saturation;
+   const lr=L+I1[0][1]*a+I1[0][2]*c,mr=L+I1[1][1]*a+I1[1][2]*c,sr=L+I1[2][1]*a+I1[2][2]*c,ll=lr*lr*lr,mm=mr*mr*mr,ss=sr*sr*sr;
+   r=I2[0][0]*ll+I2[0][1]*mm+I2[0][2]*ss;g=I2[1][0]*ll+I2[1][1]*mm+I2[1][2]*ss;b=I2[2][0]*ll+I2[2][1]*mm+I2[2][2]*ss;
+  }
+  const Y=clamp(.2126*r+.7152*g+.0722*b),dr=r-Y,dg=g-Y,db=b-Y;let bound=1e20;
+  if(dr>0)bound=Math.min(bound,(1-Y)/dr);else if(dr<0)bound=Math.min(bound,-Y/dr);
+  if(dg>0)bound=Math.min(bound,(1-Y)/dg);else if(dg<0)bound=Math.min(bound,-Y/dg);
+  if(db>0)bound=Math.min(bound,(1-Y)/db);else if(db<0)bound=Math.min(bound,-Y/db);
+  const u=1/Math.max(1e-20,bound),start=1-p.knee,factor=u<=start?1:p.knee>0?(start+p.knee*(-Math.expm1(-(u-start)/p.knee)))/u:1/u;
+  return [encode(clamp(Y+dr*factor)),encode(clamp(Y+dg*factor)),encode(clamp(Y+db*factor))];
  }};
 }
 // Generate matrix literals from the same numerical definition as the CPU.

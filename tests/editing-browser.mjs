@@ -46,5 +46,10 @@ try{
  assert.equal(batch.tiff,2);assert.equal(batch.zip,1);assert.equal(batch.locked,false);assert.deepEqual(batch.versions,[2,1]);
  const cancelled=await page.evaluate(async()=>{let saved=0;const old=downloadBlob;downloadBlob=()=>saved++;try{const pending=jpegBytes();FILMLABB_EXPORT.cancel();try{await pending;return false;}catch(e){return e.name==='AbortError'&&saved===0&&!exportBusy&&!FILMLABB_EXPORT.snapshot().active;}}finally{downloadBlob=old;}});assert.equal(cancelled,true);
  console.log('PASS mixed editing versions round-trip, restore selector, TIFF/JPEG ZIP batches and immediate export cancellation');
+ await page.evaluate(()=>{$('previewBackend').value='auto';$('previewBackend').onchange();});await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ const analyses=await page.evaluate(()=>analysisCount38);
+ await page.evaluate(()=>{globalThis.editingContextLoss=$('gpuPreview').getContext('webgl2').getExtension('WEBGL_lose_context');editingContextLoss.loseContext();});await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu');
+ await page.evaluate(()=>editingContextLoss.restoreContext());await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');assert.equal(await page.evaluate(()=>state.editVersion),2);assert.equal(await page.evaluate(()=>analysisCount38),analyses);
+ console.log('PASS Editing 2.0 context loss uses CPU and restoration recreates the versioned GPU pass without reanalysis');
  assert.deepEqual(errors,[]);
 }finally{await close();}
