@@ -24,12 +24,15 @@ void main(){
 function create(canvas){
  const gl=canvas.getContext('webgl2',{alpha:false,antialias:false,preserveDrawingBuffer:false});if(!gl)throw Error('WebGL 2 saknas');
  const program=gl.createProgram(),shaders=[];let texture=gl.createTexture(),negativeTexture=null,size=null;
- for(const [type,text] of [[gl.VERTEX_SHADER,vertex],[gl.FRAGMENT_SHADER,fragment]]){const sh=gl.createShader(type);shaders.push(sh);gl.shaderSource(sh,text);gl.compileShader(sh);gl.attachShader(program,sh);}
- gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
- gl.useProgram(program);gl.disable(gl.DITHER);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
- for(const p of [gl.TEXTURE_MIN_FILTER,gl.TEXTURE_MAG_FILTER])gl.texParameteri(gl.TEXTURE_2D,p,gl.NEAREST);
- for(const p of [gl.TEXTURE_WRAP_S,gl.TEXTURE_WRAP_T])gl.texParameteri(gl.TEXTURE_2D,p,gl.CLAMP_TO_EDGE);
- const loc=n=>gl.getUniformLocation(program,n),vec=(n,p)=>gl.uniform2f(loc(n),p.x,p.y);
+ try{
+  for(const [type,text] of [[gl.VERTEX_SHADER,vertex],[gl.FRAGMENT_SHADER,fragment]]){const sh=gl.createShader(type);shaders.push(sh);gl.shaderSource(sh,text);gl.compileShader(sh);gl.attachShader(program,sh);}
+  gl.linkProgram(program);if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program));
+  gl.useProgram(program);gl.disable(gl.DITHER);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
+  for(const p of [gl.TEXTURE_MIN_FILTER,gl.TEXTURE_MAG_FILTER])gl.texParameteri(gl.TEXTURE_2D,p,gl.NEAREST);
+  for(const p of [gl.TEXTURE_WRAP_S,gl.TEXTURE_WRAP_T])gl.texParameteri(gl.TEXTURE_2D,p,gl.CLAMP_TO_EDGE);
+ }catch(e){destroy();throw e;}
+ const locations=new Map();
+ const loc=n=>{if(!locations.has(n))locations.set(n,gl.getUniformLocation(program,n));return locations.get(n);},vec=(n,p)=>gl.uniform2f(loc(n),p.x,p.y);
  function upload(source,negative=false){
   if(gl.isContextLost())throw Error('Geometrins grafikanslutning förlorades');
   if(negative&&!negativeTexture){negativeTexture=gl.createTexture();gl.bindTexture(gl.TEXTURE_2D,negativeTexture);for(const p of [gl.TEXTURE_MIN_FILTER,gl.TEXTURE_MAG_FILTER])gl.texParameteri(gl.TEXTURE_2D,p,gl.NEAREST);}

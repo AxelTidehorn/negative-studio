@@ -51,8 +51,10 @@ async function mainAttempt(job){
  try{
   c.width=job.target.width;c.height=job.target.height;const ctx=c.getContext('2d',{colorSpace:'srgb'});if(!ctx)throw Error('Kunde inte skapa JPEG-yta.');
   if(!job.prepared)job.prepared=NSPixelKernel.prepare(job.im,job.config);
+  let out;
   for(let y=0;y<c.height;){
-   check(job);const rows=NSPresentation.rows(job.im,job.g,job.target,c.height-y,16384),out=ctx.createImageData(c.width,rows);
+   check(job);const rows=NSPresentation.rows(job.im,job.g,job.target,c.height-y,16384);
+   if(!out||out.height!==rows)out=ctx.createImageData(c.width,rows);
    NSPresentation.rgba(job.im,job.prepared,job.g,job.target,y,rows,false,out.data);
    ctx.putImageData(out,0,y);y+=rows;progress(job,y,c.height);await tick();
   }

@@ -14,7 +14,9 @@ self.onmessage=async({data:m})=>{
   }
   const j=job;if(!j||m.id!==j.id||m.type!=='stripe')return;stage='pixels';
   if(m.y!==j.y||m.rows!==NSPresentation.rows(j.im,j.g,j.target,j.target.height-j.y)||m.data.length!==j.target.width*m.rows*(j.g.presentation?12:3))throw Error('Fel ordning eller storlek på exportdata.');
-  j.im.data=m.data;const out=j.ctx.createImageData(j.target.width,m.rows);
+  j.im.data=m.data;
+  if(!j.out||j.out.height!==m.rows)j.out=j.ctx.createImageData(j.target.width,m.rows);
+  const out=j.out;
   NSPresentation.rgba(j.im,j.prepared,j.g,j.target,j.y,m.rows,true,out.data);
   j.ctx.putImageData(out,0,j.y);j.im.data=new j.im.data.constructor(0);j.y+=m.rows;
   postMessage({type:'progress',id:j.id,done:j.y,total:j.target.height});

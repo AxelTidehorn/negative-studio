@@ -10,9 +10,9 @@ convertImage=function(image,mode,params){const im=image===previewSrc?workingPrev
 function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;drawHistogram38(r.bins);drawCrop();}
 function drawHistogram38(bins){const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);const a=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,a[Math.floor(a.length*.99)]);cx.fillStyle=globalThis.getComputedStyle?.(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';for(let i=0;i<256;i++){const v=Math.min(1,bins[i]/max);cx.fillRect(i*w/256,h-v*(h-4),Math.ceil(w/256),v*(h-4));}$('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';}
 const previewPerf={cancelledDetail:0,intermediateShown:0,deduplicated:0,workerFailures:0,lastWorkerError:null};
-let previewActive=null,previewInteractive=false,previewShown=-1;
+let previewActive=null,previewInteractive=false,previewShown=-1,previewCompletedKey=null;
 function stopPreviewWork(){
- ++request38;queued38=null;previewActive=null;workerBusy38=false;workerVersion38=-1;
+ ++request38;queued38=null;previewActive=null;previewCompletedKey=null;workerBusy38=false;workerVersion38=-1;
  if(previewWorker38){previewWorker38.terminate();previewWorker38=null;}
 }
 function displayPreviewResult(r,job){
@@ -20,7 +20,7 @@ function displayPreviewResult(r,job){
  // During a drag, intermediate results keep the picture moving. After release,
  // show the small result before detail only if it matches the final settings.
  const intermediate=job.interactive&&r.id>previewShown&&job.mode===display&&(previewInteractive||JSON.stringify(job.config)===JSON.stringify(configuration38()));
- if(r.id===request38||intermediate){showPreview38(r);previewShown=r.id;if(intermediate&&r.id!==request38)previewPerf.intermediateShown++;}
+ if(r.id===request38||intermediate){showPreview38(r);previewCompletedKey=job.key;previewShown=r.id;if(intermediate&&r.id!==request38)previewPerf.intermediateShown++;}
  else stats38.stale++;
 }
 function failPreviewWorker(worker,message){
@@ -63,6 +63,9 @@ render=function(limit=1400){
  const config=configuration38(),key=JSON.stringify([sourceVersion38,display,limit,config]);
  if(!queued38&&previewActive?.key===key){previewPerf.deduplicated++;return;}
  if(queued38?.key===key){previewPerf.deduplicated++;return;}
+ // Keep repainting the existing result for geometry/context restoration, but
+ // do not repeat color work for an identical completed request.
+ if(!previewActive&&!queued38&&lastPreview38&&previewCompletedKey===key){previewPerf.deduplicated++;showPreview38(lastPreview38);return;}
  if(previewActive&&!previewActive.interactive&&!interactive){previewPerf.cancelledDetail++;stopPreviewWork();}
  const t=now38(),id=++request38;stats38.renders++;
  if(!workerDisabled38)ensureWorker38();
@@ -99,10 +102,10 @@ finishImport=function(message){
 const chooseBeforePreview=chooseFrame;
 chooseFrame=async function(i,opts={}){
  if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){
-  stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;previewShown=-1;
+  stopPreviewWork();lastPreview38=null;clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;previewShown=-1;
  }
  return chooseBeforePreview(i,opts);
 };
 const clearBeforePreview=$('clearQueue').onclick;
-$('clearQueue').onclick=()=>{previewActive=null;previewShown=-1;previewInteractive=false;return clearBeforePreview();};
+$('clearQueue').onclick=()=>{previewActive=null;previewCompletedKey=null;previewShown=-1;previewInteractive=false;return clearBeforePreview();};
 globalThis.FILMLABB_PERFORMANCE={snapshot:()=>({...stats38,...previewPerf,analyses:analysisCount38,worker:!!previewWorker38,activeLimit:previewActive?.limit||null,pendingLimit:queued38?.limit||null,interactiveLimit:240,detailLimit:workerDisabled38?480:1400,queueLength:roll.length})};

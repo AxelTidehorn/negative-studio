@@ -120,6 +120,14 @@ function create(canvas){
  const shaders=[],program=gl.createProgram();let texture=null,source=null,sourceVersion=-1,query=null,queryStarted=0;
  const metrics={uploads:0,draws:0,submitMs:0,gpuMs:null,maxTexture:gl.getParameter(gl.MAX_TEXTURE_SIZE)};
  const timer=gl.getExtension('EXT_disjoint_timer_query_webgl2');
+ function releaseSource(){
+  if(!source)return;
+  source=null;sourceVersion=-1;
+  if(texture&&!gl.isContextLost()){
+   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
+   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB32F,1,1,0,gl.RGB,gl.FLOAT,null);
+  }
+ }
  function destroy(){
   if(query)gl.deleteQuery(query);query=null;
   if(texture)gl.deleteTexture(texture);texture=null;
@@ -197,7 +205,7 @@ function create(canvas){
   for(let n=0;n<width*height;n++){const p=kernel.pixel([data[n*3],data[n*3+1],data[n*3+2]]);for(let k=0;k<3;k++)maxError=Math.max(maxError,Math.abs(result.data[n*4+k]-Math.round(p[k]*255)));}
   if(maxError>2)throw Error('GPU-färgkontroll avvek '+maxError+' nivåer');return maxError;
  }
- return {draw,read,validate,destroy,metrics,context:gl};
+ return {draw,read,validate,releaseSource,destroy,metrics,context:gl};
 }
 root.NSGpuPreview={create,supports};
 })(globalThis);

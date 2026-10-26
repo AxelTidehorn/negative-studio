@@ -70,6 +70,13 @@ detaljrendering. GPU återanvänder källtexturen; presentation använder en sep
 begränsad färgcache. Context loss har CPU-reserv och återställning. Färg-
 reglage och geometri startar inte ny analys eller ny RAW-avkodning.
 
+Identiska färdiga CPU-förfrågningar återanvänder `lastPreview38` och målar om
+presentationen utan ny färgberäkning. Källversion, visningsläge, begärd storlek
+och färgkonfiguration ingår i nyckeln. Vid bildbyte frigörs föregående GPU-källa
+och presentationscache även om nästa import misslyckas; shaderprogrammet behålls.
+Aktiva JPEG-vägar återanvänder strimlans ImageData inom samma exportförsök.
+Se [underhåll och mätningar](MAINTENANCE.md) för verifiering och begränsningar.
+
 RAF-miniatyrer/JPEG-reserv läser nu bara RAF-header och JPEG-signaturer och
 returnerar en Blob-slice; hela RAF-filen kopieras inte en extra gång. JPEG-bytes
 och felvillkor är oförändrade och verifierade mot buffertingången.

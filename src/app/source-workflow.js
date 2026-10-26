@@ -27,7 +27,10 @@ $('flatFieldFile').accept=NSFileFormats.accept;
 async function readFlatNext(file){
  if(NSFileFormats.isRaw(file)){const r=await NSRawDecoder.decode(file,state.rawMode4);if(r.im.inputDiagnostics4?.clipped.some(n=>n/r.im.inputDiagnostics4.pixels>.002))throw Error('RAW-referensen innehåller klippta källkanaler. Sänk exponeringen.');return {im:{width:r.im.width,height:r.im.height,channels:3,data:r.im.data,scale:r.im.scale||65535,colorSpace:r.im.colorSpace||'srgb',encoding:'linear'},domain:'raw-'+(r.im.rawMode4||'reference')+':'+(r.meta?.camera_model||'unknown')};}
  if(NSFileFormats.kind(file)==='tiff'){
-  const saved=sourceInfo;try{const raw=prepareTiff(await NSTiff.decode(await file.arrayBuffer()));return {im:{...raw,scale:65535,encoding:sourceInfo.encoding,colorSpace:'srgb'},domain:captureDomainNext()};}finally{sourceInfo=saved;}
+  const decoded=await NSTiff.decode(await file.arrayBuffer());
+  // Snapshot only after asynchronous decoding: a different image may now be
+  // active. The temporary metadata substitution itself contains no await.
+  const saved=sourceInfo;try{const raw=prepareTiff(decoded);return {im:{...raw,scale:65535,encoding:sourceInfo.encoding,colorSpace:'srgb'},domain:captureDomainNext()};}finally{sourceInfo=saved;}
  }
  if(NSFileFormats.kind(file)!=='browser')throw Error(NSFileFormats.error(file));
  const bitmap=await createImageBitmap(file);const c=document.createElement('canvas');try{c.width=bitmap.width;c.height=bitmap.height;const ctx=c.getContext('2d',{colorSpace:'srgb'});ctx.drawImage(bitmap,0,0);const p=ctx.getImageData(0,0,c.width,c.height);return {im:{...p,width:p.width,height:p.height,data:p.data,channels:4,scale:255,encoding:'srgb'},domain:'srgb:8 bit · sRGB via webbläsarens färghantering'};}finally{bitmap.close();c.width=c.height=0;}
