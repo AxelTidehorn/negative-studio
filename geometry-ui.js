@@ -95,11 +95,12 @@
  function setMode(value){
   if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);
   mode=value;lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
-  if(mode!=='frame')$('frameOptions').open=false;
+  if(mode!=='frame'){$('frameOptions').open=false;const group=$('frameSettingsGroup');if(group)group.open=false;}
   $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Orange filmruta används för analys. Dra en sida.':'Komposition ändrar inte färgkalibreringen.';
   controls();queue();
  }
  $('geometryDone').onclick=()=>setMode(null);
+ $('geometryTools').addEventListener('toggle',()=>{if(!$('geometryTools').open&&(mode==='composition'||mode==='straighten'))setMode(null);});
  $('compositionEnabled').onchange=e=>{if(busy())return;let g=current();const c=e.target.checked?NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop:null;g=NSGeometry.withComposition(g,c);commit(g);setMode(c?'composition':null);};
  $('compositionEdit').onclick=()=>{if(busy())return;const g=current();if(!g.compositionCrop)commit(NSGeometry.withComposition(g,NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop));setMode('composition');};
  $('compositionReset').onclick=()=>{if(busy())return;commit(NSGeometry.withComposition(current(),null));setMode(null);};
