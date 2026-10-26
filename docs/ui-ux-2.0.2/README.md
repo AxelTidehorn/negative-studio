@@ -49,4 +49,13 @@ Originalstorlek: [Classic](after/classic.png), [Olive](after/olive.png), [Burgun
 - En ny service worker väntar medan den tidigare versionens flikar fortfarande är öppna. Alla FILMLABB-flikar kan behöva stängas och appen öppnas igen; en vanlig omladdning räcker inte alltid. Detta bevarar sammanhängande filer för redan öppna sessioner. Spara projekt först: importerade originalbilder finns endast i den öppna sessionen och måste återimporteras. Ingen cache- eller användardatarensning införs.
 - GitHub Pages har `max-age=600` på HTTP-svar. Installationens `cache:reload` och `updateViaCache:none` undviker HTTP-cachen för nya kompletta offlineversioner. CDN/publicering kan ändå ta tid; inga ogrundade ändringar i fungerande cachekod har gjorts.
 
+## Testresultat
+
+- `npm run test:fast`: 6/6 grupper passerade.
+- Samlad `npm run test:full`: 46/47 Node-grupper passerade. Den återstående gruppen, `check-app-integration.mjs`, hade gamla reset-förväntningar och en implicit kalibreringsfixture. Efter att dessa anpassats till den avsedda räckvidden passerade dess 20 kontroller vid riktad omkörning. Alla 47 Node-grupper har därmed passerat över samlad körning och riktad omkörning; ingen komplett grön monolitisk full-körning påstås.
+- Samlad `npm run test:browser`: alla 15 befintliga grupper passerade, inklusive tolv temavarianter/kontrast, fem språk, mobilflöden, GPU, geometri, Editing 2.0 och underhåll/cache-livscykel. Det nya sextonde testet behövde byta `download.path()` till `createReadStream()` för runnerns fjärranslutningsläge. Efter rättning passerade `ui-202-browser.mjs` både fristående och via `chromium.launchServer` (samma anslutningsläge som CI).
+- `npm run test:build`: passerade – rent output, komplett precachemanifest, reproducerbart versions-ID, ändrade assets invalidierar cache, HTML-paritet.
+- `git diff --check`: passerade. Aktiva reglage verifierades med riktiga browser-keyboard/dubbelklickshändelser, legacy-inaktiva reglage med input-event. Projektåterläsning använde appens JSON-nedladdning och filimport.
+- GitHub Actions kör dessutom projektets oförändrade `test:full` på PR #31. Status finns i PR:ens checks; lokal verifiering ovan är inte ett påstående om avslutad CI.
+
 Reproducera bildinsamling efter `npm ci` och `npm run build`: `node tools/capture-ui-202.mjs after`. För före-bilder krävs bascommitens build. Testresultat sammanfattas i PR-beskrivningen.
