@@ -10,6 +10,8 @@ export const assets = {
  "image-model.js": "src/image/image-model.js",
  "flat-field.js": "src/image/flat-field.js",
  "color-parameters.js": "src/color/parameters.js",
+ "editing-engine.js": "src/editing/editing-engine.js",
+ "editing-controller.js": "src/editing/editing-controller.js",
  "render-core.js": "src/color/render-core.js",
  "color-analysis.js": "src/calibration/color-analysis.js",
  "color-calibration.js": "src/calibration/color-calibration.js",
@@ -75,6 +77,7 @@ export const scripts = [
  {"file":"tiff-codec.js","harness":true,"defer":false},
  {"file":"raw-input.js","harness":true,"defer":false},
  {"file":"color-parameters.js","harness":true,"defer":false},
+ {"file":"editing-engine.js","harness":true,"defer":false},
  {"file":"render-core.js","harness":true,"defer":false},
  {"file":"presentation-sampler.js","harness":true,"defer":false},
  {"file":"frame-controller.js","harness":true,"defer":false},
@@ -98,6 +101,7 @@ export const scripts = [
  {"file":"i18n.js","harness":false,"defer":true},
  {"file":"workspace-layout.js","harness":false,"defer":true},
  {"file":"compact-ui.js","harness":false,"defer":true},
+ {"file":"editing-controller.js","harness":false,"defer":false},
  {"file":"register-offline.js","harness":false,"defer":false},
 ].map(asset=>({...asset,source:assets[asset.file]}));
 export function sourcePath(file){

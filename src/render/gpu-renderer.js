@@ -57,6 +57,7 @@ vec3 displayWide(vec3 p){
   float l=max(0.0,luma(q)),m=min(q.r,min(q.g,q.b)),s=m<0.0?l/max(1e-12,l-m):1.0;return max(vec3(0.0),vec3(l)+(q-vec3(l))*s);
  }
 vec3 softDensity(vec3 p,vec3 start,vec3 range){vec3 d=max(vec3(0.0),p-start);return p-d+range*(vec3(1.0)-exp(-d/range));}
+${NSEditing2.glsl}
 void main(){
  // Texture row zero is the top source row; framebuffer row zero is bottom.
  vec2 pos=vec2(gl_FragCoord.x,uOutputSize.y-gl_FragCoord.y);
@@ -103,7 +104,7 @@ void main(){
  p=encode3(p);
  if(uProfile==2||uProfile==3)p=creative(p);else if(uProfile==1&&uStrength>0.0)p=mix(p,creative(p),uStrength);
  if(uPrint==1){if(uPrintShoulder!=0.0)p=p/(vec3(1.0)+uPrintShoulder*(vec3(1.0)-p));p=clamp(vec3(.5)+(p-vec3(.5))*uPrintContrast,0.0,1.0);}
- color=vec4(p,1.0);
+ color=vec4(uEdit2?editPositive(p):p,1.0);
 }`;
 function supports(c){
  if(c?.kind!=='calibrated4'||!c.cal?.beta4)return false;
@@ -173,7 +174,10 @@ function create(canvas){
   if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
   gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
-  const a=c.cal.beta4,o=c.opts,p=c.profile,parameters=NSColorParameters.prepare(c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
+  const edit=NSEditing2.version(c.opts.editVersion)===2?NSEditing2.prepare(c.opts,c.profile.type==='bw'):null;
+  const a=c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
+  i('uEdit2',edit?1:0);
+  if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
   const confidence=NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
