@@ -1,7 +1,7 @@
 /* Directly tracked tests, grouped by responsibility. Optional real-photo checks
    remain explicit check-real-*/
 export const nodeSuites={
- application:['check-app-integration.mjs','check-smoke.mjs','architecture.mjs'],
+ application:['check-app-integration.mjs','check-smoke.mjs','architecture.mjs','maintenance-lifecycle.mjs'],
  projects:['check-project39.mjs','check-project4.mjs','beta6-project.mjs'],
  color:['check-profiles-next.mjs','check-color-engine.mjs','check-beta38.mjs','check-beta39.mjs','check-beta4.mjs','check-reference38.mjs','check-export-snapshot38.mjs','check-comparison.mjs','check-compatibility-next.mjs','color-boundary-investigation.mjs','standard-engine-experiment.mjs','color-ab.mjs'],
  calibration:['check-manual-frame.mjs','check-source-analysis.mjs','check-source-border.mjs'],
@@ -11,7 +11,7 @@ export const nodeSuites={
  performance:['check-preview-performance.mjs'],
  platform:['check-i18n-static.mjs','stability-cache.mjs']
 };
-export const browserTests=['check-workflow-browser.mjs','check-next-browser.mjs','check-gpu-browser.mjs','check-mobile-order.mjs','stability-browser.mjs','beta6-browser.mjs','beta6-complete-browser.mjs','quality-workflow-browser.mjs','standard-engine-browser.mjs','color-ab-browser.mjs'];
+export const browserTests=['check-workflow-browser.mjs','check-next-browser.mjs','check-gpu-browser.mjs','check-mobile-order.mjs','stability-browser.mjs','beta6-browser.mjs','beta6-complete-browser.mjs','quality-workflow-browser.mjs','standard-engine-browser.mjs','color-ab-browser.mjs','maintenance-browser.mjs'];
 export const selectors={
  browser:browserTests,workflow:['check-workflow-browser.mjs'],next:['check-next-browser.mjs'],
  tiff:['check-tiff-codec.mjs','check-export-tiff-perf.mjs'],gpu:['check-gpu-browser.mjs']

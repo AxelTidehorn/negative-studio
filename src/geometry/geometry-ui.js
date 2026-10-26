@@ -149,7 +149,7 @@
  },true);
  for(const type of ['pointerup','pointercancel','lostpointercapture'])picture.addEventListener(type,finishDrag,true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mode){if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);setMode(null);}});
- const oldChoose=chooseFrame;chooseFrame=async function(i,opts={}){if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){setMode(null);colorSource=null;cpuImage=null;canvas.hidden=fallback.hidden=true;}const r=await oldChoose(i,opts);controls();queue();return r;};
+ const oldChoose=chooseFrame;chooseFrame=async function(i,opts={}){if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){setMode(null);colorSource=colorSize=null;cpuImage=negativeImage=null;clearTimeout(cpuIdle);if(presenter)presenter.clear();canvas.hidden=fallback.hidden=true;}const r=await oldChoose(i,opts);controls();queue();return r;};
  const oldClear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollLoading)return;setMode(null);colorSource=colorSize=null;cpuImage=negativeImage=null;clearTimeout(cpuIdle);canvas.width=canvas.height=fallback.width=fallback.height=1;if(presenter)presenter.clear();const r=oldClear();controls();draw();return r;};
  const oldNextControls=nextControls;nextControls=function(...args){const r=oldNextControls(...args);controls();return r;};
  const oldUI=updateCalibrationUI;updateCalibrationUI=function(...args){const r=oldUI(...args);controls();return r;};

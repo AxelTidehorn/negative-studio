@@ -5,10 +5,10 @@ const h=harness(),P=h.context.NSPresentation,E=h.context.NSExportPlan,G=h.contex
 h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),cropConfirmed:true};sourceInfo={encoding:'linear'};cropRegion={x:0,y:0,w:1,h:1};working={width:13,height:11,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:13*11*3},(_,i)=>1000+(i*173)%52000)};workingPreview=CE.preview(working);analyzeLevels();`);
 const config=JSON.parse(h.run('JSON.stringify(configuration38())'));
 async function worker(im,g,target,corrupt=false,legacy={},colorConfig=config){
- const messages=[],stripes=[];
+ const messages=[],stripes=[];let allocations=0;
  class Canvas{
   constructor(w,h){this.width=w;this.height=h;}
-  getContext(){return {createImageData:(w,h)=>({data:new Uint8ClampedArray(w*h*4)}),putImageData:(out,x,y)=>stripes.push({y,data:out.data})};}
+  getContext(){return {createImageData:(w,h)=>{allocations++;return {width:w,height:h,data:new Uint8ClampedArray(w*h*4)};},putImageData:(out,x,y)=>stripes.push({y,data:out.data.slice()})};}
   async convertToBlob(){return new Blob([new Uint8Array([255,216,255,217])],{type:'image/jpeg'});}
  }
  const c={console,Blob,Uint8Array,Uint8ClampedArray,Uint16Array,Float32Array,Float64Array,OffscreenCanvas:Canvas,postMessage:m=>messages.push(m)};c.self=c;
@@ -25,6 +25,7 @@ async function worker(im,g,target,corrupt=false,legacy={},colorConfig=config){
   await c.onmessage({data:{type:'stripe',id:1,y:m.y+(corrupt?1:0),rows:m.rows,data:packed}});
  }
  const actual=new Uint8ClampedArray(target.width*target.height*4);for(const s of stripes)actual.set(s.data,s.y*target.width*4);
+ assert.ok(allocations<=2,'only a regular stripe and optional final shorter stripe are allocated');
  assert.ok(Buffer.from(actual).equals(Buffer.from(P.rgba(im,K.prepare(im,colorConfig),g,target,0,target.height))),`worker/main mismatch (${im.encoding}, ${im.scale}, flat=${!!im.flatField}, fine=${g.spec?.model.rotation.fineDegrees??0})`);assert.ok(transferred>0);
 }
 let cases=0;

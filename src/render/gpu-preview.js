@@ -27,12 +27,12 @@
  }
  drawCrop=function(){cpuDrawCrop();syncView();};
  if(typeof MutationObserver!=='undefined')new MutationObserver(syncView).observe(baseCanvas,{attributes:true,attributeFilter:['style','class']});
- function eligible(){return preference!=='cpu'&&!failure&&!!workingPreview&&NSGpuPreview.supports(configuration38());}
+ function eligible(config){return preference!=='cpu'&&!failure&&!!workingPreview&&NSGpuPreview.supports(config||configuration38());}
  function cpu(reason,limit=1400){
   active=false;syncView();status('cpu',reason);return cpuRender(limit);
  }
  function stopHistogram(){clearTimeout(histTimer);histTimer=null;histSequence++;histPending=null;histBusy=false;histSource=-1;if(histWorker)histWorker.terminate();histWorker=null;}
- function resetSource(){cancelTimers();stopHistogram();active=false;lastSource=null;lastVersion=-1;validationKey=null;syncView();}
+ function resetSource(){cancelTimers();stopHistogram();renderer?.releaseSource();active=false;lastSource=null;lastVersion=-1;validationKey=null;syncView();}
  function dispose(){if(renderer)renderer.destroy();renderer=null;lastSource=null;validationKey=null;}
  function fail(e){
   failure=e?.message||String(e);metrics.reason=failure;cancelTimers();stopHistogram();dispose();active=false;syncView();status('cpu','GPU-reservläge · '+failure);
@@ -64,11 +64,10 @@
   $('histogramInfo').textContent='Histogram uppdateras…';
   histTimer=setTimeout(()=>{histTimer=null;updateHistogram(config,version,source,sequence);},220);
  }
- function drawGpu(interactive=false){
+ function drawGpu(interactive=false,config=workingPreview?configuration38():null){
   if(!workingPreview)return;
-  if(!eligible())return cpu(failure?'GPU-reservläge · '+failure:preference==='cpu'?'CPU vald':'Detta färgläge använder CPU');
+  if(!eligible(config))return cpu(failure?'GPU-reservläge · '+failure:preference==='cpu'?'CPU vald':'Detta färgläge använder CPU');
   try{
-   const config=configuration38();
    if(!renderer)renderer=NSGpuPreview.create(canvas);
    const key=JSON.stringify([config.profile,config.print,sourceVersion38]);
    if(validationKey!==key){metrics.validationError=renderer.validate(config);validationKey=key;}
@@ -86,13 +85,15 @@
   }catch(e){fail(e);return cpu('GPU-reservläge · '+failure);}
  }
  render=function(limit=1400){
-  if(eligible()){cancelFrame();clearTimeout(idle);idle=null;return drawGpu(false);}
+  const config=preference!=='cpu'&&!failure&&workingPreview?configuration38():null;
+  if(eligible(config)){cancelFrame();clearTimeout(idle);idle=null;return drawGpu(false,config);}
   cancelTimers();stopHistogram();return cpu(failure?'GPU-reservläge · '+failure:preference==='cpu'?'CPU vald':'Detta färgläge använder CPU',limit);
  };
  scheduleRender=function(immediate=false){
-  if(!eligible()){if(active){active=false;syncView();}return cpuSchedule(immediate);}
+  const config=preference!=='cpu'&&!failure&&workingPreview?configuration38():null;
+  if(!eligible(config)){if(active){active=false;syncView();}return cpuSchedule(immediate);}
   clearTimeout(idle);clearTimeout(histTimer);histSequence++;
-  if(immediate){cancelFrame();return drawGpu(false);}
+  if(immediate){cancelFrame();return drawGpu(false,config);}
   if(frame===null)frame=requestFrame(()=>{frame=null;drawGpu(true);});
   idle=setTimeout(()=>{idle=null;drawGpu(false);},180);
  };

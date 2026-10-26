@@ -24,7 +24,7 @@ async function makeThumb(file){try{
 
 
 async function importRoll(files){
- if(!files.length)return;
+ if(!files.length||rollLoading||exportBusy||rollingExport)return;
  const rejected=files.filter(f=>!NSFileFormats.supported(f));
  const acceptable=files.filter(NSFileFormats.supported);
  if(acceptable.length>5){setStatus('Max fem bilder åt gången. Välj fem filer eller färre.');return}
@@ -32,8 +32,14 @@ async function importRoll(files){
  rollShared.profileVersion=2;roll=[];activeFrame=-1;src=null;hires=null;
  for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...defaultState(),cropExport:rollShared.cropExportToFrame,noBase:false,autoLevels:true},base:null,levels:null,selected:true,thumb:null,preview:null,crop:null})}
  refreshRollUI();
+ const imported=roll;
  await chooseFrame(0);
- for(let i=0;i<roll.length;i++){roll[i].thumb=await makeThumb(roll[i].file);refreshRollUI()}
+ for(const frame of imported){
+  if(roll!==imported)return;
+  const thumb=await makeThumb(frame.file);
+  if(roll!==imported)return;
+  frame.thumb=thumb;refreshRollUI();
+ }
  if(rejected.length)setStatus(rejected.map(NSFileFormats.error).join(' '));
 }
 $('loadFullRaw').onclick=async()=>{if(activeFrame<0)return;await chooseFrame(activeFrame,{full:true,force:true})};

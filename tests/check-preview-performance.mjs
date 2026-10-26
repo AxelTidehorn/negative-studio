@@ -44,3 +44,12 @@ const oldSetting=setup(1);oldSetting.run('render();state.exposure=.25;scheduleRe
 const ow=oldSetting.workers.at(-1),oldSmall=oldSetting.jobs(ow)[0];oldSetting.run('state.exposure=.5;scheduleRender(true);');
 oldSetting.reply(ow,oldSmall,91);assert.notEqual(oldSetting.run('lastPreview38?.data?.[0]'),91,'outdated slider state cannot flash after release');
 console.log('PASS short input/change gesture shows matching small image before detail, rejects old slider states');
+
+const cache=setup(1,false);let rendered=0;const original=cache.context.NSPixelKernel.render;
+cache.context.NSPixelKernel.render=(...args)=>{rendered++;return original(...args);};
+cache.run('render();');const pixels=Array.from(cache.run('lastPreview38.data'));
+cache.run('render();render();');assert.equal(rendered,1);assert.deepEqual(Array.from(cache.run('lastPreview38.data')),pixels);
+cache.run('state.exposure=.3;render();');assert.equal(rendered,2);
+cache.run('display="negative";render();');assert.equal(rendered,3);
+cache.run('sourceVersion38++;render();');assert.equal(rendered,4);
+console.log('PASS completed CPU preview reuses identical pixels; color, display and source changes invalidate cache');
