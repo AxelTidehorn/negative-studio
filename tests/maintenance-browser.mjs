@@ -37,6 +37,12 @@ try{
   await page.evaluate(()=>{state.exposure=.2;render();render();});
   assert.equal(await page.evaluate(()=>FILMLABB_GPU.snapshot().sourceUploads),before);
  });
+ await check('one GPU draw builds one fresh color configuration',async()=>{
+  const builds=await page.evaluate(()=>{
+   const original=configuration38;let calls=0;configuration38=(...a)=>{calls++;return original(...a);};
+   try{render();return calls;}finally{configuration38=original;}
+  });assert.equal(builds,1);
+ });
  await check('completed CPU cache repaints identical bytes without repeated color work',async()=>{
   const result=await page.evaluate(()=>{
    $('previewBackend').value='cpu';$('previewBackend').onchange();stopPreviewWork();workerDisabled38=true;
@@ -58,6 +64,15 @@ try{
    try{const bytes=await jpegBytes();return {allocations,puts,maxError,jpeg:bytes[0]===255&&bytes[1]===216};}
    finally{CanvasRenderingContext2D.prototype.createImageData=create;CanvasRenderingContext2D.prototype.putImageData=put;globalThis.Worker=WorkerBefore;}
   });assert.ok(result.puts>2);assert.ok(result.allocations<=2,JSON.stringify(result));assert.equal(result.maxError,0);assert.equal(result.jpeg,true);
+ });
+ await check('failed CPU image switch releases its previous completed result',async()=>{
+  await page.evaluate(async()=>{
+   globalThis.previousResult=new WeakRef(lastPreview38);const read=readFile;
+   readFile=async()=>{throw Error('synthetic CPU import failure');};
+   try{await chooseFrame(1);}finally{readFile=read;}
+  });
+  const cdp=await page.context().newCDPSession(page);await cdp.send('HeapProfiler.collectGarbage');
+  assert.equal(await page.evaluate(()=>previousResult.deref()===undefined),true);await cdp.detach();
  });
  await check('presentation initialization failure releases allocated GPU resources',async()=>{
   const result=await page.evaluate(()=>{

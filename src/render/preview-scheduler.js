@@ -102,7 +102,7 @@ finishImport=function(message){
 const chooseBeforePreview=chooseFrame;
 chooseFrame=async function(i,opts={}){
  if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){
-  stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;previewShown=-1;
+  stopPreviewWork();lastPreview38=null;clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;previewShown=-1;
  }
  return chooseBeforePreview(i,opts);
 };

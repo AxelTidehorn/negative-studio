@@ -24,7 +24,7 @@ async function makeThumb(file){try{
 
 
 async function importRoll(files){
- if(!files.length||rollLoading||exportBusy||rollingExport)return;
+ if(!files.length||rollLoading||exportBusy||rollingExport||cropDrag)return;
  const rejected=files.filter(f=>!NSFileFormats.supported(f));
  const acceptable=files.filter(NSFileFormats.supported);
  if(acceptable.length>5){setStatus('Max fem bilder åt gången. Välj fem filer eller färre.');return}

@@ -13,6 +13,8 @@ for(const flag of ['exportBusy','rollingExport']){
  h.run(`${flag}=true`);await h.run(`importRoll([{name:'blocked.ARW'}])`);
  assert.equal(h.run('roll[0].file.name'),'first.ARW');h.run(`${flag}=false`);
 }
+h.run('cropDrag={pointerId:1}');await h.run(`importRoll([{name:'blocked.ARW'}])`);
+assert.equal(h.run('roll[0].file.name'),'first.ARW');h.run('cropDrag=null');
 console.log('PASS import cannot replace the queue during decoding or export');
 
 // A thumbnail can finish after a new import or clear. It must neither refresh
