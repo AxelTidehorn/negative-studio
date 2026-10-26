@@ -124,7 +124,8 @@ The new tests cover five catalogues and parameter contracts, twelve palettes,
 text contrast of at least 4.5:1 on the three main surfaces, accent text, focus,
 persistence/migration, unchanged image pixels/settings/analysis/source uploads,
 profile-strength retention, live dynamic text/attributes, image/engine changes,
-completed export translation and desktop/tablet/phone overflow/touch targets.
+completed export translation, malformed TIFF and unsupported-file imports, native
+RAW fallback prompts, loading labels and desktop/tablet/phone overflow/touch targets.
 Existing pixel/project/RAW/TIFF/GPU/export/offline tests retain their expected
 values. Only UI ownership selectors and an implicit Swedish-locale assumption
 were adjusted where the intentional UI changes required them.

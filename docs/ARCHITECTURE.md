@@ -135,3 +135,6 @@ Integrera nya källor i manifestet och bibehåll workerberoenden. Lägg konverte
 under färg/kalibrering och kreativ behandling under editing; låt konfigurationen
 vara gränsen. Ändra inte gamla facit för att dölja en regression. Nya UI-funktioner
 ska använda befintliga ägare för kö/projekt, analys, rendering och export.
+
+Gränssnittets paneler, semantiska teman och dynamiska språk-API beskrivs i
+[UI/UX 2.0](UI_UX_2.md). Dessa enhetsinställningar ingår inte i bild- eller projektdata.
