@@ -543,7 +543,19 @@ const rows=[
 ["Beta 2 · tidigare densitetsmotor (utvärdering)", "Beta 2 · earlier density engine (evaluation)", "Bêta 2 · ancien moteur de densité (évaluation)", "Beta 2 · motor de densidad anterior (evaluación)", "Beta 2 · ältere Dichte-Engine (Auswertung)"],
 ["Beta 1 · tidigare färgmotor", "Beta 1 · earlier color engine", "Bêta 1 · ancien moteur couleur", "Beta 1 · motor de color anterior", "Beta 1 · ältere Farb-Engine"],
 ["densitet", "density", "densité", "densidad", "Dichte"],
-["srgb:8 bit · sRGB via webbläsarens färghantering", "srgb:8 bit · browser color-managed sRGB", "srgb:8 bits · sRGB géré par le navigateur", "srgb:8 bits · sRGB gestionado por el navegador", "srgb:8 Bit · sRGB über Browser-Farbverwaltung"]
+["srgb:8 bit · sRGB via webbläsarens färghantering", "srgb:8 bit · browser color-managed sRGB", "srgb:8 bits · sRGB géré par le navigateur", "srgb:8 bits · sRGB gestionado por el navegador", "srgb:8 Bit · sRGB über Browser-Farbverwaltung"],
+["Original · stabil referens", "Original · stable reference", "Original · référence stable", "Original · referencia estable", "Original · stabile Referenz"],
+["Standard · kalibrerad konvertering", "Standard · calibrated conversion", "Standard · conversion étalonnée", "Standard · conversión calibrada", "Standard · kalibrierte Konvertierung"],
+["Curve · icke-linjär filmrespons", "Curve · nonlinear film response", "Curve · réponse film non linéaire", "Curve · respuesta no lineal de película", "Curve · nichtlineare Filmantwort"],
+["Density · utökat densitetsomfång", "Density · extended density range", "Density · plage de densité étendue", "Density · rango de densidad ampliado", "Density · erweiterter Dichteumfang"],
+["Matrix · färgkanalseparation", "Matrix · color-channel separation", "Matrix · séparation des canaux couleur", "Matrix · separación de canales de color", "Matrix · Farbkanaltrennung"],
+["Curve · konservativ automatisk respons", "Curve · conservative automatic response", "Curve · réponse automatique prudente", "Curve · respuesta automática conservadora", "Curve · konservative automatische Antwort"],
+["Density · gemensam tonpresentation", "Density · shared tone presentation", "Density · rendu tonal commun", "Density · presentación tonal común", "Density · gemeinsame Tonwiedergabe"],
+["Matrix · identitetsreserv, otillräcklig färgvariation", "Matrix · identity fallback, insufficient color variation", "Matrix · repli identité, variation couleur insuffisante", "Matrix · respaldo identidad, variación de color insuficiente", "Matrix · Identitätsersatz, unzureichende Farbvariation"],
+["Matrix · begränsad statistisk transform", "Matrix · bounded statistical transform", "Matrix · transformation statistique bornée", "Matrix · transformación estadística limitada", "Matrix · begrenzte statistische Transformation"],
+["Original kräver sRGB-import. Välj en annan RAW-import för att jämföra alla fem motorer.", "Original requires sRGB input. Choose another RAW import mode to compare all five engines.", "Original nécessite une source sRGB. Choisissez un autre mode RAW pour comparer les cinq moteurs.", "Original requiere entrada sRGB. Elige otro modo RAW para comparar los cinco motores.", "Original benötigt sRGB-Eingaben. Für den Vergleich aller fünf Engines einen anderen RAW-Import wählen."],
+["Curve · identitetsreserv, otillräckligt tonomfång", "Curve · identity fallback, insufficient tonal range", "Curve · repli identité, plage tonale insuffisante", "Curve · respaldo identidad, rango tonal insuficiente", "Curve · Identitätsersatz, unzureichender Tonwertumfang"],
+["Matrix · identitetsreserv, ingen säker transform", "Matrix · identity fallback, no reliable transform", "Matrix · repli identité, pas de transformation fiable", "Matrix · respaldo identidad, sin transformación fiable", "Matrix · Identitätsersatz, keine zuverlässige Transformation"]
 ];
 const languages=['sv','en','fr','es','de'],dictionary=new Map(),reverse=new Map(),missing=new Set();
 for(const row of rows){dictionary.set(row[0],row);for(const value of row)if(!reverse.has(value))reverse.set(value,row[0]);}

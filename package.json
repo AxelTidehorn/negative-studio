@@ -3,7 +3,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "node build-root.mjs",
+    "build": "node tools/build-artifact.mjs --force",
     "test": "node verify-preview.mjs",
     "test:legacy": "node verify-legacy.mjs",
     "test:tiff": "node verify-preview.mjs --tiff",
@@ -11,7 +11,12 @@
     "test:next": "node verify-preview.mjs --next",
     "test:gpu": "node verify-preview.mjs --gpu",
     "test:build": "node tests/stability-build.mjs",
-    "test:browser": "npm run build && node verify-preview.mjs --browser"
+    "test:browser": "node tools/test-runner.mjs browser",
+    "test:fast": "node tools/test-runner.mjs fast",
+    "test:integration": "node tools/test-runner.mjs integration",
+    "test:full": "node tools/test-runner.mjs full",
+    "test:benchmark": "node tools/benchmark-conversion3.mjs",
+    "conversion:references": "node tools/conversion3-references.mjs"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"

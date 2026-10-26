@@ -1,0 +1,235 @@
+{
+  "description": "Fixed synthetic calibration, ±1/65535 independent channel perturbations; linear-display errors relative to each engine’s clean output, not scene-truth reconstruction. Separate real 0.01 density steps remain measurable. No spatial denoising.",
+  "rows": [
+    {
+      "kind": "log39",
+      "metrics": [
+        {
+          "name": "neutral-midtones",
+          "linearY": 0.505285767267789,
+          "chromaNoiseRms": 0.0000633917999910651,
+          "luminanceNoiseRms": 0.000025623276747341635,
+          "maxLinearError": 0.0001026222695793555
+        },
+        {
+          "name": "beyond-reference-white",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "dense-low-transmission",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "cyan-color",
+          "linearY": 0.767232372064968,
+          "chromaNoiseRms": 0.00017472874788216332,
+          "luminanceNoiseRms": 0.0000605823764175885,
+          "maxLinearError": 0.0003267970768773276
+        },
+        {
+          "name": "one-channel-at-floor",
+          "linearY": 0.706806115898608,
+          "chromaNoiseRms": 0.00004547466746173146,
+          "luminanceNoiseRms": 0.000039203467223542845,
+          "maxLinearError": 0.00007321703165552584
+        }
+      ],
+      "realToneDelta": 0.011061041258249138,
+      "realColorDelta": [
+        0,
+        0,
+        0.01106104124043017
+      ]
+    },
+    {
+      "kind": "calibrated4",
+      "metrics": [
+        {
+          "name": "neutral-midtones",
+          "linearY": 0.5109794016839253,
+          "chromaNoiseRms": 0.0000627779327922492,
+          "luminanceNoiseRms": 0.00002543420137943288,
+          "maxLinearError": 0.00010163016637043665
+        },
+        {
+          "name": "beyond-reference-white",
+          "linearY": 0.9757142201607542,
+          "chromaNoiseRms": 0.0002852192987786117,
+          "luminanceNoiseRms": 0.00027027691855117166,
+          "maxLinearError": 0.0006882210602493499
+        },
+        {
+          "name": "dense-low-transmission",
+          "linearY": 0.9982285617221357,
+          "chromaNoiseRms": 0.0032169362502868495,
+          "luminanceNoiseRms": 0.00264110121238175,
+          "maxLinearError": 0.008034522094170216
+        },
+        {
+          "name": "cyan-color",
+          "linearY": 0.7344812867471575,
+          "chromaNoiseRms": 0.00015820109389593336,
+          "luminanceNoiseRms": 0.00013051052547506046,
+          "maxLinearError": 0.0002582327583501298
+        },
+        {
+          "name": "one-channel-at-floor",
+          "linearY": 0.6767021586650677,
+          "chromaNoiseRms": 0.005570564711544085,
+          "luminanceNoiseRms": 0.006690636577325431,
+          "maxLinearError": 0.013331002002491044
+        }
+      ],
+      "realToneDelta": 0.010933937442855202,
+      "realColorDelta": [
+        0.0000012831870176421845,
+        0.0000012831869966589693,
+        0.010917447938678104
+      ]
+    },
+    {
+      "kind": "curve3",
+      "metrics": [
+        {
+          "name": "neutral-midtones",
+          "linearY": 0.5052857669430046,
+          "chromaNoiseRms": 0.00005802072748099685,
+          "luminanceNoiseRms": 0.00002345197831678404,
+          "maxLinearError": 0.00009392316297629488
+        },
+        {
+          "name": "beyond-reference-white",
+          "linearY": 0.9662780731411253,
+          "chromaNoiseRms": 0.00006459215921645475,
+          "luminanceNoiseRms": 0.000020400385835740532,
+          "maxLinearError": 0.00011947908561826814
+        },
+        {
+          "name": "dense-low-transmission",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "cyan-color",
+          "linearY": 0.7186787738454892,
+          "chromaNoiseRms": 0.00013771900638016852,
+          "luminanceNoiseRms": 0.00005279344026060372,
+          "maxLinearError": 0.00024877701895686943
+        },
+        {
+          "name": "one-channel-at-floor",
+          "linearY": 0.6856393213155471,
+          "chromaNoiseRms": 0.00003798465802150208,
+          "luminanceNoiseRms": 0.00003353853024464279,
+          "maxLinearError": 0.00006232192508515144
+        }
+      ],
+      "realToneDelta": 0.009038151340563627,
+      "realColorDelta": [
+        0,
+        0,
+        0.009038151313297105
+      ]
+    },
+    {
+      "kind": "density3",
+      "metrics": [
+        {
+          "name": "neutral-midtones",
+          "linearY": 0.5052857671911398,
+          "chromaNoiseRms": 0.0000621239640457939,
+          "luminanceNoiseRms": 0.000025110811163172488,
+          "maxLinearError": 0.00010056982171913198
+        },
+        {
+          "name": "beyond-reference-white",
+          "linearY": 0.9906041113839279,
+          "chromaNoiseRms": 0.000054587526101775864,
+          "luminanceNoiseRms": 0.000017250305647095093,
+          "maxLinearError": 0.00010108001897823904
+        },
+        {
+          "name": "dense-low-transmission",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "cyan-color",
+          "linearY": 0.7619731454363323,
+          "chromaNoiseRms": 0.0001712199728586897,
+          "luminanceNoiseRms": 0.00005936498125414596,
+          "maxLinearError": 0.0003202329292846251
+        },
+        {
+          "name": "one-channel-at-floor",
+          "linearY": 0.875920488891201,
+          "chromaNoiseRms": 0.004495129781931705,
+          "luminanceNoiseRms": 0.007745258747699646,
+          "maxLinearError": 0.014787990153162234
+        }
+      ],
+      "realToneDelta": 0.010839119362391347,
+      "realColorDelta": [
+        0,
+        0,
+        0.010839119344925319
+      ]
+    },
+    {
+      "kind": "matrix3",
+      "metrics": [
+        {
+          "name": "neutral-midtones",
+          "linearY": 0.505285767267789,
+          "chromaNoiseRms": 0.0000633917999910651,
+          "luminanceNoiseRms": 0.000025623276747341635,
+          "maxLinearError": 0.0001026222695793555
+        },
+        {
+          "name": "beyond-reference-white",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "dense-low-transmission",
+          "linearY": 1,
+          "chromaNoiseRms": 0,
+          "luminanceNoiseRms": 0,
+          "maxLinearError": 0
+        },
+        {
+          "name": "cyan-color",
+          "linearY": 0.767232372064968,
+          "chromaNoiseRms": 0.00017472874788216332,
+          "luminanceNoiseRms": 0.0000605823764175885,
+          "maxLinearError": 0.0003267970768773276
+        },
+        {
+          "name": "one-channel-at-floor",
+          "linearY": 0.706806115898608,
+          "chromaNoiseRms": 0.00004547466746173146,
+          "luminanceNoiseRms": 0.000039203467223542845,
+          "maxLinearError": 0.00007321703165552584
+        }
+      ],
+      "realToneDelta": 0.011061041258249138,
+      "realColorDelta": [
+        0,
+        0,
+        0.01106104124043017
+      ]
+    }
+  ]
+}

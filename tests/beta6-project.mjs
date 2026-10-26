@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
-function setup(){const h=harness();h.run(`render=()=>{};scheduleRender=()=>{};
+function setup(){const h=harness({editingVersion:1});h.run(`render=()=>{};scheduleRender=()=>{};
  working={width:48,height:32,channels:3,data:Uint16Array.from({length:48*32*3},(_,i)=>4000+(i*73)%42000),scale:65535,encoding:'linear'};workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'fixture'};src=new ImageData(48,32);previewSrc=src;state={...defaultState(),cropConfirmed:true};cropRegion={x:.1,y:.125,w:.8,h:.75};analyzeLevels();
  roll=Array.from({length:4},(_,i)=>({file:{name:i+'.tif'},settings:{...state,rotation:i*90,cropExport:i%2===0,rawMode4:'wide'},crop:{...cropRegion},selected:true,sourceMetadata:{camera:'original-'+i}}));activeFrame=0;state={...roll[0].settings};
  chooseFrame=async i=>{activeFrame=i;state={...roll[i].settings};cropRegion={...roll[i].crop};};downloadBlob=b=>globalThis.savedProject=b;`);return h;}

@@ -1,10 +1,10 @@
-/* One per-image A/B choice. No calibration or conversion-engine mutation. */
+/* Hidden per-image legacy-version binding. New imports use Editing 2.0. */
 'use strict';
 (() => {
- const row=document.createElement('div');row.className='control';
+ const row=document.createElement('div');row.className='control';row.hidden=true; // Compatibility binding only; new images use Editing 2.0.
  const label=document.createElement('label');label.htmlFor='editVersion';label.textContent='Redigering';
  const select=document.createElement('select');select.id='editVersion';select.setAttribute('aria-label','Redigering');
- for(const [value,text] of [['1','Originalredigering'],['2','Redigering 2.0 · experiment']]){const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);}
+ for(const [value,text] of [['1','Originalredigering'],['2','Redigering 2.0']]){const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);}
  select.title='Samma värden kan ge olika styrka. 2.0: +Skuggor lyfter, +Högdagrar dämpar.';
  row.append(label,select);$('simpleControls').prepend(row);
  function sync(){select.value=String(NSEditing2.version(state.editVersion));select.disabled=!working||rollLoading||exportBusy||rollingExport;}

@@ -3,10 +3,11 @@
 'use strict';
 analyzeLevels=function(){
  const preview=workingPreview;
- if(state.engine==='calibrated4'&&state.analysisSampling==='source'&&working)workingPreview=working;
+ if((state.engine==='calibrated4'||NSConversion3.is(state.engine))&&state.analysisSampling==='source'&&working)workingPreview=working;
  try{
   analyzeSharedLevels();
   analyzeComparisonLevels();
   analyzeStandardLevels();
+  if(NSConversion3.is(state.engine))analyzeConversion3Levels();
  }finally{workingPreview=preview;}
 };

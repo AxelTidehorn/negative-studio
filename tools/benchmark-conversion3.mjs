@@ -1,0 +1,28 @@
+/* Explicit benchmark only. Same driver and source for frozen main and candidate. */
+import fs from 'node:fs';import path from 'node:path';import {execFileSync} from 'node:child_process';import {browserHarness} from '../tests/helpers/browser.mjs';import {ensureBuild,inputHash} from './build-artifact.mjs';import {contactHTML} from './conversion3-references.mjs';
+const [checkout='.',output='/tmp/conversion3-benchmark.json',repeatArg='7']=process.argv.slice(2);process.chdir(path.resolve(checkout));const repeats=Math.max(3,Math.min(21,Number(repeatArg)||7));ensureBuild();
+const h=await browserHarness();try{const p=await h.browser.newPage({serviceWorkers:'block',locale:'en-GB'});p.setDefaultTimeout(180000);await p.goto(h.url);await p.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await p.waitForFunction(()=>working&&!rollLoading);
+ const result=await p.evaluate(async repeats=>{
+  const summarize=values=>{const a=[...values].sort((a,b)=>a-b);return {median:a[Math.floor(a.length/2)],min:a[0],max:a.at(-1),samples:values};},rows=[],pictures=[];
+  const ids=typeof NSConversion3==='object'?['log39','calibrated4',...NSConversion3.ids]:['log39','calibrated4'],source=working.data,sourceBytes=source.byteLength,oldDownload=downloadBlob;downloadBlob=()=>{};rollShared.profile='generic';rollShared.print='neutral';rollShared.strength=0;state.cropConfirmed=true;state.editVersion=2;
+  const adjust={exposure:.5,contrast:1.15,shadows:25,highlights:25,saturation:1.1};
+  const im16={width:working.width,height:working.height,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:working.width*working.height*3},(_,i)=>{const pixel=Math.floor(i/3),q=NSColorEngine.pixel(working,pixel%working.width,Math.floor(pixel/working.width));return Math.round(q[i%3]*65535);})};
+  try{for(const engine of ids){state.engine=engine;let began=performance.now();analyzeLevels();const calibrationMs=performance.now()-began;began=performance.now();analyzeLevels();const repeatAnalysisMs=performance.now()-began,analysisSamples=[];for(let sample=0;sample<repeats;sample++){began=performance.now();analyzeLevels();analysisSamples.push(performance.now()-began);}const cachedAnalysis=summarize(analysisSamples),model=calibration.conversion3,images=[];
+   for(const edited of [false,true]){state={...state,...NSEditing2.neutral,editVersion:2,...(edited?adjust:{})};const analyses=analysisCount38,c=configuration38(),cpu=[],compile=[],prepare16=[],jpeg=[],tiff=[],gpu=[],gpuSetup=[],gpuSupported=NSGpuPreview.supports(c),gpuBegan=performance.now(),g=gpuSupported?NSGpuPreview.create(document.createElement('canvas')):null,gpuCreateMs=gpuSupported?performance.now()-gpuBegan:null;
+    for(let run=0;run<=repeats;run++){
+     began=performance.now();const k=NSPixelKernel.compile(c);k.pixel([.2,.1,.05]);if(run)compile.push(performance.now()-began);
+     began=performance.now();const prepared=NSPixelKernel.prepare(im16,c);prepared.pixel(0);if(run)prepare16.push(performance.now()-began);
+     began=performance.now();const rendered=NSPixelKernel.render(workingPreview,c,'positive',480);if(run)cpu.push(performance.now()-began);
+     if(run===repeats){const canvas=document.createElement('canvas');canvas.width=rendered.width;canvas.height=rendered.height;canvas.getContext('2d').putImageData(new ImageData(rendered.data,rendered.width,rendered.height),0,0);images.push({label:edited?'Edited':'Neutral',url:canvas.toDataURL()});}
+     if(g){began=performance.now();g.draw(workingPreview,c,'positive',700,1);g.context.finish();const elapsed=performance.now()-began;if(run)gpu.push(elapsed);else gpuSetup.push(elapsed);}
+     began=performance.now();await jpegBytes();if(run)jpeg.push(performance.now()-began);
+     began=performance.now();await exportTiff();if(run)tiff.push(performance.now()-began);
+    }
+    if(analyses!==analysisCount38||source!==working.data||sourceBytes!==working.data.byteLength)throw Error('Benchmark changed source or recalibrated during edits/exports.');
+    rows.push({engine,edited,editVersion:2,calibrationMs,repeatAnalysisMs,cachedAnalysis,gpuCreateMs,compile:summarize(compile),prepare16:summarize(prepare16),cpu480:summarize(cpu),gpu700:gpuSupported?summarize(gpu):null,firstGpuDrawMs:gpuSetup[0]??null,jpeg:summarize(jpeg),tiff:summarize(tiff),gpuUploads:g?.metrics.uploads??0,sourceBytes,previewBytes:workingPreview.data.byteLength,stripe:FILMLABB_EXPORT.snapshot().maxStripeBytes,jsHeapBytes:performance.memory?.usedJSHeapSize??null});g?.destroy();
+   }pictures.push({name:({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix'})[engine],engine,images,calibration:{reference:calibration.log39,experiment:model}});
+  }}finally{downloadBlob=oldDownload;}
+  return {rows,pictures,source:{width:working.width,height:working.height,encoding:working.encoding,frame:cropRegion}};
+ },repeats);
+ const report={commit:execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim(),dirty:!!execFileSync('git',['status','--porcelain'],{encoding:'utf8'}).trim(),sourceFingerprint:inputHash(),node:process.version,browser:await h.browser.version(),environment:'Linux Chromium headless / SwiftShader; GPU draw+finish is software emulation, not physical GPU/iPad performance; JS heap excludes native/WASM/GPU memory',repeats,source:result.source,rows:result.rows};fs.mkdirSync(path.dirname(path.resolve(output)),{recursive:true});fs.writeFileSync(output,JSON.stringify(report,null,2));if(result.rows.length>4)fs.writeFileSync(output.replace(/\.json$/,'.html'),contactHTML('Conversion 3.0 — measured synthetic reference',result.pictures,report));console.log('Benchmark report:',path.resolve(output));
+}finally{await h.close();}

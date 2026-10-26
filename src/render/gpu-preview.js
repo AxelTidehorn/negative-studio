@@ -69,7 +69,7 @@
   if(!eligible(config))return cpu(failure?'GPU-reservläge · '+failure:preference==='cpu'?'CPU vald':'Detta färgläge använder CPU');
   try{
    if(!renderer)renderer=NSGpuPreview.create(canvas);
-   const key=JSON.stringify([config.profile,config.print,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
+   const key=JSON.stringify([config.kind,config.conversion3?.revision,config.profile,config.print,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
    if(validationKey!==key){metrics.validationError=renderer.validate(config);validationKey=key;}
    if(!active){stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=dragTimer38=null;}
    const ms=renderer.metrics.gpuMs;

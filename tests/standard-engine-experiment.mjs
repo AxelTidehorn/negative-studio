@@ -2,7 +2,7 @@
    No real RAF reproduction is claimed. Run after npm test unpacks the harness. */
 import assert from 'node:assert/strict';
 import {harness} from './helpers/app-harness.mjs';
-const h=harness(),K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,P=h.context.NSPresentation,G=h.context.NSGeometry;
+const h=harness({editingVersion:1}),K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,P=h.context.NSPresentation,G=h.context.NSGeometry;
 h.run(`render=()=>{};scheduleRender=()=>{};working={width:32,height:24,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:32*24*3},(_,i)=>4000+(i*137)%40000)};workingPreview=CE.preview(working);sourceInfo={encoding:'linear'};state={...defaultState(),shadow:0,highlight:1,cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};src=new ImageData(32,24);previewSrc=src;analyzeLevels();`);
 const config=h.run('configuration38()');Object.assign(config,{neutralProfile:true,neutralPrint:true,strength:0});Object.assign(config.opts,{autoLevels:false});Object.assign(config.cal.beta4,{lo:0,span:1,base:[1,1,1],light:[1,1,1],response:{offset:[0,0,0],span:[4,4,4]}});
 const W=[.2126,.7152,.0722],clamp=v=>Math.max(0,Math.min(1,v)),lum=(p,w=W)=>p.reduce((s,v,k)=>s+v*w[k],0),chroma=p=>Math.max(...p)-Math.min(...p);

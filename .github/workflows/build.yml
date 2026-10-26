@@ -14,9 +14,6 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
-      - run: npm test
-      - run: npm run build
-      - run: npm run test:build
       - name: Prepare browser
         run: |
           filmlabb_chrome_bin="$(command -v google-chrome || command -v chromium || true)"
@@ -26,7 +23,7 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
-      - run: npm run test:browser
+      - run: npm run test:full
       - uses: actions/upload-artifact@v4
         with:
           name: FILMLABB-WASM

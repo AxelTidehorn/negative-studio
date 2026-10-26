@@ -1,7 +1,9 @@
 /* Shared static-site/Chromium fixture. Fault-injection and service-worker lifecycle
    suites keep their specialized servers. Never used by the production application. */
+import {launchBrowser} from './browser-runtime.mjs';
 import fs from 'node:fs';import path from 'node:path';import http from 'node:http';
 export async function browserHarness(){
+ if(process.env.FILMLABB_SITE_URL){const browser=await launchBrowser();return {browser,url:process.env.FILMLABB_SITE_URL,close:()=>browser.close()};}
  const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
  const server=http.createServer((req,res)=>{
   const name=new URL(req.url,'http://localhost').pathname,file=path.resolve(root,'.'+(name==='/'?'/index.html':name));
@@ -10,8 +12,7 @@ export async function browserHarness(){
  });
  await new Promise(r=>server.listen(0,'127.0.0.1',r));let browser;
  try{
-  const {chromium}=await import(process.env.FILMLABB_PLAYWRIGHT_MODULE||'playwright');
-  browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+  browser=await launchBrowser({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
  }catch(e){await new Promise(r=>server.close(r));throw e;}
  return {browser,url:'http://127.0.0.1:'+server.address().port+'/',async close(){try{await browser.close();}finally{await new Promise(r=>server.close(r));}}};
 }

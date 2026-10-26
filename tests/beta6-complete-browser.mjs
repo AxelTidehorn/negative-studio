@@ -1,9 +1,10 @@
+import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import path from 'node:path';import http from 'node:http';import {chromium} from 'playwright';
 const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
 const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,p=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!p.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');res.end(readSource(p));}catch{res.writeHead(404);res.end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));const url='http://127.0.0.1:'+server.address().port+'/';
-const browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
+const browser=await launchBrowser({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900},serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(60000);
  await page.goto(url);const buffer=readSource('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'a.png',mimeType:'image/png',buffer},{name:'b.png',mimeType:'image/png',buffer}]);
@@ -58,10 +59,10 @@ try{
  await page.mouse.move(sx,sy);await page.mouse.down();await page.mouse.move(sx+120,sy+12,{steps:5});await page.mouse.up();assert.ok(Math.abs(await page.evaluate(()=>roll[0].geometry.rotation.fineDegrees)+Math.atan2(12,120)*180/Math.PI)<.05);assert.equal(await page.evaluate(()=>FILMLABB_GEOMETRY.mode()),null);
  console.log('PASS drawn horizon line straightens the picture with the shared rotation model');
  const perf=await page.evaluate(async()=>{
-  const before=FILMLABB_GPU.snapshot(),analyses=analysisCount38,uploads=FILMLABB_GEOMETRY.snapshot().colorUploads,times=[];
-  for(let i=0;i<24;i++){$('fineRotation').value=String(-3+i*.25);$('fineRotation').dispatchEvent(new Event('input'));await new Promise(requestAnimationFrame);times.push(FILMLABB_GEOMETRY.snapshot().lastMs);}
-  const after=FILMLABB_GPU.snapshot();times.sort((a,b)=>a-b);return {median:times[12],p95:times[22],noAnalysis:analyses===analysisCount38,noColor:before.frames===after.frames,noUpload:before.sourceUploads===after.sourceUploads&&uploads===FILMLABB_GEOMETRY.snapshot().colorUploads};
- });assert.ok(perf.noAnalysis&&perf.noColor&&perf.noUpload,JSON.stringify(perf));console.log('MEASURE geometry cached pass (SwiftShader submit ms)',JSON.stringify(perf));
+  const before=FILMLABB_GPU.snapshot(),analyses=analysisCount38,uploads=FILMLABB_GEOMETRY.snapshot().colorUploads;
+  for(let i=0;i<24;i++){$('fineRotation').value=String(-3+i*.25);$('fineRotation').dispatchEvent(new Event('input'));await new Promise(requestAnimationFrame);}
+  const after=FILMLABB_GPU.snapshot();return {noAnalysis:analyses===analysisCount38,noColor:before.frames===after.frames,noUpload:before.sourceUploads===after.sourceUploads&&uploads===FILMLABB_GEOMETRY.snapshot().colorUploads};
+ });assert.ok(perf.noAnalysis&&perf.noColor&&perf.noUpload,JSON.stringify(perf));console.log('PASS geometry interaction reuses analysis/color/upload cache',JSON.stringify(perf));
  await page.evaluate(()=>{globalThis.geometryLoss=$('presentationPreview').getContext('webgl2').getExtension('WEBGL_lose_context');geometryLoss.loseContext();});await page.waitForFunction(()=>FILMLABB_GEOMETRY.snapshot().backend==='cpu'&&FILMLABB_GEOMETRY.snapshot().cpuPasses>0);
  await page.evaluate(()=>geometryLoss.restoreContext());await page.waitForFunction(()=>FILMLABB_GEOMETRY.snapshot().backend==='gpu'&&!$('presentationPreview').hidden);
  console.log('PASS geometry WebGL context loss uses CPU fallback and restores cached GPU presentation');

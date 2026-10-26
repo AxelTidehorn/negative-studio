@@ -44,7 +44,7 @@ $('flatFieldFile').onchange=async e=>{
  }catch(err){setStatus('Belysningsreferens: '+err.message);}finally{flatFieldBusy=false;e.target.value='';nextControls();}
 };
 // A dedicated loupe samples the original, without changing crop or analysis.
-let detailOpen=false,detailAt={x:.5,y:.5},detailSource=null,detailROI=null,detailVersion=-1,detailTimer=null,detailScale=1,detailGPU=null,detailFrame=null,detailEditingVersion=-1;
+let detailOpen=false,detailAt={x:.5,y:.5},detailSource=null,detailROI=null,detailVersion=-1,detailTimer=null,detailScale=1,detailGPU=null,detailFrame=null,detailEditingVersion=-1,detailConversionKind=null;
 const detailPanel=document.createElement('section');detailPanel.id='originalDetailPanel';detailPanel.hidden=true;detailPanel.setAttribute('aria-label','Originaldetalj');
 detailPanel.innerHTML='<div class="toolrow"><strong id="detailTitle">Originaldetalj · 100 %</strong><button class="btn" id="detailScale">200 %</button><button class="btn" id="detailClose">Stäng</button></div><p class="hint">En originalpixel per CSS-pixel vid 100 %. Välj plats med pilknapparna eller klicka i huvudbilden. Visas före rotation.</p><div class="detail-scroll"><canvas id="detailCanvas"></canvas></div><p class="hint" id="detailPosition"></p><div class="toolrow"><button class="btn" id="detailLeft" aria-label="Detalj åt vänster">←</button><button class="btn" id="detailUp" aria-label="Detalj uppåt">↑</button><button class="btn" id="detailDown" aria-label="Detalj nedåt">↓</button><button class="btn" id="detailRight" aria-label="Detalj åt höger">→</button></div>';
 document.body.appendChild(detailPanel);
@@ -55,7 +55,7 @@ function drawDetailNext(){
  const version=sourceVersion38;
  if(detailSource!==working||detailVersion!==version||!detailROI){detailROI=NSFlatField.region(working,detailAt.x,detailAt.y,320);detailSource=working;detailVersion=version;}
  const c=configuration38();let canvas=$('detailCanvas'),usedGPU=false;
- if(NSGpuPreview.supports(c)){try{if(!detailGPU){canvas=detailCanvasNext();detailGPU=NSGpuPreview.create(canvas);detailEditingVersion=-1;}const editVersion=NSEditing2.version(c.opts.editVersion);if(detailEditingVersion!==editVersion){detailGPU.validate(c);detailEditingVersion=editVersion;}detailGPU.draw(detailROI,c,display,320,version);usedGPU=true;}catch{if(detailGPU)detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}}
+ if(NSGpuPreview.supports(c)){try{if(!detailGPU){canvas=detailCanvasNext();detailGPU=NSGpuPreview.create(canvas);detailEditingVersion=-1;}const editVersion=NSEditing2.version(c.opts.editVersion);if(detailEditingVersion!==editVersion||detailConversionKind!==c.kind){detailGPU.validate(c);detailEditingVersion=editVersion;detailConversionKind=c.kind;}detailGPU.draw(detailROI,c,display,320,version);usedGPU=true;}catch{if(detailGPU)detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}}
  if(!usedGPU){if(detailGPU){detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}const r=NSPixelKernel.render(detailROI,c,display,320),ctx=canvas.getContext('2d');canvas.width=r.width;canvas.height=r.height;ctx.putImageData(new ImageData(r.data,r.width,r.height),0,0);}
  canvas.style.width=detailROI.width*detailScale+'px';canvas.style.height=detailROI.height*detailScale+'px';
  $('detailTitle').textContent='Originaldetalj · '+detailScale*100+' %';$('detailScale').textContent=detailScale===1?'200 %':'100 %';
@@ -74,7 +74,7 @@ window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailNext();});
 nextControls();
 
 const engineNext=$('engineMode').onchange;
-$('engineMode').onchange=e=>{if(sourceInfo.colorSpace==='rec2020'&&e.target.value!=='calibrated4'){e.target.value='calibrated4';setStatus('Rec.2020-experimentet kräver Standardmotorn. Välj en annan RAW-import för jämförelsemotorn.');return;}return engineNext(e);};
+$('engineMode').onchange=e=>{if(sourceInfo.colorSpace==='rec2020'&&e.target.value!=='calibrated4'&&!NSConversion3.is(e.target.value)){e.target.value=state.engine;setStatus('Original kräver sRGB-import. Välj en annan RAW-import för att jämföra alla fem motorer.');return;}return engineNext(e);};
 const rawNext=$('rawMode4').onchange;
 $('rawMode4').onchange=async e=>{if(e.target.value==='wide'&&!exportBusy&&!rollLoading){state.engine='calibrated4';$('engineMode').value='calibrated4';}return rawNext(e);};
 // Use the same decoder and color domain for the scalar light reference.

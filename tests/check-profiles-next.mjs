@@ -1,6 +1,6 @@
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';import '../src/editing/creative-profiles.js';import '../src/color/parameters.js';import '../src/color/render-core.js';
-const P=NSCreativeProfiles,h=harness();h.run('render=()=>{};scheduleRender=()=>{};');
+const P=NSCreativeProfiles,h=harness({editingVersion:1});h.run('render=()=>{};scheduleRender=()=>{};');
 const ids=Object.keys(P.definitions),color=ids.filter(id=>P.definitions[id].type!=='bw');
 const resolve=id=>P.resolve(h.run('filmProfiles'),id,2),chart=[];
 for(let r=0;r<=5;r++)for(let g=0;g<=5;g++)for(let b=0;b<=5;b++)chart.push([r/5,g/5,b/5]);

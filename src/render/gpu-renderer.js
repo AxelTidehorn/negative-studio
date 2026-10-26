@@ -58,12 +58,14 @@ vec3 displayWide(vec3 p){
  }
 vec3 softDensity(vec3 p,vec3 start,vec3 range){vec3 d=max(vec3(0.0),p-start);return p-d+range*(vec3(1.0)-exp(-d/range));}
 ${NSEditing2.glsl}
+${NSConversion3.glsl}
 void main(){
  // Texture row zero is the top source row; framebuffer row zero is bottom.
  vec2 pos=vec2(gl_FragCoord.x,uOutputSize.y-gl_FragCoord.y);
  ivec2 at=min(ivec2(uSourceSize)-ivec2(1),ivec2(floor(pos*uSourceSize/uOutputSize)));
  vec3 p=texelFetch(uSource,at,0).rgb;
  if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(uWide==1?displayWide(p):p),1.0);return;}
+ if(uConversion3!=0){color=vec4(finishConversion3(conversion3(p)),1.0);return;}
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
  vec3 density=p;
  p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p);
@@ -107,7 +109,7 @@ void main(){
  color=vec4(uEdit2?editPositive(p):p,1.0);
 }`;
 function supports(c){
- if(c?.kind!=='calibrated4'||!c.cal?.beta4)return false;
+ if(c?.kind!=='calibrated4'&&!NSConversion3.is(c?.kind)||c?.kind==='calibrated4'&&!c.cal?.beta4||NSConversion3.is(c?.kind)&&!NSConversion3.valid(c.conversion3))return false;
  const f=c.profile;
  return !!f&&(c.neutralProfile||f.creativeVersion===2||f.type==='bw');
 }
@@ -175,11 +177,14 @@ function create(canvas){
   gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
   const edit=NSEditing2.version(c.opts.editVersion)===2?NSEditing2.prepare(c.opts,c.profile.type==='bw'):null;
-  const a=c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
+  const conversion=NSConversion3.is(c.kind)?c.conversion3:null;
+  const a=conversion?{...conversion.reference,response:{offset:conversion.reference.lo,span:conversion.reference.spans},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
   i('uEdit2',edit?1:0);
   if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
+  i('uConversion3',conversion?NSConversion3.ids.indexOf(c.kind)+1:0);
+  if(conversion){i('uCurveIdentity3',conversion.curve.kind==='identity'?1:0);i('uMatrixIdentity3',conversion.matrix.kind==='identity'?1:0);i('uNoBase3',conversion.reference.noBase?1:0);gl.uniform4fv(location('uFilmCurve3[0]'),conversion.curve.channels.flatMap(c=>c.coefficients.flat()));const m=conversion.matrix.matrix;gl.uniformMatrix3fv(location('uConversionMatrix3'),false,[0,1,2].flatMap(col=>m.map(row=>row[col])));f('uLegacyBlack3',o.shadow);f('uLegacyRange3',parameters.displayRange);}
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
-  const confidence=NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
+  const confidence=conversion?{start:[0,0,0],invRange:[1,1,1],strength:0,robustStrength:0}:NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
   v('uGains',parameters.gains);
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',parameters.exposureGain);f('uBlack',parameters.black);f('uWhiteRange',parameters.whiteRange);

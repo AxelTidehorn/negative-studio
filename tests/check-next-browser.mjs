@@ -1,3 +1,4 @@
+import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
 /* Optional browser integration. Install Playwright separately, then:
    FILMLABB_CHROMIUM_BIN=/path/to/chromium npm run test:gpu
@@ -7,7 +8,7 @@ const {chromium}=await import(process.env.FILMLABB_PLAYWRIGHT_MODULE||'playwrigh
 const root=path.resolve('site');const mime={'.html':'text/html','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.png':'image/png','.webmanifest':'application/manifest+json'};
 const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,p=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!p.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');res.end(readSource(p));}catch{res.writeHead(404);res.end();}});
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
-const browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:process.env.FILMLABB_CHROMIUM_ARGS?JSON.parse(process.env.FILMLABB_CHROMIUM_ARGS):['--no-sandbox','--enable-unsafe-swiftshader']});
+const browser=await launchBrowser({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:process.env.FILMLABB_CHROMIUM_ARGS?JSON.parse(process.env.FILMLABB_CHROMIUM_ARGS):['--no-sandbox','--enable-unsafe-swiftshader']});
 const report={environment:'Chromium WebGL 2; renderer recorded below; synthetic image fixtures',checks:[]};
 function check(message){report.checks.push(message);console.log('PASS',message);}
 try{

@@ -1,6 +1,6 @@
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
-const h=harness();h.run('scheduleRender=()=>{};render=()=>{};');let n=0;
+const h=harness({editingVersion:1});h.run('scheduleRender=()=>{};render=()=>{};');let n=0;
 function test(name,fn){fn();console.log('PASS',name);n++;}
 const targets=[[0,0,0],[1,1,1],[.07,.07,.07],[.25,.25,.25],[.5,.5,.5],[.8,.8,.8],[.7,.2,.1],[.1,.6,.2],[.1,.25,.7],[.7,.65,.15]];
 function fixture(ev=0,power=[1,1,1],gain=[1,1,1]){const width=100,height=60,data=new Float32Array(width*height*3),base=[.72,.4,.23],slopes=[.6,.9,1.2];for(let y=0;y<height;y++)for(let x=0;x<width;x++){const t=targets[Math.floor(x/10)];for(let c=0;c<3;c++)data[(y*width+x)*3+c]=(base[c]*10**(-slopes[c]*t[c]))**power[c]*gain[c]*2**ev;}return {width,height,channels:3,scale:1,encoding:'linear',data};}

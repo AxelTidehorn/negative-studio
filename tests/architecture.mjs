@@ -12,7 +12,7 @@ for(const name of ['preview-worker.js','export-worker.js','sw.js']){
 }
 for(const asset of scripts)assert.equal(tags.find(m=>m[2]===asset.file)[1].includes('defer'),asset.defer,asset.file);
 console.log('PASS HTML/build/harness share explicit startup order; worker dependencies resolved; no inline application logic');
-const h=harness(),K=h.context.NSPixelKernel;
+const h=harness({editingVersion:1}),K=h.context.NSPixelKernel;
 h.run(`render=()=>{};scheduleRender=()=>{};working={width:48,height:32,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:48*32*3},(_,i)=>1000+(i*137)%55000)};workingPreview=CE.preview(working);src=new ImageData(48,32);previewSrc=src;cropRegion={x:.1,y:.1,w:.8,h:.8};sourceInfo={encoding:'linear'};`);
 const old={NSCreativeProfiles:h.context.NSCreativeProfiles,NSRawInput:h.context.NSRawInput,NSColorEngine:h.context.NSColorEngine};vm.createContext(old);vm.runInContext(fs.readFileSync(new URL('./fixtures/render-core-before-refactor.js',import.meta.url),'utf8'),old);
 let cases=0;const samples=[[0,0,0],[.002,.001,0],[1/65535,4/65535,64/65535],[.01,.1,.7],[.3,.2,.1],[1,1,1]];

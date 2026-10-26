@@ -38,7 +38,7 @@ sessionsbindningar; detta är inte ett nytt ES-modul- eller komponentramverk.
    `workingPreview` är en begränsad visningskälla, inte auktoritet för ny analys.
 2. `source-analysis.js` äger `analyzeLevels` och kör namngivna steg i ordning:
    `analyzeSharedLevels`, `analyzeComparisonLevels`, `analyzeStandardLevels`.
-   Standardprojekt med `analysisSampling: 'source'` samplar originalet. Äldre
+   Standard och nya konverteringsmotorer med `analysisSampling: 'source'` samplar originalet. Äldre
    projekt behåller sin analysdomän. Preview-bindningen återställs även vid fel.
 3. `color/configuration.js` bygger en färgkonfiguration och äger den tekniska
    tabellcachen. Den läser sparad respons, filmbas, ljuskälla, tonintervall och
@@ -53,16 +53,20 @@ sessionsbindningar; detta är inte ett nytt ES-modul- eller komponentramverk.
    till originalet, konverterar källgrannarna och interpolerar färdiga färgvärden
    i linjärt visningsljus. Äldre kvartvarv använder den exakta direkta vägen.
 
-Färgkärnan innehåller fortfarande Standard (`calibrated4`), Jämförelse (`log39`)
-och nödvändiga äldre projektalgoritmer. De mergade färgexperimenten och deras
+Färgkärnan innehåller Standard (`calibrated4`), Original (`log39`), Curve (`curve3`),
+Density (`density3`), Matrix (`matrix3`) och nödvändiga äldre projektalgoritmer.
+`conversion3.js` äger de tre nya modellernas matematik/GLSL och validering;
+`conversion3-controller.js` förbereder och cachar små modeller efter befintliga
+analyssteg, med egna referenser från Original och utan Standard-responsdata. De mergade färgexperimenten och deras
 A/B-val behåller samma beteende. Refaktoreringen ändrar inga färgformler.
-`settings.editVersion` väljer Original (1, även saknat värde) eller experimentell
-Redigering 2.0 (2), oberoende av konverteringsmotorn. `editing-engine.js` fryser
+`settings.editVersion` väljer Original (1, även saknat värde) eller
+Redigering 2.0 (2, standard för nya bilder), oberoende av konverteringsmotorn. `editing-engine.js` fryser
 originalets positiva bas med neutrala redigeringsreglage och applicerar en gemensam
 monoton luminanskurva, OKLab-mättnad och mjuk gamutbegränsning. Neutral 2.0 returnerar
 basen exakt. CPU/workers och samma GPU-pass använder delade kurvkoefficienter och
 matriser. Inga ytterligare fullstora bildbuffertar eller GPU-pass tillkommer.
-Se [algoritm, kompatibilitet och utvärdering](EDITING2.md).
+Den gamla redigeringsväljaren är dold; tidigare projekt behåller sin version.
+Se [redigering](EDITING2.md) och [konverteringsexperiment](CONVERSION_3_EXPERIMENT.md).
 
 ## CPU, GPU och resurser
 
@@ -112,7 +116,11 @@ RAW-/profilversioner och kalibreringar behålls. Äldre `base`/`levels`-fält oc
 versionsidentifierare som `response4`, `log39`, `beta4` samt lagringsnycklar är
 kompatibilitetsdata och byter inte namn vid kosmetisk städning.
 
-Projekt med 2.0-bilder sparas som `negative-studio-roll-beta6-edit2`; äldre appbyggen
+Projekt med nya konverteringsmotorer sparas som `negative-studio-roll-conversion3`
+med separat konverteringsschema/version 1. Alla motor-/versionsfält kontrolleras
+före mutation. Tidigare appbyggen avvisar den nya taggen.
+
+Projekt med enbart tidigare konverteringsmotorer och 2.0-bilder sparas som `negative-studio-roll-beta6-edit2`; äldre appbyggen
 avvisar filtaggen. Projektkontrollern normaliserar den till den oförändrade
 geometrimodellen och validerar alla redigeringsversioner före mutation. Original-
 projekt behåller sin tidigare filtagg och sitt utseende. Versionsvalet är bildspecifikt.
@@ -125,8 +133,9 @@ GPU, UI-backends och exportkontrollerns användarflöden testas i riktiga browse
 `tests/helpers/source.mjs` resolverar publika namn till redigerbara källor.
 Historiska färgkärnor i fixtures är oberoende facit och distribueras inte i appen.
 
-- `npm test`: samtliga Node-grupper; `npm test -- --group color` avgränsar arbete.
-- `npm run test:browser`: bygger och kör Playwright-fallen.
+- `npm run test:fast`, `test:integration`, `test:full`: riktad numerik, integration respektive komplett regression; se [testinfrastruktur](TESTING.md).
+- `npm test`: samtliga Node-grupper sekventiellt; `npm test -- --group color` avgränsar arbete.
+- `npm run test:browser`: verifierar byggets innehåll och kör isolerade Playwright-fall med en gemensam Chromium-process.
 - `npm run test:build`: ren output, full precache, reproducerbar hash och invalidation.
 - `tests/check-real-*.mjs` och relaterade explicita kontroller kräver externa foton;
   dessa ingår inte i automatiska syntetiska tester.
