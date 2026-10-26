@@ -13,3 +13,9 @@ for(const q of [0,1,2,3])for(const fine of [-45,-15,-2,-.1,0,.1,2,15,45])for(con
 }
 const p=G.compositionTransform(9,7,G.create());p.sourceWidth=9;p.sourceHeight=7;assert.deepEqual(V.cpu(im,p,9,7,G.pixelBounds(9,7,null)).data,im.data);
 console.log('PASS',cases,'cached CPU presentation cases match export sampling, editable full-source context has exact inverse, neutral pixels remain exact');
+
+// Color-cache resolution, not original size, bounds preview work and neutral detail.
+for(const q of [0,90,180,270]){const p=G.compositionTransform(27,21,G.create(q));p.sourceWidth=27;p.sourceHeight=21;const size=V.dimensions(p,im),b=G.pixelBounds(27,21,null),r=V.cpu(im,p,size.width,size.height,b,null,true),old=NSColorEngine.exportGeometry({width:9,height:7},null,false,q);
+ assert.equal(size.width,old.width);assert.equal(size.height,old.height);for(let y=0;y<r.height;y++)for(let x=0;x<r.width;x++){const [sx,sy]=old.at(x,y);assert.deepEqual(Array.from(r.data.slice((y*r.width+x)*4,(y*r.width+x)*4+4)),Array.from(im.data.slice((sy*9+sx)*4,(sy*9+sx)*4+4)));}
+}
+console.log('PASS reduced color cache is never upscaled by neutral presentation; original cached RGBA values survive all quarters');

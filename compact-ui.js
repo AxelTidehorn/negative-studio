@@ -37,15 +37,17 @@ if(frameQuick){
   frameGroup.id='frameSettingsGroup';
   frameGroup.className='frame-settings-group';
   const title=document.createElement('summary');
-  title.textContent='Filmruta';
+  title.textContent='Filmruta · analysområde';
   frameGroup.append(title,frameQuick);
+  if(cropStatus)frameGroup.append(cropStatus);
   const queueOption=document.createElement('div');queueOption.className='queue-crop-option';
   const cropLabel=document.getElementById('cropExport')?.closest('label');
-  if(cropLabel){cropLabel.lastChild.textContent=' Hela kön: beskär till filmrutan';queueOption.append(cropLabel);frameGroup.append(queueOption);}
-  editor.insertBefore(frameGroup,advanced);
+  if(cropLabel){cropLabel.lastChild.textContent=' Hela kön: beskär till filmrutan';queueOption.append(cropLabel);const help=document.createElement('p');help.className='hint';help.textContent='Av: behåll synliga filmkanter. Analysen använder fortfarande filmrutan.';queueOption.append(help);frameGroup.append(queueOption);}
+  editor.insertBefore(frameGroup,editor.firstElementChild);
+  const geometryTools=document.getElementById('geometryTools');if(geometryTools)editor.insertBefore(geometryTools,advanced);
   const confirm=cropConfirm;
   if(confirm){
-   const markPending=()=>{title.textContent=typeof working!=='undefined'&&working&&!confirm.hidden?'Filmruta · kontrollera':'Filmruta';};
+   const markPending=()=>{title.textContent=typeof working!=='undefined'&&working&&!confirm.hidden?'Filmruta · kontrollera':'Filmruta · analysområde';};
    // Signal uncertainty without replacing the final export view with edit context.
    new MutationObserver(markPending).observe(confirm,{attributes:true,attributeFilter:['hidden']});markPending();
   }

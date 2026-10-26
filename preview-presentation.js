@@ -7,7 +7,7 @@ void main(){vec2 p=vec2(float((gl_VertexID<<1)&2),float(gl_VertexID&2));gl_Posit
 const fragment=`#version 300 es
 precision highp float;
 uniform sampler2D image,imageNegative;
-uniform bool split;
+uniform bool split,exact;
 uniform vec2 size,outputSize,origin,dx,dy,lo,hi;
 out vec4 color;
 vec3 decode(vec3 p){return mix(pow((p+.055)/1.055,vec3(2.4)),p/12.92,lessThanEqual(p,vec3(.04045)));}
@@ -16,6 +16,7 @@ vec3 readAt(vec2 p,bool neg){ivec2 at=ivec2(p.x,size.y-1.-p.y);return decode(neg
 void main(){
  vec2 uv=vec2(gl_FragCoord.x/outputSize.x,1.-gl_FragCoord.y/outputSize.y),s=origin+dx*uv.x+dy*uv.y;
  if(any(lessThan(s,vec2(0.)))||any(greaterThan(s,vec2(1.)))){color=vec4(.035,.045,.05,1.);return;}
+ if(exact){ivec2 at=ivec2(clamp(floor(s*size),lo,hi));at.y=int(size.y)-1-at.y;color=split&&uv.x<.5?texelFetch(imageNegative,at,0):texelFetch(image,at,0);return;}
  vec2 p=clamp(s*size-.5,lo,hi),a=floor(p),b=min(a+1.,hi),f=fract(p);
  bool neg=split&&uv.x<.5;
  color=vec4(encode(mix(mix(readAt(a,neg),readAt(vec2(b.x,a.y),neg),f.x),mix(readAt(vec2(a.x,b.y),neg),readAt(b,neg),f.x),f.y)),1.);
@@ -35,7 +36,7 @@ function create(canvas){
   gl.bindTexture(gl.TEXTURE_2D,negative?negativeTexture:texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,true);
   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,source);size={width:source.width,height:source.height};
  }
- function draw(plan,width,height,bounds,split=false){
+ function draw(plan,width,height,bounds,split=false,exact=false){
   if(!size)return false;if(gl.isContextLost())throw Error('Geometrins grafikanslutning förlorades');
   if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
   const a=plan.inverse({x:0,y:0}),b=plan.inverse({x:1,y:0}),c=plan.inverse({x:0,y:1}),W=plan.sourceWidth,H=plan.sourceHeight;
@@ -43,24 +44,27 @@ function create(canvas){
   vec('size',{x:size.width,y:size.height});vec('outputSize',{x:width,y:height});
   const x0=Math.min(size.width-1,Math.ceil(bounds.x0/W*size.width-.5)),y0=Math.min(size.height-1,Math.ceil(bounds.y0/H*size.height-.5));
   vec('lo',{x:Math.max(0,x0),y:Math.max(0,y0)});vec('hi',{x:Math.max(x0,Math.min(size.width-1,Math.floor(bounds.x1/W*size.width-.5))),y:Math.max(y0,Math.min(size.height-1,Math.floor(bounds.y1/H*size.height-.5)))});
-  gl.uniform1i(loc('image'),0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,negativeTexture||texture);gl.uniform1i(loc('imageNegative'),1);gl.uniform1i(loc('split'),split&&!!negativeTexture?1:0);gl.activeTexture(gl.TEXTURE0);gl.drawArrays(gl.TRIANGLES,0,3);return true;
+  gl.uniform1i(loc('image'),0);gl.activeTexture(gl.TEXTURE1);gl.bindTexture(gl.TEXTURE_2D,negativeTexture||texture);gl.uniform1i(loc('imageNegative'),1);gl.uniform1i(loc('split'),split&&!!negativeTexture?1:0);gl.uniform1i(loc('exact'),exact?1:0);gl.activeTexture(gl.TEXTURE0);gl.drawArrays(gl.TRIANGLES,0,3);return true;
  }
  function clear(){if(negativeTexture)gl.deleteTexture(negativeTexture);negativeTexture=null;gl.deleteTexture(texture);texture=gl.createTexture();size=null;gl.bindTexture(gl.TEXTURE_2D,texture);for(const p of [gl.TEXTURE_MIN_FILTER,gl.TEXTURE_MAG_FILTER])gl.texParameteri(gl.TEXTURE_2D,p,gl.NEAREST);}
  function destroy(){if(negativeTexture)gl.deleteTexture(negativeTexture);gl.deleteTexture(texture);for(const s of shaders)gl.deleteShader(s);gl.deleteProgram(program);size=null;}
  return {upload,draw,clear,destroy};
 }
 // Scalar fallback for the same cached display image (not a second color pipeline).
-function cpu(image,plan,width,height,bounds,negative=null){
+function cpu(image,plan,width,height,bounds,negative=null,exact=false){
  const out=new Uint8ClampedArray(width*height*4),decode=v=>{v/=255;return v<=.04045?v/12.92:((v+.055)/1.055)**2.4;},encode=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
  const x0=Math.max(0,Math.min(image.width-1,Math.ceil(bounds.x0/plan.sourceWidth*image.width-.5))),y0=Math.max(0,Math.min(image.height-1,Math.ceil(bounds.y0/plan.sourceHeight*image.height-.5)));
  const x1=Math.max(x0,Math.min(image.width-1,Math.floor(bounds.x1/plan.sourceWidth*image.width-.5))),y1=Math.max(y0,Math.min(image.height-1,Math.floor(bounds.y1/plan.sourceHeight*image.height-.5)));
  for(let y=0;y<height;y++)for(let x=0;x<width;x++){
   const p=plan.inverse({x:(x+.5)/width,y:(y+.5)/height}),i=(y*width+x)*4,s=p.x/plan.sourceWidth,t=p.y/plan.sourceHeight;out[i+3]=255;
   if(s<0||s>1||t<0||t>1){out[i]=9;out[i+1]=11;out[i+2]=13;continue;}
+  if(exact){const xx=Math.max(x0,Math.min(x1,Math.floor(s*image.width))),yy=Math.max(y0,Math.min(y1,Math.floor(t*image.height))),source=negative&&x<width/2?negative:image;for(let k=0;k<3;k++)out[i+k]=source.data[(yy*image.width+xx)*4+k];continue;}
   const u=Math.max(x0,Math.min(x1,s*image.width-.5)),v=Math.max(y0,Math.min(y1,t*image.height-.5)),a=Math.floor(u),b=Math.floor(v),fx=u-a,fy=v-b;
   for(let k=0;k<3;k++){let sum=0;for(const [xx,yy,w] of [[a,b,(1-fx)*(1-fy)],[Math.min(x1,a+1),b,fx*(1-fy)],[a,Math.min(y1,b+1),(1-fx)*fy],[Math.min(x1,a+1),Math.min(y1,b+1),fx*fy]])sum+=decode((negative&&x<width/2?negative:image).data[(yy*image.width+xx)*4+k])*w;out[i+k]=Math.round(encode(sum)*255);}
  }
  return {width,height,data:out};
 }
-root.NSPreviewPresentation={create,cpu};
+// Never manufacture a higher-resolution display from a lower-resolution color cache.
+function dimensions(plan,cache,limit=1400){const f=Math.min(1,limit/Math.max(plan.area.width,plan.area.height),cache.width/plan.sourceWidth,cache.height/plan.sourceHeight);return {width:Math.max(1,Math.round(plan.area.width*f)),height:Math.max(1,Math.round(plan.area.height*f))};}
+root.NSPreviewPresentation={create,cpu,dimensions};
 })(globalThis);
