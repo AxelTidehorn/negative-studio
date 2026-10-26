@@ -1,0 +1,63 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+import {browserHarness} from './helpers/browser.mjs';
+const h=await browserHarness();
+const contrast=(a,b)=>{const l=s=>{const rgb=s.match(/[\d.]+/g).slice(0,3).map(Number).map(n=>{n/=255;return n<=.04045?n/12.92:((n+.055)/1.055)**2.4;});return rgb[0]*.2126+rgb[1]*.7152+rgb[2]*.0722;};const x=l(a),y=l(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05);};
+try{
+ const p=await h.browser.newPage({viewport:{width:1440,height:1000},locale:'en-GB',serviceWorkers:'block'}),errors=[];p.setDefaultTimeout(60000);p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
+ assert.deepEqual(await p.evaluate(()=>FILMLABB_APPEARANCE.get()),{theme:'classic',mode:'dark'});
+ const buffer=fs.readFileSync('demo-negative.png');await p.locator('#imageFile').setInputFiles([{name:'Åsa-a.png',mimeType:'image/png',buffer},{name:'Åsa-b.png',mimeType:'image/png',buffer}]);await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');await p.waitForTimeout(800);
+ const freeze=()=>p.evaluate(()=>({data:JSON.stringify({state,roll:roll.map(f=>({geometry:f.geometry,settings:f.settings})),rollShared,base,calibration,cropRegion}),analysis:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads,frames:FILMLABB_GPU.snapshot().frames,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),display,24).data)}));
+ const before=await freeze();const palettes=[];const screenshots=process.env.FILMLABB_UI_SCREENSHOTS;if(screenshots)fs.mkdirSync(screenshots,{recursive:true});
+ await p.locator('.fl-info-menu > summary').click();
+ for(const theme of ['classic','olive','burgundy','industrial','paper','aubergine'])for(const mode of ['dark','light']){
+  await p.locator('#themeIdentity').selectOption(theme);await p.locator('#themeMode').selectOption(mode);
+  assert.deepEqual(await p.evaluate(()=>FILMLABB_APPEARANCE.get()),{theme,mode});
+  const colors=await p.evaluate(()=>{const s=getComputedStyle(document.body),c={};for(const k of ['bg','panel','surface','text','muted','accent','accent-text','accent-label','border','focus']){const el=document.createElement('span');el.style.color=`var(--ui-${k})`;document.body.append(el);c[k]=getComputedStyle(el).color;el.remove();}return c;});
+  for(const surface of ['bg','panel','surface'])for(const text of ['text','muted','accent-label'])assert.ok(contrast(colors[text],colors[surface])>=4.5,`${theme}/${mode} ${text}/${surface}: ${contrast(colors[text],colors[surface])}`);
+  assert.ok(contrast(colors['accent-text'],colors.accent)>=4.5,`${theme}/${mode} accent text`);assert.ok(contrast(colors.focus,colors.panel)>=3);palettes.push(colors.bg);
+  if(screenshots){await p.locator('.fl-info-menu > summary').click();await p.screenshot({path:path.join(screenshots,`${theme}-${mode}.png`)});await p.locator('.fl-info-menu > summary').click();}
+ }
+ console.log('PASS twelve distinct palettes and text/focus contrast');assert.equal(new Set(palettes).size,12);await p.locator('.fl-info-menu > summary').click();assert.deepEqual(await freeze(),before,'appearance must not render/upload/analyse/change image data');for(const lang of ['sv','en','fr','es','de'])await p.locator('#languageSelect').selectOption(lang);assert.deepEqual(await freeze(),before,'language must not render/upload/analyse/change image data');
+ await p.reload();await p.waitForFunction(()=>globalThis.FILMLABB_APPEARANCE);assert.deepEqual(await p.evaluate(()=>FILMLABB_APPEARANCE.get()),{theme:'aubergine',mode:'light'});
+ // Reload intentionally discards source files; preferences are not project settings.
+ await p.locator('#imageFile').setInputFiles([{name:'Åsa-a.png',mimeType:'image/png',buffer},{name:'Åsa-b.png',mimeType:'image/png',buffer}]);await p.waitForFunction(()=>working&&!rollLoading);await p.waitForTimeout(600);
+ await p.locator('#creativeProfiles > summary').click();await p.locator('#filmProfile').selectOption('gold');await p.locator('#profileStrength').fill('55');await p.locator('#profileStrength').dispatchEvent('input');await p.locator('#filmProfile').selectOption('generic');assert.equal(await p.locator('.profile-strength').isVisible(),false);await p.locator('#filmProfile').selectOption('gold');assert.equal(await p.locator('#profileStrength').inputValue(),'55');
+ for(const id of ['advancedSettings','exportProject','geometryTools','frameSettingsGroup'])await p.evaluate(id=>document.getElementById(id).open=true,id);
+ for(const lang of ['sv','en','fr','es','de']){
+  await p.locator('#languageSelect').selectOption(lang);await p.waitForTimeout(50);assert.equal(await p.locator('html').getAttribute('lang'),lang);
+  await p.evaluate(()=>{setStatus('Importfel: Ingen bild avkodades.');$('exportName').value='Åsa [test]';syncExportNaming();});await p.waitForTimeout(30);
+  assert.equal(await p.locator('#status').innerText(),await p.evaluate(()=>FILMLABB_I18N.t('Importfel: {error}',{error:'Ingen bild avkodades.'})));
+  assert.equal(await p.locator('#exportName').inputValue(),'Åsa [test]');assert.equal(await p.locator('#exportName').getAttribute('placeholder'),await p.evaluate(()=>FILMLABB_I18N.fromSource('T.ex. Köpenhamn_2026')));
+  // New DOM nodes and attributes, and existing nodes rewritten by a controller.
+  await p.evaluate(()=>{let e=$('i18nProbe');if(!e){e=document.createElement('span');e.id='i18nProbe';document.body.append(e);}e.textContent='Bekräfta';e.title='Finrotation';e.setAttribute('aria-label','Spara projekt');});await p.waitForTimeout(30);
+  assert.equal(await p.locator('#i18nProbe').textContent(),await p.evaluate(()=>FILMLABB_I18N.t('Bekräfta')));assert.equal(await p.locator('#i18nProbe').getAttribute('title'),await p.evaluate(()=>FILMLABB_I18N.t('Finrotation')));
+  await p.evaluate(async()=>{await chooseFrame(activeFrame===0?1:0);});await p.waitForFunction(()=>!rollLoading);await p.waitForTimeout(50);
+  assert.ok((await p.locator('#rollStatus').textContent()).includes(await p.evaluate(()=>FILMLABB_I18N.fromSource('Generisk C-41')))||await p.locator('#filmProfile').inputValue()==='gold');
+  for(const engine of ['log39','calibrated4'])await p.evaluate(engine=>{$('engineMode').value=engine;$('engineMode').dispatchEvent(new Event('change'));},engine);
+  await p.evaluate(()=>{FILMLABB_APPEARANCE.set('olive','dark');setStatus('Exportfel: Ingen bild avkodades.');});await p.waitForTimeout(50);
+  assert.equal(await p.locator('#status').innerText(),await p.evaluate(()=>FILMLABB_I18N.t('export.error',{error:'Ingen bild avkodades.'})));
+  assert.equal(await p.locator('#i18nProbe').getAttribute('aria-label'),await p.evaluate(()=>FILMLABB_I18N.t('Spara projekt')));
+  const leftover=await p.evaluate(()=>{const bad=[],w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);while(w.nextNode()){const n=w.currentNode;if(n.parentElement.closest('script,style,[data-i18n-ignore]'))continue;const s=n.nodeValue.trim(),row=FILMLABB_I18N.catalogue.find(r=>r[0]===s);if(row&&FILMLABB_I18N.fromSource(s)!==s)bad.push(s);}return bad;});assert.deepEqual(leftover,[],lang+' stale source text');
+ }
+ await p.evaluate(()=>{FILMLABB_I18N.source($('i18nProbe'),'Spara projekt');$('i18nProbe').textContent='Bekräfta';});await p.locator('#languageSelect').selectOption('en');assert.equal(await p.locator('#i18nProbe').textContent(),'Confirm');await p.evaluate(()=>$('i18nProbe').remove());
+ // Persistent completed export text must update even without a new export event.
+ await p.evaluate(async()=>{const old=downloadBlob;downloadBlob=()=>{};try{await $('export').onclick();}finally{downloadBlob=old;}});await p.waitForTimeout(80);for(const lang of ['sv','en','fr','es','de']){await p.locator('#languageSelect').selectOption(lang);assert.ok((await p.locator('#exportProgressText').innerText()).startsWith(await p.evaluate(()=>FILMLABB_I18N.t('JPEG klar · {details}',{details:''}).trim())));}
+ console.log('PASS all themes/modes, contrast, preference persistence, unchanged image pixels/state/analysis/GPU uploads; five live languages, attributes, image/engine/profile switches and completed export');
+ // Desktop, tablet touch and phone: one editor scroller on desktop, native page scrolling on phone.
+ for(const touch of [false,true]){const context=await h.browser.newContext({hasTouch:touch,locale:'en-GB'}),page=await context.newPage();await page.goto(h.url);for(const viewport of [{width:1440,height:1000},{width:1024,height:768},{width:768,height:1024},{width:390,height:844},{width:360,height:740}]){await page.setViewportSize(viewport);for(const mode of ['dark','light']){await page.evaluate(mode=>{FILMLABB_APPEARANCE.set('classic',mode);document.querySelectorAll('#adjustmentPanel details').forEach(e=>e.open=true);},mode);await page.waitForTimeout(50);const layout=await page.evaluate(()=>({overflow:document.documentElement.scrollWidth>innerWidth+1,editor:getComputedStyle($('adjustmentPanel')).overflowY,fields:[...document.querySelectorAll('#adjustmentPanel input,#adjustmentPanel select')].filter(e=>e.checkVisibility()).every(e=>e.getBoundingClientRect().right<innerWidth+1),button:getComputedStyle($('themeToggle')).minHeight}));assert.equal(layout.overflow,false,JSON.stringify({touch,viewport,mode,layout}));assert.equal(layout.fields,true);assert.equal(layout.editor,viewport.width<=760?'visible':'auto');if(touch)assert.ok(parseFloat(layout.button)>=44);if(viewport.width===360){for(const lang of ['sv','en','fr','es','de']){await page.locator('#languageSelect').selectOption(lang);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,lang+' phone overflow');}}}}await context.close();}
+ // Actual import failures and native fallback prompts, rather than only injected statuses.
+ for(const lang of ['sv','en','fr','es','de']){
+  await p.locator('#languageSelect').selectOption(lang);
+  await p.locator('#imageFile').setInputFiles({name:'broken.tif',mimeType:'image/tiff',buffer:Buffer.alloc(8)});
+  await p.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('TIFF'));
+  assert.equal(await p.locator('#status').innerText(),await p.evaluate(()=>FILMLABB_I18N.fromSource('Importfel: TIFF: Ogiltig TIFF-byteordning')));
+  await p.locator('#imageFile').setInputFiles({name:'Åsa.heic',mimeType:'image/heic',buffer:Buffer.alloc(8)});
+  await p.waitForTimeout(30);assert.equal(await p.locator('#status').innerText(),await p.evaluate(()=>FILMLABB_I18N.fromSource(NSFileFormats.error('Åsa.heic'))));
+  const source='RAW-avkodning misslyckades: Ingen bild avkodades.\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?',expected=await p.evaluate(s=>FILMLABB_I18N.fromSource(s),source);let actual;
+  p.once('dialog',async d=>{actual=d.message();await d.dismiss();});await p.evaluate(s=>FILMLABB_I18N.confirmSource(s),source);assert.equal(actual,expected);
+  await p.evaluate(()=>setFrameLoading(true,'Åsa.RAF'));assert.equal(await p.locator('.frame-loading-label').textContent(),await p.evaluate(()=>FILMLABB_I18N.t('frame.loading',{name:'Åsa.RAF'})));await p.evaluate(()=>setFrameLoading(false));
+ }
+ console.log('PASS actual malformed TIFF/unsupported import errors, RAW fallback dialogs and loading messages in five languages; language changes preserve the image pipeline');
+ const legacy=await h.browser.newContext();await legacy.addInitScript(()=>localStorage.setItem('negative-studio-theme-v092','light'));const page=await legacy.newPage();await page.goto(h.url);assert.deepEqual(await page.evaluate(()=>FILMLABB_APPEARANCE.get()),{theme:'classic',mode:'light'});await legacy.close();const corrupt=await h.browser.newContext();await corrupt.addInitScript(()=>{localStorage.setItem('negative-studio-theme-v092','light');localStorage.setItem('filmlabb-appearance-v2','{broken');});const cp=await corrupt.newPage();await cp.goto(h.url);assert.deepEqual(await cp.evaluate(()=>FILMLABB_APPEARANCE.get()),{theme:'classic',mode:'light'});await corrupt.close();assert.deepEqual(errors,[]);
+ console.log('PASS desktop/tablet/phone light/dark overflow and touch targets; legacy light preference migrates to Classic');
+}finally{await h.close();}

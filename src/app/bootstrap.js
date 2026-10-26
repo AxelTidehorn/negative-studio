@@ -39,19 +39,13 @@ for(const id of [...controls.map(c=>c[0]),'profileStrength','cropInset']){
   else previousTap=now;
  },{passive:false});
 }
-const themeKey='negative-studio-theme-v092';
-let currentTheme='dark';try{currentTheme=localStorage.getItem(themeKey)||'dark'}catch(e){}
-function applyTheme(theme){currentTheme=theme;document.body.classList.toggle('light-theme',theme==='light');const m=document.querySelector('meta[name="theme-color"]');if(m)m.setAttribute('content',theme==='light'?'#e9e8e3':'#1c1c1c');if($('themeToggle'))$('themeToggle').textContent=theme==='light'?'Nattläge':'Dagläge';}
-applyTheme(currentTheme);
-$('themeToggle').onclick=()=>{applyTheme(currentTheme==='light'?'dark':'light');try{localStorage.setItem(themeKey,currentTheme)}catch(e){}};
-
 $('auto').checked=!!state.auto;$('noBase').checked=!!state.noBase;$('autoLevels').checked=!!state.autoLevels;
 function updateValues(){for(const [id,,min,max,step,,unit] of controls){const v=Number(state[id]);$(id+'Value').textContent=(id==='exposure'&&v>0?'+':'')+v.toFixed(step<1?2:0)+unit}}
 let persistTimer=null;function schedulePersist(){clearTimeout(persistTimer);persistTimer=setTimeout(persist,450)}
 function persist(){clearTimeout(persistTimer);try{localStorage.setItem('negative-studio-v03',JSON.stringify(state))}catch(e){}}
 updateValues();
 for(const id of ['imageFile','referenceFile'])$(id).accept=NSFileFormats.accept;
-function setStatus(s){$('status').textContent=s}
+function setStatus(s){if(globalThis.FILMLABB_I18N)FILMLABB_I18N.status($('status'),s);else $('status').textContent=s}
 
 function setDisplay(mode){display=mode;for(const [id,value] of [['tabPos','positive'],['tabNeg','negative'],['tabSplit','split']])$(id).classList.toggle('active',mode===value);render()}
 $('tabPos').onclick=()=>setDisplay('positive');$('tabNeg').onclick=()=>setDisplay('negative');$('tabSplit').onclick=()=>setDisplay('split');

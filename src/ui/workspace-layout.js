@@ -2,15 +2,6 @@
 (() => {
  const root=document.getElementById('workspace');if(!root)return;
  const get=id=>document.getElementById(id);
- // Compact technical readouts remain available without permanently reducing picture height.
- const footer=root.querySelector('.image-footer');
- if(footer&&!footer.querySelector('.fl-diagnostics')){
-  const diagnostics=document.createElement('details');diagnostics.className='fl-diagnostics';
-  const summary=document.createElement('summary');summary.textContent='Bildinformation / tekniska detaljer';
-  diagnostics.append(summary);
-  for(const node of [...footer.children])if(!node.classList.contains('row'))diagnostics.append(node);
-  footer.append(diagnostics);
- }
  const KEY='filmlabb-workspace-1';
  const defaults={queue:true,adjust:true,widthQueue:170,widthAdjust:320};
  let settings={...defaults};
@@ -21,27 +12,12 @@
  // The editor owns image geometry; sidebars only request a redraw.
  function fitPicture(){if(typeof drawCrop==='function')drawCrop();}
  function measureWorkspace(){
-  const header=document.querySelector('header');
-  const toolbar=document.querySelector('.workspace-toolbar');
-  const footer=document.querySelector('.foot');
-  const headerH=header?Math.round(header.getBoundingClientRect().height):0;
-  const toolbarH=toolbar?Math.round(toolbar.getBoundingClientRect().height):0;
-  if(document.documentElement?.style){
-   document.documentElement.style.setProperty('--fl-header-height',headerH+'px');
-   document.documentElement.style.setProperty('--fl-toolbar-height',toolbarH+'px');
-   document.documentElement.style.setProperty('--fl-top-stack-height',(headerH+toolbarH)+'px');
-  }
-  if(matchMedia('(max-width:760px)').matches){
-   root.style.removeProperty('--fl-workspace-height');
-   root.style.setProperty('--fl-workspace-height-mobile',Math.max(300,window.innerHeight-(toolbarH||0)-6)+'px');
-   if(footer)footer.style.removeProperty('margin-top');
-   requestAnimationFrame(fitPicture);
-   return;
-  }
-  const toolbarBottom=toolbar?toolbar.getBoundingClientRect().bottom:root.getBoundingClientRect().top;
-  const target=Math.max(320,Math.round(window.innerHeight-toolbarH-6));
-  root.style.setProperty('--fl-workspace-height',target+'px');
-  if(footer)footer.style.marginTop='10px';
+  const header=document.querySelector('header'),toolbar=document.querySelector('.workspace-toolbar'),footer=document.querySelector('.foot');
+  const hh=Math.ceil(header?.getBoundingClientRect().height||0),th=Math.ceil(toolbar?.getBoundingClientRect().height||0),fh=Math.ceil(footer?.getBoundingClientRect().height||0);
+  document.documentElement.style.setProperty('--fl-toolbar-height',th+'px');
+  document.documentElement.style.setProperty('--fl-header-height',hh+'px');
+  if(matchMedia('(max-width:760px)').matches)root.style.removeProperty('--fl-workspace-height');
+  else root.style.setProperty('--fl-workspace-height',Math.max(320,window.innerHeight-hh-th-fh-8)+'px');
   requestAnimationFrame(fitPicture);
  }
  function render(){
@@ -73,29 +49,11 @@
  const picture=get('picture'),canvas=get('preview');
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>requestAnimationFrame(fitPicture)).observe(picture);
  if(typeof MutationObserver!=='undefined')new MutationObserver(()=>requestAnimationFrame(fitPicture)).observe(canvas,{attributes:true,attributeFilter:['width','height','class']});
- function updateDockState(){document.body.classList.toggle('workspace-docked',window.scrollY>18);}
- // Two discrete mouse-wheel stages: landing -> workstation, workstation -> landing.
- // Do not hijack scrolling in controls, queue, editor or nested popovers.
- let inTransition=false;
- const dockOffset=()=>Math.round(document.querySelector('header')?.getBoundingClientRect().height||58);
- let fixedDock=0;
- function stageScroll(e){
-  if(e.ctrlKey||e.metaKey||e.shiftKey||Math.abs(e.deltaY)<3)return;
-  const element=e.target;
-  if(element instanceof Element&&element.closest('.editor-panel,.queue-panel,.fl-info-content,details[open],select,input,textarea,[contenteditable="true"]'))return;
-  const header=document.querySelector('header');
-  fixedDock=header?.offsetHeight||fixedDock||58;
-  const y=window.scrollY;
-  if(e.deltaY>0 && y<fixedDock-2){
-   e.preventDefault();if(!inTransition){inTransition=true;window.scrollTo({top:fixedDock,behavior:'smooth'});setTimeout(()=>inTransition=false,430);}
-  }else if(e.deltaY<0 && y>1 && y<=fixedDock+16){
-   e.preventDefault();if(!inTransition){inTransition=true;window.scrollTo({top:0,behavior:'smooth'});setTimeout(()=>inTransition=false,430);}
-  }else if(inTransition){e.preventDefault();}
- }
- window.addEventListener('wheel',stageScroll,{passive:false});
- window.addEventListener('scroll',updateDockState,{passive:true});
  window.addEventListener('resize',measureWorkspace);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);
  window.addEventListener('filmlabb:view-change',()=>requestAnimationFrame(fitPicture));
- render();measureWorkspace();updateDockState();
+ if(typeof ResizeObserver!=='undefined'){
+  const observer=new ResizeObserver(measureWorkspace);for(const el of document.querySelectorAll('header,.workspace-toolbar,.foot'))observer.observe(el);
+ }
+ render();measureWorkspace();
 })();

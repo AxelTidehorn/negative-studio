@@ -8,7 +8,7 @@ for(const js of app)new vm.Script(js);
 const js=app.join('\n');
 assert.ok(js,'App JavaScript must exist');
 assert.match(html,/id="themeToggle"/);
-assert.match(js,/^applyTheme\(currentTheme\);/m,'theme must initialize at startup, not in slider callback');
+assert.match(js,/^applyTheme\(currentTheme,currentIdentity\);/m,'theme must initialize at startup, not in slider callback');
 assert.match(html,/id="profileStrength"/);
 await import('../src/import/file-formats.js');
 assert.ok(NSFileFormats.isRaw('sample.DNG'),'DNG central RAW policy');
@@ -18,7 +18,7 @@ assert.match(readSource('render-core.js','utf8'),/v\+\(q\[k\]-v\)\*c\.strength/)
 assert.match(html,/id="rotateLeft"/);
 assert.match(html,/id="rotateRight"/);
 assert.match(html,/github\.com\/AxelTidehorn\/negative-studio\/issues/);
-const themeInitIndex=js.indexOf('applyTheme(currentTheme);');
+const themeInitIndex=js.indexOf('applyTheme(currentTheme,currentIdentity);');
 const sliderFinishIndex=js.indexOf("$('auto').checked");
 assert.ok(themeInitIndex<sliderFinishIndex,'theme must initialize before form setup');
 console.log('Smoke tests OK: syntax, theme, creative strength, DNG path, rotation, feedback');

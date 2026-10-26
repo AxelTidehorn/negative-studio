@@ -54,7 +54,7 @@ function setFrameLoading(visible,name=''){
   overlay.append(spinner,label);picture.append(overlay);
  }
  if(!overlay._loadingLabel){const label=document.createElement('span');label.className='frame-loading-label';overlay._loadingLabel=label;overlay.append(label);}
- overlay._loadingLabel.textContent=name?'Laddar '+name+'…':'Laddar bild…';
+ if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(overlay._loadingLabel,name?'Laddar '+name+'…':'Laddar bild…');else overlay._loadingLabel.textContent=name?'Laddar '+name+'…':'Laddar bild…';
  overlay.hidden=!visible;
  picture.setAttribute('aria-busy',String(visible));
 }

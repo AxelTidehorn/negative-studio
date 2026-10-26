@@ -50,7 +50,7 @@ try{
  const after=await page.evaluate(()=>({analyses:analysisCount38,source:sourceVersion38,response:JSON.stringify(state.response4),uploads:FILMLABB_GPU.snapshot().sourceUploads,gpu:FILMLABB_GPU.snapshot()}));
  assert.equal(before.analyses,after.analyses);assert.equal(before.source,after.source);assert.equal(before.response,after.response);assert.equal(before.uploads,after.uploads);assert.equal(after.gpu.backend,'gpu');await page.screenshot({path:path.resolve('../gpu-preview-qa.png')});check('Actual slider burst uses GPU without recalibration or source reupload');
  // Click geometry, rotation, crop overlay and manual sample still use source coordinates.
- await page.locator('#rotateRight').click();await page.locator('#zoomIn').click();
+ await page.locator('#geometryTools').evaluate(e=>e.open=true);await page.locator('#rotateRight').click();await page.locator('#zoomIn').click();
  const geometry=await page.evaluate(()=>{drawCrop();const a=$('preview').getBoundingClientRect(),b=$('gpuPreview').getBoundingClientRect();return {delta:Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y),Math.abs(a.width-b.width),Math.abs(a.height-b.height)),pointer:getComputedStyle($('gpuPreview')).pointerEvents};});
  assert.ok(geometry.delta<.01);assert.equal(geometry.pointer,'none');check('GPU follows rotation/zoom/crop geometry; original canvas remains pointer target');
  await page.evaluate(()=>{state.cropConfirmed=true;});

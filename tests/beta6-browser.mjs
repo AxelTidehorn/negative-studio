@@ -9,7 +9,7 @@ const server=http.createServer((req,res)=>{
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
 const browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox','--enable-unsafe-swiftshader']});
 try{
- const page=await browser.newPage({serviceWorkers:'block'}),errors=[];page.setDefaultTimeout(90000);page.on('pageerror',e=>errors.push(e.message));
+ const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.setDefaultTimeout(90000);page.on('pageerror',e=>errors.push(e.message));
  await page.goto('http://127.0.0.1:'+server.address().port+'/');
  const buffer=readSource('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'a.png',mimeType:'image/png',buffer},{name:'b.png',mimeType:'image/png',buffer}]);
  await page.waitForFunction(()=>roll.length===2&&working&&!rollLoading);

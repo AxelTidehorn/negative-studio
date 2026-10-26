@@ -31,8 +31,9 @@ function syncEngineSelector(){
 function activeFilmProfile(opts=state){return NSCreativeProfiles.resolve(filmProfiles,rollShared.profile,opts.engine==='reference'?1:rollShared.profileVersion);}
 
 
-function refreshProfileInfo(){const f=activeFilmProfile();
- $('profileEvidence').textContent=f.note+(rollShared.profileVersion===1?' · Äldre profil bevarad. Byt profil för den nya tolkningen.':' · Kreativ tolkning, inte en uppmätt filmsimulering.');
- $('profileTypeNote').textContent=f.type==='bw'?'Svartvitt: färgkorrigering av positivet är avaktiverad; negativets densitet används.':'Färg: basprofil + valfri positiv återgivning. Profilerna är experimentella.';
- document.body.classList.toggle('bw-active',f.type==='bw');
+function refreshProfileInfo(){
+ const f=activeFilmProfile();document.body.classList.toggle('bw-active',f.type==='bw');
+ $('filmProfile').title=rollShared.profileVersion===1?'Äldre profil bevarad. Byt profil för den nya tolkningen.':'Kreativa profiler är estetiska tolkningar, inte uppmätta filmsimuleringar.';
+ const strength=$('profileStrength').parentElement;
+ if(strength)strength.hidden=rollShared.profile==='generic'||rollShared.profile==='bw'||f.type==='bw'&&f.creativeVersion!==2;
 }
