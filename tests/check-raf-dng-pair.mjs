@@ -1,6 +1,6 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Run explicitly with matching camera RAF and developed DNG. No originals are bundled. */
-import fs from 'node:fs';
+
 import assert from 'node:assert/strict';
 import factory from '../node_modules/libraw-wasm/dist/libraw.js';
 const [raf,dng]=process.argv.slice(2);

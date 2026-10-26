@@ -1,4 +1,4 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
 const h=harness();h.run(`scheduleRender=()=>{};render=()=>{};sourceInfo={encoding:'srgb'};working={width:65,height:47,channels:3,scale:65535,encoding:'srgb',data:Uint16Array.from({length:65*47*3},(_,i)=>(i*173+2143)%65536)};workingPreview=CE.preview(working);src=new ImageData(65,47);previewSrc=src;state={...defaultState(),cropConfirmed:true};cropRegion={x:.1,y:.1,w:.8,h:.8};analyzeLevels();downloadBlob=b=>globalThis.savedBlob=b;`);
 const K=h.context.NSPixelKernel;

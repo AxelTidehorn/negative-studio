@@ -1,10 +1,10 @@
-import {readSource,sourcePath} from '../tests/helpers/source.mjs';
+import {readSource} from '../tests/helpers/source.mjs';
 /* Read-only diagnostic. Never changes input files, defaults, profiles or color math.
    Usage: node tools/inspect-raw-artifacts.mjs image.RAF [other.RAF ...]
    FILMLABB_BASELINE: commit with the same calibrated4 config contract (default Fix 11).
    FILMLABB_SAMPLE_LIMIT: bounded source samples, default 100000. Counts are NOT a
    photographic classification of noise, grain, or the user's reported artifacts. */
-import fs from 'node:fs';import vm from 'node:vm';import crypto from 'node:crypto';import {execFileSync} from 'node:child_process';
+import vm from 'node:vm';import crypto from 'node:crypto';import {execFileSync} from 'node:child_process';
 import factory from '../node_modules/libraw-wasm/dist/libraw.js';
 import {harness} from '../tests/helpers/app-harness.mjs';
 const paths=process.argv.slice(2);if(!paths.length)throw Error('Usage: node tools/inspect-raw-artifacts.mjs image.RAF [other.RAF ...] (run npm ci first)');

@@ -1,6 +1,6 @@
 import {makeTiffHeader} from './helpers/legacy-tiff.mjs';
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
 const h=harness();h.context.makeTiffHeader=makeTiffHeader;let n=0;async function test(name,fn){await fn();console.log('PASS',name);n++;}
 h.run(`src=new ImageData(60,40);for(let y=0;y<40;y++)for(let x=0;x<60;x++){const i=(y*60+x)*4;src.data.set([80+x*2,60+x,20+y,255],i);}state.engine='beta2';roll=[{file:{name:'test.jpg'},settings:{...state},crop:{x:.1,y:.1,w:.8,h:.8},selected:true},{file:{name:'second.jpg'},settings:defaultState(),crop:{x:.2,y:.2,w:.6,h:.6},selected:true}];activeFrame=0;cropRegion=roll[0].crop;state.cropConfirmed=true;finishImport('test');`);
 await test('Application initializes all scripts without runtime errors',()=>assert.ok(h.run('workingPreview.data.length>0')));

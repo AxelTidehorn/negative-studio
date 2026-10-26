@@ -1,4 +1,4 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Optional real-file comparison: node tests/check-real38.mjs INPUT_DIR OUTPUT_DIR */
 import fs from 'node:fs';import path from 'node:path';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import {harness} from './helpers/app-harness.mjs';import '../src/color/parameters.js';import '../src/color/render-core.js';
 const dir=path.resolve(process.argv[2]),out=path.resolve(process.argv[3]);fs.mkdirSync(out,{recursive:true});const h=harness();h.run('scheduleRender=()=>{};render=()=>{};');

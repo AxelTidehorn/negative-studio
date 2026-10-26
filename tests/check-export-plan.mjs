@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
 const h=harness();vm.runInContext(readSource('export-plan.js','utf8'),h.context);h.run('render=()=>{};scheduleRender=()=>{};');
 let checked=0;
 for(const encoding of ['linear','srgb'])for(const scale of [1,255,65535])for(const flat of [false,true])for(const rotation of [0,90,180,270]){

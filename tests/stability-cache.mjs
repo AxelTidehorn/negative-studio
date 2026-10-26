@@ -1,6 +1,6 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 import {assets} from '../app-manifest.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
+import assert from 'node:assert/strict';import vm from 'node:vm';
 function setup(fail=false){
  const listeners={},entries=new Map(),deleted=[],requests=[];
  const cache={async add(r){requests.push(r);if(fail)throw Error('fixture offline');entries.set(typeof r==='string'?r:r.url,new Response('asset'));},async put(r,v){entries.set(typeof r==='string'?r:r.url,v);},async match(r){return entries.get(typeof r==='string'?r:r.url);}};

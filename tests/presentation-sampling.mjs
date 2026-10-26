@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
+
 import vm from 'node:vm';
 import {harness} from './helpers/app-harness.mjs';
 const h=harness(),G=h.context.NSGeometry,P=h.context.NSPresentation,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,E=h.context.NSExportPlan;

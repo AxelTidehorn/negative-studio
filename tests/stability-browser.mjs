@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import http from 'node:http';import {chromium} from 'playwright';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import http from 'node:http';import {chromium} from 'playwright';
 let version=1,broken=false;
 const worker=()=>readSource('cache-worker.js','utf8').replace(/const CACHE='[^']+';/,`const CACHE='filmlabb-browser-${version}';`).replace(/const ASSETS=\[[^;]+;/,"const ASSETS=['./','./index.html','./module.js'];");
 const server=http.createServer((req,res)=>{

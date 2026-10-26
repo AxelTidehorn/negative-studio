@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
 const h=harness(),C=h.context.NSColorCalibration,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine;h.run('scheduleRender=()=>{};render=()=>{};');let tests=0;
 function test(name,fn){fn();tests++;console.log('PASS',name);}
 const base=[.7,.4,.2],slope=[.6,.9,1.2],neg=p=>p.map((v,k)=>base[k]*10**(-slope[k]*v));

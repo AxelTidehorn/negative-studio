@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
 const h=harness();h.run('scheduleRender=()=>{};render=()=>{};');let n=0;
 function test(name,fn){fn();console.log('PASS',name);n++;}
 function scene(encoding='linear',border=.95){const w=100,ht=80,d=new Float32Array(w*ht*3);for(let y=0;y<ht;y++)for(let x=0;x<w;x++){const edge=x<15||x>=85||y<12||y>=68,t=.2+.5*((x*7+y*3)%79)/78,p=edge?[border,border,border]:[t*.9,t*.5,t*.25];for(let c=0;c<3;c++)d[(y*w+x)*3+c]=encoding==='srgb'?h.context.NSColorEngine.encode(p[c]):p[c];}return {width:w,height:ht,channels:3,data:d,scale:1,encoding};}

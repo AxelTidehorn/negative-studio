@@ -1,4 +1,4 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Optional native Node timing of real WASM + original RAW transform; not browser timing. */
 import fs from 'node:fs';import crypto from 'node:crypto';import {performance} from 'node:perf_hooks';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import '../src/import/raw-input.js';
 const [input,output]=process.argv.slice(2);if(!output)throw Error('Usage: node tests/check-decode-benchmark.mjs FILE result.json');

@@ -1,4 +1,4 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Optional browser integration. Install Playwright separately, then:
    FILMLABB_CHROMIUM_BIN=/path/to/chromium npm run test:gpu
    Override FILMLABB_PLAYWRIGHT_MODULE / FILMLABB_CHROMIUM_ARGS if needed. */

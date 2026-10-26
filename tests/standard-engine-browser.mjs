@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
+import assert from 'node:assert/strict';import path from 'node:path';
 import {browserHarness} from './helpers/browser.mjs';
 const {browser,url,close}=await browserHarness();
 try{

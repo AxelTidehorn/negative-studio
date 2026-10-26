@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import fs from 'node:fs';import vm from 'node:vm';import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import vm from 'node:vm';import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
 function setup(frames=3,worker=true){const h=harness();
  let tick=0,clock=0;const timers=new Map();h.context.setTimeout=(fn,ms=0)=>{const id=++tick;timers.set(id,{fn,at:clock+ms});return id;};h.context.clearTimeout=id=>timers.delete(id);
  const workers=[];if(worker)h.context.Worker=class{constructor(){this.messages=[];this.dead=false;workers.push(this);}postMessage(m){this.messages.push(m);}terminate(){this.dead=true;}};

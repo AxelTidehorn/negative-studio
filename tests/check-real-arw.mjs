@@ -1,4 +1,4 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Optional: node tests/check-real-arw.mjs FILE.ARW RESULT.json. Real WASM + DOM harness, not a browser test. */
 import fs from 'node:fs';import assert from 'node:assert/strict';import crypto from 'node:crypto';import {performance} from 'node:perf_hooks';import factory from '../node_modules/libraw-wasm/dist/libraw.js';import {harness} from './helpers/app-harness.mjs';
 const [filePath,outPath]=process.argv.slice(2);if(!outPath)throw Error('Usage: node tests/check-real-arw.mjs FILE.ARW RESULT.json');

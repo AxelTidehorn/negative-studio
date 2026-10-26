@@ -1,5 +1,5 @@
 import {readSource,scripts} from './helpers/source.mjs';
-import fs from 'node:fs';
+
 import assert from 'node:assert/strict';
 import vm from 'node:vm';
 const html=readSource('index.html','utf8');

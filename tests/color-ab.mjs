@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {createHash} from 'node:crypto';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';import {createHash} from 'node:crypto';import {harness} from './helpers/app-harness.mjs';
 import {fixtureConfig,field,robust,localChroma,density,positive,lum,W} from './helpers/color-ab-candidates.mjs';
 const h=harness(),K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,P=h.context.NSPresentation,G=h.context.NSGeometry;
 const close=(a,b,t=1e-12)=>a.forEach((v,k)=>assert.ok(Math.abs(v-b[k])<=t,`${a} != ${b}`));

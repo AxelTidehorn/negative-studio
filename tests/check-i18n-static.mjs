@@ -1,6 +1,6 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 import {assets} from '../app-manifest.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';
+import assert from 'node:assert/strict';
 const html=readSource('index.html','utf8'),locale=readSource('i18n.js','utf8'),sw=readSource('sw.js','utf8');
 for(const v of ['sv','en','fr','es','de'])assert.match(locale,new RegExp("'"+v+"'"));
 assert.match(html,/id="languageSelect"/);

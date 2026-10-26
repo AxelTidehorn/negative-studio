@@ -1,6 +1,6 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';
-import fs from 'node:fs';
+
 import vm from 'node:vm';
 import {harness} from './helpers/app-harness.mjs';
 let failed=0;

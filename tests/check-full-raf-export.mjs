@@ -1,6 +1,6 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
+import {readSource} from './helpers/source.mjs';
 /* Optional slow end-to-end export check with a real camera RAF. */
-import fs from 'node:fs';import assert from 'node:assert/strict';
+import assert from 'node:assert/strict';
 import factory from '../node_modules/libraw-wasm/dist/libraw.js';import {harness} from './helpers/app-harness.mjs';
 const filename=process.argv[2];if(!filename)throw Error('Usage: node tests/check-full-raf-export.mjs image.RAF');
 const L=await factory({wasmBinary:readSource(new URL('../node_modules/libraw-wasm/dist/libraw.wasm',import.meta.url))}),decoder=new L.LibRaw();

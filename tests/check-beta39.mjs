@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
 const h=harness();h.run('scheduleRender=()=>{};render=()=>{};');let n=0;
 function test(name,fn){fn();console.log('PASS',name);n++;}
 const targets=[[0,0,0],[1,1,1],[.07,.07,.07],[.25,.25,.25],[.5,.5,.5],[.8,.8,.8],[.7,.2,.1],[.1,.6,.2],[.1,.25,.7],[.7,.65,.15]];

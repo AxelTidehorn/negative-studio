@@ -1,5 +1,5 @@
-import {readSource,sourcePath} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import vm from 'node:vm';import fs from 'node:fs';
+import {readSource} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import vm from 'node:vm';
 import {harness} from './helpers/app-harness.mjs';
 const h=harness(),P=h.context.NSPresentation,E=h.context.NSExportPlan,G=h.context.NSGeometry,K=h.context.NSPixelKernel;
 h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),cropConfirmed:true};sourceInfo={encoding:'linear'};cropRegion={x:0,y:0,w:1,h:1};working={width:13,height:11,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:13*11*3},(_,i)=>1000+(i*173)%52000)};workingPreview=CE.preview(working);analyzeLevels();`);

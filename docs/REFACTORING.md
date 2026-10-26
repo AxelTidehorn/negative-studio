@@ -61,6 +61,7 @@ som anropade döda utvecklare har riktats mot aktiva färg-/tonvägar med samma
 kontrast-/skuggkrav. Den minimala TIFF-headern som används som importfixture ligger
 nu i testhjälpare och ingår inte i produktionsappen.
 
-Slutliga svitresultat och begränsningar redovisas i PR:n. Verkliga fotografier och
+Ren checkout i Node 22.23.3: `npm ci`, **37/37 Node-grupper**, **10/10
+browsergrupper**, produktionsbygge och byggtester passerar. Verkliga fotografier och
 fysisk iPad Safari/Edge kräver fortsatt manuell verifiering; syntetiska och
 Chromium-baserade tester ersätter inte denna bedömning.
