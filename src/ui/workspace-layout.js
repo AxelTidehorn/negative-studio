@@ -13,7 +13,8 @@
  function fitPicture(){if(typeof drawCrop==='function')drawCrop();}
  function measureWorkspace(){
   const header=document.querySelector('header'),toolbar=document.querySelector('.workspace-toolbar');
-  const hh=Math.ceil(header?.getBoundingClientRect().height||0),th=Math.ceil(toolbar?.getBoundingClientRect().height||0);
+  // Only the visible header consumes space. The footer stays in document flow.
+  const hh=Math.max(0,Math.ceil(header?.getBoundingClientRect().bottom||0)),th=Math.ceil(toolbar?.getBoundingClientRect().height||0);
   const viewportHeight=Math.min(window.innerHeight,window.visualViewport?.height||window.innerHeight);
   document.documentElement.style.setProperty('--fl-toolbar-height',th+'px');
   document.documentElement.style.setProperty('--fl-header-height',hh+'px');
@@ -50,6 +51,8 @@
  const picture=get('picture'),canvas=get('preview');
  if(typeof ResizeObserver!=='undefined')new ResizeObserver(()=>requestAnimationFrame(fitPicture)).observe(picture);
  if(typeof MutationObserver!=='undefined')new MutationObserver(()=>requestAnimationFrame(fitPicture)).observe(canvas,{attributes:true,attributeFilter:['width','height','class']});
+ let scrollFrame=0;
+ window.addEventListener('scroll',()=>{if(scrollFrame)return;scrollFrame=requestAnimationFrame(()=>{scrollFrame=0;measureWorkspace()})},{passive:true});
  window.addEventListener('resize',measureWorkspace);
  if(window.visualViewport)window.visualViewport.addEventListener('resize',measureWorkspace);
  window.addEventListener('filmlabb:view-change',()=>requestAnimationFrame(fitPicture));

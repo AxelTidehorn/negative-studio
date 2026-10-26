@@ -209,7 +209,7 @@ input[type=checkbox] {
   background:var(--ui-panel);
   border:1px solid var(--ui-border);
   border-radius:var(--ui-radius);
-  padding:10px
+  padding:8px
 }
 .workspace-toolbar {
   display:flex;
@@ -229,9 +229,6 @@ input[type=checkbox] {
   white-space:nowrap;
   overflow:hidden;
   text-overflow:ellipsis
-}
-.workspace-reset {
-  margin-left:auto
 }
 .fl-info-menu {
   position:relative;
@@ -262,7 +259,7 @@ input[type=checkbox] {
   width:min(370px,calc(100vw - 20px));
   max-height:70dvh;
   overflow:auto;
-  padding:14px;
+  padding:8px;
   background:var(--ui-panel);
   border:1px solid var(--ui-border);
   border-radius:var(--ui-radius)
@@ -274,8 +271,8 @@ input[type=checkbox] {
   display:grid;
   grid-template-columns:1fr 1fr;
   gap:6px 10px;
-  margin:0 0 12px;
-  padding:10px;
+  margin:0 0 8px;
+  padding:8px;
   border:1px solid var(--ui-border);
   border-radius:var(--ui-radius)
 }
@@ -306,6 +303,12 @@ main.workspace {
   padding:6px;
   max-width:none
 }
+/* Explicit tracks prevent auto-placement into a collapsed panel column. */
+.workspace>.queue-panel {grid-column:1;grid-row:1}
+.workspace>.divider-left {grid-column:2;grid-row:1}
+.workspace>.image-panel {grid-column:3;grid-row:1}
+.workspace>.divider-right {grid-column:4;grid-row:1}
+.workspace>.editor-panel {grid-column:5;grid-row:1}
 main.workspace.queue-collapsed {
   --effective-queue:0px;
   --left-grip:0px
@@ -389,8 +392,8 @@ main.workspace.adjust-collapsed {
 .image-panel {
   display:flex;
   flex-direction:column;
-  gap:7px;
-  padding:7px;
+  gap:5px;
+  padding:4px;
   overflow:hidden
 }
 .picture {
@@ -494,7 +497,7 @@ main.workspace.adjust-collapsed {
   overflow-x:clip;
   overscroll-behavior:contain;
   scrollbar-gutter:stable;
-  padding:10px
+  padding:8px
 }
 .tool-section,.frame-settings-group {
   margin:0 0 8px;
@@ -523,10 +526,26 @@ details.tool-section:not([open]),.frame-settings-group:not([open]) {
 }
 summary {
   cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  list-style:none;
   min-height:32px;
-  padding:7px 0;
+  padding:5px 0;
   border-radius:var(--ui-radius)
 }
+summary::-webkit-details-marker {display:none}
+summary::before {
+  content:'';
+  flex:0 0 6px;
+  width:6px;
+  height:6px;
+  border-right:1.5px solid currentColor;
+  border-bottom:1.5px solid currentColor;
+  transform:rotate(-45deg);
+}
+details[open]>summary::before {transform:rotate(45deg)}
+.fl-info-menu>summary::before {display:none}
 details[open]>summary {
   font-weight:750
 }
@@ -537,7 +556,7 @@ details[open]>:not(summary) {
   margin-top:8px
 }
 .control {
-  margin:6px 0
+  margin:4px 0
 }
 .control label,.profile-strength label {
   display:flex;
@@ -763,8 +782,8 @@ input[type=range]::-moz-range-thumb {
   }
 }
 .foot {
-  margin-top:12px;
-  padding:10px 0 0;
+  margin-top:0;
+  padding:10px 12px;
   border-top:1px solid var(--ui-border);
   color:var(--ui-muted);
   font-size:12px;
