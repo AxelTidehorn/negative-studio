@@ -1,0 +1,10 @@
+import {readSource,sourcePath} from './helpers/source.mjs';
+import assert from 'node:assert/strict';import fs from 'node:fs';
+const html=readSource('index.html','utf8'),locale=readSource('i18n.js','utf8'),sw=readSource('sw.js','utf8');
+for(const v of ['sv','en','fr','es','de'])assert.match(locale,new RegExp("'"+v+"'"));
+assert.match(html,/id="languageSelect"/);
+assert.match(html,/<button\b(?=[^>]*\bid="supportLink")(?=[^>]*\bdisabled)[^>]*>/);
+assert.match(html,/<div class="foot"><div class="footer-links">/);
+assert.doesNotMatch(html,/<span class="version" title="Bilderna stannar/);
+assert.match(sw,/cache-worker\.js/);assert.match(readSource('cache-worker.js','utf8'),/i18n\.js/);
+console.log('PASS i18n scaffolding, header/footer and current cache entry point');

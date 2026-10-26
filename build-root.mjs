@@ -1,4 +1,5 @@
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';
+import {assets as sourceAssets,scripts} from './app-manifest.mjs';
 const src=fs.existsSync('node_modules/libraw-wasm/dist')?'node_modules/libraw-wasm/dist':'vendor/libraw/dist';
 if(!fs.existsSync(src))throw Error('LibRaw dist saknas: npm install måste först köras');
 // The vendored fallback lives outside the generated deployment directory.
@@ -6,19 +7,15 @@ fs.rmSync('site',{recursive:true,force:true});
 const files=fs.readdirSync(src);console.log('LibRaw-filer:',files);
 fs.mkdirSync('site/libraw/dist',{recursive:true});
 for(const file of files){if(fs.statSync(path.join(src,file)).isFile())fs.copyFileSync(path.join(src,file),path.join('site/libraw/dist',file));}
+const html=fs.readFileSync('index.html','utf8');
+const boot=[...html.matchAll(/<script\b[^>]*src="\.\/([^"]+)"[^>]*>/g)].map(m=>m[1]);
+if(JSON.stringify(boot)!==JSON.stringify(scripts.map(a=>a.file)))throw Error('HTML script order differs from app-manifest.mjs');
 fs.copyFileSync('index.html','site/index.html');
-fs.copyFileSync('mobile-layout.css','site/mobile-layout.css');
-fs.copyFileSync('ui-refinement.css','site/ui-refinement.css');
 if(!fs.existsSync('site/libraw/dist/index.js'))throw Error('Paketet saknar dist/index.js');
 console.log('Klart: publicera hela site-mappen via HTTPS, och cachea lokalt för offlinebruk.');
 
 fs.copyFileSync('manifest.webmanifest','site/manifest.webmanifest');
-fs.copyFileSync('sw.js','site/sw.js');
-fs.copyFileSync('cache-worker.js','site/cache-worker.js');
-
-fs.copyFileSync('demo-negative.png','site/demo-negative.png');
-
-for(const f of ['beta6-geometry.css','preview-presentation.js','geometry-ui.js','presentation-sampler.js','geometry.js','geometry-state.js','compact-ui.js','export-plan.js','export-worker.js','export-controller.js','flat-field.js','next-workflow.js','gpu-renderer.js','gpu-preview.js','tiff-codec.js','creative-profiles.js','source-analysis.js','slider-response.js','file-formats.js','raw-decoder.js','image-model.js','color-management.js','srgb-profile.js','frame-controller.js','calibration-state.js','beta39.js','beta4.js','color-calibration.js','raw-input.js','color-analysis.js','render-core.js','preview-worker.js','i18n.js','workspace-layout.js'])fs.copyFileSync(f,'site/'+f);
+for(const [file,source] of Object.entries(sourceAssets))fs.copyFileSync(source,'site/'+file);
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);
 
