@@ -124,3 +124,29 @@ compliance. No project license was invented.
 Physical iPad Safari, Windows/Edge, full-size real RAW memory and the reported
 RAF color artifacts remain unverified. Timing noise and software WebGL prevent
 claims about physical GPU speed or universal import/export acceleration.
+
+## Final verification
+
+- Frozen baseline: **37/37 Node groups** (Node 24.19.0) and **10/10 browser
+  groups** (Chromium 154.0.8037.57), plus dependency installation/build.
+- Candidate: **38/38 Node groups** in Node 22.23.3 and **11/11 browser groups**
+  in Chromium 154.0.8037.57; production build and build/cache tests pass.
+- [GitHub CI](https://github.com/AxelTidehorn/negative-studio/actions/runs/40345369318)
+  independently passes clean checkout/npm ci, all 38 Node groups, build/cache
+  tests, all 11 browser groups (Chrome 155.0.8059.39) and artifact upload.
+- Running the added browser checks against frozen main reproduces eight failures:
+  metadata restoration, GPU/CPU retention, redundant configuration/color work,
+  per-stripe allocations, failed GPU initialization cleanup and uniform lookups.
+  The restored GPU source-upload cache already passes there and stays unchanged.
+- Existing exact historical color/legacy-project, RAW/TIFF, calibration, geometry,
+  CPU/GPU/detail, export/cancel/fallback/batch and service-worker checks pass.
+  The 192 frozen color-configuration comparisons and 54 worker-protocol pixel
+  cases retain their previous expected values. No fixture expectations changed.
+- `src/color/`, `src/image/`, `src/calibration/`, RAW conversion, geometry math
+  and presentation sampling are unchanged from the frozen baseline. Both GPU
+  shader texts compare byte-for-byte equal. All README relative links resolve;
+  the Pages URL is confirmed through the repository's Pages configuration.
+
+The maintenance branch changes no workflows, dependencies or public asset names.
+CI supplies clean-checkout verification; the hosted main deployment is not
+published or merged by this PR.
