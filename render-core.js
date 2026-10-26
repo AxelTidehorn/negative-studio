@@ -68,7 +68,7 @@ function compile(c){
     r+=fade*(neutral-r);g+=fade*(neutral-g);b+=fade*(neutral-b);
    }
   }
-  r*=ev*gains[0];g*=ev*gains[1];b*=ev*gains[2];
+  r=r*ev*gains[0];g=g*ev*gains[1];b=b*ev*gains[2];
   let y=c.workingSpace==='rec2020'?.2627*r+.678*g+.0593*b:.2126*r+.7152*g+.0722*b;
   if(y>1e-12){
    let target=Math.max(0,(y-black4)/whiteRange4);

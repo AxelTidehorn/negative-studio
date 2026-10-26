@@ -68,7 +68,7 @@ void main(){
   float t=sat(max(uncertainty.r,max(uncertainty.g,uncertainty.b)));
   if(t>0.0){float fade=uChromaLimit*t*t*(3.0-2.0*t),neutral=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);p=mix(p,vec3(neutral),fade);}
  }
- p*=uExposure*uGains;
+ p=p*uExposure*uGains;
  float y=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);
  if(y>1e-12){
   float target=max(0.0,(y-uBlack)/uWhiteRange);

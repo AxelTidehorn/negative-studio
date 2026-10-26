@@ -91,6 +91,9 @@ artefakter vars källa ligger över tröskeln. Ingen projektversion eller UI än
   process. Mätningar i en delad utvecklingsmiljö varierar; den optimerade snabba
   grenen undviker kromaberäkningen när ingen kanal behöver den. Slutmätning: hög signal 215,71 → 218,13 ms (+1,1 %); låg signal
   245,46 → 304,20 ms (+23,9 %). Detta är CPU-kostnad, inte fysisk GPU-mätning.
+- Extra direktjämförelse mot main: 144 000 kanalvärden matchar exakt för
+  färg över signaltröskeln och svartvitt över hela signalintervallet, med olika
+  tonlägen, arbetsfärgrymder och reglageändringar.
 - Stripebudget, käll-LUT, GPU-källtextur och fem-bildersgräns behålls. Inga extra
   bildbuffertar eller rumsliga filter tillkommer. Fysisk iPad Safari/Edge och
   verklig GPU-prestanda återstår att testa; SwiftShader är ingen sådan mätning.
