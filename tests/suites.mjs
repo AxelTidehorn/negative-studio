@@ -9,9 +9,9 @@ export const nodeSuites={
  geometry:['beta6-geometry.mjs','preview-geometry.mjs'],
  export:['check-export-plan.mjs','check-tiff-codec.mjs','check-export-tiff-perf.mjs','presentation-sampling.mjs','presentation-worker.mjs','stability-export.mjs','downscale-investigation.mjs'],
  performance:['check-preview-performance.mjs'],
- platform:['check-i18n-static.mjs','stability-cache.mjs']
+ platform:['ui-i18n.mjs','check-i18n-static.mjs','stability-cache.mjs']
 };
-export const browserTests=['check-workflow-browser.mjs','check-next-browser.mjs','check-gpu-browser.mjs','check-mobile-order.mjs','stability-browser.mjs','beta6-browser.mjs','beta6-complete-browser.mjs','quality-workflow-browser.mjs','standard-engine-browser.mjs','color-ab-browser.mjs','maintenance-browser.mjs','editing-browser.mjs'];
+export const browserTests=['ui-ux-browser.mjs','check-workflow-browser.mjs','check-next-browser.mjs','check-gpu-browser.mjs','check-mobile-order.mjs','stability-browser.mjs','beta6-browser.mjs','beta6-complete-browser.mjs','quality-workflow-browser.mjs','standard-engine-browser.mjs','color-ab-browser.mjs','maintenance-browser.mjs','editing-browser.mjs'];
 export const selectors={
  browser:browserTests,workflow:['check-workflow-browser.mjs'],next:['check-next-browser.mjs'],
  tiff:['check-tiff-codec.mjs','check-export-tiff-perf.mjs'],gpu:['check-gpu-browser.mjs']

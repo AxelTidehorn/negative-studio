@@ -1,7 +1,7 @@
 import {readSource} from './helpers/source.mjs';
 import {assets} from '../app-manifest.mjs';
 import assert from 'node:assert/strict';
-const html=readSource('index.html','utf8'),locale=readSource('i18n.js','utf8'),sw=readSource('sw.js','utf8');
+const html=readSource('index.html','utf8'),locale=readSource('i18n-messages.js','utf8'),sw=readSource('sw.js','utf8');
 for(const v of ['sv','en','fr','es','de'])assert.match(locale,new RegExp("'"+v+"'"));
 assert.match(html,/id="languageSelect"/);
 assert.match(html,/<button\b(?=[^>]*\bid="supportLink")(?=[^>]*\bdisabled)[^>]*>/);

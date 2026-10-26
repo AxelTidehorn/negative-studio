@@ -13,7 +13,7 @@ async function readFile(file){
      setStatus('RAW-avkodning misslyckades: '+rawError.message);
      const jpeg=/\.raf$/i.test(file.name)?await readRafJpeg(file):null;
      if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
-     if(confirm('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
+     if((globalThis.FILMLABB_I18N?.confirmSource||confirm)('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
        await importBrowserImage(new File([jpeg],file.name+'.jpg',{type:'image/jpeg'}),
           `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`);
      }

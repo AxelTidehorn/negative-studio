@@ -15,7 +15,7 @@ function nextControls(){
  $('useFlatField').disabled=!sharedFlatField||!working||flatFieldBusy||rollLoading||exportBusy;
  $('flatFieldFile').disabled=flatFieldBusy||rollLoading||exportBusy;$('clearFlatField').disabled=flatFieldBusy||rollLoading||exportBusy;
  if(sharedFlatField)$('flatFieldStatus').textContent=(working?.flatField?'Korrigering aktiv':state.useFlatField?'Pausad · referensen kräver samma kamera, format och bildmått':'Referens redo')+' · '+sharedFlatField.name;
- else $('flatFieldStatus').textContent='Ingen referens. Fotografera ljuskällan utan film med samma kamera, utsnitt och inställningar.';
+ else $('flatFieldStatus').textContent='Ingen belysningsreferens.';
  $('originalDetail').disabled=!working;
 }
 const uiBeforeNext=updateCalibrationUI;updateCalibrationUI=function(){uiBeforeNext();nextControls();};
@@ -71,7 +71,6 @@ const scheduleBeforeNext=scheduleRender;scheduleRender=function(...args){const r
 const chooseBeforeNext=chooseFrame;chooseFrame=async function(...args){if(!exportBusy&&!rollLoading)closeDetailNext();const r=await chooseBeforeNext(...args);nextControls();return r;};
 const clearBeforeNext=$('clearQueue').onclick;$('clearQueue').onclick=()=>{closeDetailNext();++flatFieldRead;const r=clearBeforeNext();nextControls();return r;};
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailNext();});
-const css=document.createElement('style');css.textContent='#originalDetailPanel{position:fixed;z-index:80;right:16px;bottom:16px;width:360px;max-width:calc(100vw - 32px);max-height:85vh;overflow:auto;padding:16px;background:var(--ns-panel,#172326);border:1px solid #697573;border-radius:12px;box-shadow:0 12px 48px #0009}#originalDetailPanel[hidden]{display:none}.detail-scroll{max-width:100%;overflow:auto;max-height:45vh;background:#111}#detailCanvas{display:block;image-rendering:pixelated}.flat-field-tools{border:1px solid #596463;border-radius:6px;margin:12px 0;padding:10px}.flat-field-tools input[type=file]{max-width:100%}';document.head.appendChild(css);
 nextControls();
 
 const engineNext=$('engineMode').onchange;

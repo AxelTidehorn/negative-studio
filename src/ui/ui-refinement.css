@@ -1,262 +1,185 @@
-/* FILMLABB 1.1 Beta 5 — restrained graphite / signal-red refinement.
-   Presentation only; the image pipeline, crop state and export remain untouched. */
-body.filmlabb-ui-refresh{
- --ns-bg:#1c1c1c;--ns-panel:#262626;--ns-panel-2:#202020;
- --ns-text:#ecebe7;--ns-muted:#aaa9a4;--ns-border:#454441;
- --ns-btn:#343434;--ns-btn-border:#5c5a56;--ns-btn-text:#ecebe7;
- --ns-accent:#d76a5a;--ns-accent-ink:#1d1716;--ns-accent-soft:rgba(215,106,90,.13);--ns-accent-line:#d76a5a;
- background:var(--ns-bg)!important;color:var(--ns-text)!important;color-scheme:dark;
+/* Semantic palette data. Components/layout are defined once in application.css.
+Classic preserves the previous final graphite/terracotta palette. */
+:root,:root[data-theme="classic"] {
+  --ui-bg:#222120;
+  --ui-panel:#2d2b29;
+  --ui-surface:#242322;
+  --ui-text:#eeeae2;
+  --ui-muted:#b2aca2;
+  --ui-border:#655e56;
+  --ui-accent:#c78154;
+  --ui-accent-text:#211b17;
+  --ui-accent-label:#e0a477;
+  --ui-active:#49372c
 }
-body.filmlabb-ui-refresh.light-theme{
- --ns-bg:#e9e8e3;--ns-panel:#f7f6f2;--ns-panel-2:#eeede8;
- --ns-text:#242321;--ns-muted:#696862;--ns-border:#c6c4bd;
- --ns-btn:#eae9e3;--ns-btn-border:#aaa79f;--ns-btn-text:#242321;
- --ns-accent:#aa4139;--ns-accent-ink:#fff9f4;--ns-accent-soft:rgba(170,65,57,.12);--ns-accent-line:#aa4139;
- color-scheme:light;
+:root[data-theme="classic"][data-mode="light"] {
+  --ui-bg:#e9e6df;
+  --ui-panel:#f4f1eb;
+  --ui-surface:#e4dfd6;
+  --ui-text:#282521;
+  --ui-muted:#655f57;
+  --ui-border:#aaa093;
+  --ui-accent:#a45b34;
+  --ui-accent-text:#fff8ed;
+  --ui-accent-label:#914920;
+  --ui-active:#e4cdbb
 }
-html:has(body.filmlabb-ui-refresh.light-theme),html:has(body.filmlabb-ui-refresh.light-theme) main,
-html:has(body.filmlabb-ui-refresh.light-theme) body,
-body.filmlabb-ui-refresh main,body.filmlabb-ui-refresh .workspace-toolbar{
- background:var(--ns-bg)!important;color:var(--ns-text)!important;
+:root[data-theme="olive"] {
+  --ui-bg:#181d18;
+  --ui-panel:#232b23;
+  --ui-surface:#1d241d;
+  --ui-text:#eceee3;
+  --ui-muted:#b1b9a8;
+  --ui-border:#64715b;
+  --ui-accent:#b3bd91;
+  --ui-accent-text:#1c2317;
+  --ui-accent-label:#c0cca3;
+  --ui-active:#394630
 }
-body.filmlabb-ui-refresh header{background:var(--ns-bg)!important;color:var(--ns-text)!important;border-bottom-color:var(--ns-border)!important;height:58px!important;min-height:58px!important;padding:7px 16px!important;z-index:5;box-shadow:none!important}
-body.filmlabb-ui-refresh header::after{display:none!important}
-body.filmlabb-ui-refresh .brand-logo{filter:brightness(0) invert(1)!important}
-body.filmlabb-ui-refresh.light-theme .brand-logo{filter:none!important}
-body.filmlabb-ui-refresh .panel,html:has(body.filmlabb-ui-refresh.light-theme) .panel,
-body.filmlabb-ui-refresh .histogram-panel,body.filmlabb-ui-refresh .queue-panel{
- background:var(--ns-panel)!important;color:var(--ns-text)!important;border-color:var(--ns-border)!important;
- border-radius:5px!important;box-shadow:none!important;
+:root[data-theme="olive"][data-mode="light"] {
+  --ui-bg:#e8eadf;
+  --ui-panel:#f6f7ee;
+  --ui-surface:#e9eddf;
+  --ui-text:#252e21;
+  --ui-muted:#626c57;
+  --ui-border:#9da98f;
+  --ui-accent:#4e613b;
+  --ui-accent-text:#f8f9f0;
+  --ui-accent-label:#465834;
+  --ui-active:#d6dfc7
 }
-body.filmlabb-ui-refresh .picture,body.filmlabb-ui-refresh .seg,body.filmlabb-ui-refresh .frame,
-body.filmlabb-ui-refresh select,body.filmlabb-ui-refresh .sidebar-profile>select,
-body.filmlabb-ui-refresh .locale-control select,
-html:has(body.filmlabb-ui-refresh.light-theme) .picture,
-html:has(body.filmlabb-ui-refresh.light-theme) select{
- background:var(--ns-panel-2)!important;color:var(--ns-text)!important;border-color:var(--ns-border)!important;border-radius:4px!important;
+:root[data-theme="burgundy"] {
+  --ui-bg:#21191c;
+  --ui-panel:#302429;
+  --ui-surface:#281e22;
+  --ui-text:#f3e8e6;
+  --ui-muted:#c1acae;
+  --ui-border:#80636c;
+  --ui-accent:#cc939b;
+  --ui-accent-text:#29171d;
+  --ui-accent-label:#dca6ae;
+  --ui-active:#50313c
 }
-body.filmlabb-ui-refresh .picture{border-radius:4px!important}
-body.filmlabb-ui-refresh .hint,body.filmlabb-ui-refresh .status,body.filmlabb-ui-refresh .muted,
-body.filmlabb-ui-refresh .foot,body.filmlabb-ui-refresh small,body.filmlabb-ui-refresh .eyebrow{color:var(--ns-muted)!important}
-body.filmlabb-ui-refresh .btn,body.filmlabb-ui-refresh .workspace-toolbar .btn,
-html:has(body.filmlabb-ui-refresh.light-theme) .btn:not(.primary){
- background:var(--ns-btn)!important;color:var(--ns-btn-text)!important;
- border:1px solid var(--ns-btn-border)!important;border-radius:4px!important;
- box-shadow:none!important;text-shadow:none!important;font-weight:550;
+:root[data-theme="burgundy"][data-mode="light"] {
+  --ui-bg:#eee5df;
+  --ui-panel:#faf3ed;
+  --ui-surface:#f0e5df;
+  --ui-text:#342229;
+  --ui-muted:#785b61;
+  --ui-border:#b49a96;
+  --ui-accent:#8e3e50;
+  --ui-accent-text:#fff7f2;
+  --ui-accent-label:#853447;
+  --ui-active:#ead0d3
 }
-body.filmlabb-ui-refresh .btn.primary,body.filmlabb-ui-refresh .workspace-toolbar .btn.primary,
-html:has(body.filmlabb-ui-refresh.light-theme) .btn.primary{
- background:var(--ns-accent)!important;border-color:var(--ns-accent)!important;color:var(--ns-accent-ink)!important;
- border-radius:4px!important;box-shadow:none!important;
+:root[data-theme="industrial"] {
+  --ui-bg:#191919;
+  --ui-panel:#252525;
+  --ui-surface:#1e1e1e;
+  --ui-text:#f1f0e4;
+  --ui-muted:#b3b2a8;
+  --ui-border:#707067;
+  --ui-accent:#d4ce94;
+  --ui-accent-text:#202017;
+  --ui-accent-label:#ded9aa;
+  --ui-active:#424132
 }
-body.filmlabb-ui-refresh .btn:not(:disabled):hover,
-body.filmlabb-ui-refresh .frame-quick summary:hover{border-color:var(--ns-accent)!important;filter:brightness(1.07)}
-body.filmlabb-ui-refresh .btn:focus-visible,body.filmlabb-ui-refresh summary:focus-visible{outline:2px solid var(--ns-accent);outline-offset:2px}
-body.filmlabb-ui-refresh .btn:disabled{opacity:.44;cursor:default}
-body.filmlabb-ui-refresh .seg{border:1px solid var(--ns-border)!important;padding:2px!important;gap:2px!important;box-shadow:none!important}
-body.filmlabb-ui-refresh .seg button{border:1px solid transparent!important;color:var(--ns-text)!important;border-radius:3px!important;box-shadow:none!important}
-body.filmlabb-ui-refresh .seg button.active{
- background:var(--ns-accent)!important;border-color:var(--ns-accent)!important;
- color:var(--ns-accent-ink)!important;box-shadow:none!important;
+:root[data-theme="industrial"][data-mode="light"] {
+  --ui-bg:#e4e4df;
+  --ui-panel:#f7f7f1;
+  --ui-surface:#ebebe4;
+  --ui-text:#20201d;
+  --ui-muted:#64645a;
+  --ui-border:#a2a292;
+  --ui-accent:#64602c;
+  --ui-accent-text:#fffef2;
+  --ui-accent-label:#5f5a25;
+  --ui-active:#dfddbd
 }
-body.filmlabb-ui-refresh .control output,body.filmlabb-ui-refresh a,
-body.filmlabb-ui-refresh .footer-links a{color:var(--ns-accent)!important}
-body.filmlabb-ui-refresh input[type=range]{accent-color:var(--ns-accent)!important}
-body.filmlabb-ui-refresh .workspace-toolbar{
- position:sticky!important;top:0!important;z-index:30!important;
- min-height:42px!important;height:42px!important;max-height:42px!important;
- padding:4px 10px!important;gap:5px!important;flex-wrap:nowrap!important;
- border-bottom:1px solid var(--ns-border)!important;
- backdrop-filter:none!important;box-shadow:none!important;
+:root[data-theme="paper"] {
+  --ui-bg:#211f1a;
+  --ui-panel:#2d2921;
+  --ui-surface:#242018;
+  --ui-text:#f5eedc;
+  --ui-muted:#c4b89d;
+  --ui-border:#80745b;
+  --ui-accent:#c6af76;
+  --ui-accent-text:#262016;
+  --ui-accent-label:#dac38b;
+  --ui-active:#48402d
 }
-body.filmlabb-ui-refresh .workspace-toolbar .actions{display:flex;gap:5px!important;flex-wrap:nowrap!important;align-items:center;margin:0!important}
-body.filmlabb-ui-refresh .workspace-toolbar .btn{height:30px!important;min-height:30px!important;padding:4px 8px!important;font-size:12px!important}
-body.filmlabb-ui-refresh .workspace-toolbar .fl-roll-indicator{margin-left:auto!important;background:var(--ns-panel-2);border-color:var(--ns-border);border-radius:4px!important;height:28px}
-body.filmlabb-ui-refresh .fl-info-menu>summary{border-radius:4px!important;background:var(--ns-btn)!important;color:var(--ns-text)!important}
-body.filmlabb-ui-refresh main.workspace{
- height:var(--fl-workspace-height,calc(100dvh - 42px))!important;
- min-height:0!important;padding:6px!important;gap:0!important;overflow:hidden!important;
+:root[data-theme="paper"][data-mode="light"] {
+  --ui-bg:#eee9dd;
+  --ui-panel:#fffaf0;
+  --ui-surface:#f4eedf;
+  --ui-text:#2a2823;
+  --ui-muted:#716954;
+  --ui-border:#a99c81;
+  --ui-accent:#736234;
+  --ui-accent-text:#fffaf0;
+  --ui-accent-label:#6c5a2c;
+  --ui-active:#e6dabd
 }
-body.filmlabb-ui-refresh main.workspace>.panel{min-height:0!important;height:100%!important}
-body.filmlabb-ui-refresh main.workspace .image-panel{gap:5px!important;padding:7px!important;overflow:hidden!important}
-body.filmlabb-ui-refresh .image-panel .picture{min-height:0!important;flex:1 1 0%!important}
-body.filmlabb-ui-refresh .frame-quick{
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- flex-wrap:nowrap!important;gap:8px!important;min-height:0!important;
- padding:0!important;margin:0!important;border:0!important;
- border-radius:0!important;background:transparent!important;box-shadow:none!important;
+:root[data-theme="aubergine"] {
+  --ui-bg:#201e24;
+  --ui-panel:#2c2931;
+  --ui-surface:#24212a;
+  --ui-text:#f1edf1;
+  --ui-muted:#b7aebb;
+  --ui-border:#796f80;
+  --ui-accent:#b7a2bd;
+  --ui-accent-text:#211b25;
+  --ui-accent-label:#cab7cf;
+  --ui-active:#45394c
 }
-body.filmlabb-ui-refresh .frame-quick details{flex:0 1 auto!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important}
-body.filmlabb-ui-refresh .frame-quick summary,
-body.filmlabb-ui-refresh .frame-quick details>summary{
- display:inline-flex!important;align-items:center;justify-content:center;gap:5px;
- min-height:30px!important;height:30px!important;padding:4px 9px!important;margin:0!important;
- list-style:none!important;font-size:12px!important;font-weight:600!important;
- background:var(--ns-btn)!important;color:var(--ns-btn-text)!important;
- border:1px solid var(--ns-btn-border)!important;border-radius:4px!important;box-shadow:none!important;
+:root[data-theme="aubergine"][data-mode="light"] {
+  --ui-bg:#ece7ed;
+  --ui-panel:#f8f4f8;
+  --ui-surface:#eee8f0;
+  --ui-text:#302934;
+  --ui-muted:#706174;
+  --ui-border:#ac9cb3;
+  --ui-accent:#785885;
+  --ui-accent-text:#fff9ff;
+  --ui-accent-label:#704d7d;
+  --ui-active:#e1d3e7
 }
-body.filmlabb-ui-refresh .frame-quick summary::-webkit-details-marker{display:none}
-body.filmlabb-ui-refresh .frame-quick summary::before{content:'▣';margin:0;opacity:.8}
-body.filmlabb-ui-refresh .frame-quick .frame-confirm{flex:0 0 auto;min-width:82px!important;min-height:30px!important;height:30px!important;padding:4px 11px!important;margin:0!important;align-self:center!important;font-size:12px!important}
-body.filmlabb-ui-refresh .frame-quick details[open]{flex:1 1 auto!important}
-body.filmlabb-ui-refresh .frame-quick details[open] summary{margin-bottom:5px!important}
-body.filmlabb-ui-refresh .frame-quick .toolrow{display:flex;flex-wrap:wrap;gap:4px!important;margin:2px 0!important}
-body.filmlabb-ui-refresh .frame-quick .toolrow .btn{min-height:28px!important;padding:4px 8px!important;font-size:11px!important}
-body.filmlabb-ui-refresh .frame-quick .switch{margin:3px 8px 3px 0!important;font-size:11px!important}
-body.filmlabb-ui-refresh .image-controls{
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- flex-wrap:nowrap!important;gap:8px!important;flex:0 0 auto!important;
- padding:0!important;margin:0!important;height:32px!important;min-height:32px!important;
- background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;
+:root {
+  --ui-field:var(--ui-surface);
+  --ui-hover:var(--ui-active);
+  --ui-focus:var(--ui-accent-label);
+  --ui-disabled:var(--ui-surface);
+  --ui-disabled-text:var(--ui-muted);
+  --ui-error:#f0a7a0;
+  --ui-warning:#e0c08c;
+  --ui-slider-track:var(--ui-border);
+  --ui-slider-thumb:var(--ui-accent);
+  --ui-scroll-track:var(--ui-surface);
+  --ui-scroll-thumb:var(--ui-border);
+  --ui-viewer:#191919;
+  --ui-overlay:#191919e8;
+  --ui-overlay-text:#f4f1e9;
+  --ui-frame:#e9b86b;
+  --ui-guide:#f5f5f5;
+  --ui-guide-edge:#202020;
+  --ui-grid:#ffffffaa;
+  /* Compatibility aliases for histogram drawing and existing geometry hooks. */
+  --ns-bg:var(--ui-bg);
+  --ns-panel:var(--ui-panel);
+  --ns-panel-2:var(--ui-surface);
+  --ns-text:var(--ui-text);
+  --ns-muted:var(--ui-muted);
+  --ns-border:var(--ui-border);
+  --ns-btn:var(--ui-surface);
+  --ns-btn-border:var(--ui-border);
+  --ns-btn-text:var(--ui-text);
+  --ns-accent:var(--ui-accent);
+  --ns-accent-ink:var(--ui-accent-text);
+  --ns-accent-soft:var(--ui-active);
+  --ns-accent-line:var(--ui-accent-label)
 }
-body.filmlabb-ui-refresh .image-controls .seg{flex:0 0 auto!important;margin:0!important;min-height:30px!important}
-body.filmlabb-ui-refresh .image-controls .seg button{min-height:26px!important;padding:3px 9px!important;font-size:12px!important}
-body.filmlabb-ui-refresh .image-controls .toolrow{
- display:flex!important;justify-content:flex-end!important;flex-wrap:nowrap!important;
- flex:0 1 auto!important;gap:4px!important;margin:0!important;min-width:0!important;
+:root[data-mode="light"] {
+  --ui-error:#a12d2a;
+  --ui-warning:#805b13;
+  --ui-viewer:#dedbd5
 }
-body.filmlabb-ui-refresh .image-controls .toolrow .btn{min-height:30px!important;height:30px!important;padding:4px 8px!important;font-size:11px!important;white-space:nowrap}
-body.filmlabb-ui-refresh .image-controls #zoomStatus{display:none!important}
-body.filmlabb-ui-refresh .image-controls .ui-badge{
- display:inline-flex;align-items:center;justify-content:center;
- flex:0 0 auto;min-height:26px;padding:0 6px;
- background:transparent!important;border:0!important;border-radius:0!important;
- color:var(--ns-muted)!important;font-size:10px;font-weight:600;letter-spacing:.03em;
-}
-body.filmlabb-ui-refresh .ui-badge--engine::before{content:''!important;margin:0!important}
-body.filmlabb-ui-refresh .frame{border-radius:4px!important}
-body.filmlabb-ui-refresh .histogram-panel{border-radius:4px!important}
-body.filmlabb-ui-refresh .foot{display:block!important;position:relative!important;margin:0!important;padding:13px 18px 22px!important;max-width:none!important;border-top:1px solid var(--ns-border)!important;background:var(--ns-bg)!important}
-body.filmlabb-ui-refresh .editor-panel{overflow-y:auto!important;overscroll-behavior:contain}
-body.filmlabb-ui-refresh .queue-panel{overflow:hidden!important}
-body.filmlabb-ui-refresh .advanced-settings,body.filmlabb-ui-refresh details{border-color:var(--ns-border)!important}
-@media(max-width:1200px){
- body.filmlabb-ui-refresh .image-controls{height:auto!important;min-height:32px!important;flex-wrap:wrap!important;justify-content:center!important}
- body.filmlabb-ui-refresh .image-controls .toolrow{justify-content:center!important}
- body.filmlabb-ui-refresh .image-controls .ui-badge{margin-right:auto}
-}
-@media(max-width:760px){
- body.filmlabb-ui-refresh header{height:52px!important;min-height:52px!important;padding:6px 10px!important}
- body.filmlabb-ui-refresh .workspace-toolbar{height:42px!important;min-height:42px!important;max-height:42px!important;overflow-x:auto!important;overflow-y:hidden!important;flex-wrap:nowrap!important;scrollbar-width:none}
- body.filmlabb-ui-refresh .workspace-toolbar::-webkit-scrollbar{display:none}
- body.filmlabb-ui-refresh .workspace-toolbar .actions{width:auto!important;flex:0 0 auto!important}
- body.filmlabb-ui-refresh .workspace-toolbar .workspace-toggle{flex:0 0 auto!important}
- body.filmlabb-ui-refresh .workspace-toolbar .fl-info-menu{flex:0 0 auto!important}
- body.filmlabb-ui-refresh .workspace-toolbar .fl-roll-indicator{display:none!important}
- body.filmlabb-ui-refresh main.workspace{
-  display:flex!important;flex-direction:column!important;
-  height:var(--fl-workspace-height-mobile,calc(100dvh - 42px))!important;
-  min-height:0!important;overflow:hidden!important;gap:5px!important;padding:5px!important;
- }
- body.filmlabb-ui-refresh main.workspace .image-panel{
-  order:0!important;flex:0 0 42%!important;height:auto!important;min-height:0!important;padding:5px!important;
- }
- body.filmlabb-ui-refresh main.workspace .picture{height:0!important;min-height:0!important;flex:1 1 0%!important}
- body.filmlabb-ui-refresh main.workspace .queue-panel{
-  order:1!important;flex:0 0 62px!important;min-height:0!important;height:62px!important;max-height:62px!important;padding:3px 6px!important;
- }
- body.filmlabb-ui-refresh main.workspace .editor-panel{
-  order:2!important;flex:1 1 0%!important;height:auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;padding:9px!important;
- }
- body.filmlabb-ui-refresh .frame-quick{gap:5px!important}
- body.filmlabb-ui-refresh .frame-quick .frame-confirm{min-width:72px!important}
- body.filmlabb-ui-refresh .image-controls{justify-content:flex-start!important;overflow-x:auto!important;flex-wrap:nowrap!important;scrollbar-width:none;gap:5px!important}
- body.filmlabb-ui-refresh .image-controls::-webkit-scrollbar{display:none}
- body.filmlabb-ui-refresh .image-controls .toolrow{flex-wrap:nowrap!important;justify-content:flex-start!important}
- body.filmlabb-ui-refresh .image-controls .ui-badge{margin-right:0}
- body.filmlabb-ui-refresh .panel{border-radius:4px!important}
-}
-@media(max-width:600px) and (max-height:660px){body.filmlabb-ui-refresh main.workspace .image-panel{flex-basis:38%!important}}
-
-/* Beta 5 UI alignment revision: keep view selection geometrically centred. */
-body.filmlabb-ui-refresh .image-controls{
- display:grid!important;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr)!important;
- gap:5px!important;align-items:center!important;justify-content:normal!important;
- height:34px!important;min-height:34px!important;overflow:visible!important;
-}
-body.filmlabb-ui-refresh .image-controls>.seg{grid-column:2;justify-self:center!important;flex:none!important;max-width:100%}
-body.filmlabb-ui-refresh .image-controls>.toolrow{
- grid-column:3;justify-self:end!important;justify-content:flex-end!important;flex-wrap:nowrap!important;overflow-x:auto;max-width:100%;scrollbar-width:none;
-}
-body.filmlabb-ui-refresh .image-controls>.toolrow::-webkit-scrollbar{display:none}
-body.filmlabb-ui-refresh .image-controls .seg{border-radius:4px!important}
-body.filmlabb-ui-refresh .image-controls .seg button{white-space:nowrap}
-body.filmlabb-ui-refresh .engine-technical-status{font-size:11px;margin:8px 0}
-body.filmlabb-ui-refresh .engine-technical-status .ui-badge{border:0!important;display:inline!important;padding:0!important;background:none!important;font-size:11px;letter-spacing:0;font-weight:500;color:var(--ns-muted)!important}
-body.filmlabb-ui-refresh .engine-technical-status .ui-badge::before{content:none!important}
-body.filmlabb-ui-refresh .frame-quick{gap:5px!important}
-body.filmlabb-ui-refresh .image-controls .toolrow .btn{border-radius:4px!important}
-@media(max-width:1250px){
- body.filmlabb-ui-refresh .image-controls{display:flex!important;justify-content:center!important;overflow-x:auto!important;scrollbar-width:thin;gap:7px!important}
- body.filmlabb-ui-refresh .image-controls>.seg{flex:0 0 auto!important;margin:0 auto 0 0!important}
- body.filmlabb-ui-refresh .image-controls>.toolrow{flex:0 0 auto!important;max-width:none!important;overflow:visible!important;margin:0 0 0 auto!important}
-}
-@media(max-width:760px){
- body.filmlabb-ui-refresh .image-controls{display:flex!important;justify-content:flex-start!important;overflow-x:auto!important;scrollbar-width:none;gap:7px!important}
- body.filmlabb-ui-refresh .image-controls>.seg{margin:0!important}
- body.filmlabb-ui-refresh .image-controls>.toolrow{margin:0!important}
- body.filmlabb-ui-refresh .foot{padding:12px 12px 22px!important}
-}
-
-/* Beta 5 / layout v7: photographic work surface, not a permanent crop bar. */
-body.filmlabb-ui-refresh .image-panel>.frame-quick{display:none!important}
-body.filmlabb-ui-refresh .image-panel{gap:6px!important}
-body.filmlabb-ui-refresh .frame-settings-group{margin:11px 0 0!important;padding:8px 0 0!important;border-top:1px solid var(--ns-border)!important}
-body.filmlabb-ui-refresh .frame-settings-group>summary{cursor:pointer;font-size:13px;font-weight:600;padding:7px 0!important;color:var(--ns-text)!important}
-body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important;align-items:flex-start!important;gap:8px!important;margin:7px 0 3px!important;padding:0!important;background:none!important;border:0!important;flex-wrap:wrap!important}
-body.filmlabb-ui-refresh .frame-settings-group #frameOptions{flex:1 1 180px;min-width:0}
-body.filmlabb-ui-refresh .frame-settings-group #frameOptions>summary{border-radius:3px!important}
-body.filmlabb-ui-refresh .frame-settings-group .frame-confirm{margin-left:auto!important}
-body.filmlabb-ui-refresh .image-controls{margin-top:0!important}
-/* A consistent warm monochrome identity; subtle vermilion is reserved for actions. */
-body.filmlabb-ui-refresh{--ns-bg:#222120;--ns-panel:#2d2b29;--ns-panel-2:#242322;--ns-text:#eeeae2;--ns-muted:#b2aca2;--ns-border:#56514b;--ns-btn:#36332f;--ns-btn-border:#655e56;--ns-btn-text:#eeeae2;--ns-accent:#c78154;--ns-accent-ink:#211b17;--ns-accent-soft:rgba(199,129,84,.13);--ns-accent-line:#c78154}
-body.filmlabb-ui-refresh.light-theme{--ns-bg:#e9e6df;--ns-panel:#f4f1eb;--ns-panel-2:#e9e6df;--ns-text:#282521;--ns-muted:#6f6960;--ns-border:#c0b9ae;--ns-btn:#e4dfd6;--ns-btn-border:#b3aa9d;--ns-btn-text:#292620;--ns-accent:#a45b34;--ns-accent-ink:#fff8ed;--ns-accent-soft:rgba(164,91,52,.12);--ns-accent-line:#a45b34}
-/* Footer: a short, intentional scroll beyond the docked workspace (not a half-screen gap). */
-body.filmlabb-ui-refresh .foot{margin-top:12dvh!important}
-body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height,calc(100dvh - 46px))!important}
-@media(max-width:760px){body.filmlabb-ui-refresh main.workspace{height:var(--fl-workspace-height-mobile,calc(100dvh - 44px))!important}body.filmlabb-ui-refresh .frame-settings-group>.frame-quick{display:flex!important}body.filmlabb-ui-refresh .foot{margin-top:12dvh!important}}
-
-/* Beta 5 UI fix 8: persistent viewport-level export progress and active queue item. */
-#exportProgressPanel{
- position:fixed!important;z-index:2147483000!important;
- left:50%!important;right:auto!important;bottom:max(18px,env(safe-area-inset-bottom))!important;
- top:auto!important;transform:translateX(-50%)!important;
- width:min(440px,calc(100vw - 24px))!important;
- box-sizing:border-box!important;display:block;
- background:var(--ns-panel,#252525)!important;color:var(--ns-text,#f5f5f5)!important;
- border:1px solid var(--ns-border,#555)!important;border-radius:5px!important;
- padding:13px 15px!important;box-shadow:0 14px 40px rgba(0,0,0,.4)!important;
- font:inherit;max-height:calc(100dvh - 36px);overflow-y:auto;
-}
-#exportProgressPanel[hidden]{display:none!important}
-#exportProgressPanel .export-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-#exportProgressPanel progress{display:block;width:100%;height:10px;margin:12px 0;accent-color:var(--ns-accent,#c07050)}
-#exportProgressPanel p{margin:6px 0;font-size:12px;line-height:1.4}
-#exportProgressPanel .btn{min-height:30px;padding:5px 10px}
-body.filmlabb-ui-refresh #filmstrip .frame.active{
- border:2px solid var(--ns-accent)!important;
- outline:2px solid var(--ns-accent)!important;outline-offset:-2px!important;
- background:var(--ns-accent-soft)!important;
- box-shadow:0 0 0 1px var(--ns-accent) inset!important;
-}
-body.filmlabb-ui-refresh #filmstrip .frame.active span{color:var(--ns-text)!important;font-weight:700!important}
-body.filmlabb-ui-refresh #cropOverlay{z-index:5!important}
-@media(max-width:600px){#exportProgressPanel{bottom:max(10px,env(safe-area-inset-bottom))!important;padding:11px 12px!important}}
-
-/* Beta 5 UI fix 10 — image switching feedback */
-#picture{position:relative}
-#frameLoadingOverlay.frame-loading-overlay{position:absolute;inset:0;z-index:12;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;pointer-events:none;background:rgba(18,17,16,.62);color:#f5f1ea;backdrop-filter:blur(2px)}
-#frameLoadingOverlay[hidden]{display:none!important}
-.frame-loading-spinner{display:block;width:30px;height:30px;border:3px solid rgba(245,241,234,.25);border-top-color:#e2a078;border-radius:50%;animation:filmlabb-frame-spin .8s linear infinite}
-.frame-loading-label{font-size:12px;font-weight:600;max-width:80%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-@keyframes filmlabb-frame-spin{to{transform:rotate(360deg)}}
-@media(prefers-reduced-motion:reduce){.frame-loading-spinner{animation-duration:2.2s}}
-
-/* Optional export naming, compact in existing advanced settings */
-.export-name-settings{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:7px;align-items:end;padding:12px 0 10px;border-top:1px solid var(--ns-border)}
-.export-name-settings h2,.export-name-settings .hint{grid-column:1/-1;margin:0}
-.export-name-settings label{font-size:12px;color:var(--ns-muted)}
-.export-name-settings label[for="exportDigits"]{grid-column:2;grid-row:2}
-.export-name-settings input{grid-column:1;grid-row:3;min-width:0;width:100%;padding:9px;background:var(--ns-panel-2);border:1px solid var(--ns-border);border-radius:4px;color:var(--ns-text)}
-.export-name-settings select{grid-column:2;grid-row:3;min-width:120px}
-@media(max-width:420px){.export-name-settings{grid-template-columns:1fr}.export-name-settings label[for="exportDigits"],.export-name-settings select,.export-name-settings input{grid-column:1;grid-row:auto}}

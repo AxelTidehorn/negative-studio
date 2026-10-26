@@ -9,7 +9,7 @@ panel.innerHTML='<div class="export-top"><strong id="exportProgressTitle">JPEG-e
 document.body.appendChild(panel);
 const ui=id=>document.getElementById(id),tick=()=>new Promise(r=>setTimeout(r,0));
 function lock(){const busy=!!active||!!batch;for(const id of lockIds){const el=ui(id);if(!el)continue;if(busy){if(!locked.has(el))locked.set(el,el.disabled);el.disabled=true;}}if(!busy){for(const [el,disabled] of locked)el.disabled=disabled;locked.clear();if(typeof nextControls==='function')nextControls();}}
-function show(text,value){panel.hidden=false;ui('exportProgressText').textContent=text;if(value!==undefined)ui('exportProgress').value=value;}
+function show(text,value){panel.hidden=false;if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(ui('exportProgressText'),text);else ui('exportProgressText').textContent=text;if(value!==undefined)ui('exportProgress').value=value;}
 function cancelled(){return new DOMException('Exporten avbröts.','AbortError');}
 function check(job){if(job.cancelled||active!==job||batch?.cancelled)throw cancelled();}
 function cancel(){if(batch)batch.cancelled=true;if(active){active.cancelled=true;active.worker?.terminate();active.rejectCancel(cancelled());}if(batch&&!active)show('Avbryter efter pågående inläsning…');}

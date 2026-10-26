@@ -1,6 +1,8 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "i18n-messages.js": "src/ui/i18n-messages.js",
+ "appearance.js": "src/ui/appearance.js",
  "file-formats.js": "src/import/file-formats.js",
  "raw-decoder.js": "src/import/raw-decoder.js",
  "raw-input.js": "src/import/raw-input.js",
@@ -57,6 +59,8 @@ export const assets = {
  "tiff-writer.js": "src/export/tiff-writer.js",
 };
 export const scripts = [
+ {"file":"i18n-messages.js","harness":false,"defer":false},
+ {"file":"i18n.js","harness":false,"defer":false},
  {"file":"creative-profiles.js","harness":true,"defer":false},
  {"file":"file-formats.js","harness":true,"defer":false},
  {"file":"raw-decoder.js","harness":true,"defer":false},
@@ -66,6 +70,7 @@ export const scripts = [
  {"file":"color-management.js","harness":true,"defer":false},
  {"file":"srgb-profile.js","harness":true,"defer":false},
  {"file":"project-settings.js","harness":true,"defer":false},
+ {"file":"appearance.js","harness":true,"defer":false},
  {"file":"app-bootstrap.js","harness":true,"defer":false},
  {"file":"source-import.js","harness":true,"defer":false},
  {"file":"legacy-analysis.js","harness":true,"defer":false},
@@ -98,7 +103,6 @@ export const scripts = [
  {"file":"geometry-state.js","harness":true,"defer":false},
  {"file":"preview-presentation.js","harness":false,"defer":false},
  {"file":"geometry-ui.js","harness":false,"defer":false},
- {"file":"i18n.js","harness":false,"defer":true},
  {"file":"workspace-layout.js","harness":false,"defer":true},
  {"file":"compact-ui.js","harness":false,"defer":true},
  {"file":"editing-controller.js","harness":false,"defer":false},

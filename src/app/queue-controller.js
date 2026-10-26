@@ -4,12 +4,13 @@ const rollShared=NSProjectSettings.rollDefaults();
 const copyState=()=>NSProjectSettings.clone(state);
 function saveCurrentFrame(){if(activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
 function refreshRollUI(){
- $('rollStatus').textContent=roll.length?`${roll.length} bilder · Bild ${activeFrame+1} · ${filmProfiles[rollShared.profile].label} · snabb förhandsvisning`:'Inga bilder inlästa.';
+ if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:filmProfiles[rollShared.profile].label});
+ else $('rollStatus').textContent=roll.length?`${roll.length} bilder · Bild ${activeFrame+1} · ${filmProfiles[rollShared.profile].label} · snabb förhandsvisning`:'Inga bilder inlästa.';
  $('batchJpeg').disabled=!roll.length||rollLoading; $('batchTiff').disabled=!roll.length||rollLoading; $('loadFullRaw').disabled=!roll.length;
  const strip=$('filmstrip');strip.textContent='';
  roll.forEach((frame,i)=>{const b=document.createElement('div');b.className='frame'+(i===activeFrame?' active':'');
  const img=document.createElement('img');if(frame.thumb)img.src=frame.thumb;img.alt='Miniatyr '+(i+1);b.append(img);
- const label=document.createElement('span');label.textContent=(i+1)+': '+frame.file.name;b.append(label);
+ const label=document.createElement('span');label.textContent=(i+1)+': '+frame.file.name;label.setAttribute('data-i18n-ignore','');b.append(label);
  const check=document.createElement('input');check.type='checkbox';check.checked=frame.selected;check.title='Markera för TIFF-batch';check.onchange=()=>frame.selected=check.checked;b.append(check);
  b.onclick=e=>{if(e.target!==check)chooseFrame(i)};strip.append(b)});
 }

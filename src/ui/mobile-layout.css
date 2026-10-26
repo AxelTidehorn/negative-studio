@@ -1,90 +1,237 @@
-/* FILMLABB mobile workstation. Image and adjustments remain visible together. */
-@media (max-width: 600px) {
-  html, body { min-width: 0; min-height: 100%; height: auto; }
-  body { display: block; min-height: 100vh; min-height: 100dvh; overflow-x: hidden; overflow-y: auto; }
-  header { flex: 0 0 52px; height: 52px!important; padding: 4px max(9px, env(safe-area-inset-left))!important; }
-  .brand-logo { width: min(130px, 34vw); }
-  .header-tools { min-width: 0; gap: 4px!important; }
-  .header-tools .btn { font-size: 11px; padding: 5px 6px; }
-  .locale-control select { max-width: 80px; }
-
-  .workspace-toolbar {
-    flex: 0 0 auto; height: auto!important; min-height: 0!important;
-    padding: 5px max(8px, env(safe-area-inset-left)) 5px max(8px, env(safe-area-inset-right))!important;
-    display: flex; flex-wrap: wrap!important; overflow: visible!important;
-    column-gap: 6px!important; row-gap: 5px!important;
-  }
-  .workspace-toolbar .actions { order: 0; flex: 1 1 100%; gap: 6px!important; }
-  .workspace-toolbar .actions .btn { min-height: 36px!important; padding: 7px 10px!important; font-size: 12px!important; }
-  .workspace-toolbar .workspace-toggle { order: 1; min-height: 34px!important; min-width: 39px; }
-  .workspace-toolbar .workspace-reset { order: 2; margin-left: auto!important; min-height: 34px!important; }
-  .workspace-toolbar .fl-info-menu { order: 3; position: relative; }
-  .workspace-toolbar .fl-roll-indicator { display: none!important; }
-  .fl-info-content { right: 0; width: min(360px, calc(100vw - 16px)); max-height: 60dvh; }
-
+/* Responsive layout only. Coarse pointers keep native scrollbars and larger targets. */
+@media(max-width:1100px) and (min-width:761px) {
   main.workspace {
-    display: flex!important; flex-direction: column;
-    min-height: var(--fl-workspace-height-mobile, calc(100dvh - 68px))!important;
-    height: auto!important; overflow: visible!important;
-    gap: 5px!important; padding: 5px max(5px, env(safe-area-inset-left)) 4px max(5px, env(safe-area-inset-right))!important;
+    --effective-queue:110px;
+    --effective-adjust:290px
   }
-  main.workspace .image-panel {
-    order: 0;
-    flex: 0 0 min(37dvh, 310px); height: auto!important; min-height: 0!important;
-    overflow: hidden!important; padding: 5px!important;
+  .workspace-toolbar .fl-roll-indicator {
+    display:none
   }
-  main.workspace .picture {
-    position: relative!important; height: 0!important; min-height: 0!important;
-    max-height: none!important; flex: 1 1 0%!important;
+  .workspace-toolbar {
+    flex-wrap:wrap
   }
-  main.workspace .image-controls {
-    height: auto!important; min-height: 32px!important; flex-wrap: nowrap!important;
-    overflow-x: auto; scrollbar-width: none;
+  .workspace-toggle {
+    font-size:12px
   }
-  main.workspace .image-controls::-webkit-scrollbar { display: none; }
-  main.workspace .image-controls .seg { flex: 0 0 auto!important; }
-  main.workspace .image-controls .seg button { min-width: 48px; padding: 5px 7px!important; }
-  main.workspace .image-controls .toolrow { flex: 0 0 auto; }
-  main.workspace .image-controls .toolrow .btn { min-width: 33px; min-height: 32px!important; }
-  main.workspace .queue-panel {
-    order: 1;
-    display: flex; flex: 0 0 75px; height: 75px!important; min-height: 0!important;
-    max-height: 75px!important; padding: 3px 7px!important; overflow: hidden!important;
+  .image-controls {
+    justify-content:center
   }
-  main.workspace .queue-panel .filmstrip {
-    display: flex; flex-direction: row; flex: 1 1 auto; gap: 7px;
-    min-height: 0; padding: 2px; overflow-x: auto; overflow-y: hidden;
+  .queue-panel .frame img {
+    height:64px
   }
-  main.workspace .queue-panel .frame { flex: 0 0 72px; width: 72px; min-width: 72px; max-width: 72px; }
-  main.workspace .queue-panel .frame img { height: 39px; }
-  main.workspace .editor-panel {
-    order: 2; display: flex; flex-direction: column;
-    flex: 1 1 auto; height: auto!important; min-height: 0!important;
-    max-height: none!important; overflow-y: auto!important;
-    overscroll-behavior: contain; -webkit-overflow-scrolling: touch;
-    padding: 12px!important;
-  }
-  main.workspace .workspace-divider { display: none!important; }
-  main.workspace .queue-panel:has(#filmstrip:empty) { display: none!important; }
-  main.workspace .editor-panel > * { flex-shrink: 0; }
-  main.workspace.queue-collapsed .queue-panel,
-  main.workspace.adjust-collapsed .editor-panel { display: none!important; }
-  main.workspace.adjust-collapsed .image-panel { flex: 1 1 auto; }
-  main.workspace.queue-collapsed.adjust-collapsed .image-panel { flex: 1 1 auto; }
-  .editor-panel #simpleControls .control { margin: 7px 0 9px!important; }
-  .editor-panel #simpleControls .control label { font-size: 13px; margin-bottom: 4px; }
-  .editor-panel #simpleControls .control input { height: 34px; }
-  .editor-panel #simpleControls .control input::-webkit-slider-thumb { height: 21px; width: 21px; margin-top: -8px; }
-  .editor-panel #simpleControls .control input::-moz-range-thumb { height: 21px; width: 21px; }
-  .editor-panel .toolrow .btn, .editor-panel .row .btn { min-height: 38px; }
-
-  .foot { margin: 0!important; padding: 8px 10px max(8px, env(safe-area-inset-bottom))!important; }
-  .foot .footer-links { margin: 0; font-size: 10px; }
-  .foot .footer-links nav { gap: 10px; }
-  .foot .foot-tech { display: none; }
 }
-@media (max-width: 600px) and (max-height: 660px) {
-  main.workspace .image-panel { flex-basis: 32dvh; }
-  main.workspace .queue-panel { flex-basis: 60px; height: 60px!important; max-height: 60px!important; }
-  main.workspace .queue-panel .frame img { height: 27px; }
+@media(pointer:coarse) {
+  :root {
+    --ui-touch:44px
+  }
+  input[type=range] {
+    height:44px
+  }
+  input[type=range]::-webkit-slider-thumb {
+    width:21px;
+    height:21px;
+    margin-top:-8.5px
+  }
+  input[type=range]::-moz-range-thumb {
+    width:19px;
+    height:19px
+  }
+  .switch {
+    min-height:44px
+  }
+  .control {
+    margin:7px 0
+  }
+  .control label {
+    font-size:13px
+  }
+  summary,.tool-section>summary,.frame-settings-group>summary {
+    min-height:44px
+  }
+  * {
+    scrollbar-width:auto
+  }
+}
+@media(max-width:760px) {
+  header {
+    height:auto;
+    min-height:56px;
+    padding:7px 10px;
+    gap:7px
+  }
+  .brand-logo {
+    width:clamp(95px,28vw,138px)
+  }
+  .header-tools {
+    gap:5px
+  }
+  .locale-control .locale-icon {
+    display:none
+  }
+  .locale-control select {
+    max-width:95px
+  }
+  .support-link span {
+    display:none
+  }
+  .support-link {
+    padding:6px;
+    min-width:36px
+  }
+  .workspace-toolbar {
+    position:sticky;
+    top:0;
+    display:flex;
+    flex-wrap:wrap;
+    gap:5px;
+    padding:6px 8px
+  }
+  .workspace-toolbar .actions {
+    flex:1 1 100%
+  }
+  .workspace-toolbar .actions .btn {
+    flex:1
+  }
+  .workspace-toggle {
+    font-size:12px
+  }
+  .workspace-reset {
+    margin-left:auto
+  }
+  .fl-roll-indicator {
+    display:none
+  }
+  .fl-info-menu {
+    position:static
+  }
+  .fl-info-content {
+    right:8px;
+    max-height:60dvh
+  }
+  .workspace-toggle span {
+    display:none
+  }
+  main.workspace {
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    height:auto;
+    min-height:0;
+    padding:6px
+  }
+  .workspace-divider {
+    display:none
+  }
+  .image-panel {
+    order:0;
+    flex:none;
+    height:clamp(250px,43dvh,400px);
+    position:sticky;
+    top:var(--fl-toolbar-height,94px);
+    z-index:15;
+    padding:6px
+  }
+  .picture {
+    min-height:100px
+  }
+  .image-controls {
+    gap:5px;
+    justify-content:center
+  }
+  .image-controls .seg {
+    flex:none
+  }
+  .image-controls .toolrow {
+    display:flex;
+    flex-wrap:wrap;
+    justify-content:center
+  }
+  .image-controls .btn,.image-controls .seg button {
+    min-height:36px;
+    font-size:12px;
+    padding:5px 8px
+  }
+  .queue-panel {
+    order:1;
+    flex:none;
+    height:auto;
+    min-height:0;
+    padding:4px 6px
+  }
+  .queue-panel h2,.queue-panel .eyebrow {
+    display:none
+  }
+  .queue-panel:has(#filmstrip:empty) {
+    display:none
+  }
+  .filmstrip {
+    flex-direction:row;
+    overflow-x:auto;
+    overflow-y:hidden;
+    gap:6px;
+    padding:3px
+  }
+  .frame {
+    width:83px;
+    flex:0 0 83px
+  }
+  .frame img {
+    height:45px
+  }
+  .editor-panel {
+    order:2;
+    overflow:visible;
+    overscroll-behavior:auto;
+    padding:12px;
+    scrollbar-gutter:auto
+  }
+  .adjust-collapsed .image-panel {
+    height:75dvh
+  }
+  .queue-collapsed>.queue-panel,.adjust-collapsed>.editor-panel {
+    display:none
+  }
+  .foot {
+    padding:9px 10px 14px
+  }
+  .footer-links {
+    font-size:11px
+  }
+  .image-status {
+    font-size:11px
+  }
+  .tool-section {
+    margin-bottom:14px
+  }
+}
+@media(max-width:370px) {
+  .header-tools {
+    gap:3px
+  }
+  .locale-control select {
+    max-width:78px
+  }
+  .brand-logo {
+    width:94px
+  }
+  .header-tools .btn {
+    padding:6px
+  }
+  .workspace-toggle {
+    padding:5px 8px
+  }
+  .image-panel {
+    height:45dvh;
+    min-height:265px
+  }
+}
+@media(pointer:coarse) {
+  .image-controls .btn,.image-controls .seg button {
+    min-height:44px
+  }
+  .frame input {
+    width:24px;
+    height:24px;
+    margin:10px 0
+  }
 }
