@@ -11,6 +11,8 @@ precision highp int;
 uniform highp sampler2D uSource;
 uniform vec2 uSourceSize,uOutputSize;
 uniform vec3 uLight,uBase,uOffset,uResponseSpan,uGains;
+uniform vec3 uChromaStart,uChromaInvRange;
+uniform float uChromaLimit;
 uniform float uLo,uSpan,uExposure,uBlack,uWhiteRange,uInvGamma,uContrast,uSaturation,uShadows,uHighlights,uStrength;
 uniform int uMode,uAuto,uShoulder,uProfile,uPrint,uWide;
 uniform mat3 uMatrix;
@@ -59,7 +61,14 @@ void main(){
  vec3 p=texelFetch(uSource,at,0).rgb;
  if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(uWide==1?displayWide(p):p),1.0);return;}
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
- p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p)*uExposure*uGains;
+ vec3 density=p;
+ p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p);
+ if(uProfile!=2&&uProfile!=3){
+  vec3 uncertainty=(density-uChromaStart)*uChromaInvRange;
+  float t=sat(max(uncertainty.r,max(uncertainty.g,uncertainty.b)));
+  if(t>0.0){float fade=uChromaLimit*t*t*(3.0-2.0*t),neutral=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);p=mix(p,vec3(neutral),fade);}
+ }
+ p*=uExposure*uGains;
  float y=uWide==1?dot(vec3(.2627,.678,.0593),p):luma(p);
  if(y>1e-12){
   float target=max(0.0,(y-uBlack)/uWhiteRange);
@@ -147,6 +156,7 @@ function create(canvas){
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
   const a=c.cal.beta4,o=c.opts,p=c.profile,bw=p.type==='bw',profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
+  const confidence=NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   v('uGains',bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)]);
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',2**o.exposure);f('uBlack',NSColorEngine.decode(o.shadow));f('uWhiteRange',Math.max(.01,NSColorEngine.decode(o.highlight)-NSColorEngine.decode(o.shadow)));
   f('uInvGamma',1/Math.max(.25,o.gamma));f('uContrast',o.contrast);f('uSaturation',bw?(p.creativeVersion===2?1:0):o.saturation);

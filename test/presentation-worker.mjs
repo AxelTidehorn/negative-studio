@@ -34,6 +34,12 @@ for(const Type of [Uint8Array,Uint16Array,Float32Array])for(const flat of [false
  const model=G.create((cases%4)*90);model.rotation.fineDegrees=fine;const g=P.plan(im,model,cases%2===0,{x:.1,y:.13,w:.72,h:.73});
  await worker(im,g,{width:Math.max(1,g.width-3),height:Math.max(1,g.height-2)},false,{region:{x:.1,y:.13,w:.72,h:.73},crop:cases%2===0,rotation:(cases%4)*90});cases++;
 }
+// Exercise the coupled low-transmission color stage through the actual worker protocol.
+for(const Type of [Uint16Array,Float32Array])for(const flat of [false,true])for(const fine of [0,2]){
+ const scale=Type===Uint16Array?65535:1,low={width:37,height:25,channels:3,scale,encoding:'linear',data:Type.from({length:37*25*3},(_,i)=>scale*(i%3===0?.002:i%3===1?.001:(i%67)/65535))};
+ if(flat)low.flatField={size:2,gains:Array(12).fill(1.1)};
+ const model=G.create();model.rotation.fineDegrees=fine;const g=P.plan(low,model,false,null);await worker(low,g,g);cases++;
+}
 const im=h.run('working'),model=G.create();model.rotation.fineDegrees=2;const g=P.plan(im,model,false,null);await worker(im,g,g,true);
 console.log('PASS',cases,'actual JPEG-worker protocol cases match main pre-encode pixels, including flat-field, resized geometry and stripe seams; malformed stripe rejected');
 // Application TIFF and active fallback canvases share geometry, color, and 16-bit data.

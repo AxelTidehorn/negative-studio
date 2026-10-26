@@ -2,10 +2,22 @@
 (function(root){
 'use strict';
 const clamp=v=>Math.max(0,Math.min(1,v));
+// Experimental color-confidence knee in source transmission, not display white.
+// These are bounded experimental normalized signal thresholds, not a measured camera noise model.
+// Express the bounds in the unchanged calibrated coordinates so every LUT/export
+// path can use the same RGB-coupled stage without extra source reads or logarithms.
+function lowSignal4(c){
+ const a=c.cal.beta4,r=a.response;
+ const coordinate=(v,k)=>(-Math.log10(v*a.light[k]/a.base[k])-r.offset[k])/r.span[k];
+ const start=[0,1,2].map(k=>coordinate(64/65535,k));
+ return {start,invRange:start.map((v,k)=>1/(coordinate(4/65535,k)-v)),strength:.85};
+}
 function compile(c){
  const o=c.opts,f=c.profile,print=c.print,bw=f.type==='bw',ev=2**o.exposure,
  gains=bw?[1,1,1]:[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],
- invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?(f.creativeVersion===2?1:0):o.saturation;
+ invGamma=1/Math.max(.25,o.gamma),range=Math.max(.1,o.highlight-o.shadow),sat=bw?(f.creativeVersion===2?1:0):o.saturation,
+ confidence=c.kind==='calibrated4'&&!bw?lowSignal4(c):null,
+ lowStart=confidence?.start;
  function technical(v,k){
   if(c.kind==='calibrated4'){
    const a=c.cal.beta4,r=a.response;
@@ -44,9 +56,19 @@ function compile(c){
  function finish4(p){
   const a=c.cal.beta4;
   // Keep signed density coordinates until the shared range has been applied.
-  let r=Math.max(0,o.autoLevels?(p[0]-a.lo)/a.span:p[0])*ev*gains[0],
-      g=Math.max(0,o.autoLevels?(p[1]-a.lo)/a.span:p[1])*ev*gains[1],
-      b=Math.max(0,o.autoLevels?(p[2]-a.lo)/a.span:p[2])*ev*gains[2];
+  let r=Math.max(0,o.autoLevels?(p[0]-a.lo)/a.span:p[0]),
+      g=Math.max(0,o.autoLevels?(p[1]-a.lo)/a.span:p[1]),
+      b=Math.max(0,o.autoLevels?(p[2]-a.lo)/a.span:p[2]);
+  if(confidence&&(p[0]>lowStart[0]||p[1]>lowStart[1]||p[2]>lowStart[2])){
+   const t=clamp(Math.max((p[0]-confidence.start[0])*confidence.invRange[0],(p[1]-confidence.start[1])*confidence.invRange[1],(p[2]-confidence.start[2])*confidence.invRange[2]));
+   if(t>0){
+    const fade=confidence.strength*t*t*(3-2*t),neutral=c.workingSpace==='rec2020'?.2627*r+.678*g+.0593*b:.2126*r+.7152*g+.0722*b;
+    // Same factor on all chroma components: retain hue, common density detail
+    // and at least 15% of chroma, rather than pushing highlights to white.
+    r+=fade*(neutral-r);g+=fade*(neutral-g);b+=fade*(neutral-b);
+   }
+  }
+  r*=ev*gains[0];g*=ev*gains[1];b*=ev*gains[2];
   let y=c.workingSpace==='rec2020'?.2627*r+.678*g+.0593*b:.2126*r+.7152*g+.0722*b;
   if(y>1e-12){
    let target=Math.max(0,(y-black4)/whiteRange4);
@@ -130,5 +152,5 @@ function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
  }
  return out;
 }
-root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare};
+root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4};
 })(globalThis);
