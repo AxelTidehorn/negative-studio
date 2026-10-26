@@ -1,6 +1,8 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "conversion3.js":"src/color/conversion3.js",
+ "conversion3-controller.js":"src/calibration/conversion3-controller.js",
  "i18n-messages.js": "src/ui/i18n-messages.js",
  "appearance.js": "src/ui/appearance.js",
  "file-formats.js": "src/import/file-formats.js",
@@ -83,6 +85,7 @@ export const scripts = [
  {"file":"raw-input.js","harness":true,"defer":false},
  {"file":"color-parameters.js","harness":true,"defer":false},
  {"file":"editing-engine.js","harness":true,"defer":false},
+ {"file":"conversion3.js","harness":true,"defer":false},
  {"file":"render-core.js","harness":true,"defer":false},
  {"file":"presentation-sampler.js","harness":true,"defer":false},
  {"file":"frame-controller.js","harness":true,"defer":false},
@@ -91,6 +94,7 @@ export const scripts = [
  {"file":"beta39.js","harness":true,"defer":false},
  {"file":"color-calibration.js","harness":true,"defer":false},
  {"file":"beta4.js","harness":true,"defer":false},
+ {"file":"conversion3-controller.js","harness":true,"defer":false},
  {"file":"color-configuration.js","harness":true,"defer":false},
  {"file":"tiff-writer.js","harness":true,"defer":false},
  {"file":"source-analysis.js","harness":true,"defer":false},

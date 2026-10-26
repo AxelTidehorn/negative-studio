@@ -10,9 +10,9 @@ Processing runs locally in your browser. Original images are not uploaded to a p
 
 The current development line is **FILMLABB 1.1 Beta 6**, including the subsequent color-engine experiments, architecture refactoring and maintenance changes. This is beta software; camera compatibility and image quality still need wider validation with real negatives and physical devices.
 
-The version is identified by the [Beta 6 integration documentation](docs/BETA6_COMPLETE.md) and the active project format, `negative-studio-roll-beta6` (geometry version 1). There is no separate stable release number in `package.json`. Older names in public script URLs and saved settings are retained for compatibility and do not identify the current application version. A hosted deployment may lag `main`; the source commit identifies the code used in a local build.
+The version is identified by the [Beta 6 integration documentation](docs/BETA6_COMPLETE.md) and the versioned project formats: `negative-studio-roll-beta6`, `negative-studio-roll-beta6-edit2` and `negative-studio-roll-conversion3` (geometry version 1). There is no separate stable release number in `package.json`. Older names in public script URLs and saved settings are retained for compatibility and do not identify the current application version. A hosted deployment may lag `main`; the source commit identifies the code used in a local build.
 
-Free rotation and composition are integrated into preview and export. The optional **robust density** color mode, wide-gamut RAW import and flat-field correction remain experiments. Editing 2.0 is now an opt-in experiment with a shared monotone tone curve, OKLab saturation and soft gamut limiting. It is not the default and needs photographic/device evaluation.
+Free rotation and composition are integrated into preview and export. The optional **robust density** color mode, wide-gamut RAW import and flat-field correction remain experiments. Conversion Engine 3.0 adds **Curve, Density and Matrix** alongside unchanged **Original** and **Standard** references. These are bounded experiments requiring photographic evaluation, not proven improvements. **Editing 2.0 is the default for new images**, with a shared monotone tone curve, OKLab saturation and soft gamut limiting. Older projects retain their saved editing version; missing versions keep original editing.
 
 ## Features
 
@@ -20,8 +20,8 @@ Free rotation and composition are integrated into preview and export. The option
 | --- | --- |
 | Import | Local RAW, RGB/grayscale TIFF, JPEG, PNG and WebP; LibRaw/WASM decodes RAW in a worker. |
 | Technical analysis | Automatic film-frame detection, manual edge correction and locking, film-base sampling, automatic calibration, optional two-neutral-patch and shared roll calibration. |
-| Color conversion | Standard calibrated engine and Comparison engine; older algorithms remain available when loading compatible projects. Standard has explicit original/current/experimental A/B choices. |
-| Editing | Original editing or opt-in Editing 2.0; exposure, contrast, gamma, black/white points, shadows/highlights, temperature, tint, saturation, creative color/monochrome profiles and print styles. |
+| Color conversion | Five choices: Original (`log39`), Standard (`calibrated4`), Curve, Density and Matrix. Standard retains its existing color experiments; older algorithms remain for compatible projects. |
+| Editing | Editing 2.0 for new images, original editing retained for older projects; exposure, contrast, gamma, black/white points, shadows/highlights, temperature, tint, saturation, creative color/monochrome profiles and print styles. |
 | Preview | WebGL 2 acceleration for supported configurations; worker-based CPU rendering and a bounded main-thread fallback. Interactive feedback and final detail are rendered separately. |
 | Original detail | A separate 100%/200% view samples a small region of the working original, before presentation rotation. It does not change calibration. |
 | Composition | Quarter turns plus fine rotation, straighten by drawing a line, optional composition crop and thirds grid. Rotation limits output to a valid area without empty corners. |
@@ -53,10 +53,10 @@ RAF embedded JPEG is used for thumbnails or as an explicit fallback after RAW de
 
 1. Import up to five files. Only the selected image is decoded; inactive entries retain their files, settings and small thumbnails.
 2. Check the detected film frame. Correct its edges if needed and confirm an uncertain detection. This rectangle defines the technical analysis region.
-3. Use Standard conversion, or compare the earlier automatic engine. Automatic film-base/color estimates can be refined with measured film-base or neutral references. Roll calibration assumes consistent film and capture conditions.
+3. Use Standard conversion, or compare Original, Curve, Density and Matrix. Automatic film-base/color estimates can be refined with measured film-base or neutral references. Roll calibration assumes consistent film and capture conditions.
 4. Adjust the positive and optionally apply a creative profile. Creative edits do not feed back into technical film-base analysis.
 5. Rotate, straighten or choose a composition. These operations do not recalibrate color. The queue-wide frame-crop choice determines whether the technical frame also limits export; each image keeps its own rotation and composition.
-6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 use a new file tag that earlier Beta 6 builds reject safely.
+6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 or the new conversion engines use versioned file tags that earlier builds reject safely.
 
 ## Getting started
 
@@ -88,7 +88,7 @@ Open `http://localhost:8000`. **`site/` is the built web application. Do not ser
 | --- | --- |
 | `src/import/`, `src/image/` | File routing, RAW/TIFF decoding, source pixels and flat-field data. |
 | `src/calibration/`, `src/color/` | Film-frame analysis, versioned conversion engines, color configuration and shared CPU/GPU parameters. |
-| `src/editing/` | Creative profiles and print settings. |
+| `src/editing/` | Versioned editing operators, creative profiles and print settings. |
 | `src/render/`, `src/geometry/` | Preview scheduling/backends, coordinate transforms, composition and display presentation. |
 | `src/export/` | Frozen geometry/color, bounded sampling stripes, encoding, filenames, batches and cancellation. |
 | `src/app/`, `src/ui/`, `src/platform/` | Queue/projects, controls/layout/languages and offline lifecycle. |
@@ -98,9 +98,11 @@ Technical conversion and creative editing are distinct responsibilities within t
 
 See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the call chain, state scope, resources and project compatibility, and [REFACTORING.md](docs/REFACTORING.md) for the cleanup inventory and deliberately retained legacy behavior.
 
-### Comparing Editing 2.0
+### Comparing conversion engines
 
-Choose **Original editing** or **Editing 2.0 (experimental)** above the existing sliders. The choice is per image and does not change calibration or the conversion engine. Neutral 2.0 controls preserve the original neutral output exactly; the same non-neutral numbers can have different visual strength. In 2.0, positive Shadows lifts and positive Highlights compresses. Original keeps its earlier behavior. See [algorithm, project and evaluation details](docs/EDITING2.md).
+Choose **Original, Standard, Curve, Density or Matrix** with the image adjustments. Switching retains edits, film frame and composition. The three new methods test different hypotheses: bounded nonlinear channel curves, shared density presentation and a restrained color-channel transform. None is selected as a photographic winner. Use default/protected sRGB import for a fair five-way comparison; Original retains its existing restriction against experimental Rec.2020 import.
+
+Editing 2.0 runs after conversion for new images. The former editing selector is hidden; existing projects retain their own version and exact settings. Neutral 2.0 controls preserve the neutral adapter output; positive Shadows lifts and positive Highlights compresses. See [conversion algorithms, limitations and reference generation](docs/CONVERSION_3_EXPERIMENT.md) and [Editing 2.0](docs/EDITING2.md).
 
 ## Image quality and limitations
 
@@ -115,22 +117,26 @@ JPEG may reduce dimensions to fit browser/device limits or after encoder failure
 ## Development and testing
 
 ```sh
-npm test                         # all Node groups
+npm run test:fast                # small numerical/reference checks
+npm run test:integration         # engines, projects, CPU/GPU and exports
+npm run test:full                # complete regression + build + browsers
+npm test                         # historical sequential Node command
 npm test -- --group color        # focused tests
 npm test -- --group projects
 npm run build
 npm run test:build               # clean output, asset/cache consistency
 npx playwright install chromium
-npm run test:browser             # builds, then browser integration tests
+npm run test:browser             # verified build, shared Chromium process
+npm run test:benchmark           # explicit measurements, separate from tests
 ```
 
 Set `FILMLABB_CHROMIUM_BIN=/path/to/chromium` to reuse an installed browser. Node fixtures cover historical color output, project migrations, calibration, RAW/TIFF import, geometry and export sampling. Browser suites exercise the actual UI, CPU/GPU, detail view, workers, export errors/cancellation, batch/ZIP and service-worker updates. Expected pixels are not changed to accommodate accidental regressions. Real-camera diagnostics require external files and are separate from the self-contained suite.
 
-For comparable maintenance measurements, build frozen and candidate checkouts and run the same driver sequentially:
+See [test levels and process/build reuse](docs/TESTING.md). For comparable conversion measurements, run the same driver against frozen and candidate checkouts sequentially:
 
 ```sh
 FILMLABB_CHROMIUM_BIN=/path/to/chromium \
-  node tools/benchmark-maintenance.mjs /path/to/checkout /tmp/results.json 7
+  node tools/benchmark-conversion3.mjs /path/to/checkout /tmp/results.json 7
 ```
 
 [Maintenance measurements and findings](docs/MAINTENANCE.md) distinguish elapsed times, deterministic work/allocation counts and device-validation limits.
@@ -139,8 +145,8 @@ Bug reports should include the commit/deployment, browser/OS/device, format and 
 
 ## Roadmap
 
-- **Current work:** maintain existing engines, improve stability/resource use, and validate color/RAW behavior with reproducible images and devices.
-- **Planned development area:** photographic evaluation and refinement of experimental Editing 2.0 while keeping creative editing separate from conversion. No default-version change is promised.
+- **Current work:** compare all five conversion engines and Editing 2.0 using real negatives and physical devices, while preserving legacy results.
+- **Further development:** use photographic evaluation to decide which conversion and editing refinements are justified. No experimental conversion winner or next release is promised.
 - **Ideas requiring investigation:** broader camera/device reference coverage and improved downscale filtering. These are not promised release features.
 
 No version or delivery date is committed here for future editing features.

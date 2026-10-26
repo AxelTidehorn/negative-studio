@@ -1,3 +1,4 @@
+import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import http from 'node:http';import {chromium} from 'playwright';
 let version=1,broken=false;
@@ -10,7 +11,7 @@ const server=http.createServer((req,res)=>{
  else{res.setHeader('Content-Type','text/html');res.end(`<body data-version="${version}"><script src="./module.js"></script><script>navigator.serviceWorker.register('./cache-worker.js',{updateViaCache:'none'});</script></body>`);}
 });
 await new Promise(r=>server.listen(0,'127.0.0.1',r));
-const browser=await chromium.launch({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox']});
+const browser=await launchBrowser({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:['--no-sandbox']});
 try{
  const context=await browser.newContext(),url='http://127.0.0.1:'+server.address().port+'/';
  let page=await context.newPage();page.setDefaultTimeout(20000);await page.goto(url);

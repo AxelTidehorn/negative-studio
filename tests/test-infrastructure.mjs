@@ -1,0 +1,6 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {fingerprint,inputHash} from '../tools/build-artifact.mjs';
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'filmlabb-build-check-'));try{
+ const file=path.join(dir,'asset.js');fs.writeFileSync(file,'const a=1;');const first=fingerprint([dir]),stat=fs.statSync(file);fs.writeFileSync(file,'const a=2;');fs.utimesSync(file,stat.atime,stat.mtime);assert.notEqual(fingerprint([dir]),first,'same-size/same-mtime source edits must invalidate');fs.writeFileSync(file,'const a=1;');assert.equal(fingerprint([dir]),first);fs.renameSync(file,path.join(dir,'other.js'));assert.notEqual(fingerprint([dir]),first,'renames must invalidate');assert.notEqual(fingerprint([dir]),fingerprint([path.join(dir,'missing')]));
+ assert.match(inputHash(),/^[a-f0-9]{64}$/);const pkg=JSON.parse(fs.readFileSync('package.json'));for(const name of ['test:fast','test:integration','test:full','test:benchmark'])assert.ok(pkg.scripts[name]);
+ console.log('PASS content-based build identity rejects preserved timestamps/size, rename/removal and verifies installed build inputs; explicit test levels');
+}finally{fs.rmSync(dir,{recursive:true,force:true});}

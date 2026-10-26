@@ -1,6 +1,6 @@
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
-const h=harness(),C=h.context.NSColorCalibration,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine;h.run('scheduleRender=()=>{};render=()=>{};');let tests=0;
+const h=harness({editingVersion:1}),C=h.context.NSColorCalibration,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine;h.run('scheduleRender=()=>{};render=()=>{};');let tests=0;
 function test(name,fn){fn();tests++;console.log('PASS',name);}
 const base=[.7,.4,.2],slope=[.6,.9,1.2],neg=p=>p.map((v,k)=>base[k]*10**(-slope[k]*v));
 function image(ev=0){const width=120,height=60,data=new Uint16Array(width*height*3);for(let y=0;y<height;y++)for(let x=0;x<width;x++){const q=x<40?[.15,.15,.15]:x<80?[.75,.75,.75]:[.8,.3,.2];data.set(neg(q).map(v=>Math.round(v*2**ev*65535)),(y*width+x)*3);}return {width,height,channels:3,scale:65535,encoding:'linear',data};}

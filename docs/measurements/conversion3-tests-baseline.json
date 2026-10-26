@@ -1,0 +1,331 @@
+{
+  "commit": "5580f93",
+  "node": "v24.19.0",
+  "environment": "Linux managed host; Chromium/SwiftShader; sequential isolated processes",
+  "tests": [
+    {
+      "file": "build-root.mjs",
+      "group": "build",
+      "ms": 94.92610199999999,
+      "status": 0
+    },
+    {
+      "file": "tests/check-app-integration.mjs",
+      "group": "node",
+      "ms": 5293.402049,
+      "status": 0
+    },
+    {
+      "file": "tests/check-smoke.mjs",
+      "group": "node",
+      "ms": 91.39957500000037,
+      "status": 0
+    },
+    {
+      "file": "tests/architecture.mjs",
+      "group": "node",
+      "ms": 381.6725919999999,
+      "status": 0
+    },
+    {
+      "file": "tests/maintenance-lifecycle.mjs",
+      "group": "node",
+      "ms": 123.37119699999948,
+      "status": 0
+    },
+    {
+      "file": "tests/check-project39.mjs",
+      "group": "node",
+      "ms": 114.2949950000002,
+      "status": 0
+    },
+    {
+      "file": "tests/check-project4.mjs",
+      "group": "node",
+      "ms": 269.8583629999994,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-project.mjs",
+      "group": "node",
+      "ms": 1119.1519580000004,
+      "status": 0
+    },
+    {
+      "file": "tests/editing-engine.mjs",
+      "group": "node",
+      "ms": 13982.33456,
+      "status": 0
+    },
+    {
+      "file": "tests/check-profiles-next.mjs",
+      "group": "node",
+      "ms": 2531.1747410000025,
+      "status": 0
+    },
+    {
+      "file": "tests/check-color-engine.mjs",
+      "group": "node",
+      "ms": 260.72246299999824,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta38.mjs",
+      "group": "node",
+      "ms": 40945.651889,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta39.mjs",
+      "group": "node",
+      "ms": 4875.486254999996,
+      "status": 0
+    },
+    {
+      "file": "tests/check-beta4.mjs",
+      "group": "node",
+      "ms": 5456.7542479999975,
+      "status": 0
+    },
+    {
+      "file": "tests/check-reference38.mjs",
+      "group": "node",
+      "ms": 166.2575380000053,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-snapshot38.mjs",
+      "group": "node",
+      "ms": 528.8312529999967,
+      "status": 0
+    },
+    {
+      "file": "tests/check-comparison.mjs",
+      "group": "node",
+      "ms": 80.3554909999948,
+      "status": 0
+    },
+    {
+      "file": "tests/check-compatibility-next.mjs",
+      "group": "node",
+      "ms": 633.0095560000045,
+      "status": 0
+    },
+    {
+      "file": "tests/color-boundary-investigation.mjs",
+      "group": "node",
+      "ms": 292.2646509999904,
+      "status": 0
+    },
+    {
+      "file": "tests/standard-engine-experiment.mjs",
+      "group": "node",
+      "ms": 1207.24166900001,
+      "status": 0
+    },
+    {
+      "file": "tests/color-ab.mjs",
+      "group": "node",
+      "ms": 4429.121258999992,
+      "status": 0
+    },
+    {
+      "file": "tests/check-manual-frame.mjs",
+      "group": "node",
+      "ms": 67484.08830500001,
+      "status": 0
+    },
+    {
+      "file": "tests/check-source-analysis.mjs",
+      "group": "node",
+      "ms": 2137.894184999983,
+      "status": 0
+    },
+    {
+      "file": "tests/check-source-border.mjs",
+      "group": "node",
+      "ms": 3600.897536000004,
+      "status": 0
+    },
+    {
+      "file": "tests/raf-preview-io.mjs",
+      "group": "node",
+      "ms": 148.32010899999295,
+      "status": 0
+    },
+    {
+      "file": "tests/check-raw-fixture.mjs",
+      "group": "node",
+      "ms": 305.6656190000067,
+      "status": 0
+    },
+    {
+      "file": "tests/check-raw-support.mjs",
+      "group": "node",
+      "ms": 74.5256240000017,
+      "status": 0
+    },
+    {
+      "file": "tests/check-next.mjs",
+      "group": "node",
+      "ms": 1389.3786919999984,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-geometry.mjs",
+      "group": "node",
+      "ms": 126.7463899999857,
+      "status": 0
+    },
+    {
+      "file": "tests/preview-geometry.mjs",
+      "group": "node",
+      "ms": 129.99228899998707,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-plan.mjs",
+      "group": "node",
+      "ms": 8435.706890000001,
+      "status": 0
+    },
+    {
+      "file": "tests/check-tiff-codec.mjs",
+      "group": "node",
+      "ms": 348.58903899998404,
+      "status": 0
+    },
+    {
+      "file": "tests/check-export-tiff-perf.mjs",
+      "group": "node",
+      "ms": 9886.031165999972,
+      "status": 0
+    },
+    {
+      "file": "tests/presentation-sampling.mjs",
+      "group": "node",
+      "ms": 76764.89918499999,
+      "status": 0
+    },
+    {
+      "file": "tests/presentation-worker.mjs",
+      "group": "node",
+      "ms": 14647.158032999985,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-export.mjs",
+      "group": "node",
+      "ms": 1093.9320060000173,
+      "status": 0
+    },
+    {
+      "file": "tests/downscale-investigation.mjs",
+      "group": "node",
+      "ms": 56.82514000002993,
+      "status": 0
+    },
+    {
+      "file": "tests/check-preview-performance.mjs",
+      "group": "node",
+      "ms": 1317.1196559999953,
+      "status": 0
+    },
+    {
+      "file": "tests/ui-i18n.mjs",
+      "group": "node",
+      "ms": 94.06444699998247,
+      "status": 0
+    },
+    {
+      "file": "tests/check-i18n-static.mjs",
+      "group": "node",
+      "ms": 65.24394800001755,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-cache.mjs",
+      "group": "node",
+      "ms": 108.81465199997183,
+      "status": 0
+    },
+    {
+      "file": "tests/ui-ux-browser.mjs",
+      "group": "browser",
+      "ms": 47453.891064999974,
+      "status": 0
+    },
+    {
+      "file": "tests/check-workflow-browser.mjs",
+      "group": "browser",
+      "ms": 40996.207924000046,
+      "status": 0
+    },
+    {
+      "file": "tests/check-next-browser.mjs",
+      "group": "browser",
+      "ms": 28267.418810000003,
+      "status": 0
+    },
+    {
+      "file": "tests/check-gpu-browser.mjs",
+      "group": "browser",
+      "ms": 24348.757490999997,
+      "status": 0
+    },
+    {
+      "file": "tests/check-mobile-order.mjs",
+      "group": "browser",
+      "ms": 5114.113769999996,
+      "status": 0
+    },
+    {
+      "file": "tests/stability-browser.mjs",
+      "group": "browser",
+      "ms": 8641.153145999997,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-browser.mjs",
+      "group": "browser",
+      "ms": 22881.155585,
+      "status": 0
+    },
+    {
+      "file": "tests/beta6-complete-browser.mjs",
+      "group": "browser",
+      "ms": 25702.256437000004,
+      "status": 0
+    },
+    {
+      "file": "tests/quality-workflow-browser.mjs",
+      "group": "browser",
+      "ms": 5431.972133999981,
+      "status": 0
+    },
+    {
+      "file": "tests/standard-engine-browser.mjs",
+      "group": "browser",
+      "ms": 5082.431490999996,
+      "status": 0
+    },
+    {
+      "file": "tests/color-ab-browser.mjs",
+      "group": "browser",
+      "ms": 12906.955763999955,
+      "status": 0
+    },
+    {
+      "file": "tests/maintenance-browser.mjs",
+      "group": "browser",
+      "ms": 9713.52629400004,
+      "status": 0
+    },
+    {
+      "file": "tests/editing-browser.mjs",
+      "group": "browser",
+      "ms": 30570.624703999958,
+      "status": 0
+    }
+  ]
+}

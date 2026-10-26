@@ -4,8 +4,9 @@ const {browser,url,close}=await browserHarness();
 try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'en-US'}),errors=[];page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'edit-a.png',mimeType:'image/png',buffer},{name:'edit-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');
+ await page.evaluate(()=>{roll[1].settings.editVersion=1;});assert.equal(await page.evaluate(()=>state.editVersion),2);assert.equal(await page.locator('#editVersion').isVisible(),false);
  const frozen=await page.evaluate(()=>({cal:JSON.stringify({calibration,base,cropRegion,response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));
- await page.locator('#editVersion').selectOption('2');await page.waitForFunction(()=>state.editVersion===2&&FILMLABB_GPU.snapshot().backend==='gpu');
+ await page.locator('#editVersion').selectOption('2',{force:true});await page.waitForFunction(()=>state.editVersion===2&&FILMLABB_GPU.snapshot().backend==='gpu');
  const after=await page.evaluate(()=>({cal:JSON.stringify({calibration,base,cropRegion,response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));assert.equal(after.cal,frozen.cal);assert.equal(after.analyses,frozen.analyses);assert.ok(after.uploads<=frozen.uploads+2);
  console.log('PASS real editing A/B selector changes no conversion, calibration, geometry, analysis; only bounded precision validation uploads');
  const parity=await page.evaluate(()=>{

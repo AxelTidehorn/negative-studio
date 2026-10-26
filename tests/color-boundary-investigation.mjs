@@ -1,6 +1,6 @@
 /* Reproduces mechanisms, not the still-unavailable reported RAF defect. */
 import assert from 'node:assert/strict';import {harness} from './helpers/app-harness.mjs';
-const h=harness();h.run(`render=()=>{};scheduleRender=()=>{};working={width:48,height:32,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:48*32*3},(_,i)=>4000+(i*137)%45000)};workingPreview=CE.preview(working);sourceInfo={encoding:'linear'};state={...defaultState(),cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};src=new ImageData(48,32);previewSrc=src;analyzeLevels();`);
+const h=harness({editingVersion:1});h.run(`render=()=>{};scheduleRender=()=>{};working={width:48,height:32,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:48*32*3},(_,i)=>4000+(i*137)%45000)};workingPreview=CE.preview(working);sourceInfo={encoding:'linear'};state={...defaultState(),cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};src=new ImageData(48,32);previewSrc=src;analyzeLevels();`);
 const R=h.context.NSRawInput,K=h.context.NSPixelKernel,P=h.context.NSPresentation,G=h.context.NSGeometry,c=h.run('configuration38()');
 const data=new Uint16Array([12000,5000,600,12000,5000,644,12000,5000,645,12000,5000,700]),original=Uint16Array.from(data),im=R.convert({width:4,height:1,bits:16,colors:3,data},'protected');
 const expected=[];let negative=0;

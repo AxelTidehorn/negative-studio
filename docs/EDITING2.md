@@ -1,4 +1,4 @@
-# Editing 2.0 — experimental A/B implementation
+# Editing 2.0 — algorithms and compatibility
 
 Baseline: main `2e82ad6`, including architecture #24 and maintenance #25.
 The supplied **FILMLABB_Redigeringsmotor_2_0_Forstudie.md** (26 October 2026)
@@ -6,27 +6,26 @@ was available in the earlier attachments, not in the repository. It was read as
 design guidance. Its code inventory predates the later color experiments and
 refactoring; this implementation follows the current manifest/call chain.
 
-## Using the experiment
+## Current integration
 
-Above the existing adjustment sliders, choose **Original editing** or
-**Editing 2.0 (experimental)**. Conversion engine (Standard/Comparison), RAW import,
-film frame, film-base/neutral calibration, saved response and creative profile
-stay the same. Version changes and ordinary editing never call analysis.
+Conversion Engine 3.0 makes Editing 2.0 the default for **new images and projects**.
+The ordinary A/B editing selector is hidden; its internal compatibility binding
+and the original editing operator remain. Existing images/projects keep their
+saved version. Missing versions in older project/session data mean Original (1),
+not the new default. Resetting an old image does not upgrade its editing version.
 
-The version is individual to each image and defaults to Original. Switching
-preserves the slider values, so it is easy to return to the original rendering.
-**Equal values do not mean equal visual strength.** In 2.0, positive Shadows lifts
-shadows and positive Highlights compresses highlights. Original keeps its earlier
-behavior, including its different shadow direction. Double-click/tap still resets
-the existing slider. Roll copying copies the existing adjustment values, not the
-per-image editing version. No new advanced panels or spatial controls are added.
+All five conversion choices (Original, Standard, Curve, Density and Matrix) work
+with Editing 2.0. Conversion selection, RAW import, film frame, calibration,
+creative profile and presentation remain independent. Editing never calls analysis.
+**Equal values do not mean equal visual strength between editing versions.** In
+2.0 positive Shadows lifts and positive Highlights compresses; Original keeps its
+earlier directions. Roll copying keeps the existing adjustment-value semantics.
 
-Compare both versions with the same frozen image/analysis, first neutral and then
-one slider at a time. For photographic judgment, also compare matched midtone
-brightness/contrast: equal numbers alone are not a fair quality comparison. Check
-skin, skies, saturated objects, deep shadows and 100%/200% detail, with neutral and
-creative profiles. Real negatives, several observers and physical iPad/Edge tests
-are required before calling this a photographic improvement or changing defaults.
+The algorithms below are unchanged from the initial A/B implementation. This
+integration does not establish photographic superiority. Evaluate real negatives,
+skin, sky, saturated objects and 100%/200% detail on physical iPad/Edge devices.
+See [Conversion Engine 3.0](CONVERSION_3_EXPERIMENT.md) for activation, new project
+tags and the controlled conversion experiments.
 
 ## Adapter and independent versions
 
@@ -56,7 +55,8 @@ Original kernel bodies and calibration mathematics are unchanged. Necessary
 integration only adds the version adapter and disables separable *complete* RGB
 lookups for the new coupled operator. Existing technical source-channel tables
 are still reused. Comparison and older conversion modes also work with 2.0 on CPU;
-the existing GPU backend remains limited to its supported Standard configurations.
+the GPU backend supports Standard and the three new conversion engines; Original
+retains its existing CPU fallback.
 
 ## One compiled tone curve
 
@@ -132,19 +132,21 @@ Existing context-loss/precision failure CPU fallback remains active.
 
 Original detail, TIFF, JPEG worker/main fallback/synchronous compatibility paths,
 free-rotation sampling, batch/ZIP and cancellation use the same versioned kernel.
-Each export freezes its configuration; the version selector is locked during
-export. Existing stripes, byte budgets, retry rules and five-image queue remain.
+Each export freezes its configuration; the retained version binding is locked
+during export. Existing stripes, byte budgets, retry rules and five-image queue remain.
 Negative display is unchanged. Geometry still interpolates processed neighbor
 colors in linear display light, then quantizes according to format.
 
 ## Project compatibility
 
-New image settings default to `editVersion: 1`. JSON stores the version per image.
+New image settings now default to `editVersion: 2`; imported older settings without
+a version still explicitly receive `editVersion: 1`. JSON stores the version per image.
 Mixed queues retain both versions. Original-only projects keep the existing
-`negative-studio-roll-beta6` tag. Projects containing version 2 use
+`negative-studio-roll-beta6` tag. Projects containing version 2 with only earlier conversion engines use
 `negative-studio-roll-beta6-edit2`; earlier Beta 6 builds reject that tag instead of silently
-rendering new settings with Original. The current project controller adapts this
-file tag to the same validated geometry schema (geometry version 1).
+rendering new settings with Original. Projects containing Curve, Density or Matrix use the separate Conversion 3.0 tag.
+The current project controller adapts these
+file tags to the same validated geometry schema (geometry version 1).
 
 All previously supported project formats, RAW settings, color experiments,
 calibration/profiles and geometry migrations remain. No automatic conversion or
@@ -160,7 +162,7 @@ OKLab invariants and malformed editing parameters. A frozen main kernel fixture
 checks original/neutral identity and unchanged technical samples across conversion,
 profile and existing color variants. Projects test mixed/missing/unsupported versions.
 
-`tests/editing-browser.mjs` checks real A/B controls, no analysis/source mutation,
+`tests/editing-browser.mjs` checks the retained internal version binding, no analysis/source mutation,
 180 direct GPU/CPU combinations, actual CPU worker, 100%/200% source detail,
 16-bit TIFF reference, free-rotation native JPEG worker/fallback equality, mixed
 project restore, TIFF/JPEG ZIP batches and cancellation. Broader existing suites
