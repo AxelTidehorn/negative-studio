@@ -36,6 +36,16 @@ The upstream LibRaw 0.22.1 COPYRIGHT also identifies third-party code including 
 6. Review whether the combined WASM work and its distribution satisfy **all** licenses and the AGPL terms. If uncertainty remains, seek qualified licensing advice before making broad distribution-compliance claims.
 7. Ensure the served website exposes the FILMLABB AGPL source link/notice prominently, and that any required third-party notices/source information accompanies the shipped artifacts.
 
+## Included upstream license texts
+
+The built app includes the following upstream files under `/legal/`, copied from the version-tagged source repositories:
+
+- [LibRaw LGPL-2.1 full text](legal/LGPL-2.1.txt)
+- [LibRaw COPYRIGHT and embedded component attribution](legal/LibRaw-COPYRIGHT.txt)
+- [Little CMS MIT license](legal/LittleCMS-LICENSE.txt)
+
+The `libraw-wasm` wrapper's ISC declaration and the other runtime component licenses still require the exact copyright holders and full notices from the released binary's corresponding sources. These files **do not yet constitute a complete notice set**.
+
 ## Sources
 
 - [FILMLABB project LICENSE](LICENSE)
