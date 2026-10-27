@@ -2,6 +2,7 @@
 'use strict';
 let sharedBase2=null,proposal2=null,autoProposal2=null,previewBase2=false,revision2=0,baseTool2=false,baseRegion2=null,baseDrag2=null,baseDisplay2=null,undoBase2=null;
 const FB2=NSFilmBaseReference,FM2=NSFilmBaseMeasurement;
+let baseFeedbackFrame2=null,baseFeedback2=null,loupeSource2=null,loupeKey2=null,loupePixels2=null;
 function capture2(){return FB2.context({...working,linearGain4:hires?.linearGain4},sourceInfo,state,currentLight(),working.flatField||null);}
 function accepted2(){const a=state.useRollBase2?sharedBase2:state.acceptedCalibration2;return FB2.valid(a)&&FB2.compatible(a.context,capture2())?a:null;}
 function effectiveProposal2(){return previewBase2&&proposal2&&proposal2.revision===revision2&&FB2.compatible(proposal2.context,capture2())?proposal2:null;}
@@ -55,7 +56,7 @@ function updateBasePanel2(){
  const enabled=state.filmBaseVersion===2&&!!working,a=working&&enabled?accepted2():null,stored=state.useRollBase2?sharedBase2:state.acceptedCalibration2,m=proposal2?.measurement;
  $('base2Enable').textContent=enabled?'Sök nytt automatiskt förslag':'Aktivera Filmbas 2';
  for(const id of ['base2Enable','base2Region'])$(id).disabled=!working||exportBusy||rollLoading;
- $('base2Accept').disabled=!enabled||!m?.measured||m.status==='missing'||!!a?.baseLocked||proposal2.revision!==revision2;
+ $('base2Accept').disabled=!enabled||!m?.measured||m.status==='missing'||m.provisional||!!a?.baseLocked||proposal2.revision!==revision2;
  $('base2Preview').disabled=!enabled||!m?.measured||m.status==='missing';$('base2Preview').textContent=previewBase2?'Visa godkänd / före':'Förhandsgranska förslag / efter';
  $('base2Lock').disabled=!a;$('base2Lock').textContent=a?.baseLocked?'Lås upp filmbas':'Lås filmbas';
  $('base2ResponseLock').disabled=!a;$('base2ResponseLock').textContent=a?.responseLocked?'Lås upp respons':'Lås respons';
@@ -64,12 +65,12 @@ function updateBasePanel2(){
  if(enabled)$('baseInfo').textContent=previewBase2?'Förhandsvisning av förslag · inte godkänt':a?'Godkänd '+(a.measurement.kind.startsWith('manual')?'manuell':'automatisk')+' filmbas · linjära källvärden':'Motivbaserad reserv · ingen aktiv godkänd filmbas';
  $('base2Undo').disabled=!undoBase2;
  const label={safe:'Säker kandidat',review:'Kontrollera kandidaten',missing:'Filmbas saknas'};
- $('base2Status').textContent=!enabled?'Filmbas 2 aktiveras uttryckligen. Äldre beräkning behålls tills dess.':(stored&&!a?'Referensen är pausad: inkompatibel källa, ljus, gain eller session. ':a?'Godkänd referens '+a.id+(a.baseLocked?' · låst. ':'. '):'Ingen godkänd referens. ')+(m?(label[m.status]||'Kontrollera provet')+(m.reasons?.length?' · '+m.reasons.join(' · '):''):'Sök automatiskt eller rita ett provområde.');
+ $('base2Status').textContent=!enabled?'Filmbas 2 aktiveras uttryckligen. Äldre beräkning behålls tills dess.':(stored&&!a?'Referensen är pausad: inkompatibel källa, ljus, gain eller session. ':a?'Godkänd referens '+a.id+(a.baseLocked?' · låst. ':'. '):'Ingen godkänd referens. ')+(m?(m.provisional?'Preliminärt prov · släpp för slutlig statistik':label[m.status]||'Kontrollera provet')+(m.reasons?.length?' · '+m.reasons.join(' · '):''):'Sök automatiskt eller rita ett provområde.');
  $('base2Stats').textContent=m?.measured?`Linjär RGB (${m.domain}): ${m.measured.map(v=>v.toFixed(5)).join(' / ')} · median · MAD ${m.mad.map(v=>v.toFixed(5)).join(' / ')} · spridning ${m.spread.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · ${m.samples} prov · klippning ${m.clipped.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · låg signal ${m.dark.map(v=>(v*100).toFixed(1)+' %').join(' / ')}`:'';
  const auto=autoProposal2?.measurement;$('base2Compare').textContent=auto?.measured&&m?.measured?'Automatisk RGB: '+auto.measured.map(v=>v.toFixed(5)).join(' / ')+' · skillnad från aktivt prov: '+m.measured.map((v,c)=>(v-auto.measured[c]).toFixed(5)).join(' / '):'';
 }
 function endBaseTool2(){
- baseTool2=false;baseDrag2=null;drawBaseRegion2();$('base2Loupe').hidden=true;
+ cancelBaseFeedback2();loupeSource2=null;loupeKey2=null;baseTool2=false;baseDrag2=null;drawBaseRegion2();$('base2Loupe').hidden=true;
  if(globalThis.FILMLABB_GEOMETRY?.mode()==='base')FILMLABB_GEOMETRY.setTool(null);
  if(baseDisplay2){const old=baseDisplay2;baseDisplay2=null;$(old==='negative'?'tabNeg':old==='split'?'tabSplit':'tabPos').click();}
  $('base2Region').textContent='Rita / flytta provområde';
@@ -78,7 +79,8 @@ function cancelProposal2(){const restore=previewBase2;previewBase2=false;proposa
 function acceptBase2(){
  try{
   if(!working||exportBusy||rollLoading||!proposal2||proposal2.revision!==revision2)throw Error('Provet är inaktuellt. Mät igen.');
-  const previous=state.useRollBase2?sharedBase2:state.acceptedCalibration2;if(previous?.baseLocked)throw Error('Lås upp filmbasen före godkännande.');
+  const previous=accepted2();if(previous?.baseLocked)throw Error('Lås upp filmbasen före godkännande.');
+  if(proposal2.measurement.provisional)throw Error('Släpp provområdet för slutlig mätning.');
   if(proposal2.measurement.status==='missing')throw Error('Välj ett tillförlitligt prov.');
   const saved=state.acceptedCalibration2||null;
   previewBase2=true;analyzeLevels();
@@ -118,26 +120,58 @@ function drawBaseRegion2(){
  make('polygon',{points:ps.map(p=>`${p.x},${p.y}`).join(' '),fill:'#41e0bf22',stroke:'#41e0bf','stroke-width':2,'data-base2':'move','pointer-events':'all'});
  for(let i=0;i<4;i++)make('circle',{cx:ps[i].x,cy:ps[i].y,r:14,fill:'#41e0bf55',stroke:'#41e0bf','data-base2':i,'pointer-events':'all'});
 }
-function loupe2(p){const c=$('base2Loupe'),size=112,ctx=c.getContext('2d'),out=ctx.createImageData(size,size),cx=Math.floor(p.x*working.width),cy=Math.floor(p.y*working.height);c.width=c.height=size;
- for(let y=0;y<size;y++)for(let x=0;x<size;x++){const rgb=CE.pixel(working,CE.clamp(cx+Math.floor((x-size/2)/8),0,working.width-1),CE.clamp(cy+Math.floor((y-size/2)/8),0,working.height-1)),i=(y*size+x)*4;const visible=working.colorSpace==='rec2020'?NSRawInput.displayLinear(rgb):rgb;for(let k=0;k<3;k++)out.data[i+k]=CE.encode(visible[k])*255;out.data[i+3]=255;}
+function loupe2(p){
+ const c=$('base2Loupe'),size=112,cx=Math.floor(p.x*working.width),cy=Math.floor(p.y*working.height),key=cx+','+cy+','+sourceVersion38;
+ if(loupeSource2===working&&loupeKey2===key)return;
+ loupeSource2=working;loupeKey2=key;const ctx=c.getContext('2d');
+ if(c.width!==size||c.height!==size){c.width=c.height=size;loupePixels2=null;}
+ const out=loupePixels2||(loupePixels2=ctx.createImageData(size,size));
+ // 14×14 distinct source pixels, expanded 8×. Do not read/linearize each of
+ // the 112×112 display pixels separately; reuse the small RGBA allocation.
+ for(let y=0;y<14;y++)for(let x=0;x<14;x++){
+  const rgb=CE.pixel(working,CE.clamp(cx+x-7,0,working.width-1),CE.clamp(cy+y-7,0,working.height-1));
+  const visible=working.colorSpace==='rec2020'?NSRawInput.displayLinear(rgb):rgb,encoded=visible.map(v=>CE.encode(v)*255);
+  for(let dy=0;dy<8;dy++)for(let dx=0;dx<8;dx++){const i=((y*8+dy)*size+x*8+dx)*4;for(let k=0;k<3;k++)out.data[i+k]=encoded[k];out.data[i+3]=255;}
+ }
  ctx.putImageData(out,0,0);ctx.strokeStyle='#fff';ctx.strokeRect(52,52,8,8);
 }
-$('picture').addEventListener('pointerdown',e=>{
- if(!baseTool2||!working||exportBusy||rollLoading||e.isPrimary===false||e.button>0)return;
- e.preventDefault();e.stopImmediatePropagation();dragPoint=null;const p=imagePoint(e),start={x:CE.clamp(p.x),y:CE.clamp(p.y)};
- baseDrag2={id:e.pointerId,start,old:baseRegion2?{...baseRegion2}:null,part:e.target.dataset?.base2,source:working};$('picture').setPointerCapture(e.pointerId);loupe2(start);
-},true);
-$('picture').addEventListener('pointermove',e=>{
- if(!baseTool2||!working)return;if(!baseDrag2){loupe2(imagePoint(e));return;}if(e.pointerId!==baseDrag2.id||baseDrag2.source!==working)return;
- e.preventDefault();e.stopImmediatePropagation();const p=imagePoint(e),d=baseDrag2,s=d.start,r=d.old,dx=p.x-s.x,dy=p.y-s.y;
+function cancelBaseFeedback2(){
+ if(baseFeedbackFrame2!==null&&typeof cancelAnimationFrame==='function')cancelAnimationFrame(baseFeedbackFrame2);
+ baseFeedbackFrame2=null;baseFeedback2=null;
+}
+function queueBaseFeedback2(p,region=null){
+ baseFeedback2={p,region:region?{...region}:null,source:working};
+ if(baseFeedbackFrame2!==null)return;
+ const run=()=>{baseFeedbackFrame2=null;const pending=baseFeedback2;baseFeedback2=null;if(!pending||pending.source!==working||!baseTool2)return;
+  if(pending.region)setProposal2({...FM2.measure(working,pending.region,{limit:512}),provisional:true});
+  loupe2(pending.p);
+ };
+ if(typeof requestAnimationFrame==='function')baseFeedbackFrame2=requestAnimationFrame(run);else run();
+}
+function moveBaseRegion2(p){
+ const d=baseDrag2,s=d.start,r=d.old,dx=p.x-s.x,dy=p.y-s.y;
  if(d.part==='move'&&r)baseRegion2={...r,x:CE.clamp(r.x+dx,0,1-r.w),y:CE.clamp(r.y+dy,0,1-r.h)};
  else{let a=s,b={x:CE.clamp(p.x),y:CE.clamp(p.y)};if(r&&d.part!==undefined){const i=Number(d.part);a={x:i===0||i===3?r.x+r.w:r.x,y:i<2?r.y+r.h:r.y};}
  baseRegion2=CE.rect({x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.max(1/working.width,Math.abs(a.x-b.x)),h:Math.max(1/working.height,Math.abs(a.y-b.y))});}
- setProposal2(FM2.measure(working,baseRegion2));loupe2(p);
+}
+$('picture').addEventListener('pointerdown',e=>{
+ if(!baseTool2||!working||exportBusy||rollLoading||e.isPrimary===false||e.button>0)return;
+ e.preventDefault();e.stopImmediatePropagation();cancelBaseFeedback2();++revision2;dragPoint=null;const p=imagePoint(e),start={x:CE.clamp(p.x),y:CE.clamp(p.y)};
+ baseDrag2={id:e.pointerId,start,old:baseRegion2?{...baseRegion2}:null,part:e.target.dataset?.base2,source:working};$('picture').setPointerCapture(e.pointerId);loupe2(start);
+},true);
+$('picture').addEventListener('pointermove',e=>{
+ if(!baseTool2||!working)return;if(!baseDrag2){queueBaseFeedback2(imagePoint(e));return;}if(e.pointerId!==baseDrag2.id||baseDrag2.source!==working)return;
+ e.preventDefault();e.stopImmediatePropagation();const p=imagePoint(e);moveBaseRegion2(p);drawBaseRegion2();queueBaseFeedback2(p,baseRegion2);
 },true);
 for(const type of ['pointerup','pointercancel','lostpointercapture'])$('picture').addEventListener(type,e=>{
- if(!baseDrag2||e.pointerId!==baseDrag2.id)return;e.preventDefault();e.stopImmediatePropagation();const d=baseDrag2;baseDrag2=null;
- if(type==='pointercancel'){baseRegion2=d.old;if(d.old)setProposal2(FM2.measure(working,d.old));else{proposal2=null;drawBaseRegion2();updateBasePanel2();}}
+ if(!baseDrag2||e.pointerId!==baseDrag2.id)return;e.preventDefault();e.stopImmediatePropagation();const d=baseDrag2;cancelBaseFeedback2();
+ if(type==='pointerup')moveBaseRegion2(imagePoint(e));
+ baseDrag2=null;
+ if(type==='pointercancel')baseRegion2=d.old;
+ // Never accept/display/export a 512-sample drag preview as final. Flush the
+ // latest source rectangle synchronously, including pointerup without a move.
+ if(d.source===working&&baseRegion2)setProposal2(FM2.measure(working,baseRegion2));
+ else{proposal2=null;drawBaseRegion2();updateBasePanel2();}
  if($('picture').hasPointerCapture(e.pointerId))$('picture').releasePointerCapture(e.pointerId);
 },true);
 // Capture first at the picture, ahead of the legacy canvas pipette listener.

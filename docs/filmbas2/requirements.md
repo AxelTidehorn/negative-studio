@@ -1,7 +1,7 @@
 # Filmbas 2 – kravspårning
 
 Utgångspunkt: main a393d4f6627f30eedea12263d2ade62c745300b8, 2026-10-27.
-Förstudien FILMLABB_Filmbas2_Forstudie.md saknas. De två implementationsbilagorna är identiska.
+Förstudien saknades vid nulägeskontrollen men har nu bifogats och använts i [kompletteringen av PR #33](review-corrections.md). De två implementationsbilagorna är identiska.
 Status nedan avser nuläget före ändring; kodexistens räknas inte som UI-verifiering.
 
 | Krav | Nuläge | Kod/funktion | Åtgärd och verifiering |

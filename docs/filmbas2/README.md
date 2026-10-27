@@ -2,7 +2,7 @@
 
 Utgår från `main` a393d4f6627f30eedea12263d2ade62c745300b8 (PR #32).
 Kravens nulägesmatris finns i [requirements.md](requirements.md).
-De två implementationsbilagorna var identiska. `FILMLABB_Filmbas2_Forstudie.md` fanns inte i uppdraget.
+De två ursprungliga implementationsbilagorna var identiska. Förstudien har nu bifogats och använts i [kompletteringen av PR #33](review-corrections.md), där korrigeringar, nya tester och prestandamätningar redovisas.
 
 ## Användning
 
@@ -77,8 +77,8 @@ detektor, integration och verifiering kan granskas och testas tillsammans.
 
 ## Tester och begränsningar
 
-- `npm test`: **48/48** Node-grupper passerade, inklusive `tests/film-base2.mjs`.
-- `npm run test:browser`: **17/17** Chromium-grupper passerade, inklusive `tests/film-base2-browser.mjs`.
+- `npm test`: **50/50** Node-grupper passerade, inklusive `tests/film-base2.mjs`.
+- `npm run test:browser`: **18/18** Chromium-grupper passerade, inklusive `tests/film-base2-browser.mjs`.
 - `npm run build` och `npm run test:build`: bygg- och cacheintegritet.
 - Browserprov: desktop 1360×950, iPad-storlekar 1024×768 och 768×1024,
   mobil 390×844; skärmbilder i [screenshots](screenshots).

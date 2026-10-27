@@ -3,7 +3,7 @@
 'use strict';
 const clone=x=>JSON.parse(JSON.stringify(x)),vector=x=>Array.isArray(x)&&x.length===3&&x.every(v=>Number.isFinite(v)&&v>0&&v<=100);
 function context(im,info,settings,light,flatField){
- return {version:2,encoding:im.encoding||info.encoding,domain:info.domain||info.label||'unknown',colorSpace:im.colorSpace||'srgb',decoder:info.decoder||info.rawMode4||'browser/tiff',normalization:im.normalization||1,gain:im.linearGain4||info.gain||null,whiteBalance:info.whiteBalance||null,light:[...light],flatField:flatField||null,session:settings.captureSession2||null};
+ return {version:2,encoding:im.encoding||info.encoding,domain:info.domain||info.label||'unknown',colorSpace:im.colorSpace||'srgb',decoder:info.decoder||info.rawMode4||'browser/tiff',normalization:info.normalization||im.normalization||1,gain:im.linearGain4||info.gain||null,whiteBalance:info.whiteBalance||null,light:[...light],flatField:flatField||null,session:settings.captureSession2||null};
 }
 const compatible=(a,b)=>!!a&&!!b&&JSON.stringify(a)===JSON.stringify(b);
 function valid(a){

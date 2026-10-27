@@ -1,0 +1,24 @@
+{
+  "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "source": {
+    "width": 3000,
+    "height": 2000,
+    "encoding": "linear"
+  },
+  "events": 96,
+  "releaseMatches": true,
+  "loupeMatches": true,
+  "finalProvisional": false,
+  "measureCalls": 13,
+  "loupeCalls": 13,
+  "sourceReads": 11197,
+  "dispatchMedianMs": 3.1000000000931323,
+  "dispatchP95Ms": 3.7999999998137355,
+  "frameMedianMs": 16.699999999720603,
+  "frameP95Ms": 18.300000000279397,
+  "measureMedianMs": 1.6999999997206032,
+  "measureP95Ms": 5.199999999720603,
+  "loupeMedianMs": 0.2999999998137355,
+  "loupeP95Ms": 1.5,
+  "finalMatches": true
+}
