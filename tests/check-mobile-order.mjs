@@ -20,7 +20,7 @@ try{
 
 
  await page.setViewportSize({width:390,height:844});await page.evaluate(()=>{$('adjustmentPanel').scrollTop=0;window.scrollTo(0,0);});
- const result=await page.evaluate(()=>({order:[$('frameSettingsGroup'),$('histogram'),$('simpleControls'),$('creativeProfiles'),$('geometryTools')].map(el=>el.getBoundingClientRect().top),overflow:document.documentElement.scrollWidth>innerWidth+1,advanced:$('advancedSettings').open,engine:$('engineMode').checkVisibility()}));
+ const result=await page.evaluate(()=>({order:[$('frameSettingsGroup'),$('histogram'),$('simpleControls'),$('calibration3'),$('creativeProfiles')].map(el=>el.getBoundingClientRect().top),overflow:document.documentElement.scrollWidth>innerWidth+1,advanced:$('advancedSettings').open,engine:$('engineMode').checkVisibility()}));
  assert.ok(result.order.every((v,i,a)=>i===0||v>a[i-1]),JSON.stringify(result));assert.equal(result.overflow,false);assert.equal(result.advanced,false);assert.equal(result.engine,true);assert.deepEqual(errors,[]);await page.screenshot({path:path.resolve('../beta5-mobile-qa.png')});console.log('PASS final mobile film-frame-first order, closed advanced view, no page overflow or errors',result);
  const report={environment:'Chromium; 390px viewport',checks:[]};report.checks.push('Final mobile CSS: film frame before histogram, image controls, profiles and optional geometry, no horizontal page overflow, advanced controls closed');fs.writeFileSync('docs/mobile-browser-results.json',JSON.stringify(report,null,2));
 }finally{await browser.close();server.closeAllConnections();server.close();}

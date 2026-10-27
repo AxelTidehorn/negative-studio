@@ -1,6 +1,8 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "workflow-ui.js":"src/ui/workflow-ui.js",
+ "workflow-ui.css":"src/ui/workflow-ui.css",
  "film-base-controller.js":"src/calibration/film-base-controller.js",
  "film-base.css":"src/calibration/film-base.css",
  "film-base-measurement.js":"src/calibration/film-base-measurement.js",
@@ -115,6 +117,7 @@ export const scripts = [
  {"file":"geometry-ui.js","harness":false,"defer":false},
  {"file":"workspace-layout.js","harness":false,"defer":true},
  {"file":"compact-ui.js","harness":false,"defer":true},
+ {"file":"workflow-ui.js","harness":false,"defer":true},
  {"file":"editing-controller.js","harness":false,"defer":false},
  {"file":"film-base-controller.js","harness":true,"defer":false},
  {"file":"register-offline.js","harness":false,"defer":false},
