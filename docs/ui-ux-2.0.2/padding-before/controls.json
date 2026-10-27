@@ -1,0 +1,46 @@
+[
+  {
+    "name": "desktop",
+    "buttonPadding": "6px 10px",
+    "buttonHeight": 34,
+    "editorPadding": "8px",
+    "primaryControlsHeight": 361.3125,
+    "adjustmentsHeight": 704.890625,
+    "labelFont": "13px",
+    "histogramHeight": 68,
+    "overflow": false
+  },
+  {
+    "name": "ipad-landscape",
+    "buttonPadding": "6px 10px",
+    "buttonHeight": 44,
+    "editorPadding": "8px",
+    "primaryControlsHeight": 483.15625,
+    "adjustmentsHeight": 868.734375,
+    "labelFont": "14px",
+    "histogramHeight": 68,
+    "overflow": false
+  },
+  {
+    "name": "ipad-portrait",
+    "buttonPadding": "6px 10px",
+    "buttonHeight": 44,
+    "editorPadding": "8px",
+    "primaryControlsHeight": 483.15625,
+    "adjustmentsHeight": 868.734375,
+    "labelFont": "14px",
+    "histogramHeight": 68,
+    "overflow": false
+  },
+  {
+    "name": "mobile",
+    "buttonPadding": "6px 10px",
+    "buttonHeight": 44,
+    "editorPadding": "10px",
+    "primaryControlsHeight": 483.15625,
+    "adjustmentsHeight": 868.734375,
+    "labelFont": "14px",
+    "histogramHeight": 68,
+    "overflow": false
+  }
+]

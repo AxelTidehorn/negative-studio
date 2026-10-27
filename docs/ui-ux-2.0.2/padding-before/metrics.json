@@ -1,0 +1,38 @@
+[
+  {
+    "name": "desktop",
+    "picture": {
+      "width": 914,
+      "height": 715
+    },
+    "workspace": 804,
+    "scrollHeight": 962
+  },
+  {
+    "name": "ipad-landscape",
+    "picture": {
+      "width": 622,
+      "height": 542
+    },
+    "workspace": 662,
+    "scrollHeight": 846
+  },
+  {
+    "name": "ipad-portrait",
+    "picture": {
+      "width": 366,
+      "height": 748
+    },
+    "workspace": 918,
+    "scrollHeight": 1102
+  },
+  {
+    "name": "mobile",
+    "picture": {
+      "width": 362,
+      "height": 329
+    },
+    "workspace": 1829,
+    "scrollHeight": 2106
+  }
+]
