@@ -1,6 +1,10 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "film-base-controller.js":"src/calibration/film-base-controller.js",
+ "film-base.css":"src/calibration/film-base.css",
+ "film-base-measurement.js":"src/calibration/film-base-measurement.js",
+ "film-base-reference.js":"src/calibration/film-base-reference.js",
  "conversion3.js":"src/color/conversion3.js",
  "conversion3-controller.js":"src/calibration/conversion3-controller.js",
  "i18n-messages.js": "src/ui/i18n-messages.js",
@@ -71,6 +75,8 @@ export const scripts = [
  {"file":"geometry.js","harness":true,"defer":false},
  {"file":"color-management.js","harness":true,"defer":false},
  {"file":"srgb-profile.js","harness":true,"defer":false},
+ {"file":"film-base-measurement.js","harness":true,"defer":false},
+ {"file":"film-base-reference.js","harness":true,"defer":false},
  {"file":"project-settings.js","harness":true,"defer":false},
  {"file":"appearance.js","harness":true,"defer":false},
  {"file":"app-bootstrap.js","harness":true,"defer":false},
@@ -110,6 +116,7 @@ export const scripts = [
  {"file":"workspace-layout.js","harness":false,"defer":true},
  {"file":"compact-ui.js","harness":false,"defer":true},
  {"file":"editing-controller.js","harness":false,"defer":false},
+ {"file":"film-base-controller.js","harness":true,"defer":false},
  {"file":"register-offline.js","harness":false,"defer":false},
 ].map(asset=>({...asset,source:assets[asset.file]}));
 export function sourcePath(file){

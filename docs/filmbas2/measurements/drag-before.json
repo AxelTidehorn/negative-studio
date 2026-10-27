@@ -1,0 +1,19 @@
+{
+  "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "source": {
+    "width": 3000,
+    "height": 2000,
+    "encoding": "linear"
+  },
+  "events": 96,
+  "measureCalls": 96,
+  "loupeCalls": 96,
+  "sourceReads": 1364365,
+  "frameMedianMs": 71.10000000009313,
+  "frameP95Ms": 82.90000000037253,
+  "measureMedianMs": 4.600000000093132,
+  "measureP95Ms": 6.900000000372529,
+  "loupeMedianMs": 2.1999999997206032,
+  "loupeP95Ms": 3.3999999999068677,
+  "finalMatches": true
+}
