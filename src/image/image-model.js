@@ -19,7 +19,31 @@ function linearPixel(im,input,x,y){
 }
 function pixel(im,x,y){const i=(y*im.width+x)*(im.channels||3),s=im.scale||1;return linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x,y);}
 function sample(im,r,margin=.012,limit=24000){const b=bounds(im,r,margin),out=[],step=Math.max(1,Math.ceil(Math.sqrt((b.x1-b.x0)*(b.y1-b.y0)/limit)));for(let y=b.y0;y<b.y1;y+=step)for(let x=b.x0;x<b.x1;x+=step)out.push(pixel(im,x,y));return out;}
-function preview(im,limit=1400){const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};}
+// Exact box-area integration in linear source space. Bounded row storage; no full
+// source-sized copy. An explicit project version keeps legacy nearest sampling.
+function areaPreview(im,limit=1400){
+ const scale=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*scale)),h=Math.max(1,Math.round(im.height*scale));
+ if(w===im.width&&h===im.height)return preview(im,limit);
+ const data=new Float32Array(w*h*3),row=new Float64Array(w*3),dx=im.width/w,dy=im.height/h,fast=!im.flatField&&(im.encoding==='linear'||im.encoding==='srgb'),normalization=im.normalization||1,sourceScale=im.scale||1,channels=im.channels||3;
+ for(let sy=0;sy<im.height;sy++){
+  row.fill(0);
+  for(let x=0;x<w;x++){
+   const left=x*dx,right=(x+1)*dx;
+   for(let sx=Math.floor(left);sx<Math.min(im.width,Math.ceil(right));sx++){
+    const weight=(Math.min(right,sx+1)-Math.max(left,sx))/dx;
+    if(fast){const j=(sy*im.width+sx)*channels;for(let c=0;c<3;c++){const v=im.data[j+c]/sourceScale;row[x*3+c]+=clamp((im.encoding==='linear'?v:decode(v))/normalization)*weight;}}
+    else{const p=pixel(im,sx,sy);for(let c=0;c<3;c++)row[x*3+c]+=p[c]*weight;}
+   }
+  }
+  const top=sy/dy,bottom=(sy+1)/dy;
+  for(let y=Math.floor(top);y<Math.min(h,Math.ceil(bottom));y++){
+   const weight=Math.min(bottom,y+1)-Math.max(top,y);
+   for(let i=0;i<row.length;i++)data[y*w*3+i]+=row[i]*weight;
+  }
+ }
+ return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};
+}
+function preview(im,limit=1400,method='nearest'){if(method==='area-v1')return areaPreview(im,limit);const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};}
 function detectFrame(im){
  const g=preview(im,180),w=g.width,h=g.height;
  function axis(horizontal){const n=horizontal?w:h,m=horizontal?h:w,scores=new Array(n).fill(0);for(let k=2;k<n-2;k++){const ds=[];for(let j=Math.floor(m*.08);j<m*.92;j+=2){const a=pixel(g,horizontal?k-2:j,horizontal?j:k-2),b=pixel(g,horizontal?k+2:j,horizontal?j:k+2);ds.push(Math.max(...a.map((v,c)=>Math.abs(v-b[c]))));}scores[k]=quantile(ds,.6);}

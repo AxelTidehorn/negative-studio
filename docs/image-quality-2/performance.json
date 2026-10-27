@@ -1,0 +1,16 @@
+{
+  "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.0.0 Safari/537.36",
+  "area": {
+    "sourcePixels": 6000000,
+    "width": 1400,
+    "height": 933,
+    "ms": 238.60000000149012,
+    "extraRowBytes": 33600,
+    "previewBytes": 15674400
+  },
+  "diagnostics": {
+    "sampledImagePixels": 540000,
+    "ms": 117.19999999925494,
+    "bytes": 14460
+  }
+}

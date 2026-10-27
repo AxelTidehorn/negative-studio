@@ -1,6 +1,8 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "image-diagnostics.js":"src/diagnostics/image-diagnostics.js",
+ "diagnostics-controller.js":"src/diagnostics/diagnostics-controller.js",
  "workflow-ui.js":"src/ui/workflow-ui.js",
  "workflow-ui.css":"src/ui/workflow-ui.css",
  "film-base-controller.js":"src/calibration/film-base-controller.js",
@@ -120,6 +122,8 @@ export const scripts = [
  {"file":"workflow-ui.js","harness":false,"defer":true},
  {"file":"editing-controller.js","harness":false,"defer":false},
  {"file":"film-base-controller.js","harness":true,"defer":false},
+ {"file":"image-diagnostics.js","harness":true,"defer":false},
+ {"file":"diagnostics-controller.js","harness":false,"defer":true},
  {"file":"register-offline.js","harness":false,"defer":false},
 ].map(asset=>({...asset,source:assets[asset.file]}));
 export function sourcePath(file){

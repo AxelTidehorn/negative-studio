@@ -10,7 +10,7 @@ function currentLight(){return sharedLight&&sharedLight.encoding===sourceInfo.en
 function updateCalibrationUI(){syncEngineSelector();const compatible=sharedLight&&sharedLight.encoding===sourceInfo.encoding;$('referenceStatus').textContent=sharedLight?(compatible?'Gemensam ljuskälla aktiv · ':'Ljuskälla pausad: annan källkodning · ')+sharedLight.name:'Ingen ljuskällereferens';$('rollBaseStatus').textContent=sharedBase?'Gemensam filmbas tillgänglig · '+sharedBase.sourceEncoding:'Ingen gemensam filmbas';$('useRollBase').checked=!!state.useRollBase;$('useRollBase').disabled=!sharedBase;$('sourceStatus').textContent=sourceInfo.label;$('engineMode').value=state.engine||'legacy';$('balanceStrength').disabled=state.engine==='beta2';$('balanceStrength').title=state.engine==='beta2'?'Beta 2 använder filmbasen för färgbalans. Justera Varm/kall och Grön/magenta manuellt.':'Styr kanalbalanseringen';}
 finishImport=function(message){
  cropDisplayDismissed=false;
- working=workingSource();workingPreview=CE.preview(working);
+ working=workingSource();workingPreview=CE.preview(working,1400,state.previewSampling);
  // The legacy engine must analyze the same normalized samples that full-size
  // export reads, rather than an independently encoded camera/TIFF thumbnail.
  previewSrc=new ImageData(workingPreview.width,workingPreview.height);

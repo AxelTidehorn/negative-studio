@@ -1,0 +1,380 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/AxelTidehorn/negative-studio/blob/main/docs/image-quality-2/diagnostics-v1.schema.json",
+  "title": "FILMLABB aggregate image diagnostics v1",
+  "type": "object",
+  "properties": {
+    "schema": {
+      "const": "filmlabb-image-diagnostics"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "privacy": {
+      "type": "object",
+      "properties": {
+        "localOnly": {
+          "const": true
+        },
+        "aggregateOnly": {
+          "const": true
+        },
+        "originalFilenameIncluded": {
+          "const": false
+        }
+      },
+      "required": [
+        "localOnly",
+        "aggregateOnly",
+        "originalFilenameIncluded"
+      ],
+      "additionalProperties": false
+    },
+    "sampling": {
+      "type": "object",
+      "required": [
+        "version",
+        "method",
+        "limit",
+        "analysisRegion",
+        "analysisSampling",
+        "previewSampling",
+        "note"
+      ],
+      "properties": {
+        "version": {
+          "const": 1
+        },
+        "method": {
+          "const": "deterministic-grid"
+        },
+        "limit": {
+          "const": 2048
+        },
+        "analysisRegion": {
+          "$ref": "#/$defs/region"
+        },
+        "analysisSampling": {
+          "enum": [
+            "source",
+            "preview",
+            null
+          ]
+        },
+        "previewSampling": {
+          "enum": [
+            "nearest",
+            "area-v1",
+            null
+          ]
+        },
+        "note": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "source": {
+      "type": "object",
+      "required": [
+        "format",
+        "dimensions",
+        "bitDepth",
+        "encoding",
+        "workingSpace",
+        "normalization",
+        "commonGain",
+        "decoder",
+        "decoderCounts",
+        "flatFieldActive",
+        "iccConverted"
+      ]
+    },
+    "filmBase": {
+      "type": "object",
+      "required": [
+        "accepted",
+        "proposal",
+        "proposalPreview",
+        "scope",
+        "baseLocked",
+        "responseLocked",
+        "compatibleAccepted",
+        "usage",
+        "acceptedBaseUsed",
+        "effectiveBase",
+        "effectiveLight",
+        "referenceMeasured",
+        "responseSource"
+      ]
+    },
+    "conversion": {
+      "type": "object",
+      "required": [
+        "engine",
+        "parameterOrigins",
+        "algorithmVersions",
+        "response",
+        "scene",
+        "autoLevels",
+        "colorVariant",
+        "toneMode",
+        "creative"
+      ]
+    },
+    "stages": {
+      "type": "object",
+      "properties": {
+        "decodedLinear": {
+          "$ref": "#/$defs/stage"
+        },
+        "density": {
+          "$ref": "#/$defs/stage"
+        },
+        "technicalResponse": {
+          "$ref": "#/$defs/stage"
+        },
+        "automaticPositive": {
+          "$ref": "#/$defs/stage"
+        },
+        "editedPositive": {
+          "$ref": "#/$defs/stage"
+        }
+      },
+      "required": [
+        "decodedLinear",
+        "density",
+        "technicalResponse",
+        "automaticPositive",
+        "editedPositive"
+      ],
+      "additionalProperties": false
+    },
+    "comparisons": {
+      "type": "object",
+      "required": [
+        "neutralToCurrent"
+      ]
+    },
+    "unavailable": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  },
+  "required": [
+    "schema",
+    "schemaVersion",
+    "privacy",
+    "sampling",
+    "source",
+    "filmBase",
+    "conversion",
+    "stages",
+    "comparisons",
+    "unavailable"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "statistics": {
+      "type": "object",
+      "properties": {
+        "count": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 2048
+        },
+        "quantiles": {
+          "const": [
+            0,
+            0.01,
+            0.05,
+            0.5,
+            0.95,
+            0.99,
+            1
+          ]
+        },
+        "channels": {
+          "type": "array",
+          "minItems": 3,
+          "maxItems": 3,
+          "items": {
+            "type": "array",
+            "minItems": 7,
+            "maxItems": 7,
+            "items": {
+              "type": [
+                "number",
+                "null"
+              ]
+            }
+          }
+        },
+        "luminance": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "atOrAboveOne": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxItems": 3
+        },
+        "atOrBelowZero": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxItems": 3
+        },
+        "atOrBelowFour16BitUnits": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxItems": 3
+        },
+        "mean": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          },
+          "maxItems": 3
+        },
+        "weightedCoordinate": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "minItems": 7,
+          "maxItems": 7,
+          "items": {
+            "type": [
+              "number",
+              "null"
+            ]
+          }
+        },
+        "luminanceDomain": {
+          "enum": [
+            "linear-display-srgb",
+            "linear-srgb",
+            "linear-rec2020",
+            null
+          ]
+        }
+      },
+      "required": [
+        "count",
+        "quantiles",
+        "channels",
+        "luminance",
+        "atOrAboveOne",
+        "atOrBelowZero",
+        "atOrBelowFour16BitUnits",
+        "mean",
+        "weightedCoordinate",
+        "luminanceDomain"
+      ],
+      "additionalProperties": false
+    },
+    "stage": {
+      "type": "object",
+      "required": [
+        "available"
+      ],
+      "properties": {
+        "available": {
+          "type": "boolean"
+        },
+        "domain": {
+          "type": "string"
+        },
+        "statistics": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/statistics"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reason": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "definition": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
+    "region": {
+      "type": "object",
+      "properties": {
+        "x": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "y": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "w": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "h": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [],
+      "additionalProperties": false
+    }
+  }
+}
