@@ -1,16 +1,17 @@
 /* Semantic palette data. Components/layout are defined once in application.css.
-Dark surfaces are restrained; Burgundy and all light palettes retain their colors. */
+Dark identities use near-neutral surfaces; color is reserved for active details.
+Light palettes retain their existing colors. */
 :root,:root[data-theme="classic"] {
-  --ui-bg:#20201f;
-  --ui-panel:#292927;
-  --ui-surface:#232321;
-  --ui-text:#eeeae2;
-  --ui-muted:#bab4aa;
-  --ui-border:#55534c;
-  --ui-accent:#c18f70;
-  --ui-accent-text:#211b17;
-  --ui-accent-label:#d6a98c;
-  --ui-active:#38322c
+  --ui-bg:#202020;
+  --ui-panel:#2a2a29;
+  --ui-surface:#242423;
+  --ui-text:#eeeae5;
+  --ui-muted:#bdb9b2;
+  --ui-border:#525250;
+  --ui-accent:#bc957d;
+  --ui-accent-text:#211c18;
+  --ui-accent-label:#d2ae96;
+  --ui-active:#38332f
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
@@ -25,16 +26,16 @@ Dark surfaces are restrained; Burgundy and all light palettes retain their color
   --ui-active:#e4cdbb
 }
 :root[data-theme="olive"] {
-  --ui-bg:#1d1f1b;
-  --ui-panel:#282b25;
-  --ui-surface:#22251f;
-  --ui-text:#eceee3;
-  --ui-muted:#b7baab;
-  --ui-border:#555b4d;
-  --ui-accent:#abb395;
-  --ui-accent-text:#1c2317;
-  --ui-accent-label:#c2caab;
-  --ui-active:#353b2d
+  --ui-bg:#1f201f;
+  --ui-panel:#292a29;
+  --ui-surface:#232423;
+  --ui-text:#e9ebe5;
+  --ui-muted:#b9bcb3;
+  --ui-border:#50534e;
+  --ui-accent:#a8b18f;
+  --ui-accent-text:#1d2118;
+  --ui-accent-label:#c0c9a8;
+  --ui-active:#33372f
 }
 :root[data-theme="olive"][data-mode="light"] {
   --ui-bg:#e8eadf;
@@ -49,16 +50,16 @@ Dark surfaces are restrained; Burgundy and all light palettes retain their color
   --ui-active:#d6dfc7
 }
 :root[data-theme="burgundy"] {
-  --ui-bg:#21191c;
-  --ui-panel:#302429;
-  --ui-surface:#281e22;
-  --ui-text:#f3e8e6;
-  --ui-muted:#c1acae;
-  --ui-border:#80636c;
-  --ui-accent:#cc939b;
-  --ui-accent-text:#29171d;
-  --ui-accent-label:#dca6ae;
-  --ui-active:#50313c
+  --ui-bg:#211f20;
+  --ui-panel:#2b292a;
+  --ui-surface:#252324;
+  --ui-text:#eee8e8;
+  --ui-muted:#c1b6b9;
+  --ui-border:#585053;
+  --ui-accent:#bf939d;
+  --ui-accent-text:#261b20;
+  --ui-accent-label:#d6abb5;
+  --ui-active:#3a3034
 }
 :root[data-theme="burgundy"][data-mode="light"] {
   --ui-bg:#eee5df;
@@ -73,16 +74,16 @@ Dark surfaces are restrained; Burgundy and all light palettes retain their color
   --ui-active:#ead0d3
 }
 :root[data-theme="industrial"] {
-  --ui-bg:#1d1d1c;
-  --ui-panel:#292928;
-  --ui-surface:#222221;
-  --ui-text:#eeeee9;
-  --ui-muted:#b7b7ae;
-  --ui-border:#5b5b55;
-  --ui-accent:#c3bc87;
-  --ui-accent-text:#202017;
-  --ui-accent-label:#d5cfa4;
-  --ui-active:#37372f
+  --ui-bg:#1e1f20;
+  --ui-panel:#292a2b;
+  --ui-surface:#232425;
+  --ui-text:#eaebec;
+  --ui-muted:#b6babe;
+  --ui-border:#505458;
+  --ui-accent:#a1afbe;
+  --ui-accent-text:#192027;
+  --ui-accent-label:#becbd8;
+  --ui-active:#30363c
 }
 :root[data-theme="industrial"][data-mode="light"] {
   --ui-bg:#e4e4df;
@@ -97,16 +98,16 @@ Dark surfaces are restrained; Burgundy and all light palettes retain their color
   --ui-active:#dfddbd
 }
 :root[data-theme="paper"] {
-  --ui-bg:#211f1c;
-  --ui-panel:#2c2925;
-  --ui-surface:#25231f;
-  --ui-text:#f1ece2;
-  --ui-muted:#c0b6a7;
-  --ui-border:#62594d;
-  --ui-accent:#a99a79;
-  --ui-accent-text:#262016;
-  --ui-accent-label:#cfc0a1;
-  --ui-active:#3d362c
+  --ui-bg:#222120;
+  --ui-panel:#2d2c2a;
+  --ui-surface:#262524;
+  --ui-text:#f0ece4;
+  --ui-muted:#c1bcb1;
+  --ui-border:#585650;
+  --ui-accent:#baa98b;
+  --ui-accent-text:#242017;
+  --ui-accent-label:#d0c2a8;
+  --ui-active:#3b362e
 }
 :root[data-theme="paper"][data-mode="light"] {
   --ui-bg:#eee9dd;
@@ -121,16 +122,16 @@ Dark surfaces are restrained; Burgundy and all light palettes retain their color
   --ui-active:#e6dabd
 }
 :root[data-theme="aubergine"] {
-  --ui-bg:#211f22;
-  --ui-panel:#2b282d;
-  --ui-surface:#252327;
-  --ui-text:#efebef;
-  --ui-muted:#bcb2bf;
-  --ui-border:#625a66;
-  --ui-accent:#aa97af;
-  --ui-accent-text:#211b25;
-  --ui-accent-label:#c8b7cc;
-  --ui-active:#3b323f
+  --ui-bg:#201f21;
+  --ui-panel:#2b292c;
+  --ui-surface:#252426;
+  --ui-text:#ece9ef;
+  --ui-muted:#beb7c3;
+  --ui-border:#565159;
+  --ui-accent:#af9db9;
+  --ui-accent-text:#211c26;
+  --ui-accent-label:#cbb8d4;
+  --ui-active:#37313c
 }
 :root[data-theme="aubergine"][data-mode="light"] {
   --ui-bg:#ece7ed;

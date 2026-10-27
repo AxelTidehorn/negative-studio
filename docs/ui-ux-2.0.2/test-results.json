@@ -1,0 +1,27 @@
+{
+  "environment": "Linux Chromium headless, SwiftShader; viewport/touch emulation; synthetic demo-negative.png; no physical devices",
+  "base": "3e83c19569e486c9a20f96a269626168536ba340",
+  "fast": {
+    "passed": 6,
+    "total": 6
+  },
+  "full_node": {
+    "initial_passed": 46,
+    "total": 47,
+    "initial_failure": "tests/check-app-integration.mjs: old reset expectations/implicit calibration fixture",
+    "targeted_rerun": "20 checks passed after test correction"
+  },
+  "browser": {
+    "initial_passed": 15,
+    "total": 16,
+    "initial_failure": "tests/ui-202-browser.mjs: download.path unsupported in remote connection",
+    "targeted_reruns": [
+      "standalone: passed",
+      "chromium.launchServer connection: passed"
+    ]
+  },
+  "build_integrity": "passed",
+  "physical_ipad_safari": "not tested",
+  "physical_windows_edge": "not tested",
+  "new_production_deployment": "not performed; pending merge/deploy"
+}

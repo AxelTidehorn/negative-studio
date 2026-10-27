@@ -1,0 +1,27 @@
+{
+  "index.html": {
+    "matches_main": true,
+    "sha256": "9fe42deae39441a1aa3d6f6a4495e7853230deb4cdc88ce6ebcf365294dcb06e"
+  },
+  "application.css": {
+    "matches_main": true,
+    "sha256": "6e7dbd00d8dadaa1f558c8e33a50b18c730dcbffa90e905ffa34326f26de5fe0"
+  },
+  "mobile-layout.css": {
+    "matches_main": true,
+    "sha256": "02935eb2fede2a9f8612b008756b11f4ac093c895369b9561ce7139cf44030c6"
+  },
+  "ui-refinement.css": {
+    "matches_main": true,
+    "sha256": "0e397f983b9dc9ba0510714126807c1c49552114b7e0b70eeb818c6391199b06"
+  },
+  "workspace-layout.js": {
+    "matches_main": true,
+    "sha256": "c81df0702df3be72538a72e645351c0af7ba0edaaf95f7132c29fd496052c960"
+  },
+  "app-bootstrap.js": {
+    "matches_main": true,
+    "sha256": "ea982cdf845a460ac359600d3abf893c8f8645d99b0ccbc9e23919bc49eda9fb"
+  },
+  "worker_cache": "filmlabb-stability-51320b568f7eeacc941a8d4a"
+}
