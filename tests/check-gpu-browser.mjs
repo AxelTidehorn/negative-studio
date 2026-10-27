@@ -60,7 +60,7 @@ try{
   try{await exportTiff();await new Promise(r=>setTimeout(r,0));$('previewBackend').value='cpu';$('previewBackend').dispatchEvent(new Event('change'));await exportTiff();await new Promise(r=>setTimeout(r,0));const jpeg=await jpegBytes();return {same:captured.length===2&&JSON.stringify(captured[0].bytes)===JSON.stringify(captured[1].bytes),jpeg:[jpeg[0],jpeg[1],jpeg[jpeg.length-2],jpeg[jpeg.length-1]]};}finally{downloadBlob=save;}
  });
  assert.equal(exports.same,true);assert.deepEqual(exports.jpeg,[255,216,255,217]);check('CPU/GPU selection leaves TIFF bytes identical; actual browser JPEG encoding succeeds');
- await page.locator('#flInfoMenu > summary').click();
+ await page.evaluate(()=>{const d=document.getElementById('diagnostics3');if(d)d.open=true;});await page.locator('#flInfoMenu > summary').click();
  await page.locator('#previewBackend').selectOption('auto');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  // Context loss must show CPU automatically and be recoverable.
  await page.evaluate(()=>{globalThis.gpuLossTest=$('gpuPreview').getContext('webgl2').getExtension('WEBGL_lose_context');gpuLossTest.loseContext();});

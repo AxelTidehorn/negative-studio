@@ -9,7 +9,7 @@ try{
   const png=await page.evaluate(async()=>{const c=document.createElement('canvas');c.width=480;c.height=320;const ctx=c.getContext('2d'),im=ctx.createImageData(c.width,c.height);for(let y=0;y<c.height;y++)for(let x=0;x<c.width;x++){const border=x<60||x>=420||y<40||y>=280,t=border?1:.15+.5*(x+y)/800;for(let k=0;k<3;k++)im.data[(y*c.width+x)*4+k]=Math.round(255*NSColorEngine.encode([.8,.5,.25][k]*t));im.data[(y*c.width+x)*4+3]=255;}ctx.putImageData(im,0,0);return Array.from(new Uint8Array(await(await new Promise(r=>c.toBlob(r))).arrayBuffer()));});
   await page.locator('#imageFile').setInputFiles({name:'synthetic-negative.png',mimeType:'image/png',buffer:Buffer.from(png)});await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
   await page.locator('#base2Panel').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});
-  await page.locator('#base2Session').fill('synthetic-session');await page.locator('#base2Session').dispatchEvent('change');
+  await page.evaluate(()=>{const d=document.getElementById('rollCalibration3');if(d)d.open=true;});await page.locator('#base2Session').fill('synthetic-session');await page.locator('#base2Session').dispatchEvent('change');
   await page.locator('#base2Enable').click();await page.waitForFunction(()=>FILMLABB_BASE2.snapshot().proposal);assert.ok(await page.evaluate(()=>FILMLABB_BASE2.snapshot().proposal.measurement.measured));
   const acceptedBefore=await page.evaluate(()=>state.acceptedCalibration2||null);assert.equal(acceptedBefore,null);
   await page.locator('#base2Region').click();await page.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='base'&&display==='negative');
@@ -40,7 +40,7 @@ try{
    await page.locator('#shareBase').click();assert.equal(await page.evaluate(()=>state.useRollBase2),true);
    const project=await page.evaluate(async()=>{let b;downloadBlob=x=>b=x;$('saveSettings').onclick();return JSON.parse(await b.text());});assert.ok(project.sharedBase2);
    await page.locator('#settingsFile').setInputFiles({name:'v2.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);assert.equal(await page.evaluate(()=>!!accepted2()),true);
-   await page.locator('#base2Session').fill('different-light-session');await page.locator('#base2Session').dispatchEvent('change');assert.equal(await page.evaluate(()=>accepted2()),null);assert.match(await page.locator('#base2Status').textContent(),/pausad/);
+   await page.evaluate(()=>{const d=document.getElementById('rollCalibration3');if(d)d.open=true;});await page.locator('#base2Session').fill('different-light-session');await page.locator('#base2Session').dispatchEvent('change');assert.equal(await page.evaluate(()=>accepted2()),null);assert.match(await page.locator('#base2Status').textContent(),/pausad/);
   }
   assert.deepEqual(errors,[]);await page.close();console.log(`PASS ${name}: automatic proposal, ${touch?'touch':'mouse'} rectangle, source loupe, before/after, accept/lock, ROI stability, theme/footer/layout`);
  }

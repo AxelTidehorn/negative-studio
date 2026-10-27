@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="sv"><head><meta charset="utf-8"><meta content="width=device-width, initial-scale=1, viewport-fit=cover" name="viewport"><title>FILMLABB · Negativframkallning</title><link rel="stylesheet" href="./application.css"><link href="./manifest.webmanifest" rel="manifest"><meta content="#191715" name="theme-color"><link href="./icon-192.png" rel="icon" type="image/png"><link href="./icon-192.png" rel="apple-touch-icon"><link rel="stylesheet" href="./mobile-layout.css"><link rel="stylesheet" href="./ui-refinement.css"><link rel="stylesheet" href="./beta6-geometry.css">
 <link rel="stylesheet" href="./film-base.css">
+<link rel="stylesheet" href="./workflow-ui.css">
 </head>
 <body class="filmlabb-ui-refresh">
 <header><div><h1 class="brand-title"><img alt="FILMLABB" class="brand-logo" src="./filmlabb-logo.png"></h1></div><div class="header-tools"><button aria-label="Växla mellan dag- och nattläge" class="btn" id="themeToggle" type="button">Dagläge</button><label class="locale-control"><span aria-hidden="true" class="locale-icon">◎</span><select aria-label="Språk / Language" id="languageSelect"><option value="sv">Svenska</option><option value="en">English</option><option value="fr">Français</option><option value="es">Español</option><option value="de">Deutsch</option></select></label><button class="btn support-link" disabled="" id="supportLink" title="Ko-fi-länk aktiveras när en egen adress finns" type="button">☕ <span data-i18n="coffee">Bjud på kaffe</span></button></div>
@@ -86,6 +87,7 @@
 
 <script defer="" src="./workspace-layout.js"></script>
 <script defer="" src="./compact-ui.js"></script>
+<script defer src="./workflow-ui.js"></script>
 <script src="./editing-controller.js"></script>
 <script src="./film-base-controller.js"></script>
 <script src="./register-offline.js"></script>
