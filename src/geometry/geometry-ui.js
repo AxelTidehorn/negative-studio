@@ -53,7 +53,7 @@
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
  function draw(){
-  scheduled=null;if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();return;}
+  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();return;}
   const p=plan(),v=styleView(p);drawOverlay(p,v);controls();
   if(colorSource!==workingPreview||colorVersion!==sourceVersion38)return;
   const t=performance.now(),{width,height}=NSPreviewPresentation.dimensions(p,colorSize,failed?cpuLimit:1400);
@@ -97,7 +97,7 @@
  $('rotationReset').onclick=()=>{if(busy())return;const g=NSGeometry.syncLegacy(current(),0);g.rotation.fineDegrees=0;panX=panY=0;commit(g);};
  function setMode(value){
   if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);
-  mode=value;lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
+  mode=value;if(value!=='base')globalThis.FILMLABB_BASE2?.leaveTool();lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
   if(mode!=='frame'){$('frameOptions').open=false;const group=$('frameSettingsGroup');if(group)group.open=false;}
   $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Orange filmruta används för analys. Dra en sida.':'Komposition ändrar inte färgkalibreringen.';
   controls();queue();
@@ -157,6 +157,6 @@
  const oldUI=updateCalibrationUI;updateCalibrationUI=function(...args){const r=oldUI(...args);controls();return r;};
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;ensureCpu();});canvas.addEventListener('webglcontextrestored',()=>{if(presenter)presenter.destroy();presenter=null;failed=false;colorSource=null;if(working)render();});
  new ResizeObserver(()=>{if(working)queue();}).observe(picture);
- globalThis.FILMLABB_GEOMETRY={colorGpu,refresh:queue,plan:()=>plan(false),view:()=>plan(),mode:()=>mode,snapshot:()=>({...metrics,mode,grid,colorSize:colorSize?{...colorSize}:null,backend:failed?'cpu':'gpu',sourceVersion:colorVersion})};
+ globalThis.FILMLABB_GEOMETRY={colorGpu,refresh:queue,setTool:setMode,sourceToView:s=>layout(plan()).toView(s),plan:()=>plan(false),view:()=>plan(),mode:()=>mode,snapshot:()=>({...metrics,mode,grid,colorSize:colorSize?{...colorSize}:null,backend:failed?'cpu':'gpu',sourceVersion:colorVersion})};
  controls();
 })();
