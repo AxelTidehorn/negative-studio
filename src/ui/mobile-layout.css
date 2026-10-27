@@ -22,10 +22,10 @@
 }
 @media(pointer:coarse) {
   :root {
-    --ui-touch:44px
+    --ui-touch:36px
   }
   input[type=range] {
-    height:44px
+    height:36px
   }
   input[type=range]::-webkit-slider-thumb {
     width:21px;
@@ -37,16 +37,16 @@
     height:19px
   }
   .switch {
-    min-height:44px
+    min-height:36px
   }
   .control {
-    margin:4px 0
+    margin:0
   }
   .control label {
     font-size:14px
   }
   summary,.tool-section>summary,.frame-settings-group>summary {
-    min-height:44px
+    min-height:36px
   }
   * {
     scrollbar-width:auto
@@ -117,7 +117,7 @@
     gap:6px;
     height:auto;
     min-height:0;
-    padding:6px
+    padding:3px 6px
   }
   .workspace-divider {
     display:none
@@ -127,7 +127,7 @@
     flex:none;
     height:clamp(340px,58dvh,560px);
     position:static;
-    padding:6px
+    padding:3px 6px
   }
   .picture {
     min-height:100px
@@ -147,7 +147,7 @@
   .image-controls .btn,.image-controls .seg button {
     min-height:36px;
     font-size:13px;
-    padding:5px 8px
+    padding:3px 6px
   }
   .queue-panel {
     order:1;
@@ -180,7 +180,7 @@
     order:2;
     overflow:visible;
     overscroll-behavior:auto;
-    padding:10px;
+    padding:6px;
     scrollbar-gutter:auto
   }
   .adjust-collapsed .image-panel {
@@ -193,7 +193,7 @@
     font-size:12px
   }
   .tool-section {
-    margin-bottom:8px
+    margin-bottom:4px
   }
 }
 @media(max-width:370px) {
@@ -207,10 +207,10 @@
     width:94px
   }
   .header-tools .btn {
-    padding:6px
+    padding:3px 6px
   }
   .workspace-toggle {
-    padding:5px 8px
+    padding:3px 6px
   }
   .image-panel {
     height:50dvh;
@@ -219,7 +219,7 @@
 }
 @media(pointer:coarse) {
   .image-controls .btn,.image-controls .seg button {
-    min-height:44px
+    min-height:36px
   }
   .frame input {
     width:24px;
