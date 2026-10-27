@@ -2,6 +2,13 @@
 (function(root){
 'use strict';
 const rows=[
+["Dölj","Hide","Masquer","Ocultar","Ausblenden"],
+["Återställ komposition","Reset composition","Réinitialiser la composition","Restablecer composición","Komposition zurücksetzen"],
+["Exportera bilddiagnostik (.json)","Export image diagnostics (.json)","Exporter le diagnostic d’image (.json)","Exportar diagnóstico de imagen (.json)","Bilddiagnose exportieren (.json)"],
+["Lokalt · endast sammanställda mätvärden, inga bilddata eller filnamn.","Local · aggregate measurements only, no image data or filenames.","Local · mesures agrégées uniquement, sans image ni nom de fichier.","Local · solo medidas agregadas, sin imágenes ni nombres de archivo.","Lokal · nur zusammengefasste Messwerte, keine Bilddaten oder Dateinamen."],
+["Diagnostikexporten misslyckades.","Diagnostic export failed.","Échec de l’export du diagnostic.","Error al exportar el diagnóstico.","Diagnoseexport fehlgeschlagen."],
+["Dölj bildverktyg","Hide image tools","Masquer les outils d’image","Ocultar herramientas de imagen","Bildwerkzeuge ausblenden"],
+["Visa bildverktyg","Show image tools","Afficher les outils d’image","Mostrar herramientas de imagen","Bildwerkzeuge anzeigen"],
 ["Referens pausad","Reference paused","Référence suspendue","Referencia pausada","Referenz pausiert"],
 
 ["Provet är inaktuellt. Mät igen.", "The sample is stale. Measure again.", "Prélèvement périmé. Mesurer à nouveau.", "La muestra está desactualizada. Mide de nuevo.", "Die Probe ist veraltet. Erneut messen."],

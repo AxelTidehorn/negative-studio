@@ -7,6 +7,8 @@
  const canvas=document.createElement('canvas');canvas.id='presentationPreview';canvas.hidden=true;picture.append(canvas);
  const fallback=document.createElement('canvas');fallback.id='presentationFallback';fallback.hidden=true;picture.append(fallback);
  const ns='http://www.w3.org/2000/svg',overlay=document.createElementNS(ns,'svg');overlay.id='geometryOverlay';overlay.setAttribute('aria-label','Bildgeometri');picture.append(overlay);
+ // Keep only crop handles above floating controls; the full-size layer never catches input.
+ const handles=document.createElementNS(ns,'svg');handles.id='geometryHandles';handles.setAttribute('aria-hidden','true');picture.append(handles);
  let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null;
  // New rolls start with the entire exposed frame; imported projects keep their explicit choice.
  if(!roll.length){rollShared.cropExportToFrame=true;state.cropExport=true;}
@@ -32,13 +34,13 @@
   for(const c of [baseCanvas,gpuCanvas,canvas,fallback]){c.style.setProperty('width',p.area.width*v.fit+'px','important');c.style.setProperty('height',p.area.height*v.fit+'px','important');c.style.transform=css;}
   $('cropOverlay').classList.add('hidden');return v;
  }
- function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);overlay.append(e);return e;}
+ function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);(klass==='composition-touch'||klass==='composition-handle'?handles:overlay).append(e);return e;}
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
   const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
   if(key===overlayKey)return;overlayKey=key;
-  overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
+  handles.replaceChildren();handles.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
   const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
   const corners=rectPoints(p,effective).map(s=>v.toView(s));
   if(grid){for(const f of [1/3,2/3]){const lerp=(a,b)=>({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f});for(const [a,b]of [[lerp(corners[0],corners[1]),lerp(corners[3],corners[2])],[lerp(corners[0],corners[3]),lerp(corners[1],corners[2])]])svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'grid-line');}}
@@ -53,7 +55,7 @@
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
  function draw(){
-  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();return;}
+  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();handles.replaceChildren();return;}
   const p=plan(),v=styleView(p);drawOverlay(p,v);controls();
   if(colorSource!==workingPreview||colorVersion!==sourceVersion38)return;
   const t=performance.now(),{width,height}=NSPreviewPresentation.dimensions(p,colorSize,failed?cpuLimit:1400);
@@ -126,6 +128,7 @@
   }else if(saved.kind==='line')setMode(null);else{saveCurrentFrame();queue();}
  }
  picture.addEventListener('pointerdown',e=>{
+  if(e.target.closest('button,input,label,select,summary'))return;
   if(busy()||drag||sampleMode||neutralSample39||neutralPair4||e.isPrimary===false)return;
   const part=e.target.dataset?.composition;if(mode!=='straighten'&&part===undefined)return;
   if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();e.stopImmediatePropagation();dragPoint=null;

@@ -40,7 +40,7 @@
 #cropRect {
   stroke:var(--ui-frame)
 }
-#geometryOverlay {
+:is(#geometryOverlay,#geometryHandles) {
   position:absolute;
   inset:0;
   width:100%;
@@ -50,42 +50,42 @@
   overflow:visible;
   touch-action:none
 }
-#geometryOverlay .frame-line {
+:is(#geometryOverlay,#geometryHandles) .frame-line {
   fill:none;
   stroke:var(--ui-frame);
   stroke-width:1.5;
   filter:drop-shadow(0 1px 1px var(--ui-guide-edge))
 }
-#geometryOverlay .composition-line {
+:is(#geometryOverlay,#geometryHandles) .composition-line {
   fill:none;
   stroke:var(--ui-guide);
   stroke-width:1.5;
   filter:drop-shadow(0 1px 2px var(--ui-guide-edge))
 }
-#geometryOverlay .grid-line {
+:is(#geometryOverlay,#geometryHandles) .grid-line {
   stroke:var(--ui-grid);
   stroke-width:1;
   filter:drop-shadow(0 1px 1px var(--ui-guide-edge))
 }
-#geometryOverlay .hit {
+:is(#geometryOverlay,#geometryHandles) .hit {
   stroke:transparent;
   stroke-width:28;
   pointer-events:stroke;
   cursor:move;
   touch-action:none
 }
-#geometryOverlay .composition-handle {
+:is(#geometryOverlay,#geometryHandles) .composition-handle {
   fill:var(--ui-guide);
   stroke:var(--ui-guide-edge);
   stroke-width:1;
   pointer-events:none
 }
-#geometryOverlay .straight-line {
+:is(#geometryOverlay,#geometryHandles) .straight-line {
   stroke:var(--ui-frame);
   stroke-width:2;
   stroke-dasharray:6 3
 }
-#geometryOverlay .composition-touch {
+:is(#geometryOverlay,#geometryHandles) .composition-touch {
   fill:transparent;
   stroke:none;
   pointer-events:all;
@@ -112,3 +112,5 @@
 #picture.geometry-line-tool {
   cursor:crosshair
 }
+
+#geometryHandles{z-index:16}
