@@ -1,7 +1,7 @@
 /* UI/UX 3: move existing nodes, preserving controller ownership and project state. */
 (() => {
 'use strict';
-const oldTechnical=$('rawMode4').closest('details');
+const oldTechnical=$('rawMode4').closest('details');let lastTool3=null;
 const panel=$('adjustmentPanel'),t=(el,s)=>FILMLABB_I18N.source(el,s);
 function details(id,title,parent){const d=document.createElement('details');d.id=id;const s=document.createElement('summary');t(s,title);d.append(s);parent.append(d);return d;}
 function move(id,parent){const el=$(id);if(el)parent.append(el);return el;}
@@ -19,8 +19,8 @@ technical.append($('useResponse4').closest('label'));
 const source=$('flatFieldFile').closest('fieldset');source.parentElement.closest('details').open=false;
 t(source.querySelector('legend'),'Ojämn belysning');t($('clearReference'),'Ta bort ljuskällereferens');
 const tiff=$('tiffEncoding').closest('label');
-const calibration=document.createElement('section');calibration.id='calibration3';calibration.className='tool-section';const heading=document.createElement('h2');t(heading,'Filmbas och kalibrering');calibration.append(heading);
-$('imageAdjustments').after(calibration);move('base2Panel',calibration);$('base2Panel').removeAttribute('data-i18n-ignore');$('base2Panel').querySelector('h3').hidden=true;$('base2Panel').querySelector('p').hidden=true;
+const calibrationSection=document.createElement('section');calibrationSection.id='calibration3';calibrationSection.className='tool-section';const heading=document.createElement('h2');t(heading,'Filmbas och kalibrering');calibrationSection.append(heading);
+$('imageAdjustments').after(calibrationSection);move('base2Panel',calibrationSection);$('base2Panel').removeAttribute('data-i18n-ignore');$('base2Panel').querySelector('h3').hidden=true;$('base2Panel').querySelector('p').hidden=true;
 move('base2Status',$('base2Panel')).before($('base2Panel').querySelector('.toolrow'));
 const sampleDetails=details('sampleDetails3','Prov och godkännande',$('base2Panel'));move('base2Status',sampleDetails);
 const baseSummary=document.createElement('p');baseSummary.id='baseSummary3';baseSummary.className='status';baseSummary.setAttribute('role','status');$('base2Panel').prepend(baseSummary);
@@ -47,7 +47,15 @@ const creativeHint=document.createElement('p');creativeHint.className='hint';t(c
 const icons={import:'M12 3v12m-4-4 4 4 4-4M4 15v6h16v-6',export:'M12 15V3m-4 4 4-4 4 4M4 15v6h16v-6',queue:'M3 4h18v4H3zm0 6h18v4H3zm0 6h18v4H3z',settings:'M4 7h16M4 17h16M8 3v8m8 2v8',zoom:'M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12m5 11 6 6',frame:'M3 8V3h5m8 0h5v5m0 8v5h-5M8 21H3v-5',sample:'m15 3 6 6-4 4-6-6zm-4 4-8 8v6h6l8-8',check:'m4 12 5 5L20 6'};
 for(const [selector,name]of [['label[for="imageFile"]','import'],['#export','export'],['#exportTiff','export'],['#zoomIn','zoom'],['#zoomOut','zoom'],['#zoomReset','frame'],['#cropAuto','frame'],['#base2Region','sample'],['#base2Accept','check'],['#base2Enable','sample']]){const el=document.querySelector(selector);if(!el)continue;el.classList.add('ui3-icon');const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${icons[name]}"/></svg>`;el.style.setProperty('--tool-icon',`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);}
 function localizeBase(){for(const id of ['base2Status','base2Preview','base2Lock','base2ResponseLock','base2Cancel','base2Accept','base2Undo','base2Auto']){const el=$(id);if(el.textContent!==FILMLABB_I18N.fromSource(el.textContent))t(el,el.textContent);}}
-function baseState(){localizeBase();const snap=globalThis.FILMLABB_BASE2?.snapshot();const a=snap?.accepted;t(baseSummary,a?(state.useRollBase2?'Rullreferens':a.measurement.kind.startsWith('manual')?'Manuellt godkänd':'Automatisk referens'):snap?.proposal?'Kontrollera kandidaten':'Filmbas saknas');return snap;}
+function baseState(){
+ localizeBase();const snap=globalThis.FILMLABB_BASE2?.snapshot(),a=snap?.accepted;
+ let label='Filmbas saknas';
+ if(a)label=state.useRollBase2?'Rullreferens':a.measurement.kind.startsWith('manual')?'Manuellt godkänd':'Automatisk referens';
+ else if(snap?.proposal)label=snap.proposal.measurement.status==='missing'?'Filmbas saknas':'Kontrollera kandidaten';
+ else if(state.filmBaseVersion===2&&(state.acceptedCalibration2||state.useRollBase2))label='Referens pausad';
+ else if(state.filmBaseVersion!==2&&calibration?.base?.measured)label=state.useRollBase?'Rullreferens':String(calibration.base.kind||'').startsWith('manual')?'Manuellt godkänd':'Automatisk referens';
+ t(baseSummary,label);return snap;
+}
 function refresh(){
  const snap=baseState();
  for(const option of $('engineMode').options)if(methods[option.value])option.textContent=({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix'})[option.value];
@@ -55,8 +63,8 @@ function refresh(){
  const model=roll[activeFrame]?.geometry;$('rotationReset').hidden=!(state.rotation||model?.rotation?.fineDegrees);$('compositionReset').hidden=!model?.compositionCrop;
  const active=globalThis.FILMLABB_GEOMETRY?.mode();toolbar.dataset.mode=active||'view';
  for(const [id,mode]of [['straighten','straighten'],['compositionEdit','composition']])$(id).setAttribute('aria-pressed',String(active===mode));
- if(active==='straighten'||active==='composition')$('geometryTools').open=true;
- $('geometryTools').hidden=!active;
+ if(active!==lastTool3){if(active==='straighten'||active==='composition')$('geometryTools').open=true;lastTool3=active;}
+ $('geometryTools').hidden=active!=='straighten'&&active!=='composition';
  $('base2Lock').hidden=!snap?.accepted;
  const v2=state.filmBaseVersion===2;legacy.hidden=v2;
  t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');

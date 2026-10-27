@@ -75,3 +75,10 @@ ankare som fortfarande ligger i normalt sidflöde; assertionen ändrades till
 `relative`, och provet kördes om med samtliga scroll-/hit-target-/footerkontroller
 bevarade och godkända. Bildytan kontrolleras dessutom separat numeriskt i fyra
 storlekar. Språk-, preferens- och nya verktygsprov har körts om efter riktade fixar.
+
+CI hittade även ett timingfel vid stängning av kompositionsverktyget: en
+presentationsrefresh kunde återöppna panelen innan befintlig toggle-handler
+avslutade verktyget. Kontextpanelen öppnas nu endast vid byte av aktivt verktyg.
+UI3-provet och det fullständiga geometriarbetsflödet kontrollerar stängningen.
+Filmbasstatus prövas också explicit för äldre automatiska/manuella referenser;
+pausad v2-referens skiljs från saknad filmbas.

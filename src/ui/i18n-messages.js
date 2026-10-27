@@ -2,6 +2,8 @@
 (function(root){
 'use strict';
 const rows=[
+["Referens pausad","Reference paused","Référence suspendue","Referencia pausada","Referenz pausiert"],
+
 ["Provet är inaktuellt. Mät igen.", "The sample is stale. Measure again.", "Prélèvement périmé. Mesurer à nouveau.", "La muestra está desactualizada. Mide de nuevo.", "Die Probe ist veraltet. Erneut messen."],
 ["Lås upp filmbasen före godkännande.", "Unlock the film base before accepting.", "Déverrouiller la base avant validation.", "Desbloquea la base antes de aceptar.", "Filmbasis vor der Bestätigung entsperren."],
 ["Släpp provområdet för slutlig mätning.", "Release the sample area for final measurement.", "Relâcher la zone pour la mesure finale.", "Suelta el área para la medición final.", "Probenbereich für die endgültige Messung loslassen."],
