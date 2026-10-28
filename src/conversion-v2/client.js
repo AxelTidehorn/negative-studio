@@ -12,7 +12,7 @@ class Client{
  }
  cancel(){const p=this.pending;if(!p)return;this.pending=null;this.worker.postMessage({type:'cancel',id:p.id});p.reject(Object.assign(Error('Avbrutet'),{name:'AbortError'}));}
  run(type,args={},transfer=[]){this.cancel();const id=++this.sequence;return new Promise((resolve,reject)=>{this.pending={id,resolve,reject};this.worker.postMessage({id,type,...args},transfer);});}
- close(){this.cancel();this.worker.terminate();}
+ close(){this.cancel();this.worker.onmessage=null;this.worker.onerror=null;this.worker.terminate();}
 }
 root.NSV2Client=Client;
 })(globalThis);
