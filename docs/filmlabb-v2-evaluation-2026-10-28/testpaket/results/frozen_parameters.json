@@ -1,0 +1,58 @@
+{
+  "frozen_at": "2026-10-28T13:23:27.483844+00:00",
+  "training_indices": [
+    0,
+    1,
+    2,
+    6
+  ],
+  "validation_indices": [
+    9,
+    10
+  ],
+  "additional_development_indices": [
+    3,
+    4,
+    5,
+    8,
+    11
+  ],
+  "slopes": [
+    1.2,
+    1.0366067625463724,
+    0.8066116270147937
+  ],
+  "density_offset": [
+    -0.10833108308627509,
+    0.022077949425465204,
+    0.08625313366080989
+  ],
+  "positive_gain": [
+    1.2716860571072692,
+    0.9377979506807447,
+    0.7185892463067459
+  ],
+  "positive_gain_EV": [
+    0.34674255446123553,
+    -0.092650968468805,
+    -0.476760749327433
+  ],
+  "density_medians": [
+    0.25427725926784117,
+    0.38468629177958147,
+    0.44886147601492615
+  ],
+  "density_spans": [
+    0.44288670430992993,
+    0.5370387897584572,
+    0.6901686295716216
+  ],
+  "limits": {
+    "slope_multiplier": [
+      0.8,
+      1.2
+    ],
+    "positive_chroma_EV": 0.65
+  },
+  "status": "Statistical hypotheses, not measured film calibration. No film-roll identity verified. Corrected ROI version 2; initial holder-contaminated ROIs rejected before photographic validation review."
+}
