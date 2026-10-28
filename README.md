@@ -165,3 +165,10 @@ Dependency licenses are separate:
 | [Playwright](https://github.com/microsoft/playwright/blob/main/LICENSE), development only | Apache 2.0; the installed browser has its own terms/notices. |
 
 The repository includes a vendored decoder fallback as well as the npm dependency. Its existing binary distribution does not contain a complete third-party license inventory. Package metadata alone is not a redistribution audit of the WASM binary and its compiled components; consult applicable upstream source, notices and obligations before redistribution.
+
+### FILMLABB 2.0: separat lokalt konverteringslabb
+
+Efter build finns experimentet på `v2.html`. Det använder en ny densitetskärna
+med fryst responsprior, isolerad Standard A/B och egen JPEG/RGB16-TIFF-export.
+Normalmotorn och gamla projekt ändras inte. Se [testprotokoll, arkitektur och
+begränsningar](docs/CONVERSION_V2.md).
