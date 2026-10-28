@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="sv"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>FILMLABB 2.0 · bildjämförelse</title><link rel="stylesheet" href="./v2-lab.css">
 <body><main>
-<header><p class="eyebrow">FILMLABB · separat testmiljö</p><h1>Jämför ditt negativ</h1><p>Mät v2:s filmbas och jämför med verkligt FILMLABB eller i ett kontrollerat tekniskt läge. Originalet stannar på din enhet.</p></header>
+<header><p class="eyebrow">FILMLABB · separat testmiljö</p><h1>Jämför ditt negativ</h1><p class="hint" data-build-label>Versionsinformation saknas</p><p>Mät v2:s filmbas och jämför med verkligt FILMLABB eller i ett kontrollerat tekniskt läge. Originalet stannar på din enhet.</p></header>
 <section aria-labelledby="step1"><h2 id="step1"><span>1</span> Ladda negativ</h2>
 <label class="file-label">Välj RAF eller stödd linjär TIFF <input id="file" type="file" accept=".raf,.dng,.nef,.cr2,.cr3,.arw,.tif,.tiff"></label>
 <details><summary>Vilka TIFF-filer stöds?</summary><p>Verifierat linjärt Rec.2020 D65-negativ utan tidigare filmbas- eller tonkorrigering. ICC-TIFF och JPEG stöds inte som tekniskt negativ här.</p><label><input id="tiffConfirmed" type="checkbox"> Jag har verifierat att TIFF-filen uppfyller detta</label></details>
@@ -18,7 +18,7 @@
 <label>Jämförelseläge <select id="comparison"><option value="photo">Verklig automatisk FILMLABB · fotografisk jämförelse</option><option value="technical">Teknisk jämförelse · gemensam linjär källa och bas</option></select></label>
 <p id="conditions" class="hint"></p><p id="referenceStatus" role="status">Fotografisk A skapas med huvudapplikationens verkliga import och nya standardrecept.</p>
 <details><summary>Fotografisk referens · återförsök eller faktisk export</summary><button id="buildReference">Skapa automatisk A igen</button><p>Om automatisk A inte kan skapas: importera en faktisk sRGB-TIFF-export från vanliga FILMLABB, med hela samma bild och samma pixelmått. Ett historiskt recept är en egen referens och märks separat.</p><label>Exportens ursprung <select id="referenceOrigin"><option value="auto">Ny automatisk konvertering · deklarerat av mig</option><option value="historical">Historiskt eller manuellt recept</option></select></label><label>Faktisk FILMLABB-export <input id="referenceFile" type="file" accept=".tif,.tiff"></label></details>
-<p id="toneStatus" class="hint"></p>
+<p id="toneStatus" class="hint"></p><p id="engineStatus" role="status" class="hint"></p>
 <p id="uncalibrated" class="warning" hidden>Okalibrerat experimentläge: filmbasen är antagen. Färgerna kan vara mycket felaktiga.</p>
 <fieldset id="view" disabled><legend class="sr-only">Synkroniserad jämförelse</legend><div class="buttons"><button id="toggle">Växla A/B</button><button id="both">Sida vid sida</button><label>Gemensam zoom <select id="zoom"><option value="1">Hela bilden</option><option value="2">2×</option><option value="4">4×</option><option value="8">8×</option></select></label><button id="resetView">Återställ utsnitt</button></div><p class="hint">Zooma och tryck på en detalj i endera bilden för att centrera båda. Växling använder redan renderade bilder.</p></fieldset>
 <p id="quality" class="hint">Jämförelsen visas här efter att filmbasen godkänts.</p>
@@ -35,5 +35,5 @@
 </details>
 <footer>Prototyp för lokal bildvalidering · fryst provisorisk filmrespons · inga vanliga FILMLABB-projekt ändras.</footer>
 </main>
-<script src="./file-formats.js"></script><script src="./image-model.js"></script><script src="./v2-core.js"></script><script src="./v2-render.js"></script><script src="./v2-diagnostics.js"></script><script src="./v2-output.js"></script><script src="./v2-client.js"></script><script src="./v2-reference-client.js"></script><script src="./v2-lab.js"></script>
+<script src="./build-info.js"></script><script src="./file-formats.js"></script><script src="./image-model.js"></script><script src="./v2-core.js"></script><script src="./v2-render.js"></script><script src="./v2-diagnostics.js"></script><script src="./v2-output.js"></script><script src="./v2-client.js"></script><script src="./v2-reference-client.js"></script><script src="./v2-lab.js"></script>
 </body></html>
