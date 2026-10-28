@@ -1,5 +1,7 @@
 # V2: robust tonplacering och aktuell analys
 
+> Etapp 1:s aktuella färgbalans, automatiska analysfilmruta och nya RAF-verifiering beskrivs i [V2_STAGE1_IMAGE_QUALITY.md](V2_STAGE1_IMAGE_QUALITY.md). Resultat och begränsningar nedan avser den tidigare versionen när annat inte anges.
+
 Arbetsgren `feat/v2-robust-tone`, baserad på senaste V2 i öppna PR #36:
 `da3fe84a0fef0bb139602ca4ad998ede24e10538`. PR #36 och dokumentations-PR #37
 var båda öppna och inte mergade när arbetet började. Ingen motorkod hämtades från

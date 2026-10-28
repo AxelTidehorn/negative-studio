@@ -125,8 +125,8 @@ self.onmessage=async({data:m})=>{
   else if(m.type==='accept'||m.type==='prior'||m.type==='reuse'||m.type==='undo'){
    if(m.type==='undo'){if(!previous)throw Error('NO_PREVIOUS_BASE');[base,previous]=[previous,base];}
    else{const next=m.type==='prior'?V.assumed([1,1,1],source,capture):m.type==='reuse'?m.base:V.accept(proposal,source,capture);if(!V.compatible(next.capture,capture))throw Error('BASE_INCOMPATIBLE');previous=base;base=next;}
-   parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);
-  }else if(m.type==='tone'){if(!k)throw Error('ACCEPT_BASE_FIRST');analysisOptions={...analysisOptions,maskMode:m.maskMode||analysisOptions.maskMode};if(Object.hasOwn(m,'analysisArea'))analysisOptions.analysisArea=m.analysisArea;parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
+   if(!analysisOptions.analysisArea&&m.analysisArea)analysisOptions.analysisArea=m.analysisArea;parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);
+  }else if(m.type==='tone'){if(!k)throw Error('ACCEPT_BASE_FIRST');analysisOptions={...analysisOptions,maskMode:m.maskMode||analysisOptions.maskMode};if(Object.hasOwn(m,'colorMode')){if(!['auto','identity'].includes(m.colorMode))throw Error('COLOR_MODE_INVALID');analysisOptions.colorMode=m.colorMode;}if(Object.hasOwn(m,'analysisArea'))analysisOptions.analysisArea=m.analysisArea;parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
   else if(m.type==='pair')result=await pair(m);
   else if(m.type==='export')result=await exportImage(m);
   else if(m.type==='mask'){if(!analysisMask)throw Error('ANALYSIS_MASK_MISSING');result={mask:{...analysisMask,data:analysisMask.data.slice()},snapshot:snapshot()};}

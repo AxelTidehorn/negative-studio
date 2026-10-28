@@ -1,0 +1,28 @@
+{
+  "frozenAt": "2026-10-28T18:04:17.389Z",
+  "color": {
+    "version": "neutral-anchor-bands-1",
+    "binEV": 0.18,
+    "maxAnchorSpanEV": 1.75,
+    "maxAnchorAxisEV": 1.25,
+    "maxCorrectionEV": 0.6,
+    "strength": 0.85,
+    "minSupport": 32,
+    "minTiles": 4,
+    "minDiversity": 0.15,
+    "maxBandDifferenceEV": 0.65
+  },
+  "tone": {
+    "version": "robust-p60-highlight-1",
+    "target": 0.25,
+    "highlightCeiling": 3,
+    "minSamples": 16,
+    "minValidFraction": 0.05,
+    "maxAbsEV": 16
+  },
+  "validationCases": [
+    "09",
+    "10"
+  ],
+  "rule": "No parameter changes after this artifact; cases already described in prior report, not unseen dataset"
+}
