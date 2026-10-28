@@ -1,10 +1,19 @@
 # Separat automatisk FILMLABB 2.0-publicering
 
-Status 2026-10-28: **förberedd och lokalt testad, inte publicerad**.
-Repositoryskapande via den tillgängliga GitHub-anslutningen nekades med HTTP 403
-`Resource not accessible by integration`. Även API-åtkomst till Actions secrets
-nekades. Ingen Pages-konfiguration eller deployment i produktionsrepositoryt har
-ändrats. PR #36 ska inte mergas för att aktivera denna testmiljö.
+Status 2026-10-28: **publicerad över HTTPS**.
+
+**[Öppna FILMLABB 2.0](https://axeltidehorn.github.io/negative-studio-v2-preview/v2.html)**
+
+Första deploymenten verifierades i [Actions-körning 40662298385](https://github.com/AxelTidehorn/negative-studio-v2-preview/actions/runs/40662298385),
+med source-commit `d79169f77f0304762dbc0f5f579533b031f88a29`. Workflowet är
+installerat på preview-repositoryts `main`, och ägaren har aktiverat Pages med
+GitHub Actions. Ingen ytterligare engångsåtgärd behövs.
+
+Vid första försöket nekade anslutningen repositoryskapande och Pages-aktivering
+med HTTP 403. Ägaren skapade repositoryt, gav åtkomst och aktiverade Pages i
+webbgränssnittet. Därefter installerades workflowet och publiceringen lyckades.
+Ingen Pages-konfiguration eller deployment i produktionsrepositoryt ändrades.
+PR #36 ska inte mergas för att uppdatera denna testmiljö.
 
 ## Vald lösning
 
@@ -41,10 +50,10 @@ måste vara aktiverat i det publika preview-repositoryt. Publika schemalagda
 workflows kan inaktiveras av GitHub efter lång inaktivitet; återaktivera i Actions
 om GitHub visar ett sådant meddelande.
 
-## Engångsåtgärder som återstår för ägaren
+## Engångsinstallation (nu utförd; referens för eventuell återställning)
 
-Eftersom anslutningen inte får skapa repositoryt eller konfigurera dess
-workflow krävs följande engångsinstallation i GitHubs webbgränssnitt:
+Följande installation är genomförd. Ägaren skapade repositoryt och aktiverade
+Pages; workflowet installerades via Git. Stegen behöver inte göras igen:
 
 1. Skapa ett **publikt** repository med exakt namn
    **`AxelTidehorn/negative-studio-v2-preview`**, initialisera med README och
@@ -69,9 +78,8 @@ Om GitHub-anslutningen ges tillräckliga administrations-/workflow-rättigheter
 kan installationen också färdigställas via API. Vanlig repository-läsåtkomst
 räcker inte, vilket 403-resultaten visade i denna session.
 
-**Planerad adress, ännu inte verifierad som publicerad:**
-`https://axeltidehorn.github.io/negative-studio-v2-preview/v2.html`.
-Den ska inte beskrivas som en fungerande testlänk före en lyckad deployment.
+**Publicerad och verifierad adress:**
+[https://axeltidehorn.github.io/negative-studio-v2-preview/v2.html](https://axeltidehorn.github.io/negative-studio-v2-preview/v2.html).
 
 ## Service worker, cache och sökvägar
 
@@ -111,3 +119,24 @@ produktionsrepositoryt införs. `.nojekyll` följer med som statisk markör.
 - Verklig produktions-HTML hämtades före arbetet för hashjämförelse efteråt.
 - Fysisk iPad Safari och Windows Edge är inte verifierade i denna miljö.
 - Konverteringsmatematik, UI och projekthantering ändras inte i uppdraget.
+
+
+## Verifiering av faktisk publicering
+
+Första Actions-körningen slutfördes med samtliga steg gröna: npm ci, build,
+v2-tester, cacheisolering, Pages-deployment och efterföljande HTTPS-kontroll.
+Samma HTTPS-verifierare kördes även från utvecklingsmiljön via dess nätproxy:
+korrekt source-commit, 20 script, JS-MIME och giltig WASM på 1 417 725 byte.
+
+Produktionssidans HTML-hash är fortfarande
+`8173902c10ab820654e9c5d67eba9d106f9e215b3a128b49eb186de2db32c88a`,
+identisk före och efter publiceringen. Preview har egen Pages-konfiguration och
+egen deploymenthistorik. Nuvarande publicerade commit kan läsas i
+[preview-deployment.json](https://axeltidehorn.github.io/negative-studio-v2-preview/preview-deployment.json).
+
+Det funktionella RAW→v2→TIFF-flödet är browserverifierat lokalt med samma
+publiceringsartefakt och projektsökväg. Försöket att köra Chromium direkt mot
+den publika adressen stoppades av utvecklingsmiljöns proxycertifikat
+(`ERR_CERT_AUTHORITY_INVALID`); TLS-verifiering stängdes inte av. Publik HTTPS
+och resurser verifierades separat med giltig CA-trust. Fysisk iPad Safari och
+Windows Edge återstår som enhetstest.
