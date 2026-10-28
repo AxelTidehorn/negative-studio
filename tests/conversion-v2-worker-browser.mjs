@@ -16,7 +16,7 @@ try{
  // Stop an in-flight export. A cancelled completion must never download later.
  await page.locator('#tiff').click();await page.locator('#cancel').click();await page.waitForTimeout(400);assert.ok((await page.locator('#status').textContent()).startsWith('Avbrutet'));assert.equal(downloads.length,0);
  // Supersede a render, then recover using the still-owned source.
- await page.locator('#tone').click();await page.locator('#cancel').click();await page.waitForTimeout(300);assert.ok((await page.locator('#status').textContent()).startsWith('Avbrutet'));await page.locator('#show').click();await page.waitForFunction(()=>document.getElementById('status').textContent.startsWith('A/B klart'));
+ await page.locator('#maskMode').selectOption('all');await page.locator('#tone').click();await page.locator('#cancel').click();await page.waitForTimeout(300);assert.ok((await page.locator('#status').textContent()).startsWith('Avbrutet'));await page.locator('#show').click();await page.waitForFunction(()=>document.getElementById('status').textContent.startsWith('A/B klart'));
  const ready=await page.evaluate(()=>NSV2Lab.getMetrics());assert.ok(ready.sourceBytes===1536*1024*12);
  const pending=page.waitForEvent('download');await page.locator('#tiff').click();const exported=await pending,stream=await exported.createReadStream(),parts=[];for await(const c of stream)parts.push(c);assert.ok(Buffer.concat(parts).length>=1536*1024*6,'full source RGB16, never an upscaled preview');
  // A new source supersedes previous calculations and cannot receive old pixels.

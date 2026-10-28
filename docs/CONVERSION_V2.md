@@ -1,6 +1,8 @@
 # FILMLABB 2.0: pålitlig A/B-referens och färg-/tondiagnostik
 
-Arbetet fortsätter i [PR #36](https://github.com/AxelTidehorn/negative-studio/pull/36)
+**Uppdatering på denna gren:** automatisk ton använder nu robust P60/P99 och separat bekräftad analysfilmruta. Basbyte invalidierar tonanalysen. Se [ny modell, testresultat och begränsningar](V2_ROBUST_TONE.md). Den befintliga publika testmiljön följer fortfarande grenen i PR #36 tills separat publicering beslutas.
+
+Grundprototypen finns i [PR #36](https://github.com/AxelTidehorn/negative-studio/pull/36)
 på `feat/filmlabb-v2-prototype`. Ingen merge, ändring av vanliga motorer eller
 migration av gamla projekt. Arkitekturunderlaget är `FILMLABB_2_0_arkitekturstudie.md`.
 
@@ -71,16 +73,14 @@ pixlar, inte dess fotografiska kvalitet eller metadatahistorik.
    Luminans efter sRGB-transform använder sRGB-vikter. Värden >1 är headroom,
    inte automatiskt förlorad information. RAW-/outputändpunkter visas separat.
 7. Exportera diagnostik. Acceptera ett annat basprov och mät igen. Densitet ska
-   ändras med `log10(Bny/Bgammal)`; kalibrerings-id/kurvor och sparad tonexponering
-   ska förbli samma. Tabellen mäter aktuella pixlar även med ett fryst äldre
-   tonrecept. **Ångra bas** återställer föregående bas-id.
+   ändras med `log10(Bny/Bgammal)`; kalibrerings-id och responskurvor ska förbli oförändrade. Tonexponeringen analyseras om när basvärdena ändras; aktiv intent ska ange aktuellt baseId. Välj teknisk visning för att isolera basens matematiska påverkan utan automatisk ton. **Ångra bas** återställer föregående bas-id.
 8. Prova tre crops, zoom och rotationer på `_DSF8951.RAF`. Bas, kalibrering,
    analysmask och tonrecept ska förbli oförändrade; jämför överlapp vid lika
    pixelstorlek. Geometri ändrar bara sampling. Återställ utsnitt inom A-exporten
    i fotografiskt läge. Hela originalkällan kan användas i tekniskt läge.
 9. Kontrollera **Visa analysmask på negativet** (rött uteslutet). Byt till
-   **Hela källan** och klicka separat **Analysera positiv ton igen** för ett
-   kontrollerat motexperiment. Bara detta explicita steg ersätter mask/ton.
+   **Hela analysområdet** och klicka separat **Uppdatera positiv tonanalys** för ett
+   kontrollerat motexperiment. Områdes-/maskändring och ändrade basvärden uppdaterar mask/ton.
    Bas och teknisk respons ändras aldrig av maskbytet.
 10. Exportera en andra rapport. Två mätningar visar parameterdiff i labbet.
     JSON-filer kan även jämföras under Avancerat eller med
@@ -119,7 +119,7 @@ referensdensitet och lutning kan därför ge mörk teknisk placering och
 förstärkta kanalavvikelser. Det är inte fastställt att detta förklarar varje
 symptom i porträttet.
 
-Mätta syntetiska regressionsfall med den rapporterade basen
+Historiska mätvärden från föregående +1 EV-prototyp, före denna grens robusta tonplacering. Nya resultat finns i V2_ROBUST_TONE.md. Basen i dessa syntetiska fall var
 **0,8645 / 0,4041 / 0,2068**:
 
 | Kontroll | Uppmätt resultat | Slutsats inom testfallet |
@@ -135,12 +135,10 @@ Mätta syntetiska regressionsfall med den rapporterade basen
 Masken är en **heuristik**, inte motivsegmentering: högst 24 000 originalprov,
 edge-connected basnära/dark-holder/clear-pad-regioner, plus invalid/floor och
 clipped signal. Den kan både missa en kant och utesluta verklig motivyta.
-Maskbild, provandel och räknare går därför att granska. Otillräckliga prover
-ger prior/insufficient, inte fabricerad säker analys. Sparad mask/ton används
-oförändrat efter basbyte tills användaren uttryckligen analyserar om.
+Maskbild, provandel och räknare går därför att granska. Otillräckliga prover eller obekräftad analysfilmruta ger 0 EV-fallback med uttrycklig orsak. Sparad mask/ton uppdateras efter ändrade basvärden; kreativ crop/zoom/rotation ändrar däremot inte det separat sparade analysområdet.
 
 Stegdiagnostiken skiljer aktuell teknisk median från medianen när tonreceptet
-skapades. Den använder samma sparade source-grid/mask även efter basbyte.
+skapades. Den använder aktuell source-grid/mask efter basbyte.
 Stegtabellen visar alla originalprov på detta grid; maskens behållna population
 används separat för mörker-/exponeringsförklaringen. 18 % är analysprior,
 inte bevis för att ett faktiskt motiv ska vara normalgrått.
@@ -177,7 +175,7 @@ en viss RAF. Verkligt porträtt, dess olika steg/diagnostik, andra filmtyper och
   aktuell diagnostik efter basbyte verifieras numeriskt och i Chromium.
 - Worker/cache/avbrytning, JPEG, fullupplöst RGB16-TIFF/ICC, import, äldre projekt,
   motorer och preview-isolering ingår i regressionerna.
-- Full regression: **84/84 testgrupper passerade**, 957,15 s. Build passerar. Efter fullkörningen passerade riktade sluttester för skalära tre-vy-kärnan, aktuell maskdiagnostik, referensens cancel/återförsök/samtidiga B-export, worker/cache och preview-isolering.
+- Föregående prototyp: **84/84 testgrupper passerade**, 957,15 s. Build passerar. Efter fullkörningen passerade riktade sluttester för skalära tre-vy-kärnan, aktuell maskdiagnostik, referensens cancel/återförsök/samtidiga B-export, worker/cache och preview-isolering.
 
 En avslutande isolerad kärnjämförelse på samma 1 MP-data och frysta recept
 mätte median **408,61 ms före / 399,12 ms efter** (fem interfolierade pass per
@@ -226,7 +224,7 @@ effektiva densiteter bevaras. Ogiltig/låg/klippt signal och extrapolation redov
 fortfarande av referensvägen i diagnostik. Log-positiv begränsas till [-20,20]
 med uttrycklig status. Ingen rekonstruktion av klippt information påstås.
 
-Ton: gemensam exponering högst ±1 EV, monoton luminans-Reinhard:
+Ton: gemensam experimentell P60-exponering med mjuk P99-begränsning, separat bekräftad analysfilmruta och uttrycklig 0 EV-fallback. Se V2_ROBUST_TONE.md för formel, numerisk gain-gräns och giltighet. Monoton luminans-Reinhard:
 `P * 2^e / (1 + 2^e Y)`. Därefter oförändrad Rec.2020→linjär sRGB,
 neutralaxel-gamutkompression och peak-skuldra. Boxfiltrering sker på dessa
 **konverterade linjära positiva** värden; sRGB-transfer/kvantisering sker sist.
@@ -245,7 +243,7 @@ den blockerar inte huvudtråden och visar progress.
 
 Två A/B-nivåer cachas i workern med källa, bas-id, fryst ton-id, crop, rotation
 och upplösning som identitet. Helbilden hålls kvar och den andra nivån ersätts
-av senaste ROI. Cache invalidieras vid basbyte eller explicit tonanalys, aldrig
+av senaste ROI. Cache invalidieras vid basbyte eller uppdaterad tonanalys, aldrig
 vid ett rent visningsbyte. A/B-växling skickar **inget renderjobb**. Identisk
 geometri är cacheträff; 90°-rotation av samma nivå är pixelpermutation och kräver
 ingen ny inversion. Ett nytt ROI konverterar bara ROI:s originalpixlar.

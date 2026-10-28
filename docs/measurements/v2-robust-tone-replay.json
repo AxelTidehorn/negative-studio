@@ -1,0 +1,882 @@
+{
+  "schema": "filmlabb.v2-robust-tone-archive-replay",
+  "version": 1,
+  "referenceCommit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+  "recipe": {
+    "version": "robust-p60-highlight-1",
+    "target": 0.25,
+    "highlightCeiling": 3,
+    "minSamples": 16,
+    "minValidFraction": 0.05,
+    "maxAbsEV": 16
+  },
+  "validationParametersChanged": false,
+  "rows": [
+    {
+      "index": 0,
+      "split": "development",
+      "archiveFormulaEV": 2.5921975890652016,
+      "requestedEV": 2.609860308315916,
+      "highlightReductionEV": 0.01766271925071461,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 2.5831406554841996,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.06593327962702356,
+          "P99Y": 0.1338081076756388
+        },
+        "after": {
+          "EV": 2.5831406554841996,
+          "medianY": 0.1745739533305953,
+          "P99Y": 0.31417714440517874
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 2.5831406554841996,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03530090720979963,
+            "p60": 0.04121984487277404,
+            "p99": 0.07723544150640085
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 2.559228461225972,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03576363955712728,
+            "p60": 0.04191576604576906,
+            "p99": 0.07798466029055519
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 2.5352957266317904,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03662919242939046,
+            "p60": 0.04263090731709482,
+            "p99": 0.07819747275621929
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.04784492885240921,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.06660257652401924,
+        "beforeOfficialExportMedianY": 0.06664208882755487,
+        "afterE1MedianY": 0.176880344748497,
+        "beforeHighlightSeparationP99P90": 0.02739328145980835,
+        "afterHighlightSeparationP99P90": 0.05244320631027222,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 1,
+      "split": "development",
+      "archiveFormulaEV": 3.6499860999763296,
+      "requestedEV": 3.7730594262746804,
+      "highlightReductionEV": 0.12307332629835077,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 3.64767690310373,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.028471689662873112,
+          "P99Y": 0.15928485808647752
+        },
+        "after": {
+          "EV": 3.64767690310373,
+          "medianY": 0.15515526373450134,
+          "P99Y": 0.4389451711651218
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 3.64767690310373,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01471991768450603,
+            "p60": 0.01831866446093622,
+            "p99": 0.09472666530760543
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 3.656275854253752,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.014512951048301904,
+            "p60": 0.018161789022485608,
+            "p99": 0.09548972650809387
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 3.673781442646819,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01435057222710177,
+            "p60": 0.017875745458851212,
+            "p99": 0.09615222998504612
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.026104539543089,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.028893349692225456,
+        "beforeOfficialExportMedianY": 0.02891268543241765,
+        "afterE1MedianY": 0.15718955546617508,
+        "beforeHighlightSeparationP99P90": 0.026072204113006592,
+        "afterHighlightSeparationP99P90": 0.04325726628303528,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0.000037411526794742165
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 2,
+      "split": "development",
+      "archiveFormulaEV": 3.007571599633859,
+      "requestedEV": 3.1130349808731808,
+      "highlightReductionEV": 0.10546338123932175,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 3.0085513910738744,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.04657759809298628,
+          "P99Y": 0.21616131753521145
+        },
+        "after": {
+          "EV": 3.0085513910738744,
+          "medianY": 0.16428146253481393,
+          "P99Y": 0.4535536908379763
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 3.0085513910738744,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.02446696571458505,
+            "p60": 0.02886250814952111,
+            "p99": 0.13787450324514144
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 3.036875185373342,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.024140583407424265,
+            "p60": 0.028221997316644633,
+            "p99": 0.13756321625639023
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 3.0762947150992686,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.02392245196230045,
+            "p60": 0.027377857942459463,
+            "p99": 0.1362948642485047
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.06774332402539418,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.04659561440348625,
+        "beforeOfficialExportMedianY": 0.0465976558797553,
+        "afterE1MedianY": 0.16420895606279373,
+        "beforeHighlightSeparationP99P90": 0.06694811582565308,
+        "afterHighlightSeparationP99P90": 0.05861145257949829,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 3,
+      "split": "development",
+      "archiveFormulaEV": 2.2636768720587948,
+      "requestedEV": 2.3730208246759963,
+      "highlightReductionEV": 0.10934395261720153,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 2.1874656040854616,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.07627169627995106,
+          "P99Y": 0.28526348176078553
+        },
+        "after": {
+          "EV": 2.1874656040854616,
+          "medianY": 0.15757081978145282,
+          "P99Y": 0.3837977481263648
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 2.1874656040854616,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.04266335813784524,
+            "p60": 0.05046579853366878,
+            "p99": 0.2588990828711396
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 2.2599417440163254,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.04260890505975457,
+            "p60": 0.049968805474837355,
+            "p99": 0.1809762368725773
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 2.260628181686751,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.04303876748608969,
+            "p60": 0.05008199614590853,
+            "p99": 0.17535245789812925
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.07316257760128941,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.07623764872550964,
+        "beforeOfficialExportMedianY": 0.07630041841644791,
+        "afterE1MedianY": 0.1647048145532608,
+        "beforeHighlightSeparationP99P90": 0.06801651418209076,
+        "afterHighlightSeparationP99P90": 0.0757562518119812,
+        "beforeRGBHighFraction": [
+          0.000005291005291005291,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0.000014814814814814815,
+          0,
+          0.010382010582010583
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 4,
+      "split": "development",
+      "archiveFormulaEV": 3.5222199973647617,
+      "requestedEV": 3.5516652436739067,
+      "highlightReductionEV": 0.029445246309145023,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 3.486393291290463,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.03292643526685647,
+          "P99Y": 0.0922745765144473
+        },
+        "after": {
+          "EV": 3.486393291290463,
+          "medianY": 0.16022417957707932,
+          "P99Y": 0.3591620050153184
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 3.486393291290463,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01813672194702472,
+            "p60": 0.02189421259391466,
+            "p99": 0.051225417025460754
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 3.469884093983819,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.018433833032479075,
+            "p60": 0.022163993165585594,
+            "p99": 0.05070718814175963
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 3.463537765316786,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.018242103225749953,
+            "p60": 0.022294373190591035,
+            "p99": 0.048829753493518493
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.022855525973676905,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.03304983861744404,
+        "beforeOfficialExportMedianY": 0.03305417474689938,
+        "afterE1MedianY": 0.16407257318496704,
+        "beforeHighlightSeparationP99P90": 0.017522774636745453,
+        "afterHighlightSeparationP99P90": 0.04737725853919983,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 5,
+      "split": "development",
+      "archiveFormulaEV": 2.6652278448971805,
+      "requestedEV": 3.454647563907691,
+      "highlightReductionEV": 0.7894197190105103,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 2.5636268208243833,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.03274985751780024,
+          "P99Y": 0.3370649008924555
+        },
+        "after": {
+          "EV": 2.5636268208243833,
+          "medianY": 0.09097951976955695,
+          "P99Y": 0.4387743244870411
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 2.5636268208243833,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01797494795150534,
+            "p60": 0.024728359470673998,
+            "p99": 0.4116430606756076
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 2.7738015845469945,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01827213498455536,
+            "p60": 0.02521390698374598,
+            "p99": 0.31760368827586793
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 2.6952108892031204,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.019124814138196305,
+            "p60": 0.02763842982278296,
+            "p99": 0.3233702810736049
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.21017476372261124,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.032712457701563835,
+        "beforeOfficialExportMedianY": 0.03271616946041356,
+        "afterE1MedianY": 0.09686031192541122,
+        "beforeHighlightSeparationP99P90": 0.19291600584983826,
+        "afterHighlightSeparationP99P90": 0.15466377139091492,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0.002281675392670157
+        ],
+        "afterRGBHighFraction": [
+          0.00000418848167539267,
+          0,
+          0.02872565445026178
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 6,
+      "split": "development",
+      "archiveFormulaEV": 4.50257333217492,
+      "requestedEV": 4.57487880228711,
+      "highlightReductionEV": 0.07230547011218924,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 4.225265207031255,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.01841424523423155,
+          "P99Y": 0.0755165712057964
+        },
+        "after": {
+          "EV": 4.225265207031255,
+          "medianY": 0.14925445668717494,
+          "P99Y": 0.4029568020298776
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 4.225265207031255,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01074449754418932,
+            "p60": 0.012764240006709423,
+            "p99": 0.04759309490650984
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 4.285365128579989,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01060637343773805,
+            "p60": 0.012336541310896027,
+            "p99": 0.0418862729490806
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 4.332458288397615,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.01051691183215625,
+            "p60": 0.011949472898140925,
+            "p99": 0.04015203555400213
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.10719308136636041,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.018504044972360134,
+        "beforeOfficialExportMedianY": 0.018505855866304925,
+        "afterE1MedianY": 0.17602834105491638,
+        "beforeHighlightSeparationP99P90": 0.03758564963936806,
+        "afterHighlightSeparationP99P90": 0.12309461832046509,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0.000002032520325203252
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 8,
+      "split": "development",
+      "archiveFormulaEV": 1.328296511547506,
+      "requestedEV": 1.3788404055518506,
+      "highlightReductionEV": 0.05054389400434456,
+      "originalB_EV": 0.39151367660620806,
+      "sourceSampleGridEV": 1.2751744063520953,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 0.39151367660620806,
+          "medianY": 0.09825843288059435,
+          "P99Y": 0.2608321842948251
+        },
+        "after": {
+          "EV": 1.2751744063520953,
+          "medianY": 0.16639062870627994,
+          "P99Y": 0.33929327643039553
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 1.2751744063520953,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.08621411885119487,
+            "p60": 0.09854269481760093,
+            "p99": 0.3716023957975362
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 1.295754168584098,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.08710884258186023,
+            "p60": 0.09936598807537808,
+            "p99": 0.2672288045389858
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 1.2683378406553993,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.08975531024085592,
+            "p60": 0.10134997936723944,
+            "p99": 0.2681652440176765
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.027416327928698747,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.09884098917245865,
+        "beforeOfficialExportMedianY": 0.098874495145262,
+        "afterE1MedianY": 0.1721523031592369,
+        "beforeHighlightSeparationP99P90": 0.07028891146183014,
+        "afterHighlightSeparationP99P90": 0.0549209862947464,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0.0004195278969957082
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 9,
+      "split": "validation",
+      "archiveFormulaEV": 2.0199051730434516,
+      "requestedEV": 2.0321356981940264,
+      "highlightReductionEV": 0.012230525150574767,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 1.9622296078579984,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.08766883720661425,
+          "P99Y": 0.1606955155955778
+        },
+        "after": {
+          "EV": 1.9622296078579984,
+          "medianY": 0.15769677214181288,
+          "P99Y": 0.252202714531158
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 1.9622296078579984,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.04962078343451449,
+            "p60": 0.0636639729976224,
+            "p99": 0.09534733769649616
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 1.9776566978550958,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.04947711226489176,
+            "p60": 0.06298620445788362,
+            "p99": 0.09439289185236063
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 2.0097204484582836,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.049212520635562106,
+            "p60": 0.06157994523901582,
+            "p99": 0.09439289185236063
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.04749084060028519,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.08783833682537079,
+        "beforeOfficialExportMedianY": 0.08784450550938849,
+        "afterE1MedianY": 0.16330420970916748,
+        "beforeHighlightSeparationP99P90": 0.012924373149871826,
+        "afterHighlightSeparationP99P90": 0.012977495789527893,
+        "beforeRGBHighFraction": [
+          0.00021119324181626187,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0.00027243928194297783,
+          0,
+          0.0000010559662090813093
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 10,
+      "split": "validation",
+      "archiveFormulaEV": 3.426919264182391,
+      "requestedEV": 3.484194980585033,
+      "highlightReductionEV": 0.057275716402642285,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 3.429787412636495,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.03675086840821675,
+          "P99Y": 0.13340440386138486
+        },
+        "after": {
+          "EV": 3.429787412636495,
+          "medianY": 0.17052031695674694,
+          "P99Y": 0.3409000596051268
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 3.429787412636495,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.0190758305057299,
+            "p60": 0.022294875149111083,
+            "p99": 0.0769655132883359
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 3.414932464568824,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.019328037377998594,
+            "p60": 0.022572607450037648,
+            "p99": 0.07577483631536835
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 3.40300797147153,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.019459052757694058,
+            "p60": 0.022804546842788504,
+            "p99": 0.0744643427904761
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.02677944116496489,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.03676009364426136,
+        "beforeOfficialExportMedianY": 0.03676011105027145,
+        "afterE1MedianY": 0.17025580257177353,
+        "beforeHighlightSeparationP99P90": 0.029369786381721497,
+        "afterHighlightSeparationP99P90": 0.04329615831375122,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0.0014166666666666668
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    },
+    {
+      "index": 11,
+      "split": "development",
+      "archiveFormulaEV": 2.604484071914741,
+      "requestedEV": 2.6258744829504925,
+      "highlightReductionEV": 0.021390411035751455,
+      "originalB_EV": 1,
+      "sourceSampleGridEV": 2.596514700109965,
+      "sourcePointRender": {
+        "size": [
+          80,
+          80
+        ],
+        "before": {
+          "EV": 1,
+          "medianY": 0.06603594567720952,
+          "P99Y": 0.14473461567723872
+        },
+        "after": {
+          "EV": 2.596514700109965,
+          "medianY": 0.17615524956929848,
+          "P99Y": 0.32287243193081755
+        },
+        "method": "Actual current CPU render on retained original 80x80 source-point grid; before uses archived old intent, after new analysis. No spatial filtering/full-resolution claim."
+      },
+      "maxTechnicalRelativeError": 0,
+      "coarseFrameInsetVariants": [
+        {
+          "insetEachSide": 0,
+          "EV": 2.596514700109965,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03538968448367921,
+            "p60": 0.04072855779177491,
+            "p99": 0.0846095792324644
+          }
+        },
+        {
+          "insetEachSide": 0.02,
+          "EV": 2.5384709661429636,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03667394405786712,
+            "p60": 0.042435686296293296,
+            "p99": 0.08561495250375943
+          }
+        },
+        {
+          "insetEachSide": 0.05,
+          "EV": 2.4841554325532766,
+          "fallback": null,
+          "percentiles": {
+            "p50": 0.03830943736951612,
+            "p60": 0.044096372760583376,
+            "p99": 0.08654187549058488
+          }
+        }
+      ],
+      "coarseFrameInsetEVRange": 0.11235926755668846,
+      "archivedDisplayMetrics": {
+        "beforePortMedianY": 0.06601490825414658,
+        "beforeOfficialExportMedianY": 0.06601601282920577,
+        "afterE1MedianY": 0.17689025402069092,
+        "beforeHighlightSeparationP99P90": 0.024980388581752777,
+        "afterHighlightSeparationP99P90": 0.03579622507095337,
+        "beforeRGBHighFraction": [
+          0,
+          0,
+          0
+        ],
+        "afterRGBHighFraction": [
+          0,
+          0,
+          0
+        ]
+      },
+      "imageComparison": "Existing A/B-auto/E1_robust PNGs; E1 is an archived experiment matching the new formula on saved full-frame statistics, not a fresh full-resolution export from this branch."
+    }
+  ],
+  "limitations": [
+    "RAF originals/full-resolution source buffers absent; no new browser/full-resolution export verification on these photographs",
+    "Source samples form a reduced 80x80 original-pixel grid, not the full image",
+    "Archived E1 images use full-frame statistics, without the new area/mask/fallback contract; current sampled analysis can yield different EV",
+    "No color correction, no E3_frozen or gray-world; blue/cyan remains",
+    "09/10 are reused held-out cases from a published evaluation, not a new unseen independent dataset",
+    "No night series; no night-image verification"
+  ]
+}
