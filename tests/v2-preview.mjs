@@ -32,7 +32,7 @@ try{
  assert.ok(await page.evaluate(async()=>(await caches.keys()).includes('filmlabb-production-sentinel')));
  await page.goto(origin+'/negative-studio-v2-preview/v2.html');await page.waitForFunction(()=>globalThis.NSV2Lab);
  await page.locator('#file').setInputFiles('tests/fixtures/synthetic-negative.dng');await page.waitForFunction(()=>document.getElementById('status').textContent.startsWith('Källa laddad'));
- await page.locator('#prior').click();await page.waitForFunction(()=>document.getElementById('status').textContent.startsWith('A/B klart'));
+ await page.locator('summary').filter({hasText:'Ingen användbar filmkant?'}).evaluate(e=>e.parentElement.open=true);await page.locator('#prior').click();await page.waitForFunction(()=>document.getElementById('status').textContent.startsWith('A/B klart'));
  assert.equal(await page.evaluate(()=>NSV2Lab.getSnapshot().source.colorSpace),'rec2020');
  const pending=page.waitForEvent('download');await page.locator('#tiff').click();assert.equal((await pending).suggestedFilename(),'filmlabb-v2.tif');
  assert.ok(await page.evaluate(async()=>(await caches.keys()).includes('filmlabb-production-sentinel')));

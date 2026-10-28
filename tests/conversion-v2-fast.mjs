@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';
+for(const n of ['import/raw-input','image/image-model','calibration/color-analysis','calibration/color-calibration','color/parameters','color/render-core','app/settings','conversion-v2/core','conversion-v2/render','conversion-v2/output','conversion-v2/fast'])await import('../src/'+n+'.js');
+const V=NSConversionV2,R=NSV2Render,O=NSV2Output,im={width:60,height:40,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(7200)};let seed=37;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};for(let i=0;i<im.data.length;i++)im.data[i]=10**(-random()*7);
+const s=V.source(im,{revision:'fast-test'}),ctx=V.capture({session:'fast',recipe:{decoder:'fixture'}}),out=new Float64Array(3);let maxError=0;
+const relative=(a,b,t=1e-12)=>{const e=Math.abs(a-b)/Math.max(1,Math.abs(b));maxError=Math.max(maxError,e);assert.ok(e<t,`${a} != ${b}, error ${e}`);};
+for(const rgb of [[.8,.45,.2],[1,1,1],[.02,.6,.003]])for(const exposure of [-1,0,1]){
+ const base=V.assumed(rgb,s,ctx),k=V.compile(s,base),intent={...R.analyze(im,k),exposure},fast=NSV2Fast.compile(k,intent);
+ const inputs=[[0,-1,NaN],[Infinity,1e-38,1],[1.2,2,1.1]];for(let i=0;i<3000;i+=3)inputs.push([im.data[i],im.data[i+1],im.data[i+2]]);
+ for(const p of inputs){const ref=k.pixel(p);fast.technical(...p,out);out.forEach((v,c)=>relative(v,ref.positive[c]));const expected=R.display(R.render(ref.positive,intent));fast.pixel(...p,out);out.forEach((v,c)=>relative(v,expected[c]));}
+ for(const rotation of [0,90,180,270])for(const crop of [{x:0,y:0,w:1,h:1},{x:.13,y:.21,w:.61,h:.7}])for(const bits of [8,16]){const g=O.geometry(im,crop,rotation,17),reference=O.rows(im,g,0,g.height,(x,y)=>O.pixel(im,k,intent,x,y),bits),actual=O.fastRows(im,g,0,g.height,fast.pixel,bits);actual.forEach((v,i)=>assert.ok(Math.abs(v-reference[i])<=1));const integrated=await O.area(im,g,fast.pixel,bits);integrated.forEach((v,i)=>assert.ok(Math.abs(v-reference[i])<=1,`${rotation} bit ${bits}, ${i}: ${v} vs ${reference[i]}`));}
+ const region={x:0,y:0,w:1,h:1},response=NSColorCalibration.estimate(im,region,{base:rgb,light:[1,1,1]}),c={kind:'calibrated4',opts:{...NSProjectSettings.imageDefaults(),editVersion:1,shadow:0,highlight:1},workingSpace:'rec2020',cal:{beta4:NSColorCalibration.analyze(im,region,response)},profile:{type:'color'},neutralProfile:true,neutralPrint:true,strength:0,print:{}},old=NSPixelKernel.compile(c),newA=NSV2Fast.compileLegacy(c);
+ for(const p of inputs){const ref=old.pixel(p).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);newA.pixel(...p,out);out.forEach((v,c)=>Number.isNaN(ref[c])?assert.ok(Number.isNaN(v)):relative(v,ref[c]));}
+}
+console.log('PASS scalar v2/Standard oracle, invalid signals, 9 recipes, crop/rotation/area/RGB16; max relative error',maxError);

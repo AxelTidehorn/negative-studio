@@ -8,6 +8,10 @@ export const assets = {
  "v2-base.js":"src/conversion-v2/base.js",
  "v2-diagnostics.js":"src/conversion-v2/diagnostics.js",
  "v2-output.js":"src/conversion-v2/output.js",
+ "v2-fast.js":"src/conversion-v2/fast.js",
+ "v2-worker.js":"src/conversion-v2/worker.js",
+ "v2-client.js":"src/conversion-v2/client.js",
+ "v2-lab.css":"src/conversion-v2/lab.css",
  "v2-lab.js":"src/conversion-v2/lab.js",
 
  "image-diagnostics.js":"src/diagnostics/image-diagnostics.js",
