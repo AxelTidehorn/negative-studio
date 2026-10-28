@@ -1,6 +1,6 @@
 /* One persistent owner of the full Float32 source. Only small previews/metadata
    leave the worker. Same classic-worker pattern as FILMLABB's existing workers. */
-importScripts('./creative-profiles.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
+importScripts('./build-info.js','./creative-profiles.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
 'use strict';
 const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast;
 // MessageChannel yields to incoming jobs without background-tab timer clamps.
@@ -8,7 +8,7 @@ const scheduler=new MessageChannel(),resumers=[];scheduler.port1.onmessage=()=>r
 self.NSV2Yield=()=>new Promise(resolve=>{resumers.push(resolve);scheduler.port2.postMessage(0);});
 let image,source,capture,base,previous,proposal,k,intent,legacy,fast,fastA,active=0,analysisMask=null,photo=null,currentView='auto',currentComparison='technical',activeRequest=null,analysisOptions={maskMode:'content',analysisArea:null},intentKey=null;
 const cache=new Map(),metrics={jobs:0,qualityRenders:0,cacheHits:0,cacheBytes:0};
-function snapshot(){return {source,base,reference:photo?.summary||null,viewMode:currentView,comparison:currentComparison,calibration:k?.calibration,intent,legacy,proposal,metrics:{...metrics,sourceBytes:image?.data.byteLength||0}};}
+function snapshot(){return {build:self.NSBuildInfo,source,base,reference:photo?.summary||null,viewMode:currentView,comparison:currentComparison,calibration:k?.calibration,intent,legacy,proposal,metrics:{...metrics,sourceBytes:image?.data.byteLength||0}};}
 function progress(id,stage,done=0,total=1){postMessage({id,type:'progress',stage,done,total});}
 function check(id){if(id!==active)throw Object.assign(Error('Avbrutet'),{name:'AbortError'});}
 function job(id){let last=performance.now();return {check:()=>check(id),async tick(stage,done,total){check(id);if(performance.now()-last>12){progress(id,stage,done,total);await self.NSV2Yield();check(id);last=performance.now();}}};}

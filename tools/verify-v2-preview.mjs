@@ -6,6 +6,8 @@ const expected=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()
 async function get(file){const response=await fetch(new URL(file,url),{cache:'no-store',signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error(file+': HTTP '+response.status);return response;}
 const metadata=await (await get('preview-deployment.json?verify='+Date.now())).json();
 if(metadata.sourceCommit!==expected||metadata.offlineCache!==false)throw Error('Deployed source revision does not match checkout');
+const build=await (await get('build-info.json')).json();
+if(build.sourceCommit!==expected||build.version!==metadata.applicationVersion||build.contentHash!==metadata.contentHash)throw Error('Deployed build identity does not match deployment record');
 const html=await (await get('v2.html')).text(),referenceHTML=await (await get('v2-reference.html')).text(),scriptFiles=html=>[...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(m=>m[1]),referenceScripts=scriptFiles(referenceHTML),scripts=[...new Set([...scriptFiles(html),...referenceScripts])];
 if(referenceScripts[0]!=='./v2-reference-isolation.js'||referenceScripts.at(-1)!=='./v2-reference-bridge.js'||referenceScripts.includes('./register-offline.js'))throw Error('Original-app reference is not isolated');
 if(!scripts.length)throw Error('No v2 scripts found');
