@@ -1,5 +1,6 @@
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';
 import {assets as sourceAssets,scripts} from './app-manifest.mjs';
+import {sourceIdentity,contentIdentity} from './tools/build-identity.mjs';
 const src=fs.existsSync('node_modules/libraw-wasm/dist')?'node_modules/libraw-wasm/dist':'vendor/libraw/dist';
 if(!fs.existsSync(src))throw Error('LibRaw dist saknas: npm install måste först köras');
 // The vendored fallback lives outside the generated deployment directory.
@@ -25,6 +26,11 @@ fs.copyFileSync('manifest.webmanifest','site/manifest.webmanifest');
 for(const [file,source] of Object.entries(sourceAssets))fs.copyFileSync(source,'site/'+file);
 
 for(const f of ['filmlabb-logo.png','icon-192.png','icon-512.png'])fs.copyFileSync(f,'site/'+f);
+
+// Stamp the code being served, not a separately fetched latest-deployment record.
+const info={...sourceIdentity(),contentHash:contentIdentity('site')};
+fs.writeFileSync('site/build-info.js',fs.readFileSync(sourceAssets['build-info.js'],'utf8').replace('const INFO=null;','const INFO='+JSON.stringify(info)+';'));
+fs.writeFileSync('site/build-info.json',JSON.stringify(info,null,2)+'\n');
 
 // Include the worker implementation and every deployed asset, with stable ordering.
 const hash=crypto.createHash('sha256'),assets=['./'];

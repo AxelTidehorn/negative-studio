@@ -25,12 +25,12 @@ $('useFlatField').onchange=e=>{if(exportBusy||rollLoading||flatFieldBusy)return 
 $('clearFlatField').onclick=()=>{if(exportBusy||rollLoading||flatFieldBusy)return;sharedFlatField=null;state.useFlatField=false;if(working)rebuildFlatNext();nextControls();};
 $('flatFieldFile').accept=NSFileFormats.accept;
 async function readFlatNext(file){
- if(NSFileFormats.isRaw(file)){const r=await NSRawDecoder.decode(file,state.rawMode4);if(r.im.inputDiagnostics4?.clipped.some(n=>n/r.im.inputDiagnostics4.pixels>.002))throw Error('RAW-referensen innehåller klippta källkanaler. Sänk exponeringen.');return {im:{width:r.im.width,height:r.im.height,channels:3,data:r.im.data,scale:r.im.scale||65535,colorSpace:r.im.colorSpace||'srgb',encoding:'linear'},domain:'raw-'+(r.im.rawMode4||'reference')+':'+(r.meta?.camera_model||'unknown')};}
+ if(NSFileFormats.isRaw(file)){const locked=NSV2Platform.usesLockedSource(state),r=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});if(r.im.inputDiagnostics4?.clipped.some(n=>n/r.im.inputDiagnostics4.pixels>.002))throw Error('RAW-referensen innehåller klippta källkanaler. Sänk exponeringen.');return {im:{width:r.im.width,height:r.im.height,channels:3,data:r.im.data,scale:r.im.scale||65535,colorSpace:r.im.colorSpace||'srgb',encoding:'linear'},domain:'raw-'+(locked?'wide-v2-1':r.im.rawMode4||'reference')+':'+(r.meta?.camera_model||'unknown')};}
  if(NSFileFormats.kind(file)==='tiff'){
   const decoded=await NSTiff.decode(await file.arrayBuffer());
   // Snapshot only after asynchronous decoding: a different image may now be
   // active. The temporary metadata substitution itself contains no await.
-  const saved=sourceInfo;try{const raw=prepareTiff(decoded);return {im:{...raw,scale:65535,encoding:sourceInfo.encoding,colorSpace:'srgb'},domain:captureDomainNext()};}finally{sourceInfo=saved;}
+  const saved=sourceInfo;try{const raw=prepareTiff(decoded);return {im:{...raw,scale:raw.scale||65535,encoding:sourceInfo.encoding,colorSpace:raw.colorSpace||'srgb'},domain:captureDomainNext()};}finally{sourceInfo=saved;}
  }
  if(NSFileFormats.kind(file)!=='browser')throw Error(NSFileFormats.error(file));
  const bitmap=await createImageBitmap(file);const c=document.createElement('canvas');try{c.width=bitmap.width;c.height=bitmap.height;const ctx=c.getContext('2d',{colorSpace:'srgb'});ctx.drawImage(bitmap,0,0);const p=ctx.getImageData(0,0,c.width,c.height);return {im:{...p,width:p.width,height:p.height,data:p.data,channels:4,scale:255,encoding:'srgb'},domain:'srgb:8 bit · sRGB via webbläsarens färghantering'};}finally{bitmap.close();c.width=c.height=0;}
@@ -53,7 +53,7 @@ function detailCanvasNext(){const old=$('detailCanvas'),c=document.createElement
 function drawDetailNext(){
  if(!detailOpen||!working)return;
  const version=sourceVersion38;
- if(detailSource!==working||detailVersion!==version||!detailROI){detailROI=NSFlatField.region(working,detailAt.x,detailAt.y,320);detailSource=working;detailVersion=version;}
+ if(detailSource!==working||detailVersion!==version||!detailROI){detailROI=(state.engine==='v2'?NSV2Platform:NSFlatField).region(working,detailAt.x,detailAt.y,320);detailSource=working;detailVersion=version;}
  const c=configuration38();let canvas=$('detailCanvas'),usedGPU=false;
  if(NSGpuPreview.supports(c)){try{if(!detailGPU){canvas=detailCanvasNext();detailGPU=NSGpuPreview.create(canvas);detailEditingVersion=-1;}const editVersion=NSEditing2.version(c.opts.editVersion);if(detailEditingVersion!==editVersion||detailConversionKind!==c.kind){detailGPU.validate(c);detailEditingVersion=editVersion;detailConversionKind=c.kind;}detailGPU.draw(detailROI,c,display,320,version);usedGPU=true;}catch{if(detailGPU)detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}}
  if(!usedGPU){if(detailGPU){detailGPU.destroy();detailGPU=null;canvas=detailCanvasNext();}const r=NSPixelKernel.render(detailROI,c,display,320),ctx=canvas.getContext('2d');canvas.width=r.width;canvas.height=r.height;ctx.putImageData(new ImageData(r.data,r.width,r.height),0,0);}

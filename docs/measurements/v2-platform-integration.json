@@ -1,0 +1,47 @@
+{
+  "schema": "filmlabb.v2-platform-raf-check",
+  "version": 1,
+  "source": {
+    "width": 6032,
+    "height": 4032,
+    "bytes": 291852288,
+    "colorSpace": "rec2020",
+    "encoding": "linear"
+  },
+  "base": [
+    0.8625314831733704,
+    0.40183109045028687,
+    0.20152589678764343
+  ],
+  "calibration": "rec2020-common-prior-1",
+  "exposureEV": 3.4985071613289596,
+  "analysisArea": {
+    "region": {
+      "x": 0.15555555555555556,
+      "y": 0.04375,
+      "w": 0.6166666666666667,
+      "h": 0.9125000000000001
+    },
+    "status": "estimated",
+    "method": "application-frame",
+    "confidence": 0.68
+  },
+  "toneDifference": 0,
+  "colorDifference": 0,
+  "referencePixelSamples": 192,
+  "maxAbsolutePixelError": 4.3021142204224816e-16,
+  "creativeRecipeInvariant": true,
+  "exportGeometry": {
+    "width": 3719,
+    "height": 3678
+  },
+  "export": {
+    "width": 3719,
+    "height": 3678,
+    "bits": 16,
+    "iccBytes": 588,
+    "bytes": 82071644
+  },
+  "testCase": "Previous portrait 04; integration check only, no photographic re-evaluation",
+  "memoryScope": "Source byteLength only; no physical browser/device peak measured"
+}

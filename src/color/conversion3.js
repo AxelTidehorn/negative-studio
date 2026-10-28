@@ -91,13 +91,13 @@ function compile(kind,a,auto=true,{identity=false}={}){
  return {technical,present,pixel:p=>present(p.map(technical))};
 }
 function validateProject(data){
- const modern=data?.format===PROJECT_FORMAT;
+ const v2=!!root.NSV2Platform&&data?.format===root.NSV2Platform.PROJECT_FORMAT,modern=data?.format===PROJECT_FORMAT||v2;
  if(modern&&data.conversionSchemaVersion!==VERSION)throw Error('Unsupported conversion project version.');
  const known=['log39','calibrated4','legacy','beta2','beta3','reference','density38',...ids];
  for(const f of data?.frames||[]){const o=f?.settings;if(!o)continue;
-  if(o.engine!==undefined&&!known.includes(o.engine))throw Error('Unsupported conversion engine.');
-  if(o.conversionVersion!==undefined&&o.conversionVersion!==VERSION)throw Error('Unsupported conversion version.');
-  if(is(o.engine)&&(!modern||o.conversionVersion!==VERSION))throw Error('Conversion 3 requires its versioned project format.');
+  if(o.engine!==undefined&&!known.includes(o.engine)&&!(v2&&o.engine==='v2'))throw Error('Unsupported conversion engine.');
+  if(o.conversionVersion!==undefined&&o.conversionVersion!==(v2&&o.engine==='v2'?2:VERSION))throw Error('Unsupported conversion version.');
+  if(is(o.engine)&&(!modern||o.conversionVersion!==(v2&&o.engine==='v2'?2:VERSION)))throw Error('Conversion 3 requires its versioned project format.');
  }
 }
 const glsl=`

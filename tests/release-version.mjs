@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import os from 'node:os';import path from 'node:path';import {execFileSync} from 'node:child_process';import {versionFor,releaseVersion} from '../tools/release-version.mjs';
+import {sourceIdentity} from '../tools/build-identity.mjs';
+const commit='a'.repeat(40),base='2.0.0-beta.0';
+for(let n=0;n<20;n++){assert.equal(versionFor({base,count:n,branch:'main',dirty:false,commit}),`2.0.0-beta.${n}`);assert.equal(versionFor({base,count:n,branch:'main',dirty:false,commit}),versionFor({base,count:n,branch:'main',dirty:false,commit}));}
+assert.match(versionFor({base,count:1,branch:'feature',dirty:false,commit}),/beta\.1\.dev\.ga{12}$/);
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'filmlabb-release-')),cwd=process.cwd(),git=(...args)=>execFileSync('git',args,{cwd:dir,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
+try{git('init','-b','main');git('config','user.name','Version test');git('config','user.email','test@example.invalid');fs.writeFileSync(path.join(dir,'file'),'anchor');git('add','.');git('commit','-m','anchor');const anchor=git('rev-parse','HEAD'),pkg={version:base,release:{mainlineAnchor:anchor}};
+ git('switch','-c','feature');for(let n=0;n<3;n++){fs.writeFileSync(path.join(dir,'file'),String(n));git('commit','-am','feature '+n);}git('switch','main');git('merge','--no-ff','feature','-m','PR one');const first=git('rev-parse','HEAD');process.chdir(dir);assert.equal(releaseVersion(pkg,{sourceCommit:first,sourceBranch:'main',dirty:false}),'2.0.0-beta.1');
+ git('switch','-c','feature2');fs.writeFileSync(path.join(dir,'file'),'second');git('commit','-am','second');git('switch','main');git('merge','--no-ff','feature2','-m','PR two');const second=git('rev-parse','HEAD');assert.equal(releaseVersion(pkg,{sourceCommit:second,sourceBranch:'main',dirty:false}),'2.0.0-beta.2');assert.equal(releaseVersion(pkg,{sourceCommit:first,sourceBranch:'main',dirty:false}),'2.0.0-beta.1','old rerun same version');
+ assert.throws(()=>releaseVersion({...pkg,release:{mainlineAnchor:'f'.repeat(40)}},{sourceCommit:second,sourceBranch:'main',dirty:false}),/history/);
+ // A clean main release becomes a dev/dirty build for any built source input,
+ // including root assets outside src/. Test artifacts do not affect identity.
+ const inputs=['src/example.js','manifest.webmanifest','filmlabb-logo.png','icon-192.png','icon-512.png','LICENSE','THIRD_PARTY_NOTICES.md','legal/notice.html','vendor/libraw/dist/libraw.wasm'];
+ fs.writeFileSync('package.json',JSON.stringify(pkg));for(const file of inputs){fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,'original');}git('add','.');git('commit','-m','build inputs');
+ assert.equal(sourceIdentity().dirty,false);assert.equal(sourceIdentity().version,'2.0.0-beta.3');
+ for(const file of inputs){try{fs.writeFileSync(file,'modified');const identity=sourceIdentity();assert.equal(identity.dirty,true,file);assert.match(identity.version,/\.dev\.g[0-9a-f]{12}\.dirty$/,file);}finally{fs.writeFileSync(file,'original');}}
+ fs.mkdirSync('docs/filmbas2/screenshots',{recursive:true});fs.writeFileSync('docs/filmbas2/screenshots/generated.png','test output');fs.mkdirSync('.cache',{recursive:true});fs.writeFileSync('.cache/generated.json','{}');fs.mkdirSync('site',{recursive:true});fs.writeFileSync('site/index.html','build output');assert.equal(sourceIdentity().dirty,false,'generated artifacts and documentation are not built source');
+}finally{process.chdir(cwd);fs.rmSync(dir,{recursive:true,force:true});}
+const workflow=fs.readFileSync('.github/workflows/pages.yml','utf8');assert.match(workflow,/ref: main/);assert.match(workflow,/fetch-depth: 0/);assert.match(workflow,/cancel-in-progress: false/);assert.match(workflow,/steps.current.outputs.publish/);
+console.log('PASS actual Git first-parent merges, independent feature commits, stable reruns/unique beta ordinals, dev IDs/dirty built inputs, fail-closed history and serialized latest-main deployment');

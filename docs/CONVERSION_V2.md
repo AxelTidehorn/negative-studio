@@ -1,5 +1,7 @@
 # FILMLABB 2.0: pålitlig A/B-referens och färg-/tondiagnostik
 
+> V2 ansluts nu också som experimentellt motorval i huvudplattformen. Se [integration, CPU-previewbegränsningar och användarprotokoll](V2_PLATFORM_INTEGRATION.md). Labbet behålls som referensverktyg. Historiska gren-/publiceringsuppgifter nedan avser tidigare leveranser; integrationen levereras som PR och publicerar inte produktion automatiskt.
+
 > Etapp 1:s aktuella färgbalans, automatiska analysfilmruta och nya RAF-verifiering beskrivs i [V2_STAGE1_IMAGE_QUALITY.md](V2_STAGE1_IMAGE_QUALITY.md). Resultat och begränsningar nedan avser den tidigare versionen när annat inte anges.
 
 **Uppdatering på denna gren:** automatisk ton använder nu robust P60/P99 och separat bekräftad analysfilmruta. Basbyte invalidierar tonanalysen. Se [ny modell, testresultat och begränsningar](V2_ROBUST_TONE.md). Den befintliga publika testmiljön följer fortfarande grenen i PR #36 tills separat publicering beslutas.

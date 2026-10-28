@@ -12,8 +12,9 @@ function configuration38(opts=state){
 }
 function compiled38(opts){const c=configuration38(opts),key=JSON.stringify(c);if(!config38||config38.key!==key)config38={key,kernel:NSPixelKernel.compile(c)};return config38.kernel;}
 technicalPositive=function(p,opts){return compiled38(opts).pixel(p);};
-neutralLookup=function(opts,im){if(NSConversion3.is(opts.engine)||opts.engine==='calibrated4'||NSEditing2.version(opts.editVersion)===2)return null;if(!im||im.encoding!=='linear'||im.scale!==65535||rollShared.profile!=='generic'||rollShared.print!=='neutral'||opts.saturation!==1||opts.shadows||opts.highlights)return null;const k=compiled38(opts),t=[new Uint16Array(65536),new Uint16Array(65536),new Uint16Array(65536)];for(let i=0;i<65536;i++){const p=k.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=Math.round(p[c]*65535);}return t;};
+neutralLookup=function(opts,im){if(opts.engine==='v2'||NSConversion3.is(opts.engine)||opts.engine==='calibrated4'||NSEditing2.version(opts.editVersion)===2)return null;if(!im||im.encoding!=='linear'||im.scale!==65535||rollShared.profile!=='generic'||rollShared.print!=='neutral'||opts.saturation!==1||opts.shadows||opts.highlights)return null;const k=compiled38(opts),t=[new Uint16Array(65536),new Uint16Array(65536),new Uint16Array(65536)];for(let i=0;i<65536;i++){const p=k.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=Math.round(p[c]*65535);}return t;};
 function technicalTables38(config){
+ if(config.kind==='v2'){technicalCache38=null;return null;}
  if(NSConversion3.is(config.kind)){
   const key=JSON.stringify(['conversion3',config.conversion3.reference,config.opts.autoLevels]);
   if(!technicalCache38||technicalCache38.key!==key)technicalCache38={key,value:NSPixelKernel.tables(NSPixelKernel.compile(config)),complete:false};
