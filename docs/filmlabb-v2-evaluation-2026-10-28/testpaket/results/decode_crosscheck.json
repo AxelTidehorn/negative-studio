@@ -1,0 +1,28 @@
+{
+  "native": "rawpy 0.27.1",
+  "LibRaw": [
+    0,
+    22,
+    1
+  ],
+  "requested_recipe": "linear Rec2020, camera WB, no auto WB, noAutoBright, AHD requested, full size, highlight clip",
+  "native_size": [
+    4032,
+    6032,
+    3
+  ],
+  "wasm_size": [
+    4032,
+    6032,
+    3
+  ],
+  "max_absolute_error": 0.018417642945017992,
+  "p99_absolute_error": 1.5253564408667097e-05,
+  "median_ratio_native_wasm": [
+    0.9999999996651548,
+    0.9999999997569206,
+    1.0000000002328306
+  ],
+  "rmse": 0.00013957235180971292,
+  "note": "Independent native decoder crosscheck; does not instrument pre-output clipping or prove actual X-Trans interpolation method"
+}

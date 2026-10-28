@@ -1,0 +1,244 @@
+[
+  {
+    "index": 0,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 2.5831789765976243,
+        "p99_50_ratio": 2.1772147769312866
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 2.5722732850661374,
+        "p99_50_ratio": 2.1647071885400666
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 2.548725278832029,
+        "p99_50_ratio": 2.14231443808788
+      }
+    ],
+    "max_change_EV": 0.03445369776559515
+  },
+  {
+    "index": 1,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 3.6504809360638286,
+        "p99_50_ratio": 6.412844157692509
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 3.6563687931046998,
+        "p99_50_ratio": 6.508509370812099
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 3.6687329782566023,
+        "p99_50_ratio": 6.614273737944886
+      }
+    ],
+    "max_change_EV": 0.018252042192773654
+  },
+  {
+    "index": 2,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 3.0096656872009837,
+        "p99_50_ratio": 5.608026942274721
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 3.031381233471091,
+        "p99_50_ratio": 5.668738483260477
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 3.0701087520536223,
+        "p99_50_ratio": 5.6957138932208045
+      }
+    ],
+    "max_change_EV": 0.06044306485263862
+  },
+  {
+    "index": 3,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 2.264339747827921,
+        "p99_50_ratio": 5.644136703828318
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 2.2891555680586606,
+        "p99_50_ratio": 4.339878287264811
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 2.2655574832460688,
+        "p99_50_ratio": 4.050701722652809
+      }
+    ],
+    "max_change_EV": 0.024815820230739583
+  },
+  {
+    "index": 4,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 3.5219596334423944,
+        "p99_50_ratio": 3.0564693713882076
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 3.4879156348395632,
+        "p99_50_ratio": 2.8679807663215837
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 3.463960162426503,
+        "p99_50_ratio": 2.7383695669178962
+      }
+    ],
+    "max_change_EV": 0.05799947101589131
+  },
+  {
+    "index": 5,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 2.676961297688878,
+        "p99_50_ratio": 22.53414298460018
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 2.837012271774483,
+        "p99_50_ratio": 17.818827878692893
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 2.7034581744914443,
+        "p99_50_ratio": 16.918827092115144
+      }
+    ],
+    "max_change_EV": 0.1600509740856051
+  },
+  {
+    "index": 6,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 4.503826362425082,
+        "p99_50_ratio": 4.334473042975851
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 4.5181261803951696,
+        "p99_50_ratio": 4.229129314228586
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 4.538480888007128,
+        "p99_50_ratio": 4.159987114832932
+      }
+    ],
+    "max_change_EV": 0.03465452558204607
+  },
+  {
+    "index": 8,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 1.3259732465425562,
+        "p99_50_ratio": 3.7341623001005546
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 1.313826016437375,
+        "p99_50_ratio": 3.141220139057862
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 1.26614035199608,
+        "p99_50_ratio": 2.98843118248871
+      }
+    ],
+    "max_change_EV": 0.05983289454647611
+  },
+  {
+    "index": 9,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 2.0289710916117527,
+        "p99_50_ratio": 1.993608763979516
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 1.9968691237241976,
+        "p99_50_ratio": 1.9134465443337858
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 2.010146251797567,
+        "p99_50_ratio": 1.904685384140104
+      }
+    ],
+    "max_change_EV": 0.03210196788755515
+  },
+  {
+    "index": 10,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 3.4293177965872763,
+        "p99_50_ratio": 4.033836142849964
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 3.4131045008817957,
+        "p99_50_ratio": 3.9709881827620848
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 3.3988049237403537,
+        "p99_50_ratio": 3.8689512025228883
+      }
+    ],
+    "max_change_EV": 0.030512872846922612
+  },
+  {
+    "index": 11,
+    "method": "200x200 deterministic source grid; original linear pixels, same base, response and frozen tone formula",
+    "variants": [
+      {
+        "inset_fraction_each_side": 0,
+        "requested_E1_EV": 2.6026777800109206,
+        "p99_50_ratio": 2.38876462990512
+      },
+      {
+        "inset_fraction_each_side": 0.02,
+        "requested_E1_EV": 2.557831454938072,
+        "p99_50_ratio": 2.3293426891025644
+      },
+      {
+        "inset_fraction_each_side": 0.05,
+        "requested_E1_EV": 2.4854342539282603,
+        "p99_50_ratio": 2.254523278704165
+      }
+    ],
+    "max_change_EV": 0.11724352608266031
+  }
+]

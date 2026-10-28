@@ -1,0 +1,48 @@
+{
+  "kind": "Neo original SilverCore adapter, controlled core-only reference",
+  "not_full_app_default": true,
+  "decoder": "rawpy 0.27.1",
+  "LibRaw": [
+    0,
+    22,
+    1
+  ],
+  "options": {
+    "camera_wb": true,
+    "auto_wb": true,
+    "output_color": "sRGB primaries",
+    "output_bps": 16,
+    "no_auto_bright": false,
+    "gamma": [
+      0.45,
+      4.5
+    ],
+    "half_size": false,
+    "flip": 0
+  },
+  "domain": "nonlinear LibRaw default gamma, sRGB primaries; not V2 linear Rec2020",
+  "width": 3694,
+  "height": 3679,
+  "original_size": [
+    6032,
+    4032
+  ],
+  "base16": [
+    65535.0,
+    8774.0,
+    1754.0
+  ],
+  "base_region": {
+    "x": 0.3,
+    "y": 0.005,
+    "w": 0.2,
+    "h": 0.012
+  },
+  "crop": {
+    "x": 0.17092175066312998,
+    "y": 0.03125,
+    "w": 0.6124005305039788,
+    "h": 0.9124503968253969
+  },
+  "differences": "Native LibRaw 0.22.1, not Neos bundled WASM; explicit core reference without app expired-film rescue or adjustment stack"
+}

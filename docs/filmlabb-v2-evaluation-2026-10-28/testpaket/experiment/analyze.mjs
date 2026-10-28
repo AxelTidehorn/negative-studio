@@ -1,0 +1,11 @@
+import fs from 'node:fs';
+for(const file of ['creative-profiles','editing-engine','conversion3','image-model','color-analysis','film-base-measurement','v2-core','v2-render','v2-base','v2-output','v2-fast','v2-diagnostics'])await import('../source/site/'+file+'.js');
+const regions={0:[.3,.005,.2,.012],1:[.3,.004,.2,.012],2:[.3,.004,.2,.012],3:[.209,.2,.008,.3],4:[.4,.970,.08,.005],5:[.4,.020,.08,.005],6:[.4,.970,.08,.005],8:[.4,.040,.08,.005],9:[.777,.25,.008,.3],10:[.3,.004,.2,.012],11:[.4,.970,.08,.005]};
+const n=+process.argv[2],prefix=String(n).padStart(2,'0'),d=JSON.parse(fs.readFileSync('results/'+prefix+'_decode.json')),s=d.source,b=fs.readFileSync('results/'+prefix+'_source.f32'),im={width:s.width,height:s.height,channels:3,data:new Float32Array(b.buffer,b.byteOffset,b.byteLength/4),scale:1,encoding:'linear',colorSpace:'rec2020',inputDiagnostics4:d.inputDiagnostics};
+const V=NSConversionV2,R=NSV2Render,O=NSV2Output,ctx=V.capture({session:'independent-'+n,recipe:s.recipe,whiteBalance:d.rawMetadata?.color_data?.cam_mul}),[x,y,w,h]=regions[n],measurement=NSV2Base.measure(im,s,[{x,y,w,h}]),base=V.accept(measurement,s,ctx),k=V.compile(s,base),analysis=R.analyzeWithMask(im,k),intent=analysis.intent;
+const crop=d.reference.exportCrop,g=O.geometry(im,crop,0,1000);
+const report=NSV2Diagnostics.report?NSV2Diagnostics.report(im,s,base,k.calibration,intent):null;
+const samples=[];for(let v=0;v<80;v++)for(let u=0;u<80;u++){const x=Math.min(im.width-1,Math.floor((crop.x+(u+.5)*crop.w/80)*im.width)),y=Math.min(im.height-1,Math.floor((crop.y+(v+.5)*crop.h/80)*im.height)),j=V.read(im,(y*im.width+x)*3),p=k.pixel(j);samples.push({j,d:p.density,p:p.positive});}
+const bases=[];for(const dy of [-.002,0,.002])bases.push(NSV2Base.measure(im,s,[{x,y:Math.max(0,y+dy),w,h}]));
+fs.writeFileSync('results/'+prefix+'_analysis.json',JSON.stringify({measurement,base,intent,mask:{cols:analysis.mask.cols,rows:analysis.mask.rows,data:Array.from(analysis.mask.data)},geometry:{width:g.width,height:g.height,crop},samples,bases},null,2));
+for(const mode of ['technical','fixed','auto']){const fast=NSV2Fast.compile(k,intent,{viewMode:mode});const data=await O.area(im,g,fast.pixel,16);fs.writeFileSync('results/'+prefix+'_B_'+mode+'.rgb16',data);console.log(n,mode,g.width,g.height);}
