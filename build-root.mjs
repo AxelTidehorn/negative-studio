@@ -11,6 +11,13 @@ const html=fs.readFileSync('index.html','utf8');
 const boot=[...html.matchAll(/<script\b[^>]*src="\.\/([^"]+)"[^>]*>/g)].map(m=>m[1]);
 if(JSON.stringify(boot)!==JSON.stringify(scripts.map(a=>a.file)))throw Error('HTML script order differs from app-manifest.mjs');
 fs.copyFileSync('index.html','site/index.html');
+// Reference page runs the original app unchanged, with private storage before
+// bootstrap. Only its offline registration is omitted. Normal index is identical.
+const referenceHTML=html.replace('<head>','<head><script src="./v2-reference-isolation.js"></script>')
+ .replace(/<script[^>]*src="\.\/register-offline\.js"[^>]*><\/script>/,'')
+ .replace('</body>','<script defer src="./v2-reference-bridge.js"></script></body>');
+fs.writeFileSync('site/v2-reference.html',referenceHTML);
+
 if(!fs.existsSync('site/libraw/dist/index.js'))throw Error('Paketet saknar dist/index.js');
 console.log('Klart: publicera hela site-mappen via HTTPS, och cachea lokalt för offlinebruk.');
 

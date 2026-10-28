@@ -21,11 +21,11 @@ function summarize(im,ps,regions,kind){
  const {status,reasons}=assessment;
  return {version:2,kind,region:regions[0],...(regions.length>1?{regions}:{}),measured,shape:C.normalizeBase(measured),mad,spread,clipped,dark,samples:n,status,reasons:reasons.length?reasons:status==='review'?['Kontrollera variationen i provet']:[],confidence:status==='missing'?0:Math.max(.1,1-Math.max(...spread)*4),domain:'normalized-linear-'+(im.colorSpace||'srgb')};
 }
-function measureRegions(im,regions,{limit=8192,kind='auto-region'}={}){
+function measureRegions(im,regions,{limit=8192,kind='auto-region',samplePixel=sourceSample}={}){
  const rs=regions.map(C.rect),bs=rs.map(r=>C.bounds(im,r)),ps=[];
  const area=bs.reduce((n,b)=>n+(b.x1-b.x0)*(b.y1-b.y0),0),step=Math.max(1,Math.ceil(Math.sqrt(area/limit)));
  // Stratified source coordinates and the same per-pixel clipping union in both paths.
- for(const b of bs)for(let y=b.y0;y<b.y1;y+=step)for(let x=b.x0;x<b.x1;x+=step){const hash=((x*73856093)^(y*19349663))>>>0;ps.push(sourceSample(im,Math.min(b.x1-1,x+hash%step),Math.min(b.y1-1,y+(hash>>>8)%step)));}
+ for(const b of bs)for(let y=b.y0;y<b.y1;y+=step)for(let x=b.x0;x<b.x1;x+=step){const hash=((x*73856093)^(y*19349663))>>>0;ps.push(samplePixel(im,Math.min(b.x1-1,x+hash%step),Math.min(b.y1-1,y+(hash>>>8)%step)));}
  return summarize(im,ps,rs,kind);
 }
 function measure(im,region,{limit=2048,kind='manual-region'}={}){return measureRegions(im,[region],{limit,kind});}
@@ -133,5 +133,5 @@ function* detectSteps(im,frame){
 }
 function detect(im,frame){const iterator=detectSteps(im,frame);let item;do{item=iterator.next();}while(!item.done);return item.value;}
 async function detectAsync(im,frame,isCurrent=()=>true){const iterator=detectSteps(im,frame);while(isCurrent()){const item=iterator.next();if(item.done)return item.value;await new Promise(resolve=>setTimeout(resolve,0));}return null;}
-root.NSFilmBaseMeasurement={measure,measureRegions,detect,detectAsync};
+root.NSFilmBaseMeasurement={measure,measureRegions,detect,detectAsync,summarize};
 })(globalThis);

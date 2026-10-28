@@ -1,0 +1,154 @@
+{
+  "schema": "filmlabb.v2-analysis-validation",
+  "version": 1,
+  "date": "2026-10-28",
+  "environment": "Managed Linux; Node 24.19; Chromium; synthetic data, no private RAF files",
+  "suite": {
+    "passed": 84,
+    "total": 84,
+    "seconds": 957.15,
+    "build": true,
+    "finalTargetedChecks": [
+      "numeric analysis",
+      "three-view scalar oracle",
+      "photographic reference and concurrent A/B export",
+      "worker/cache/cancel",
+      "readable diagnostics/privacy/stale-source reset",
+      "preview subpath/cache isolation"
+    ]
+  },
+  "photographicReference": {
+    "fixtures": [
+      "synthetic-negative.dng",
+      "synthetic CFA DNG with controlled channel multipliers 1.8/0.9/0.35"
+    ],
+    "inputSize": [
+      64,
+      48
+    ],
+    "actualAutomaticExportSize": [
+      60,
+      46
+    ],
+    "differentRGB16Values": [
+      0,
+      0
+    ],
+    "previewTolerance8Bit": 1,
+    "scope": "Compared actual downloaded TIFF from unmodified ordinary index.html against lab A TIFF; fresh factory defaults, not all RAF/kameras",
+    "actualHistoricalTIFFImportPixelExact": true,
+    "privateStorageUnchanged": true,
+    "referenceCancelRetryAndBExportOverlap": true
+  },
+  "numeric": {
+    "mask": {
+      "selected": 0.17879335370673313,
+      "full": 0.10723721530725808,
+      "exposureMasked": 0.009703798403699336,
+      "exposureFull": 0.7471912449581926,
+      "counts": {
+        "invalid": 0,
+        "clipped": 0,
+        "logFloor": 0,
+        "edgeBase": 6080,
+        "edgeHolder": 1728,
+        "edgeClear": 0,
+        "kept": 4480
+      }
+    },
+    "dark": {
+      "basis": "current technical snapshot on full-source samples; saved mask unavailable",
+      "technicalMedianY": 0.010574481680138671,
+      "savedAnalysisMedianY": 0.010574481680138671,
+      "requestedExposureEV": 4.089338051649787,
+      "savedRequestedExposureEV": 4.089338051649787,
+      "appliedExposureEV": 1,
+      "exposureLimited": true,
+      "savedExposureLimited": true,
+      "medianAfterExposure": 0.021148963360277342,
+      "remainingTo18PercentEV": 3.0893380516497873,
+      "medianAfterTone": 0.020710948274072386,
+      "toneChangeEV": -0.030193339305957398,
+      "interpretation": "Technical prior placement remains dark after exposure cap; tone cannot recover that placement automatically"
+    },
+    "densityBlueOffset": 0.1,
+    "positiveBlueRatio": 1.4251026703029974
+  },
+  "scalarKernelPerformance": {
+    "schema": "filmlabb.v2-kernel-comparison",
+    "version": 1,
+    "fixture": "same 1MP Float32, same fixed source/base/intent, full RGB16 rows",
+    "reference": "87e27bb",
+    "environment": "Node 24.19 managed Linux; interleaved, 1 warmup + 5 measured each, full suite completed",
+    "runsMs": {
+      "before": [
+        363.063126,
+        427.34575300000006,
+        436.216101,
+        408.6057249999999,
+        396.48613000000023
+      ],
+      "after": [
+        364.17468799999983,
+        381.2510890000001,
+        425.69153800000004,
+        402.7623669999998,
+        399.11992699999973
+      ]
+    },
+    "medianMs": {
+      "before": 408.6057249999999,
+      "after": 399.11992699999973
+    },
+    "ratio": 0.9767849606120909,
+    "checksums": {
+      "before": 88722615,
+      "after": 88722615
+    },
+    "sourceBytes": 12000000,
+    "extraFullPositiveFloatBuffers": 0,
+    "method": "Prior fast.js from 87e27bb evaluated in a separate namespace with identical current core/render, source/base/intent and RGB16 fastRows; only scalar kernel compared."
+  },
+  "workerBrowserUnderConcurrentRegression": {
+    "first": {
+      "jobs": 3,
+      "qualityRenders": 1,
+      "cacheHits": 0,
+      "cacheBytes": 10449600,
+      "negativeMs": 507.19999999925494,
+      "baseMeasureMs": 31.300000000745058,
+      "toneAnalysisMs": 384.40000000037253,
+      "legacyAnalysisMs": 267,
+      "quickPreviewMs": 440.5,
+      "previewMs": 2788.300000000745,
+      "sourceBytes": 18874368
+    },
+    "ready": {
+      "jobs": 9,
+      "qualityRenders": 3,
+      "cacheHits": 2,
+      "cacheBytes": 10449600,
+      "negativeMs": 507.19999999925494,
+      "baseMeasureMs": 31.300000000745058,
+      "toneAnalysisMs": 384.40000000037253,
+      "legacyAnalysisMs": 216.09999999962747,
+      "quickPreviewMs": 1091.2999999988824,
+      "previewMs": 4154.5999999996275,
+      "exportPixels": 1572864,
+      "exportStripeBytes": 49152,
+      "sourceBytes": 18874368
+    },
+    "timing": {
+      "maxMainGapMs": 411.8999999985099,
+      "heartbeatSamples": 741
+    }
+  },
+  "unverified": [
+    "portrait RAF color/darkness cause",
+    "_DSF8951.RAF",
+    "physical iPad Safari",
+    "Windows Edge",
+    "large RAF browser memory peak",
+    "Safari JPEG canvas fallback"
+  ]
+}

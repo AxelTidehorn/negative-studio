@@ -1,0 +1,17 @@
+{
+  "recipe": "robust-p60-highlight-1",
+  "target": 0.25,
+  "highlightCeiling": 3,
+  "minSamples": 16,
+  "minValidFraction": 0.05,
+  "maxAbsEV": 16,
+  "fallbackEV": 0,
+  "analysisArea": "explicitly confirmed source-anchored film frame; independent of later creative crop/rotation/zoom",
+  "colorCorrection": "identity; no E3/gray-world",
+  "frozenBeforeValidationImageReview": [
+    9,
+    10
+  ],
+  "note": "Report's low-target dynamic-range heuristic is intentionally not enabled: unvalidated; no night series.",
+  "frozenAt": "2026-10-28T15:03:41.160957+00:00"
+}

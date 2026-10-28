@@ -1,0 +1,187 @@
+{
+  "schema": "filmlabb.v2-performance-record",
+  "version": 1,
+  "date": "2026-10-28",
+  "environment": "managed Linux; Node 24.19; Chromium 154; concurrent regression load varied",
+  "referenceCommit": "b0f68ed",
+  "pixel1MP": {
+    "before": {
+      "pixels": 1000000,
+      "runsMs": [
+        2550.5715569999998,
+        1911.6191559999997,
+        1627.19319,
+        1693.5436389999995,
+        1566.5826069999994
+      ],
+      "maxStripeMs": 190.5642580000001,
+      "sourceBytes": 12000000,
+      "maxOutputStripeBytes": 6000,
+      "rssBytes": 64638976,
+      "extraFullFloatBuffers": 0,
+      "checksum": 88722615
+    },
+    "after": {
+      "mode": "scalar",
+      "pixels": 1000000,
+      "runsMs": [
+        364.85394299999996,
+        339.061005,
+        377.4282539999999,
+        404.92391599999996,
+        343.8168230000001
+      ],
+      "maxStripeMs": 6.762255999999979,
+      "sourceBytes": 12000000,
+      "maxOutputStripeBytes": 6000,
+      "rssBytes": 60796928,
+      "peakRssBytes": 62156800,
+      "extraFullFloatBuffers": 0,
+      "checksum": 88722615
+    }
+  },
+  "pixel26MP": {
+    "before": {
+      "pixels": 26002080,
+      "runsMs": [
+        46705.688248,
+        44592.761988,
+        61883.154362999994,
+        63369.40155000001,
+        54374.07686699997
+      ],
+      "maxStripeMs": 676.0097999999998,
+      "sourceBytes": 312024960,
+      "maxOutputStripeBytes": 37440,
+      "rssBytes": 454774784,
+      "extraFullFloatBuffers": 0,
+      "checksum": 371941715
+    },
+    "after": {
+      "mode": "scalar",
+      "pixels": 26002080,
+      "runsMs": [
+        9024.478394,
+        10198.229616999999,
+        11352.886348,
+        8703.658328999998,
+        12838.454197
+      ],
+      "maxStripeMs": 398.3473180000001,
+      "sourceBytes": 312024960,
+      "maxOutputStripeBytes": 37440,
+      "rssBytes": 362582016,
+      "peakRssBytes": 363778048,
+      "extraFullFloatBuffers": 0,
+      "checksum": 371941715
+    }
+  },
+  "browser1MP": {
+    "schema": "filmlabb.v2-performance",
+    "version": 1,
+    "referenceCommit": "b0f68ed",
+    "fixture": "deterministic normalized Float32 1000x1000",
+    "before": {
+      "pixels": 1000000,
+      "baseMs": 610.5,
+      "pairMs": 10864,
+      "tiffMs": 5758.39999999851,
+      "tiffBytes": 6000752,
+      "sourceBytes": 12000000
+    },
+    "after": {
+      "initMs": 275.09999999962747,
+      "pairMs": 1176,
+      "workerPairMs": 633.3000000007451,
+      "baseMs": 113,
+      "tiffMs": 590,
+      "workerTiffMs": 476.2000000011176,
+      "metrics": {
+        "jobs": 4,
+        "qualityRenders": 1,
+        "cacheHits": 0,
+        "cacheBytes": 8000000,
+        "negativeMs": 170.5,
+        "baseDetectMs": 113,
+        "toneAnalysisMs": 105.80000000074506,
+        "legacyAnalysisMs": 65.69999999925494,
+        "quickPreviewMs": 254,
+        "previewMs": 633.3000000007451,
+        "exportPixels": 1000000,
+        "exportStripeBytes": 48000,
+        "exportMs": 476.2000000011176,
+        "sourceBytes": 12000000
+      }
+    }
+  },
+  "rawSyntheticDNG": {
+    "fixture": "Synthetic CFA DNG 1024x768",
+    "beforeMs": [
+      1733.8999999994412,
+      1292.300000000745,
+      903,
+      1365.699999999255,
+      1392.4000000003725
+    ],
+    "afterMs": [
+      1398,
+      1146.5,
+      2131.199999999255,
+      1994,
+      1285.3999999994412
+    ],
+    "decoderChanged": false,
+    "comparison": "same recipe and child LibRaw worker; Float32 conversion in main vs owner worker"
+  },
+  "stages300k": {
+    "pixels": 300000,
+    "fixture": "deterministic Float32",
+    "technicalBefore": {
+      "ms": 585.4414429999999,
+      "gcEvents": 112,
+      "gcMs": 20.00360799394548
+    },
+    "technicalAfter": {
+      "ms": 58.66285699999992,
+      "gcEvents": 6,
+      "gcMs": 1.5676110005006194
+    },
+    "toneBefore": {
+      "ms": 86.569929,
+      "gcEvents": 34,
+      "gcMs": 22.205278001725674
+    },
+    "toneAfter": {
+      "ms": 10.733510000000024,
+      "gcEvents": 1,
+      "gcMs": 0.1803340008482337
+    },
+    "colorBefore": {
+      "ms": 236.06250999999997,
+      "gcEvents": 62,
+      "gcMs": 11.412085998803377
+    },
+    "colorAfter": {
+      "ms": 15.595444999999927,
+      "gcEvents": 6,
+      "gcMs": 0.9655220005661249
+    },
+    "fullBefore": {
+      "ms": 1085.216907,
+      "gcEvents": 197,
+      "gcMs": 94.8374620070681
+    },
+    "fullAfter": {
+      "ms": 155.8103769999998,
+      "gcEvents": 7,
+      "gcMs": 1.6273799985647202
+    },
+    "checksum": 18418159.9165563
+  },
+  "limitations": [
+    "Synthetic inputs, not real RAF or device performance",
+    "RSS after benchmark is not physical iPad peak",
+    "Browser single runs, not p95",
+    "Render timings vary with concurrent load"
+  ]
+}
