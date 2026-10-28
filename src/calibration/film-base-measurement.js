@@ -133,5 +133,5 @@ function* detectSteps(im,frame){
 }
 function detect(im,frame){const iterator=detectSteps(im,frame);let item;do{item=iterator.next();}while(!item.done);return item.value;}
 async function detectAsync(im,frame,isCurrent=()=>true){const iterator=detectSteps(im,frame);while(isCurrent()){const item=iterator.next();if(item.done)return item.value;await new Promise(resolve=>setTimeout(resolve,0));}return null;}
-root.NSFilmBaseMeasurement={measure,measureRegions,detect,detectAsync};
+root.NSFilmBaseMeasurement={measure,measureRegions,detect,detectAsync,summarize};
 })(globalThis);

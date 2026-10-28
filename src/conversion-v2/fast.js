@@ -15,9 +15,10 @@ function display(r,g,b,out,legacy=false){
  if(peak>0){r=r*target/peak;g=g*target/peak;b=b*target/peak;}
  out[0]=r;out[1]=g;out[2]=b;return out;
 }
-function compile(k,intent){
+function compile(k,intent,{viewMode='auto'}={}){
+ if(!['auto','technical','fixed'].includes(viewMode))throw Error('VIEW_MODE_INVALID');
  V.validateCalibration(k.calibration);R.render([0,0,0],intent);
- const c=k.calibration,lb=k.base.rgb.map(Math.log10),lf=c.epsilon.map(Math.log10),s=c.responses.map(r=>r.slope),d0=c.responses.map(r=>r.referenceDensity),m=c.matrix,a=c.offset,e=2**intent.exposure;
+ const c=k.calibration,lb=k.base.rgb.map(Math.log10),lf=c.epsilon.map(Math.log10),s=c.responses.map(r=>r.slope),d0=c.responses.map(r=>r.referenceDensity),m=c.matrix,a=c.offset,e=viewMode==='fixed'?1:2**intent.exposure;
  function density(j,i){return -Math.max(lf[i],Number.isFinite(j)&&j>0?Math.log10(j)-lb[i]:-Infinity);}
  function technical(r,g,b,out){
   const v0=(density(r,0)-d0[0])*s[0],v1=(density(g,1)-d0[1])*s[1],v2=(density(b,2)-d0[2])*s[2];
@@ -26,7 +27,8 @@ function compile(k,intent){
   out[2]=.18*10**Math.max(-20,Math.min(20,((a[2]+m[2][0]*v0)+m[2][1]*v1)+m[2][2]*v2));return out;
  }
  function pixel(r,g,b,out){technical(r,g,b,out);r=out[0];g=out[1];b=out[2];const y=(.2627*r+.678*g+.0593*b)*e,scale=e/(1+y);return display(r*scale,g*scale,b*scale,out);}
- return {pixel,technical};
+ function technicalDisplay(r,g,b,out){technical(r,g,b,out);return display(out[0],out[1],out[2],out);}
+ return {pixel:viewMode==='technical'?technicalDisplay:pixel,technical};
 }
 // Exact neutral Standard preset used by this lab. No general legacy edits are
 // silently approximated; the unchanged NSPixelKernel is used as its test oracle.

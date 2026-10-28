@@ -2,7 +2,17 @@
 'use strict';
 const V=root.NSConversionV2,M=root.NSFilmBaseMeasurement;
 function samplePixel(im,x,y){const p=V.read(im,(y*im.width+x)*3);return {p,clipped:p.map(v=>v>=.999),dark:p.map(v=>!Number.isFinite(v)||v<=1e-6)};}
-function measure(im,s,regions,kind='manual-region',limit=8192){V.validateSource(s,im);const m=M.measureRegions(im,regions,{limit,kind,samplePixel});return {...m,domain:'linear-rec2020',sourceRevision:s.revision};}
+function measure(im,s,regions,kind='manual-region',limit=8192){
+ V.validateSource(s,im);
+ if(kind!=='manual-region'){const m=M.measureRegions(im,regions,{limit,kind,samplePixel});return {...m,domain:'linear-rec2020',sourceRevision:s.revision};}
+ // A single joint RGB population. Invalid tuples are discarded together, never
+ // independently per channel. Automatic quality is advisory for manual choice.
+ const valid=[];let total=0;
+ M.measureRegions(im,regions,{limit,kind,samplePixel(im,x,y){const item=samplePixel(im,x,y);total++;if(item.p.every(v=>Number.isFinite(v)&&v>0))valid.push(item);return item;}});
+ const m=M.summarize(im,valid,regions.map(root.NSColorEngine.rect),kind),usable=valid.length>0&&m.measured.every(v=>Number.isFinite(v)&&v>=1e-12&&v<=1e6),warnings=[...m.reasons];
+ if(valid.length<total)warnings.push('Ogiltiga RGB-prov uteslutna gemensamt');
+ return {...m,origin:'manual',numericStatus:usable?'valid':'invalid',qualityStatus:m.status,status:usable?(warnings.length?'review':'safe'):'missing',reasons:warnings,validSamples:valid.length,totalSamples:total,invalidSamples:total-valid.length,domain:'linear-rec2020',sourceRevision:s.revision};
+}
 // Multiscale peripheral strips. Deliberate abstention: RGB/homogeneity alone cannot
 // establish unexposed film, so candidates always require visual confirmation.
 async function detect(im,s,check=()=>{},onProgress=()=>{}){const candidates=[];let last=performance.now(),done=0;for(const width of [1,2,4,8,16,32]){check();if(width>Math.min(im.width,im.height)/8)continue;const wx=width/im.width,wy=width/im.height;

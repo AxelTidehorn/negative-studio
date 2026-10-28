@@ -3,6 +3,9 @@
 export const assets = {
  "tiff-header.js":"src/export/tiff-header.js",
  "v2.html":"src/conversion-v2/v2.html",
+ "v2-reference-isolation.js":"src/conversion-v2/reference-isolation.js",
+ "v2-reference-bridge.js":"src/conversion-v2/reference-bridge.js",
+ "v2-reference-client.js":"src/conversion-v2/reference-client.js",
  "v2-core.js":"src/conversion-v2/core.js",
  "v2-render.js":"src/conversion-v2/render.js",
  "v2-base.js":"src/conversion-v2/base.js",

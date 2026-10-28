@@ -6,9 +6,10 @@ const expected=execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).trim()
 async function get(file){const response=await fetch(new URL(file,url),{cache:'no-store',signal:AbortSignal.timeout(30000)});if(!response.ok)throw Error(file+': HTTP '+response.status);return response;}
 const metadata=await (await get('preview-deployment.json?verify='+Date.now())).json();
 if(metadata.sourceCommit!==expected||metadata.offlineCache!==false)throw Error('Deployed source revision does not match checkout');
-const html=await (await get('v2.html')).text(),scripts=[...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(m=>m[1]);
+const html=await (await get('v2.html')).text(),referenceHTML=await (await get('v2-reference.html')).text(),scriptFiles=html=>[...html.matchAll(/<script\b[^>]*src="([^"]+)"/g)].map(m=>m[1]),referenceScripts=scriptFiles(referenceHTML),scripts=[...new Set([...scriptFiles(html),...referenceScripts])];
+if(referenceScripts[0]!=='./v2-reference-isolation.js'||referenceScripts.at(-1)!=='./v2-reference-bridge.js'||referenceScripts.includes('./register-offline.js'))throw Error('Original-app reference is not isolated');
 if(!scripts.length)throw Error('No v2 scripts found');
-for(const file of [...scripts,'libraw/dist/index.js','libraw/dist/worker.js','libraw/dist/libraw.js']){const r=await get(file);if(!(r.headers.get('content-type')||'').includes('javascript'))throw Error('Wrong JavaScript content type: '+file);await r.arrayBuffer();}
+for(const file of [...scripts,'v2-worker.js','libraw/dist/index.js','libraw/dist/worker.js','libraw/dist/libraw.js']){const r=await get(file);if(!(r.headers.get('content-type')||'').includes('javascript'))throw Error('Wrong JavaScript content type: '+file);await r.arrayBuffer();}
 const wasm=await get('libraw/dist/libraw.wasm');
 if(!(wasm.headers.get('content-type')||'').includes('application/wasm'))throw Error('Wrong WASM content type');
 const bytes=new Uint8Array(await wasm.arrayBuffer());if(bytes[0]!==0||bytes[1]!==97||bytes[2]!==115||bytes[3]!==109)throw Error('Invalid WASM response');
