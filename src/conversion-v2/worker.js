@@ -6,7 +6,7 @@ const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast;
 // MessageChannel yields to incoming jobs without background-tab timer clamps.
 const scheduler=new MessageChannel(),resumers=[];scheduler.port1.onmessage=()=>resumers.shift()?.();
 self.NSV2Yield=()=>new Promise(resolve=>{resumers.push(resolve);scheduler.port2.postMessage(0);});
-let image,source,capture,base,previous,proposal,k,intent,legacy,fast,fastA,active=0,analysisMask=null,photo=null,currentView='auto',currentComparison='technical',activeRequest=null;
+let image,source,capture,base,previous,proposal,k,intent,legacy,fast,fastA,active=0,analysisMask=null,photo=null,currentView='auto',currentComparison='technical',activeRequest=null,analysisOptions={maskMode:'content',analysisArea:null},intentKey=null;
 const cache=new Map(),metrics={jobs:0,qualityRenders:0,cacheHits:0,cacheBytes:0};
 function snapshot(){return {source,base,reference:photo?.summary||null,viewMode:currentView,comparison:currentComparison,calibration:k?.calibration,intent,legacy,proposal,metrics:{...metrics,sourceBytes:image?.data.byteLength||0}};}
 function progress(id,stage,done=0,total=1){postMessage({id,type:'progress',stage,done,total});}
@@ -14,7 +14,9 @@ function check(id){if(id!==active)throw Object.assign(Error('Avbrutet'),{name:'A
 function job(id){let last=performance.now();return {check:()=>check(id),async tick(stage,done,total){check(id);if(performance.now()-last>12){progress(id,stage,done,total);await self.NSV2Yield();check(id);last=performance.now();}}};}
 function clearCache(){cache.clear();metrics.cacheBytes=0;}
 function parameters(){
- k=V.compile(source,base,V.prior,capture);if(!intent){const start=performance.now();const analyzed=R.analyzeWithMask(image,k);intent=analyzed.intent;analysisMask=analyzed.mask;metrics.toneAnalysisMs=performance.now()-start;}
+ k=V.compile(source,base,V.prior,capture);const key=R.analysisKey(k,analysisOptions);
+ if(intent&&intentKey===key){if(intent.baseId!==base.id)intent=V.freeze({...intent,baseId:base.id,analysis:{...intent.analysis,baseId:base.id}});return;}
+ const toneStart=performance.now(),analyzed=R.analyzeWithMask(image,k,analysisOptions);intent=analyzed.intent;intentKey=key;analysisMask=analyzed.mask;metrics.toneAnalysisMs=performance.now()-toneStart;metrics.toneAnalysisCount=(metrics.toneAnalysisCount||0)+1;
  const start=performance.now(),region={x:0,y:0,w:1,h:1},response=NSColorCalibration.estimate(image,region,{base:base.rgb,light:[1,1,1],domain:'linear-rec2020'});
  legacy=V.freeze(V.clone({kind:'calibrated4',opts:{...NSProjectSettings.imageDefaults(),shadow:0,highlight:1,editVersion:1},workingSpace:'rec2020',cal:{beta4:NSColorCalibration.analyze(image,region,response)},profile:{type:'color'},print:{},neutralProfile:true,neutralPrint:true,strength:0}));
  metrics.legacyAnalysisMs=performance.now()-start;fast=F.compile(k,intent,{viewMode:currentView});fastA=F.compileLegacy(legacy);clearCache();
@@ -115,8 +117,8 @@ self.onmessage=async({data:m})=>{
  active=m.id;activeRequest=m;metrics.jobs++;const t=performance.now();
  try{
   let result;
-  if(m.type==='load'){photo=analysisMask=null;clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await load(m);}
-  else if(m.type==='source'){photo=analysisMask=null;image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
+  if(m.type==='load'){photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await load(m);}
+  else if(m.type==='source'){photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
   else if(!image)throw Error('SOURCE_MISSING');
   else if(m.type==='measure'){proposal=NSV2Base.measure(image,source,m.regions);metrics.baseMeasureMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='detect'){progress(m.id,'base');proposal=await NSV2Base.detect(image,source,()=>check(m.id),(done,total)=>progress(m.id,'base',done,total));metrics.baseDetectMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
@@ -124,7 +126,7 @@ self.onmessage=async({data:m})=>{
    if(m.type==='undo'){if(!previous)throw Error('NO_PREVIOUS_BASE');[base,previous]=[previous,base];}
    else{const next=m.type==='prior'?V.assumed([1,1,1],source,capture):m.type==='reuse'?m.base:V.accept(proposal,source,capture);if(!V.compatible(next.capture,capture))throw Error('BASE_INCOMPATIBLE');previous=base;base=next;}
    parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);
-  }else if(m.type==='tone'){if(!k)throw Error('ACCEPT_BASE_FIRST');const analyzed=R.analyzeWithMask(image,k,{maskMode:m.maskMode||'content'});intent=analyzed.intent;analysisMask=analyzed.mask;parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
+  }else if(m.type==='tone'){if(!k)throw Error('ACCEPT_BASE_FIRST');analysisOptions={...analysisOptions,maskMode:m.maskMode||analysisOptions.maskMode};if(Object.hasOwn(m,'analysisArea'))analysisOptions.analysisArea=m.analysisArea;parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
   else if(m.type==='pair')result=await pair(m);
   else if(m.type==='export')result=await exportImage(m);
   else if(m.type==='mask'){if(!analysisMask)throw Error('ANALYSIS_MASK_MISSING');result={mask:{...analysisMask,data:analysisMask.data.slice()},snapshot:snapshot()};}
