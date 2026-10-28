@@ -152,7 +152,7 @@ responser är förberedda.
 
 **Kvar som manuell gate:** porträtt-RAF, `_DSF8951.RAF`, blandad rulle, verkliga
 märkta baskanter och jämförbar Neo-export; fysisk iPad Safari och Windows Edge;
-26 MP decode/export, peak memory, profil i mottagande program, visuella hudtoner,
+26 MP RAW-decode/verklig browserexport, peak memory, profil i mottagande program, visuella hudtoner,
 clipping och detaljåtergivning. Färgåtergivningen är inte fotografiskt godkänd.
 
 Lokalt CPU-mätresultat (1 MP syntetiskt, fem repetitioner, samtidigt som
@@ -160,4 +160,19 @@ regressionssviten kördes): 3,46 / 2,36 / 2,60 / 4,09 / 2,74 sekunder,
 12 MB källa, 6 kB outputstripe, cirka 73 MB process-RSS. Längsta uppmätta
 stripe var 142 ms. Målet om inga block över 100 ms är alltså **inte uppnått**
 i denna miljömätning, trots en-rads bearbetning; GC/schemaläggning ingår.
-Full 26 MP och relativ exporttid mot legacy är ännu inte benchmarkade.
+Relativ exporttid mot legacy är ännu inte benchmarkad.
+
+Slutlig automatisk regressionskörning: `npm run test:full` **78/78 grupper
+passerade**, 852 s (Node- och browsergrupper inklusive v2). `test:fast`
+6/6 och build passerade. Senare avgränsade v2-ändringar för lokal HTTP och
+strikt gain=normalization=1 verifierades separat med numeriska tester och
+webbläsarflödet; de gamla motorernas kod ändrades inte efter fullkörningens start.
+
+26 MP syntetisk fullupplöst RGB16-stripekonvertering (6240×4167, fem körningar):
+104,85 / 120,75 / 125,84 / 90,11 / 53,39 s. Källa 312 024 960 byte,
+outputstripe 37 440 byte, process-RSS 452 943 872 byte, inga extra fulla
+Float32-bildplan. Max uppmätt stripe 472 ms under samtidig regressionskörning.
+Detta mäter CPU-pixelkedjan och tillfällig RGB16-stripe, inte LibRaw, canvas,
+TIFF-Blob, nedladdning eller enhetspeak. Denna referensväg är långsam på stora
+bilder och uppfyller inte rapportens interaktivitetsmål. Worker-/tileoptimering
+och enhetsmätning återstår innan integration/defaultrelease.

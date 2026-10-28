@@ -1,11 +1,13 @@
 import assert from 'node:assert/strict';
 for(const path of ['image/image-model','calibration/film-base-measurement','conversion-v2/core','conversion-v2/render','conversion-v2/base','conversion-v2/diagnostics','conversion-v2/output','import/srgb-profile','export/tiff-header','import/tiff-codec'])await import('../src/'+path+'.js');
 const V=NSConversionV2,R=NSV2Render,O=NSV2Output;
+const nativeUUID=crypto.randomUUID;Object.defineProperty(crypto,'randomUUID',{value:undefined,configurable:true});assert.match(V.uuid(),/^[0-9a-f]{32}$/);Object.defineProperty(crypto,'randomUUID',{value:nativeUUID,configurable:true});
 const im={width:64,height:48,channels:3,data:new Float32Array(64*48*3),encoding:'linear',colorSpace:'rec2020',scale:1};for(let p=0;p<64*48;p++)for(let c=0;c<3;c++)im.data[p*3+c]=[.8,.45,.2][c]*10**(-(.1+2*(p%64)/63));
 const ctx=V.capture({session:'test',recipe:{decoder:'fixture'}}),s=V.source(im,{revision:'s1'}),b=V.assumed([.8,.45,.2],s,ctx),k=V.compile(s,b),prior=JSON.stringify(V.prior),pixel=[.1,.04,.02];
 const close=(a,b,t=1e-6)=>assert.ok(Math.abs(a-b)<t,`${a} != ${b}`);
 for(let c=0;c<3;c++){const rgb=[...b.rgb];rgb[c]*=10**.01;const kb=V.compile(s,{...b,rgb});close((kb.pixel(pixel).density[c]-k.pixel(pixel).density[c])/.01,1,1e-10);assert.notDeepEqual(kb.pixel(pixel).positive,k.pixel(pixel).positive);assert.equal(JSON.stringify(kb.calibration),prior);}
 for(const scale of [.01,.5,2,10]){const other=V.compile(s,{...b,rgb:b.rgb.map(v=>v*scale)});other.pixel(pixel.map(v=>v*scale)).density.forEach((v,c)=>close(v,k.pixel(pixel).density[c],1e-12));}
+for(const span of [.45,.65,.85]){const cal={...V.prior,id:'fixture-'+span,responses:[0,1,2].map(()=>({kind:'affine',slope:1/span,referenceDensity:1})),matrix:[[1,.02,0],[0,1,0],[0,.02,1]],offset:[.01,0,-.01]},model=V.compile(s,b,cal);for(const d of [.05,.5,1,2,3]){const j=b.rgb.map(v=>v*10**-d),result=model.pixel(j);const v=(d-1)/span;result.logPositive.forEach((x,c)=>close(x,cal.matrix[c].reduce((sum,a)=>sum+a*v,cal.offset[c]),1e-10));}}
 assert.ok(k.pixel([1.2,1.1,1.01]).density.every(v=>v<0));for(const p of [[0,-1,NaN],[Infinity,1e-30,1],[.1,.2,.3]])assert.ok(k.pixel(p).positive.every(Number.isFinite));assert.ok(k.pixel([0,-1,NaN]).flags.invalid.every(Boolean));
 let last=-Infinity;for(let d=-2;d<6;d+=.01){const p=k.pixel(b.rgb.map(v=>v*10**-d));assert.ok(p.positive[0]>last);last=p.positive[0];}
 assert.throws(()=>V.source({...im,encoding:'srgb'},{revision:'bad'}));assert.throws(()=>V.compile(s,b,{...V.prior,responses:[{slope:-1}]}));assert.throws(()=>V.compile(s,b,V.prior,{...ctx,session:'other'}));

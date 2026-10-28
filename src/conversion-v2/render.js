@@ -3,7 +3,7 @@
 const V=root.NSConversionV2,quantile=(a,q)=>{const s=[...a].sort((a,b)=>a-b);return s[Math.floor((s.length-1)*q)]??0;};
 function analyze(im,k){const values=[],step=Math.max(1,Math.ceil(im.width*im.height/24000));for(let p=0;p<im.width*im.height;p+=step){const r=k.pixel(V.read(im,p*3));if(!r.flags.invalid.some(Boolean)&&!r.flags.floor.some(Boolean))values.push(V.luminance(r.positive));}
  const median=quantile(values,.5),spread=quantile(values,.95)-quantile(values,.05),ok=values.length>=16&&median>0&&spread>1e-8,exposure=ok?Math.max(-1,Math.min(1,Math.log2(.18/median))):0;
- return V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+crypto.randomUUID(),analysisVersion:'full-source-stratified-1',sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,tone:'luminance-reinhard-1',colorCorrection:{version:1,status:'prior',kind:'identity'},sampleCount:values.length,median});}
+ return V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:'full-source-stratified-1',sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,tone:'luminance-reinhard-1',colorCorrection:{version:1,status:'prior',kind:'identity'},sampleCount:values.length,median});}
 function render(p,intent){if(intent?.schema!=='RenderIntentV1'||intent.version!==1||intent.tone!=='luminance-reinhard-1'||!Number.isFinite(intent.exposure)||Math.abs(intent.exposure)>1)throw Error('RENDER_INTENT_INVALID');const e=2**intent.exposure,y=V.luminance(p)*e;return p.map(v=>v*e/(1+y));}
 // Explicit output boundary: Rec.2020 -> linear sRGB, neutral-axis gamut compression,
 // then peak shoulder. Technical headroom survives until here.
