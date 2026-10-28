@@ -2,7 +2,7 @@
 'use strict';
 const CE=NSColorEngine;
 let cropDisplayDismissed=false,working=null,workingPreview=null,calibration=null,legacyLevels=null,beta3Base=null,beta3Levels=null,sourceInfo={encoding:'srgb',label:'sRGB (webbläsare)'},sharedBase=null,sharedLight=null,cropDrag=null,exportBusy=false;
-function workingSource(){if(hires)return {width:hires.width,height:hires.height,channels:hires.channels,data:hires.data,scale:hires.scale||65535,colorSpace:hires.colorSpace||'srgb',encoding:hires.encoding||sourceInfo.encoding,profile:hires.profile,normalization:hires.normalization||1};return {width:src.width,height:src.height,channels:4,data:src.data,scale:255,encoding:'srgb'};}
+function workingSource(){if(hires)return {width:hires.width,height:hires.height,channels:hires.channels,data:hires.data,bits:hires.bits||16,inputDiagnostics4:sourceInfo.diagnostics4,scale:hires.scale||65535,colorSpace:hires.colorSpace||'srgb',encoding:hires.encoding||sourceInfo.encoding,profile:hires.profile,normalization:hires.normalization||1};return {width:src.width,height:src.height,channels:4,data:src.data,scale:255,encoding:'srgb'};}
 function sourcePixel(im,x,y){return CE.pixel(im,x,y);}
 function calibrationBase(){const b=state.useRollBase&&sharedBase?sharedBase:state.manualCalibration;return b&&(!b.sourceEncoding||b.sourceEncoding===sourceInfo.encoding)&&(!sourceInfo.domain||b.sourceDomain===sourceInfo.domain||(!b.sourceDomain&&sourceInfo.rawMode4==='reference'))?b:null;}
 function currentLight(){return sharedLight&&sharedLight.encoding===sourceInfo.encoding&&(!sourceInfo.domain||sharedLight.domain===sourceInfo.domain||(!sharedLight.domain&&sourceInfo.rawMode4==='reference'))?sharedLight.gains:[1,1,1];}
@@ -10,7 +10,7 @@ function currentLight(){return sharedLight&&sharedLight.encoding===sourceInfo.en
 function updateCalibrationUI(){syncEngineSelector();const compatible=sharedLight&&sharedLight.encoding===sourceInfo.encoding;$('referenceStatus').textContent=sharedLight?(compatible?'Gemensam ljuskälla aktiv · ':'Ljuskälla pausad: annan källkodning · ')+sharedLight.name:'Ingen ljuskällereferens';$('rollBaseStatus').textContent=sharedBase?'Gemensam filmbas tillgänglig · '+sharedBase.sourceEncoding:'Ingen gemensam filmbas';$('useRollBase').checked=!!state.useRollBase;$('useRollBase').disabled=!sharedBase;$('sourceStatus').textContent=sourceInfo.label;$('engineMode').value=state.engine||'legacy';$('balanceStrength').disabled=state.engine==='beta2';$('balanceStrength').title=state.engine==='beta2'?'Beta 2 använder filmbasen för färgbalans. Justera Varm/kall och Grön/magenta manuellt.':'Styr kanalbalanseringen';}
 finishImport=function(message){
  cropDisplayDismissed=false;
- working=workingSource();workingPreview=CE.preview(working,1400,state.previewSampling);
+ working=workingSource();workingPreview=state.engine==='v2'?NSV2Platform.preview(working):CE.preview(working,1400,state.previewSampling);
  // The legacy engine must analyze the same normalized samples that full-size
  // export reads, rather than an independently encoded camera/TIFF thumbnail.
  previewSrc=new ImageData(workingPreview.width,workingPreview.height);
@@ -23,13 +23,19 @@ finishImport=function(message){
  $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.'));
 };
 const importRawOriginal=importRawRGB16;
-importRawRGB16=async function(im,name,meta){sourceInfo={encoding:'linear',gain:im.linearGain4||1,whiteBalance:meta?.color_data?.cam_mul||null,decoder:'libraw-wasm@1.6.0',domain:'raw-'+(im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',colorSpace:im.colorSpace||'srgb',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='wide'?'Experimentell RAW · Rec.2020 · flyttal · inversion före sRGB':im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};
+importRawRGB16=async function(im,name,meta){sourceInfo={rawMetadata:im.decoderRecipe||null,v2Decoded:!!im.v2Decoded,encoding:'linear',gain:im.linearGain4||1,whiteBalance:meta?.color_data?.cam_mul||null,decoder:'libraw-wasm@1.6.0',domain:'raw-'+(im.v2Decoded?'wide-v2-1':im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',colorSpace:im.colorSpace||'srgb',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='wide'?'Experimentell RAW · Rec.2020 · flyttal · inversion före sRGB':im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};
 const importBrowserOriginal=importBrowserImage;
 importBrowserImage=async function(file,note=''){sourceInfo={encoding:'srgb',label:/JPEG-RESERV|inbäddad/i.test(note)?'INBÄDDAD JPEG · 8 bit · sRGB via webbläsaren · inte RAW':'8 bit · sRGB via webbläsarens färghantering'};await importBrowserOriginal(file,note);};
 // Normalize all channels together before quantizing the ICC result. A direct
 // conversion into [0,1] sRGB clipped over half the red pixels in the test TIFF.
 function normalizeIccTiff(raw){const profile=NSColorManagement.parseICC(raw.icc),peaks=[];const step=Math.max(1,Math.floor(raw.width*raw.height/18000));for(let j=0;j<raw.width*raw.height;j+=step){const i=j*raw.channels,p=profile.toLinear([raw.data[i]/65535,raw.data[i+1]/65535,raw.data[i+2]/65535]);peaks.push(Math.max(...p));}const normalization=Math.max(1,CE.quantile(peaks,.999));for(let i=0;i<raw.data.length;i+=raw.channels){const p=profile.toLinear([raw.data[i]/65535,raw.data[i+1]/65535,raw.data[i+2]/65535]);for(let c=0;c<3;c++)raw.data[i+c]=Math.round(CE.clamp(p[c]/normalization)*65535);}raw.encoding='linear';return {raw,normalization,label:profile.label+' · gemensam skala '+normalization.toFixed(3)};}
 function prepareTiff(raw){
+ if(state.tiffEncoding==='linear-rec2020'){
+  if(raw.icc)throw Error('Verifierad linjär Rec.2020 kräver TIFF utan ICC.');
+  raw={...raw,data:Float32Array.from(raw.data,v=>v/65535),channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};
+  sourceInfo={encoding:'linear',colorSpace:'rec2020',gain:1,domain:'verified-linear-rec2020-tiff',label:'Verifierad linjär Rec.2020-TIFF'};return raw;
+ }
+ if(state.engine==='v2')throw Error('V2 kräver verifierad linjär Rec.2020-TIFF.');
  if(raw.icc){const converted=normalizeIccTiff(raw);sourceInfo={encoding:'linear',normalization:converted.normalization,label:converted.label+' · '+raw.bits+' bit källa'};}
  else{sourceInfo={encoding:state.tiffEncoding||'srgb',label:'TIFF utan ICC · antagen '+(state.tiffEncoding==='linear'?'linjär sRGB':'sRGB')+' · kontrollera källkodning'};}
  return raw;

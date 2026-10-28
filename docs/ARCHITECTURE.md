@@ -127,6 +127,14 @@ projekt behåller sin tidigare filtagg och sitt utseende. Versionsvalet är bild
 
 ## Utveckling och verifiering
 
+V2 ansluts via `conversion-v2/platform.js` och `platform-controller.js` till
+befintliga käll-/bas-/analysägare. `NSPixelKernel` väljer samma V2-fastkärna som
+labbet före kreativa profiler och Editing 2.0. Preview-/export-workers laddar
+samma moduler. V2 använder CPU och begränsad positiv previewcache.
+V2-projekt får kontrollerad tagg `negative-studio-roll-v2`; gamla taggar behålls.
+Se [integration och begränsningar](V2_PLATFORM_INTEGRATION.md) samt
+[appversionering](VERSIONS.md).
+
 `tests/suites.mjs` grupperar Node-tester efter ansvar och listar browserfallen.
 `tests/helpers/app-harness.mjs` följer produktionsordningen för data/CPU-lagret;
 GPU, UI-backends och exportkontrollerns användarflöden testas i riktiga browsers.

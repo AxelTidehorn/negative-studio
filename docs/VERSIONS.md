@@ -1,51 +1,60 @@
-# Version och aktiv konvertering
+# Applikationsversion och aktiv konvertering
 
-Appens första nya versionsnummer är **2.0.0-alpha.1**, centralt i `package.json`
-(även lockfilens rot). Det ersätter den inaktuella footern ”1.1 Beta 6”. Det är
-appens experimentella releaseversion, inte projekt-, kalibrerings- eller motorernas
-schemaversion. Gamla projekt ändras inte av detta nummer.
+Versionspolicyn finns centralt i `package.json`: bas `2.0.0-beta.0`, strategi
+`first-parent-beta`, ankare `a2fa2d801cbd905bd720777b058aef29bc620403` (main efter
+PR #39). `tools/release-version.mjs` räknar mainlinjens första föräldrar efter
+ankaret och genererar `2.0.0-beta.N` vid rena main-byggen. Första squash-/merge-
+committet ger beta.1. Varje efterföljande merge får ett större, unikt nummer.
+Direktcommits räknas också. Rebase-merge kan hoppa flera nummer, men varje
+publicerat main-commit har fortfarande unikt nummer. Ingen release-PR, tagg,
+separat räknare, skrivbehörighet eller dependency behövs. Flytta inte bas/ankare
+inom samma betaserie.
 
-Varje build visar dessutom automatiskt källgren, kort Git-revision och ett
-innehållsfingeravtryck. Lokala källändringar markeras uttryckligen. Versionsnummer
-höjs vid en avsiktlig release; revision/fingeravtryck skiljer även commits inom
-samma release. Builden är reproducerbar och använder ingen klocktid som ändrar
-identiteten vid varje ombyggnad.
+Actions hämtar full historik (`fetch-depth: 0`). Pages bygger uttryckligen
+aktuell `main`, även vid omkörning av äldre workflow. Samma commit ger samma
+version. Deployments serialiseras; om HEAD hunnit bli inaktuell hoppas
+publiceringen över. En omkörning förbrukar inget nummer och publicerar inte
+avsiktligt en historisk event-SHA över nyare main. Anländer ny main precis
+under deployment följer dess vanliga deployment efter. Saknad versionshistorik
+stoppar ett main-bygge i stället för att gissa.
 
-Identifieringen finns i vanliga sidans footer och direkt under rubriken på
-`v2.html`. Den är inbakad i byggd JavaScript, inte hämtad från en potentiellt nyare
-serverrapport när gammal appkod är kvar i cache. V2-workern rapporterar sin egen
-byggidentitet; olika revisioner/innehåll i sida och worker ger en synlig varning.
-`build-info.json` är en separat maskinläsbar kopia. Diagnostikexporten innehåller
-workerns byggidentitet med saknad status när sådan information inte finns.
+Utvecklingsbyggen får exempelvis `2.0.0-beta.1.dev.g64dcb7456363`.
+Lokala ändringar lägger till `.dirty`; innehållsfingeravtrycket skiljer olika
+arbetskopior med samma HEAD. Utan Git-historik märks utvecklingsbygget okänt/dev.
+Klocktid och workflow-run räknas inte in i releaseversionen.
 
-Efter godkänd filmbas visar V2 också vilket **faktiskt intent** som används:
+## Vilken kod kör jag?
 
-- automatisk ton: recept och aktiv/fallback;
-- positiv färgbalans: recept och aktiv/avstår med orsak;
-- technical/fixed: automatisk ton och färgbalans används inte i visningen.
+Den befintliga **sidfootern** visar appversion, kort commit-SHA och gren.
+Innehållsfingeravtryck och lokala ändringar ingår också i bygginformationen.
+`build-info.json` är dess maskinläsbara kopia. Identiteten är inbakad i byggd
+JavaScript, inte hämtad från en potentiellt nyare serverrapport när gammal kod
+finns kvar offline. Buildmanifest och service-worker-cache får det nya byggets
+innehållsidentitet. Ny kod blir aktiv efter service-worker-aktivering/omladdning.
 
-”Aktiv” betyder att steget används, inte att bildens färger har godkänts
-fotografiskt. Osäker statistik kan ge fallback även i den senaste appversionen.
-Version, aktivt recept och bildkvalitet är skilda frågor.
+`v2.html` visar samma byggidentitet och jämför med V2-workerns egen identitet;
+olika byggen ger varning. Versionsinformationen byter inte publiceringsgren.
 
-## Publicerade adresser kontrollerade 2026-10-28
+**Appversion och algoritmversion är skilda saker.** V2 sparar
+`FILMLABB.V2Recipe` v1, `algorithmVersion: 1`, befintlig CalibrationV2 v2 och
+RenderIntentV1. En ny appversion skriver inte om dessa versioner, äldre
+responskurvor eller projektscheman. Motorvalet är fortsatt bildspecifikt.
 
-- `https://axeltidehorn.github.io/negative-studio/v2.html`: V2-kod från main efter
-  PR #39 (`a2fa2d8`). Hämtad `v2-render.js` matchade main byte för byte.
-- `https://axeltidehorn.github.io/negative-studio-v2-preview/v2.html`: dess
-  deploymentrapport angav `37913216cdfc8f04ee9a7fe104c87aeb3ab17b30` från
-  `feat/filmlabb-v2-prototype`. Den kör alltså äldre kod utan PR #39:s färgbalans.
+Huvudplattformens befintliga kalibreringsstatus visar V2, experimentell, CPU,
+uppmätt/antagen bas och aktiv/fallback/avstådd analys. Diagnostiken under
+Avancerat innehåller faktiskt recept och statistik efter kreativ redigering.
+Labbet har även automatic/technical/fixed. ”Aktiv” betyder att steget används,
+inte att bildens färger är fotografiskt godkända.
 
-Denna versionsändring byter inte publiceringsgren eller publicerar något.
-Identifieringen blir synlig först när en build som innehåller ändringen har
-deployats. Ovanstående observationer är en tidpunkt, inte fasta löften om vilka
-commits adresserna kommer att köra i framtiden.
+## Verifiering och publicering
 
-## Verifiering
+`tests/release-version.mjs` skapar en verklig Git-historik med två PR-merges
+och flera feature-commits: unika betaordinaler, identiska omkörningar, dev-ID
+och avvisad saknad main-historik. Build-/cachetester kontrollerar reproducerbart
+innehåll och invalidation. `tests/build-version-browser.mjs` kontrollerar
+footer, labb och workeridentitet.
 
-Build och ren `npm ci` passerar. Riktade sviter för arkitektur/startordning,
-språkkataloger, testinfrastruktur, UI-reglage, reproducerbar build/cache,
-isolerad RAW/WASM-preview och V2:s bas/ton-invalidation passerar.
-`build-version-browser.mjs` kontrollerar footer/V2-version, workerns identitet,
-verkliga fallback/aktiv/fixed-statusar, diagnostik samt olika/saknade byggversioner.
-Konverteringsmatematiken är oförändrad; ingen ny bildkvalitetsvalidering påstås.
+Integrationen levereras som PR och mergas inte automatiskt. Ny versionspolicy
+och V2-val blir **inte aktiva på ordinarie HTTPS-adress förrän ändringen mergats
+och Pages-deploymenten lyckats**. Kontrollera då footern/`build-info.json` mot
+mergad SHA. Den separata äldre previewmiljön följer fortsatt sin befintliga gren.

@@ -1,6 +1,8 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "v2-platform.js":"src/conversion-v2/platform.js",
+ "v2-platform-controller.js":"src/conversion-v2/platform-controller.js",
  "build-info.js":"src/platform/build-info.js",
  "tiff-header.js":"src/export/tiff-header.js",
  "v2.html":"src/conversion-v2/v2.html",
@@ -113,6 +115,10 @@ export const scripts = [
  {"file":"color-parameters.js","harness":true,"defer":false},
  {"file":"editing-engine.js","harness":true,"defer":false},
  {"file":"conversion3.js","harness":true,"defer":false},
+ {"file":"v2-core.js","harness":true,"defer":false},
+ {"file":"v2-render.js","harness":true,"defer":false},
+ {"file":"v2-fast.js","harness":true,"defer":false},
+ {"file":"v2-platform.js","harness":true,"defer":false},
  {"file":"render-core.js","harness":true,"defer":false},
  {"file":"presentation-sampler.js","harness":true,"defer":false},
  {"file":"frame-controller.js","harness":true,"defer":false},
@@ -140,6 +146,8 @@ export const scripts = [
  {"file":"workflow-ui.js","harness":false,"defer":true},
  {"file":"editing-controller.js","harness":false,"defer":false},
  {"file":"film-base-controller.js","harness":true,"defer":false},
+ {"file":"v2-platform-controller.js","harness":true,"defer":false},
+ {"file":"v2-diagnostics.js","harness":true,"defer":false},
  {"file":"image-diagnostics.js","harness":true,"defer":false},
  {"file":"diagnostics-controller.js","harness":false,"defer":true},
  {"file":"build-info.js","harness":false,"defer":true},

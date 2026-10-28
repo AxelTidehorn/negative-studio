@@ -5,11 +5,13 @@ async function readFile(file){
   try {
    setStatus('RAW: laddar LibRaw och avkodar bilden… Detta kan ta tid.');
    try {
-     const {im,meta,provenance}=await NSRawDecoder.decode(file,state.rawMode4);
-     await importRawRGB16(im,file.name,meta);
+     const locked=NSV2Platform.usesLockedSource(state),{im,meta,provenance}=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});
+     if(locked){state.rawMode4='wide';state.rawSourceRecipeV2=1;}
+     im.v2Decoded=locked;im.decoderRecipe=provenance;await importRawRGB16(im,file.name,meta);
      sourceInfo.rawMetadata=provenance;
      if(roll[activeFrame])roll[activeFrame].sourceMetadata=provenance;
    } catch(rawError) {
+     if(state.engine==='v2')throw rawError;
      setStatus('RAW-avkodning misslyckades: '+rawError.message);
      const jpeg=/\.raf$/i.test(file.name)?await readRafJpeg(file):null;
      if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
@@ -26,7 +28,7 @@ async function readFile(file){
   try{const raw=prepareTiff(await NSTiff.decode(await file.arrayBuffer()));hires=raw;fullWidth=raw.width;fullHeight=raw.height;
    const scale=Math.min(1,1600/Math.max(raw.width,raw.height));const w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
    const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const cx=canvas.getContext('2d',{willReadFrequently:true});const im=cx.createImageData(w,h);
-   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h)),j=(sy*raw.width+sx)*raw.channels,i=(y*w+x)*4;for(let c=0;c<3;c++)im.data[i+c]=Math.round(raw.data[j+c]/257);im.data[i+3]=255;}
+   for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h)),j=(sy*raw.width+sx)*raw.channels,i=(y*w+x)*4;for(let c=0;c<3;c++)im.data[i+c]=Math.round(raw.data[j+c]/(raw.scale||65535)*255);im.data[i+3]=255;}
    src=im;finishImport(`${file.name} · ${raw.width}×${raw.height} · ${raw.bits}-bitars TIFF-källa (förhandsvisning ${w}×${h}).`);return;
   }catch(e){throw Error('TIFF: '+e.message);}
  }
@@ -34,7 +36,7 @@ async function readFile(file){
  await importBrowserImage(file);
 }
 async function importRawRGB16(im,name,meta){
- const raw={width:im.width,height:im.height,channels:3,data:im.data,scale:im.scale||65535,colorSpace:im.colorSpace||'srgb'};
+ const raw={width:im.width,height:im.height,channels:3,data:im.data,scale:im.scale||65535,colorSpace:im.colorSpace||'srgb',encoding:'linear'};
  hires=raw;fullWidth=raw.width;fullHeight=raw.height;
  const scale=Math.min(1,1600/Math.max(raw.width,raw.height)),w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
  const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d',{willReadFrequently:true});const p=cx.createImageData(w,h);

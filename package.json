@@ -1,6 +1,6 @@
 {
   "name": "filmlabb",
-  "version": "2.0.0-alpha.1",
+  "version": "2.0.0-beta.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -24,5 +24,9 @@
   },
   "devDependencies": {
     "playwright": "^1.64.1"
+  },
+  "release": {
+    "mainlineAnchor": "a2fa2d801cbd905bd720777b058aef29bc620403",
+    "strategy": "first-parent-beta"
   }
 }

@@ -14,7 +14,7 @@ new MutationObserver(pending).observe($('cropConfirm'),{attributes:true,attribut
 const updateBefore=updateCalibrationUI;
 function summary(){
  const items=[];
- if(state.engine!=='calibrated4')items.push(({log39:'Original',curve3:'Curve',density3:'Density',matrix3:'Matrix'})[state.engine]||'Äldre projekt');
+ if(state.engine!=='calibrated4')items.push(({log39:'Original',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · experimentell'})[state.engine]||'Äldre projekt');
  if(sourceInfo.colorSpace==='rec2020')items.push('Rec.2020-experiment');
  if(working?.flatField)items.push('Belysningskorrigering aktiv');else if(state.useFlatField)items.push('Belysningskorrigering pausad');
  if(state.useRollResponse4)items.push(response4()?'Rullkalibrering aktiv':'Rullkalibrering pausad');

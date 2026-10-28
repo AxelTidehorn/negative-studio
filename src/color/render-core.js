@@ -115,6 +115,15 @@ function compile(c){
   if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
   return p;
  }
+ if(c.kind==='v2'){
+  NSV2Platform.validate(c.v2);
+  const k=NSV2Fast.compile(NSConversionV2.compile(c.v2.source,c.v2.base,c.v2.calibration),c.v2.intent),out=new Float64Array(3);
+  function pixel(p){if(!c.v2Positive){k.pixel(p[0],p[1],p[2],out);p=Array.from(out,NSV2Render.encode);}
+   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
+   if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});return p;
+  }
+  return {technical:v=>v,finish:pixel,pixel};
+ }
  function finish(p){
   if(c.kind==='calibrated4')return finish4(p);
   if(c.kind==='beta2'||c.kind==='density38'||c.kind==='log39')p=p.map(encode);
@@ -131,24 +140,35 @@ function compile(c){
 // Cache only the separable technical stage. Creative mixing and tonal zones remain exact.
 function tables(kernel){const a=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let k=0;k<3;k++)for(let i=0;i<65536;i++)a[k][i]=kernel.technical(i/65535,k);return a;}
 function completeTables(config,kernel){
- if(root.NSConversion3?.is(config.kind)||config.kind==='calibrated4'||root.NSEditing2?.version(config.opts.editVersion)===2&&!kernel.editIdentity)return null;
+ if(config.kind==='v2'||root.NSConversion3?.is(config.kind)||config.kind==='calibrated4'||root.NSEditing2?.version(config.opts.editVersion)===2&&!kernel.editIdentity)return null;
  if(!config.neutralProfile||!config.neutralPrint||config.opts.saturation!==1||config.opts.shadows||config.opts.highlights)return null;
  const t=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let i=0;i<65536;i++){const p=kernel.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=p[c];}return t;
 }
 let renderCache=null,technicalRenderCache4=null;
 function cachedRender(config){const key=JSON.stringify(config);if(!renderCache||renderCache.key!==key){const kernel=compile(config);let technical=null;if(config.kind==='calibrated4'){const a=config.cal.beta4,tkey=JSON.stringify([a.response.offset,a.response.span,a.base,a.light]);if(!technicalRenderCache4||technicalRenderCache4.key!==tkey)technicalRenderCache4={key:tkey,table:tables(kernel)};technical=technicalRenderCache4.table;}renderCache={key,kernel,table:completeTables(config,kernel),technical};}return renderCache;}
 function lookup(t,v,c){const u=clamp(v)*65535,a=Math.floor(u),b=Math.min(65535,a+1);return t[c][a]+(t[c][b]-t[c][a])*(u-a);}
-function read(im,i,x,y){if(im.flatField){const n=i/im.channels,s=im.scale||1;return NSColorEngine.linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x??n%im.width,y??Math.floor(n/im.width));}const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
+function read(im,i,x,y,v2=false){if(v2)return NSV2Platform.read(im,i,x,y);if(im.flatField){const n=i/im.channels,s=im.scale||1;return NSColorEngine.linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x??n%im.width,y??Math.floor(n/im.width));}const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
+// One bounded positive preview cache per renderer. Edits/profiles reuse inversion.
+let v2PreviewCache=null,v2PreviewConversions=0;
+function v2PositivePreview(im,config){
+ if(im.width*im.height>2000000)return null;
+ const key=JSON.stringify(config.v2);
+ if(v2PreviewCache?.source===im&&v2PreviewCache.key===key)return v2PreviewCache.data;
+ const fast=NSV2Fast.compile(NSConversionV2.compile(config.v2.source,config.v2.base,config.v2.calibration),config.v2.intent),data=new Float32Array(im.width*im.height*3),out=new Float64Array(3);
+ for(let i=0;i<data.length;i+=3){const p=NSV2Platform.read(im,i);fast.pixel(p[0],p[1],p[2],out);for(let c=0;c<3;c++)data[i+c]=NSV2Render.encode(out[c]);}
+ v2PreviewCache={source:im,key,data};v2PreviewConversions++;return data;
+}
 function render(im,config,mode='positive',limit=1400,cache){
- const cached=cachedRender(config),kernel=cached.kernel,table=cached.table,technical=cached.technical,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256);
+ const positive=config.kind==='v2'&&mode!=='negative'?v2PositivePreview(im,config):null;if(config.kind!=='v2')v2PreviewCache=null;
+ const cached=cachedRender(positive?{...config,v2Positive:true}:config),kernel=cached.kernel,table=cached.table,technical=cached.technical,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256);
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
- for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/h)),j=(sy*im.width+sx)*im.channels,p=read(im,j),q=mode==='negative'||mode==='split'&&x<w/2?(config.workingSpace==='rec2020'?NSRawInput.displayLinear(p):p).map(encode):table?[lookup(table,p[0],0),lookup(table,p[1],1),lookup(table,p[2],2)]:technical?kernel.finish(p.map((v,k)=>lookup(technical,v,k))):kernel.pixel(p),i=(y*w+x)*4;for(let k=0;k<3;k++)data[i+k]=Math.round(q[k]*255);data[i+3]=255;if((y*w+x)%Math.max(1,Math.floor(w*h/25000))===0)bins[Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2])]++;}
+ for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/h)),j=(sy*im.width+sx)*im.channels,p=read(im,j,undefined,undefined,config.kind==='v2'),q=mode==='negative'||mode==='split'&&x<w/2?(config.workingSpace==='rec2020'?NSRawInput.displayLinear(p):p).map(encode):table?[lookup(table,p[0],0),lookup(table,p[1],1),lookup(table,p[2],2)]:technical?kernel.finish(p.map((v,k)=>lookup(technical,v,k))):kernel.pixel(positive?Array.from(positive.subarray(j,j+3)):p),i=(y*w+x)*4;for(let k=0;k<3;k++)data[i+k]=Math.round(q[k]*255);data[i+3]=255;if((y*w+x)%Math.max(1,Math.floor(w*h/25000))===0)bins[Math.round(.2126*data[i]+.7152*data[i+1]+.0722*data[i+2])]++;}
  return {width:w,height:h,data,bins};
 }
 // Compile once per export. Integer source tables include sRGB decoding and the
 // technical stage; RGB-coupled tones/profiles remain evaluated without approximation.
 function prepare(im,config){
- const kernel=compile(config),integer=!im.flatField&&(im.scale===255||im.scale===65535)&&im.data.BYTES_PER_ELEMENT<=2;
+ const kernel=compile(config),integer=config.kind!=='v2'&&!im.flatField&&(im.scale===255||im.scale===65535)&&im.data.BYTES_PER_ELEMENT<=2;
  let table=null;
  if(integer){
   const n=im.scale+1;table=[new Float64Array(n),new Float64Array(n),new Float64Array(n)];
@@ -160,17 +180,17 @@ function prepare(im,config){
    for(let c=0;c<3;c++)table[c][v]=kernel.technical(value,c);
   }
  }
- return {pixel(i,x,y){return table?kernel.finish([table[0][im.data[i]],table[1][im.data[i+1]],table[2][im.data[i+2]]]):kernel.pixel(read(im,i,x,y));}};
+ return {pixel(i,x,y){return table?kernel.finish([table[0][im.data[i]],table[1][im.data[i+1]],table[2][im.data[i+2]]]):kernel.pixel(read(im,i,x,y,config.kind==='v2'));}};
 }
 function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
  const k=prepared?null:compile(config),out=new Uint16Array(geometry.width*rows*3);
  for(let y=0;y<rows;y++)for(let x=0;x<geometry.width;x++){
   const [sx,sy]=geometry.at(x,y0+y),j=(sy*im.width+sx)*im.channels,i=(y*geometry.width+x)*3;
   if(complete){out[i]=table[0][im.data[j]];out[i+1]=table[1][im.data[j+1]];out[i+2]=table[2][im.data[j+2]];continue;}
-  const p=prepared?prepared.pixel(j):table?k.finish([table[0][im.data[j]],table[1][im.data[j+1]],table[2][im.data[j+2]]]):k.pixel(read(im,j));
+  const p=prepared?prepared.pixel(j):table?k.finish([table[0][im.data[j]],table[1][im.data[j+1]],table[2][im.data[j+2]]]):k.pixel(read(im,j,undefined,undefined,config.kind==='v2'));
   for(let c=0;c<3;c++)out[i+c]=Math.round(p[c]*65535);
  }
  return out;
 }
-root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4,colorVariant4};
+root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4,colorVariant4,v2PreviewMetrics:()=>({conversions:v2PreviewConversions,bytes:v2PreviewCache?.data.byteLength||0})};
 })(globalThis);
