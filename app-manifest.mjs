@@ -1,6 +1,15 @@
 // Public asset filenames and classic-script startup order.
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
+ "tiff-header.js":"src/export/tiff-header.js",
+ "v2.html":"src/conversion-v2/v2.html",
+ "v2-core.js":"src/conversion-v2/core.js",
+ "v2-render.js":"src/conversion-v2/render.js",
+ "v2-base.js":"src/conversion-v2/base.js",
+ "v2-diagnostics.js":"src/conversion-v2/diagnostics.js",
+ "v2-output.js":"src/conversion-v2/output.js",
+ "v2-lab.js":"src/conversion-v2/lab.js",
+
  "image-diagnostics.js":"src/diagnostics/image-diagnostics.js",
  "diagnostics-controller.js":"src/diagnostics/diagnostics-controller.js",
  "workflow-ui.js":"src/ui/workflow-ui.js",
@@ -106,6 +115,7 @@ export const scripts = [
  {"file":"beta4.js","harness":true,"defer":false},
  {"file":"conversion3-controller.js","harness":true,"defer":false},
  {"file":"color-configuration.js","harness":true,"defer":false},
+ {"file":"tiff-header.js","harness":true,"defer":false},
  {"file":"tiff-writer.js","harness":true,"defer":false},
  {"file":"source-analysis.js","harness":true,"defer":false},
  {"file":"slider-response.js","harness":true,"defer":false},

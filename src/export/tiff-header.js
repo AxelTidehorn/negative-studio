@@ -1,0 +1,4 @@
+/* Shared sRGB RGB16 TIFF header; no application state. */
+function tiffHeader(w,h){const icc=NSSRGBProfile,nt=12,bitsOffset=8+2+nt*12+4,iccOffset=bitsOffset+6,pixelOffset=iccOffset+icc.length+(icc.length%2),ab=new ArrayBuffer(pixelOffset),v=new DataView(ab),tags=[[256,4,1,w],[257,4,1,h],[258,3,3,bitsOffset],[259,3,1,1],[262,3,1,2],[273,4,1,pixelOffset],[277,3,1,3],[278,4,1,h],[279,4,1,w*h*6],[284,3,1,1],[339,3,1,1],[34675,7,icc.length,iccOffset]];v.setUint16(0,0x4949,true);v.setUint16(2,42,true);v.setUint32(4,8,true);v.setUint16(8,nt,true);tags.forEach(([tag,type,n,value],i)=>{const p=10+i*12;v.setUint16(p,tag,true);v.setUint16(p+2,type,true);v.setUint32(p+4,n,true);v.setUint32(p+8,value,true);});for(let i=0;i<3;i++)v.setUint16(bitsOffset+i*2,16,true);new Uint8Array(ab).set(icc,iccOffset);return ab;}
+
+globalThis.tiffHeader=tiffHeader;
