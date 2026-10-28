@@ -143,7 +143,12 @@ Rec.2020 (291 852 288 källbyte), identisk ton-/färganalys mot oförändrad kä
 och max pixelavvikelse `4,3021e-16` över 192 originalprov med identiskt recept.
 Vanliga TIFF-knappen skapade 3719×3678 RGB16, 588 byte sRGB ICC,
 82 071 644 filbyte. Se [mätvärden](measurements/v2-platform-integration.json).
-Fullsvitens slutresultat antecknas efter avslutad körning. Tidigare fotografisk utvärdering körs inte om. Blå/cyan färg,
+**Slutverifiering:** GitHub Actions med Node 22 passerade **93/93 grupper**
+på **338,93 s** för implementationscommit `c2222b9`: 61 Node-grupper, ett
+reproducerbart build-/cachetest och 31 browsergrupper, inklusive det nya
+källdomäntestet. [Verifierad körning](https://github.com/AxelTidehorn/negative-studio/actions/runs/40760520365).
+Ren `npm ci` och publicerbar build passerade också.
+ Tidigare fotografisk utvärdering körs inte om. Blå/cyan färg,
 vissa högdagrar och generell filmrespons är fortsatt öppna kvalitetsfrågor.
 Ingen ny fotografisk förbättring påstås. Nattserie saknas. Fysisk iPad Safari/
 Windows Edge, stora blandade RAF-batcher, minnestryck och subjektiv respons
