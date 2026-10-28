@@ -176,3 +176,5 @@ Detta mäter CPU-pixelkedjan och tillfällig RGB16-stripe, inte LibRaw, canvas,
 TIFF-Blob, nedladdning eller enhetspeak. Denna referensväg är långsam på stora
 bilder och uppfyller inte rapportens interaktivitetsmål. Worker-/tileoptimering
 och enhetsmätning återstår innan integration/defaultrelease.
+
+Separat automatisk HTTPS-publicering: se [installationsstatus och workflow](V2_PREVIEW_DEPLOYMENT.md).
