@@ -1,5 +1,7 @@
 # V2 i huvudplattformen
 
+> Senaste V2-kandidaten: [teknisk rekonstruktion, algoritm 2 och skydd av äldre recept](V2_TECHNICAL_RECONSTRUCTION.md). Beskrivningarna nedan dokumenterar tidigare leveranser.
+
 ## Inventering och avgränsning
 
 Utgångspunkt är main `a2fa2d8`, squash-mergen av PR #39. Där finns redan V2
