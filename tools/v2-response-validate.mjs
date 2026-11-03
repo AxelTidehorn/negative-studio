@@ -48,7 +48,7 @@ try{browser=await launchBrowser({headless:true,args:['--no-sandbox','--disable-d
    for(const [name,{k,intent,mask}]of Object.entries(variants)){
     const f=F.compile(k,intent),pixels=await O.area(im,g,f.pixel,8,{tick:async(y,total)=>{if(y%256===0)await new Promise(r=>setTimeout(r,0));}}),cv=document.createElement('canvas');cv.width=g.width;cv.height=g.height;cv.getContext('2d').putImageData(new ImageData(pixels,g.width,g.height),0,0);await save(name+'.png',await new Promise(r=>cv.toBlob(r,'image/png')));
     const ys=[],channels=[[],[],[]];for(let j=0;j<pixels.length;j+=4){const q=Array.from(pixels.subarray(j,j+3),v=>v/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);ys.push(q[0]*.2126+q[1]*.7152+q[2]*.0722);for(let c=0;c<3;c++)channels[c].push(q[c]);}
-    const relative={ '04':{x:.46,y:.59,w:.12,h:.15},'05':{x:.18,y:.16,w:.14,h:.14},'06':{x:.29,y:.42,w:.14,h:.13} }[prefix];
+    const relative={ '04':{x:.42,y:.40,w:.15,h:.15},'05':{x:.18,y:.16,w:.14,h:.14},'06':{x:.29,y:.42,w:.14,h:.13} }[prefix];
     if(relative&&name!=='candidate_identity'){
      const detailCrop={x:crop.x+relative.x*crop.w,y:crop.y+relative.y*crop.h,w:relative.w*crop.w,h:relative.h*crop.h},dg=O.geometry(im,detailCrop),detail=await O.area(im,dg,f.pixel),dc=document.createElement('canvas');dc.width=dg.width;dc.height=dg.height;dc.getContext('2d').putImageData(new ImageData(detail,dg.width,dg.height),0,0);await save(name+'_detail.png',await new Promise(r=>dc.toBlob(r,'image/png')));dc.width=dc.height=0;
     }

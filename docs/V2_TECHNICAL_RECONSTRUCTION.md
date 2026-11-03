@@ -96,7 +96,37 @@ justering; parametrarna fryses före denna kandidats kontroll av 09/10.
 Kontrollbilderna har förekommit i tidigare utvärderingar och är inte ett nytt,
 oberoende material. Före/efter, identitetsbalans och sparad A jämförs; full
 utvärderingskampanj körs inte om. Bildfiler och original förblir privata.
-Se PR:n för slutliga bildobservationer, export- och fullsvitsresultat.
+Både lokal fullsvit (Node 24/Chromium) och ren GitHub Actions-körning
+(Node 22, npm ci, Chromium) passerade **99/99 testgrupper** för pixelkoden.
+[CI-körning](https://github.com/AxelTidehorn/negative-studio/actions/runs/41699264695).
+
+Alla fem ommätta baser matchade arkivet exakt. Samtliga fem gamla V2-
+förebilder är pixelidentiska med de sparade etapp 1-resultaten. Kandidaten
+bedömdes mot dessa och sparad FILMLABB A:
+
+| Bild | Observerad förändring | Median Y, gammal → ny |
+| --- | --- | --- |
+| 04 porträtt | Tydligare ansikte och jacksvärta, mindre blå/grå slöja | 0,162 → 0,364 |
+| 05 kök | Mindre elektriskt blått fönster och rimligare hud; blå/lila små högdagerfläckar kvar | 0,096 → 0,263 |
+| 06 soffa | Tydligare svärta/tonseparation och mindre blåstick | 0,151 → 0,306 |
+| 09 snö, fryst kontroll | Stort blåstick minskar även utan positiv färgbalans; mörkare än A | 0,158 → 0,375 |
+| 10 par, fryst kontroll | Vita kläder blir mindre blå och huden mindre kall; viss cyan och mjuk kontrast kvar | 0,170 → 0,387 |
+
+Y är linjär sRGB-luminans av 1000-pixels areaöversikter efter ton/output och
+8-bitars kvantisering, med neutrala kreativa reglage. Det är spårbar statistik,
+inte ett mått på naturliga färger. Ingen universell likvärdighet med eller
+överlägsenhet mot den tidigare FILMLABB-motorn påstås. Korn och detaljer har
+jämförts i originalpixelutsnitt utan uppskalning; den ökade separationen kan
+göra befintligt korn mer synligt.
+
+Verklig 04-export: JPEG och **3719×3678 RGB16-TIFF**, 588 byte inbäddad
+sRGB-profil i TIFF, 0 kodstegs fel i kontrollerade referenspunkter. Den privata
+JPEG-kontrollen använder Canvas; huvudplattformens JPEG/ICC-väg verifieras
+separat av browser-/exportsviten. Float32-källan är 291852288 byte;
+rekonstruktionen skapar ingen extra fullupplöst floatbild. RGB16-randbufferten
+för åtta rader är 178512 byte. Detta är buffertstorlekar, inte uppmätt total
+minnespeak. RAW-dekodning och fysisk enhetsprestanda ändras inte/påstås inte
+vara verifierade.
 
 Det riktade privata bildtestet kan reproduceras med
 `node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT 04,05,06,09,10`.
