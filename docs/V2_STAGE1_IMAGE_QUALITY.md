@@ -1,5 +1,7 @@
 # V2 etapp 1: automatisk ton och försiktig positiv färgbalans
 
+> Senaste V2-kandidaten: [teknisk rekonstruktion, algoritm 2 och skydd av äldre recept](V2_TECHNICAL_RECONSTRUCTION.md). Beskrivningarna nedan dokumenterar tidigare leveranser.
+
 **Status: bildkvaliteten är förbättrad men de fotografiska acceptanskriterierna är inte generellt uppnådda.** Den tekniska grunden och en körbar förbättring levereras för bildgranskning. Detta är inte en generell produktionsrelease eller färdig filmkalibrering.
 
 ## Inventering och utgångspunkt

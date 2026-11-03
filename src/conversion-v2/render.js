@@ -4,16 +4,22 @@ const V=root.NSConversionV2,quantile=(a,q)=>{const s=[...a].sort((a,b)=>a-b);ret
 // Experimental E1 recipe, frozen before looking at validation images 09/10.
 // The EV envelope is a numerical guard (16-bit signal range), not a +1 EV look.
 const exposureRecipe=V.freeze({version:'robust-p60-highlight-1',target:.25,highlightCeiling:3,minSamples:16,minValidFraction:.05,maxAbsEV:16});
+// Base-zero reconstruction has a wider useful range than the veiled affine
+// prior. P60=0.8 maps to 0.444 after Reinhard; P99<=16 retains a soft shoulder.
+// Chosen on development RAFs 04/05/06; a photographic prior, not a neutral chart.
+const reconstructionExposureRecipe=V.freeze({...exposureRecipe,version:'robust-p60-highlight-2',target:.8,highlightCeiling:16});
+const exposureRecipeFor=c=>c?.version===3?reconstructionExposureRecipe:exposureRecipe;
 const trustedArea=area=>area?.status==='confirmed'||area?.status==='estimated'&&area.confidence>=.67;
 const fullRegion={x:0,y:0,w:1,h:1};
 function areaDescriptor(area){
  const r=area?.region,valid=r&&['x','y','w','h'].every(c=>Number.isFinite(r[c]))&&r.x>=0&&r.y>=0&&r.w>0&&r.h>0&&r.x+r.w<=1.000001&&r.y+r.h<=1.000001;
  const automatic=valid&&area.status==='estimated'&&area.method==='application-frame'&&Number.isFinite(area.confidence)&&area.confidence>=.67&&area.confidence<=1;return {region:valid?{x:r.x,y:r.y,w:r.w,h:r.h}:{...fullRegion},status:valid&&area.status==='confirmed'?'confirmed':automatic?'estimated':valid?'unconfirmed':area?'invalid':'missing',method:valid&&area.status==='confirmed'?'manual-frame':automatic?'application-frame':'unconfirmed-frame',confidence:automatic?area.confidence:valid&&area.status==='confirmed'?1:0};
 }
-function analysisKey(k,options={}){return JSON.stringify({version:exposureRecipe.version,colorVersion:balanceRecipe.version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content'});}
+function analysisKey(k,options={}){return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipe.version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content'});}
 // Public fingerprint is opaque; exact signatures stay private in the worker.
 function fingerprint(text){let hash=2166136261;for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619)>>>0;return 'analysis-'+hash.toString(16);}
-function exposureFromStatistics({p50,p60,p99,samples=0,validFraction=0,areaStatus='missing',areaConfidence=0}={}){
+function exposureFromStatistics({p50,p60,p99,samples=0,validFraction=0,areaStatus='missing',areaConfidence=0}={},recipe=exposureRecipe){
+ const exposureRecipe=recipe;
  let fallback=!trustedArea({status:areaStatus,confidence:areaConfidence})?'ANALYSIS_AREA_UNCONFIRMED':!Number.isSafeInteger(samples)||!Number.isFinite(validFraction)||validFraction<0||validFraction>1?'INVALID_SAMPLE_STATISTICS':samples<exposureRecipe.minSamples||validFraction<exposureRecipe.minValidFraction?'INSUFFICIENT_VALID_SAMPLES':![p50,p60,p99].every(v=>Number.isFinite(v)&&v>0)||p99<p60||p60<p50?'INVALID_LUMINANCE_STATISTICS':null;
  const midEV=Number.isFinite(p60)&&p60>0?Math.log2(exposureRecipe.target)-Math.log2(p60):null,highlightEV=Number.isFinite(p99)&&p99>0?Math.log2(exposureRecipe.highlightCeiling)-Math.log2(p99):null;
  // Stable log-domain equivalent of e_mid / hypot(1,e_mid/e_hi).
@@ -70,7 +76,7 @@ function analyzeWithMask(im,k,options={}){
   else if(outside)counts.outsideArea++;else if(kind[i]===1)counts.invalid++;else if(kind[i]===3)counts.logFloor++;else if(kind[i]===2)counts.clipped++;else if(kind[i]===4)counts.edgeBase++;else if(kind[i]===5)counts.edgeHolder++;else if(kind[i]===6)counts.edgeClear++;
   hash=Math.imul(hash^mask[i],16777619)>>>0;
  }
- const median=quantile(values,.5),p60=quantile(values,.6),p99=quantile(values,.99),areaSamples=n-counts.outsideArea,exposureAnalysis=exposureFromStatistics({p50:median,p60,p99,samples:values.length,validFraction:values.length/Math.max(1,areaSamples),areaStatus:area.status,areaConfidence:area.confidence}),ok=!exposureAnalysis.fallback,exposure=exposureAnalysis.appliedEV,requested=exposureAnalysis.requestedEV;
+ const exposureRecipe=exposureRecipeFor(k.calibration),median=quantile(values,.5),p60=quantile(values,.6),p99=quantile(values,.99),areaSamples=n-counts.outsideArea,exposureAnalysis=exposureFromStatistics({p50:median,p60,p99,samples:values.length,validFraction:values.length/Math.max(1,areaSamples),areaStatus:area.status,areaConfidence:area.confidence},exposureRecipe),ok=!exposureAnalysis.fallback,exposure=exposureAnalysis.appliedEV,requested=exposureAnalysis.requestedEV;
 
  const analysis={version:3,key:fingerprint(key),area,exposure:exposureAnalysis,mode:maskMode==='all'?'frame-source-grid-3':'frame-edge-connected-content-3',status:ok?'estimated':'insufficient',sourceRevision:k.source.revision,baseId:k.base.id,cols,rows,samples:n,counts,keptFraction:values.length/n,maskId:'mask-'+hash.toString(16),baseEvidence:knownBase?'measured':'prior',assumption:'Heuristic edge-connected base/holder/clear regions; not semantic subject detection',fullSourceMedian:quantile(all,.5),fullSourceRequestedEV:all.length?Math.log2(.18/Math.max(1e-30,quantile(all,.5))):null};
  const intent=V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:exposureRecipe.version,sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,requestedExposure:requested,exposureLimited:exposureAnalysis.highlightLimited||!!exposureAnalysis.fallback,tone:'luminance-reinhard-1',colorCorrection:estimateBalance(positive,luma,mask,cols,rows,area,options.colorMode!=='identity'),sampleCount:values.length,median,analysis});
@@ -85,5 +91,5 @@ const matrix=[[1.6604910021084345,-.5876411387885495,-.0728498633198848],[-.1245
 function display(p){let q=matrix.map(r=>r.reduce((s,v,k)=>s+v*p[k],0)),y=Math.max(0,.2126*q[0]+.7152*q[1]+.0722*q[2]),min=Math.min(...q),s=min<0?y/Math.max(1e-30,y-min):1;q=q.map(v=>Math.max(0,y+(v-y)*s));const peak=Math.max(...q),target=peak<=.8?peak:.8+.2*(-Math.expm1(-(peak-.8)/.2));return q.map(v=>peak>0?v*target/peak:0);}
 const encode=v=>v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;
 function view(p,intent,mode='auto'){if(mode==='technical')return display(p);if(mode==='fixed')return display(toneOnly(p,{...intent,exposure:0}));if(mode==='auto')return display(render(p,intent));throw Error('VIEW_MODE_INVALID');}
-root.NSV2Render={balanceRecipe,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
+root.NSV2Render={balanceRecipe,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,reconstructionExposureRecipe,exposureRecipeFor,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
 })(globalThis);
