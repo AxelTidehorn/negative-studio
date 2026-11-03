@@ -96,18 +96,23 @@ ui('export').onclick=async()=>{
  try{const bytes=await jpegBytes();downloadBlob(new Blob([bytes],{type:'image/jpeg'}),exportName(null,'jpg','filmlabb-positive.jpg'));const i=jpegExportInfo;setStatus('JPEG exporterad · sRGB · '+i.width+'×'+i.height+(i.width!==i.originalWidth||i.height!==i.originalHeight?' · anpassad storlek för webbläsaren':''));}
  catch(e){setStatus(e.name==='AbortError'?'JPEG-export avbruten.':'Exportfel: '+e.message);}
 };
+async function restoreSelection(index){
+ await chooseFrame(index,{force:true});
+ // The import owner reports decode failures in the UI instead of rejecting.
+ if(activeFrame!==index||!working)throw Error('Bilden kunde inte läsas.');
+}
 ui('batchJpeg').onclick=async()=>{
  if(batch||active||rollingExport||exportBusy||rollLoading||!roll.length)return;
- batch={cancelled:false,index:0,total:roll.length};rollingExport=true;lock();beginUI();const original=activeFrame,files=[];
+ batch={cancelled:false,index:0,total:roll.length};rollingExport=true;lock();beginUI();const original=activeFrame,files=[];let resultMessage;
  try{
   for(let i=0;i<batch.total;i++){
    if(batch.cancelled)throw cancelled();batch.index=i;show(`Bild ${i+1}/${batch.total} · Läser in…`,0);
    await chooseFrame(i,{force:true});if(batch.cancelled)throw cancelled();if(!working)throw Error('Bilden kunde inte läsas.');
    const bytes=await jpegBytes();if(batch.cancelled)throw cancelled();files.push([exportName(i,'jpg',`bild_${String(i+1).padStart(3,'0')}.jpg`),bytes]);
   }
-  if(batch.cancelled)throw cancelled();downloadBlob(makeZip(files),exportZipName());doneUI('JPEG-ZIP klar · '+files.length+' bilder',true);setStatus('JPEG-ZIP färdig.');
- }catch(e){doneUI(e.name==='AbortError'?'Batch-export avbruten. Ingen ZIP har hämtats.':'Batchfel: '+e.message);setStatus(e.name==='AbortError'?'Batch-export avbruten.':'Batchfel: '+e.message);}
- finally{files.length=0;rollingExport=false;try{await chooseFrame(original,{force:true});}finally{batch=null;lock();}}
+  if(batch.cancelled)throw cancelled();downloadBlob(makeZip(files),exportZipName());resultMessage='JPEG-ZIP klar · '+files.length+' bilder';doneUI(resultMessage,true);setStatus('JPEG-ZIP färdig.');
+ }catch(e){resultMessage=e.name==='AbortError'?'Batch-export avbruten. Ingen ZIP har hämtats.':'Batchfel: '+e.message;doneUI(resultMessage);setStatus(e.name==='AbortError'?'Batch-export avbruten.':'Batchfel: '+e.message);}
+ finally{files.length=0;rollingExport=false;try{await restoreSelection(original);}catch(e){const message=resultMessage+' · Återställningsfel: '+e.message;doneUI(message);setStatus(message);}finally{batch=null;lock();}}
 };
 // Keep the existing TIFF pixel writer; share only locking, progress and cancellation.
 const writeTiff=exportTiff;
@@ -140,7 +145,7 @@ ui('batchTiff').onclick=async()=>{
   aborted=aborted||batch.cancelled;
  }finally{
   rollingExport=false;
-  try{await chooseFrame(original,{force:true});}catch(e){restoreError=e.message;}
+  try{await restoreSelection(original);}catch(e){restoreError=e.message;}
   finally{batch=null;lock();}
  }
  const message=(aborted?'TIFF-export avbruten · ':'TIFF-export: ')+exported+' av '+ids.length+' exporterade, '+errors.length+' misslyckade'+(errors.length?' · '+errors.join('; '):'')+(restoreError?' · Återställningsfel: '+restoreError:'');

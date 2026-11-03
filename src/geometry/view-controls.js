@@ -1,5 +1,5 @@
 'use strict';
-let cropRegion={x:.04,y:.04,w:.92,h:.92},referenceGains=[1,1,1],referenceAvailable=false;
+let cropRegion={x:.04,y:.04,w:.92,h:.92},referenceGains=[1,1,1];
 let zoom=1,panX=0,panY=0,dragPoint=null;
 
 function cropBounds(image){const r=cropRegion;return {x0:Math.floor(r.x*image.width),y0:Math.floor(r.y*image.height),x1:Math.ceil((r.x+r.w)*image.width),y1:Math.ceil((r.y+r.h)*image.height)}}

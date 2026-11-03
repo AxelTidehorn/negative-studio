@@ -27,7 +27,7 @@ async function readFile(file){
  if(/\.tiff?$/i.test(file.name)||file.type==='image/tiff'){
   try{const raw=prepareTiff(await NSTiff.decode(await file.arrayBuffer()));hires=raw;fullWidth=raw.width;fullHeight=raw.height;
    const scale=Math.min(1,1600/Math.max(raw.width,raw.height));const w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
-   const canvas=document.createElement('canvas');canvas.width=w;canvas.height=h;const cx=canvas.getContext('2d',{willReadFrequently:true});const im=cx.createImageData(w,h);
+   const im=new ImageData(w,h);
    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h)),j=(sy*raw.width+sx)*raw.channels,i=(y*w+x)*4;for(let c=0;c<3;c++)im.data[i+c]=Math.round(raw.data[j+c]/(raw.scale||65535)*255);im.data[i+3]=255;}
    src=im;finishImport(`${file.name} · ${raw.width}×${raw.height} · ${raw.bits}-bitars TIFF-källa (förhandsvisning ${w}×${h}).`);return;
   }catch(e){throw Error('TIFF: '+e.message);}
@@ -39,7 +39,7 @@ async function importRawRGB16(im,name,meta){
  const raw={width:im.width,height:im.height,channels:3,data:im.data,scale:im.scale||65535,colorSpace:im.colorSpace||'srgb',encoding:'linear'};
  hires=raw;fullWidth=raw.width;fullHeight=raw.height;
  const scale=Math.min(1,1600/Math.max(raw.width,raw.height)),w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
- const cv=document.createElement('canvas');cv.width=w;cv.height=h;const cx=cv.getContext('2d',{willReadFrequently:true});const p=cx.createImageData(w,h);
+ const p=new ImageData(w,h);
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){
   const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h));
   const j=(sy*raw.width+sx)*3,i=(y*w+x)*4;

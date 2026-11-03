@@ -21,9 +21,6 @@ async function makeThumb(file){try{
  if(/\.tiff?$/i.test(file.name))return null;
  const bitmap=await createImageBitmap(blob);const c=document.createElement('canvas');let scale=Math.min(1,160/Math.max(bitmap.width,bitmap.height));c.width=Math.max(1,Math.round(bitmap.width*scale));c.height=Math.max(1,Math.round(bitmap.height*scale));c.getContext('2d').drawImage(bitmap,0,0,c.width,c.height);bitmap.close();return c.toDataURL('image/jpeg',.65)
  }catch(e){return null}}
-// Fast browser preview: decode the RAF embedded JPEG, NEVER full RAW on selection.
-
-
 async function importRoll(files){
  if(!files.length||rollLoading||exportBusy||rollingExport||cropDrag)return;
  const rejected=files.filter(f=>!NSFileFormats.supported(f));
@@ -31,7 +28,7 @@ async function importRoll(files){
  if(acceptable.length>5){setStatus('Max fem bilder åt gången. Välj fem filer eller färre.');return}
  if(!acceptable.length){setStatus(NSFileFormats.error(rejected[0]));return;}
  rollShared.profileVersion=2;roll=[];activeFrame=-1;src=null;hires=null;
- for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...defaultState(),cropExport:rollShared.cropExportToFrame,noBase:false,autoLevels:true},base:null,levels:null,selected:true,thumb:null,preview:null,crop:null})}
+ for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...defaultState(),cropExport:rollShared.cropExportToFrame,noBase:false,autoLevels:true},base:null,levels:null,selected:true,thumb:null,crop:null})}
  refreshRollUI();
  const imported=roll;
  await chooseFrame(0);
