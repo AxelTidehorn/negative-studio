@@ -1,6 +1,6 @@
 /* Beta 4 workflow prototypes. Original source and analysis stay independent of loupe. */
 'use strict';
-let sharedFlatField=null,flatFieldBusy=false,flatFieldRead=0;
+let sharedFlatField=null,flatFieldBusy=false,flatFieldRead=0,lightReadNext=0;
 const sourceBeforeNext=workingSource;
 function captureDomainNext(){return sourceInfo.captureDomain||sourceInfo.domain||sourceInfo.encoding+':'+sourceInfo.label;}
 workingSource=function(){
@@ -69,7 +69,7 @@ $('picture').addEventListener('click',e=>{if(!detailOpen||!working||sampleMode||
 const renderBeforeNext=render;render=function(...args){const r=renderBeforeNext(...args);queueDetailNext();return r;};
 const scheduleBeforeNext=scheduleRender;scheduleRender=function(...args){const r=scheduleBeforeNext(...args);queueDetailNext();return r;};
 const chooseBeforeNext=chooseFrame;chooseFrame=async function(...args){if(!exportBusy&&!rollLoading)closeDetailNext();const r=await chooseBeforeNext(...args);nextControls();return r;};
-const clearBeforeNext=$('clearQueue').onclick;$('clearQueue').onclick=()=>{closeDetailNext();++flatFieldRead;const r=clearBeforeNext();nextControls();return r;};
+const clearBeforeNext=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(rollLoading||exportBusy||rollingExport)return;closeDetailNext();++flatFieldRead;++lightReadNext;$('referenceFile').value='';const r=clearBeforeNext();nextControls();return r;};
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailNext();});
 nextControls();
 
@@ -79,7 +79,15 @@ const rawNext=$('rawMode4').onchange;
 $('rawMode4').onchange=async e=>{if(e.target.value==='wide'&&!exportBusy&&!rollLoading){state.engine='calibrated4';$('engineMode').value='calibrated4';}return rawNext(e);};
 // Use the same decoder and color domain for the scalar light reference.
 async function decodeLightFile(file){const {im,domain}=await readFlatNext(file);return {...im,domain};}
-$('referenceFile').onchange=async e=>{const file=e.target.files?.[0];if(!file)return;if(exportBusy||rollLoading||flatFieldBusy){e.target.value='';return;}const source=working,mode=state.rawMode4;try{const im=await decodeLightFile(file);if(working!==source||state.rawMode4!==mode)throw Error('Bilden ändrades under inläsningen.');const samples=CE.sample(im,{x:.1,y:.1,w:.8,h:.8},0,12000),med=[0,1,2].map(k=>CE.quantile(samples.map(p=>p[k]),.5));if(med.some(v=>v<.005||v>.98))throw Error('Referensen är för mörk eller klippt.');const center=med.reduce((s,v)=>s+v,0)/3;sharedLight={name:file.name,encoding:im.encoding,domain:im.domain,gains:med.map(v=>center/v)};referenceAvailable=true;if(working)analyzeLevels();else updateCalibrationUI();}catch(err){setStatus('Ljuskällereferens: '+err.message);}finally{e.target.value='';}};
+$('referenceFile').onchange=async e=>{
+ const file=e.target.files?.[0];if(!file)return;if(exportBusy||rollLoading||rollingExport||flatFieldBusy){e.target.value='';return;}
+ const source=working,mode=state.rawMode4,request=++lightReadNext;
+ const current=()=>request===lightReadNext&&working===source&&state.rawMode4===mode&&!exportBusy&&!rollLoading&&!rollingExport;
+ try{const im=await decodeLightFile(file);if(!current())return;const samples=CE.sample(im,{x:.1,y:.1,w:.8,h:.8},0,12000),med=[0,1,2].map(k=>CE.quantile(samples.map(p=>p[k]),.5));if(med.some(v=>v<.005||v>.98))throw Error('Referensen är för mörk eller klippt.');const center=med.reduce((s,v)=>s+v,0)/3;sharedLight={name:file.name,encoding:im.encoding,domain:im.domain,gains:med.map(v=>center/v)};if(working)analyzeLevels();else updateCalibrationUI();}
+ catch(err){if(current())setStatus('Ljuskällereferens: '+err.message);}finally{if(request===lightReadNext)e.target.value='';}
+};
+const clearLightBeforeNext=$('clearReference').onclick;
+$('clearReference').onclick=()=>{if(exportBusy||rollLoading||rollingExport)return;++lightReadNext;$('referenceFile').value='';return clearLightBeforeNext();};
 
 const resetNext=$('reset').onclick;
 $('reset').onclick=()=>{if(exportBusy||rollLoading||flatFieldBusy)return;const corrected=!!working?.flatField,rawMode=state.rawMode4;resetNext();state.rawMode4=rawMode;if(corrected)rebuildFlatNext();else{controls4();saveCurrentFrame();persist();}nextControls();};

@@ -54,6 +54,18 @@ await test('selection-restore failure does not miscount successful TIFF download
  h.run('exportFrameTiff=async i=>downloads.push(i);chooseFrame=async()=>{throw Error("fixture restore");};');
  await h.elements.get('batchTiff').onclick();assert.equal(h.context.downloads.length,2);assert.match(h.elements.get('status').textContent,/2 av 2 exporterade, 0 misslyckade.*Återställningsfel/);assert.equal(h.run('rollingExport'),false);
 });
+await test('TIFF reports a resolved restore with missing source separately from downloads',async()=>{
+ const h=setup();vm.runInContext(readSource('export-controller.js','utf8'),h.context);
+ // Real chooseFrame catches decode errors and resolves after clearing working.
+ h.run('exportFrameTiff=async i=>downloads.push(i);chooseFrame=async i=>{activeFrame=i;working=null;setStatus("Importfel: fixture restore");};');
+ await h.elements.get('batchTiff').onclick();assert.equal(h.context.downloads.length,2);assert.match(h.elements.get('status').textContent,/2 av 2 exporterade, 0 misslyckade.*Återställningsfel/);assert.match(h.elements.get('exportProgressText').textContent,/Återställningsfel/);assert.equal(h.run('rollingExport'),false);assert.equal(h.context.FILMLABB_EXPORT.snapshot().batch,false);
+});
+for(const failure of ['resolved','thrown'])await test('JPEG ZIP retains download and reports '+failure+' selection-restore failure',async()=>{
+ const h=setup();vm.runInContext(readSource('export-controller.js','utf8'),h.context);
+ h.set('restoreFailure',failure);
+ h.run('globalThis.frameReads=0;globalThis.originalSource=working;chooseFrame=async i=>{activeFrame=i;if(++frameReads===3){working=null;if(restoreFailure==="thrown")throw Error("fixture restore");setStatus("Importfel: fixture restore");}else working=originalSource;};jpegBytes=async()=>new Uint8Array([255,216,255,217]);');
+ await h.elements.get('batchJpeg').onclick();assert.equal(h.context.downloads.length,1);assert.match(h.elements.get('exportProgressText').textContent,/JPEG-ZIP klar.*2 bilder.*Återställningsfel/);assert.match(h.elements.get('status').textContent,/Återställningsfel/);assert.equal(h.run('rollingExport'),false);assert.equal(h.context.FILMLABB_EXPORT.snapshot().batch,false);
+});
 await test('TIFF batch retains the five-image limit',async()=>{
  const h=setup();vm.runInContext(readSource('export-controller.js','utf8'),h.context);
  h.run('roll=Array.from({length:6},(_,i)=>({file:{name:i+".tif"},selected:true}));exportFrameTiff=()=>{throw Error("must not start");};');

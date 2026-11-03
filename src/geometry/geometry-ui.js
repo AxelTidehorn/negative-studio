@@ -89,7 +89,7 @@
   $('fineRotation').value=fine;if(document.activeElement!==$('rotationDegrees'))$('rotationDegrees').value=fine;
   $('rotationValue').textContent=fine.toFixed(2)+'°';$('rotationSummary').textContent=total.toFixed(2)+'°';
   $('compositionEnabled').checked=g.compositionCrop!==null;$('cropExport').checked=rollShared.cropExportToFrame;
-  for(const id of ['fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport'])$(id).disabled=busy();
+  for(const id of ['rotateLeft','rotateRight','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport'])$(id).disabled=busy();
   $('geometryDone').hidden=!mode;$('straighten').setAttribute('aria-pressed',String(mode==='straighten'));
  }
  function commit(g,interactive=false){if(busy())return;roll[activeFrame].geometry=g;state.rotation=g.rotation.quarterTurns*90;saveCurrentFrame();controls();queue(interactive);}

@@ -1,8 +1,18 @@
 'use strict';
+let projectReadSequence=0;
+const projectBusy=()=>rollLoading||exportBusy||rollingExport;
 // Project JSON stores adjustment metadata, never RAF bytes. User must re-import same files on next session.
 $('saveSettings').onclick=()=>{saveCurrentFrame();downloadBlob(new Blob([JSON.stringify({format:roll.some(f=>f.settings.engine==='v2'||f.settings.v2Recipe||f.settings.rawSourceRecipeV2)?NSV2Platform.PROJECT_FORMAT:roll.some(f=>NSConversion3.is(f.settings.engine))?NSConversion3.PROJECT_FORMAT:roll.some(f=>f.settings.editVersion===2)?NSEditing2.PROJECT_FORMAT:NSGeometry.FORMAT,v2SchemaVersion:1,conversionSchemaVersion:1,geometryVersion:NSGeometry.VERSION,roll:{cropExportToFrame:rollShared.cropExportToFrame},sourceCalibrationVersion:39,filmBaseVersion:2,sharedBase2:typeof sharedBase2!=='undefined'?sharedBase2:null,sharedLight,creativeProfileVersion:rollShared.profileVersion,flatField:typeof sharedFlatField!=='undefined'&&NSFlatField.valid(sharedFlatField)?sharedFlatField:null,profile:rollShared.profile,print:rollShared.print,strength:rollShared.strength,exportNaming:{prefix:$('exportName').value,digits:$('exportDigits').value},sharedResponse4:typeof sharedResponse4!=='undefined'&&CC4.valid(sharedResponse4)?sharedResponse4:null,frames:roll.map(f=>({filename:f.file.name,settings:f.settings,base:f.base,levels:f.levels,crop:f.crop,geometry:geometryForFrame(f,f.settings,f.crop),sourceMetadata:f.sourceMetadata||null}))},null,2)],{type:'application/json'}),'filmlabb-rullprojekt.json')};
-$('settingsFile').onchange=async e=>{try{
- const parsed=JSON.parse(await e.target.files[0].text());
+$('settingsFile').onchange=async e=>{
+ const read=++projectReadSequence,queue=roll,file=e.target.files?.[0];
+ try{
+ if(!file)return;
+ if(projectBusy())throw Error('Vänta tills inläsning eller export är klar innan du öppnar ett projekt.');
+ const text=await file.text();
+ if(read!==projectReadSequence)return;
+ if(queue!==roll)throw Error('Projektimporten avbröts eftersom bildkön ändrades.');
+ if(projectBusy())throw Error('Vänta tills inläsning eller export är klar innan du öppnar ett projekt.');
+ const parsed=JSON.parse(text);
  NSV2Platform.validateProject(parsed);
  NSFilmBaseReference.validateProject(parsed);
  NSConversion3.validateProject(parsed);
@@ -34,7 +44,8 @@ $('settingsFile').onchange=async e=>{try{
   found.settings.manualCalibration=null;found.settings.manualBase=null;found.settings.useRollBase=false;found.settings.auto=true;retiredRaw=true;
  }
  found.base=saved.base;found.levels=saved.levels;found.crop=saved.crop||null;found.geometry=saved.geometry;found.sourceMetadata=saved.sourceMetadata||null;count++}}
- roll.forEach((f,i)=>{f.geometry=queueGeometry[i];f.settings.cropExport=NSGeometry.effectiveCrop(f.geometry,shared);});activeFrame=-1;await chooseFrame(0,{force:true});setStatus(`${count} bilder matchades med rullprojektet. Originalfiler måste importeras separat.${data.migratedIndividualCrops?' Äldre individuella exportutsnitt har bevarats som beskärningar.':''}${retiredRaw?' Äldre RAW-kalibrering har nollställts.':''}`)
- }catch(err){setStatus('Projektimport: '+err.message)}finally{e.target.value=''}};
+ roll.forEach((f,i)=>{f.geometry=queueGeometry[i];f.settings.cropExport=NSGeometry.effectiveCrop(f.geometry,shared);});activeFrame=-1;const loaded=await chooseFrame(0,{force:true});
+ if(read===projectReadSequence&&queue===roll&&loaded!==false)setStatus(`${count} bilder matchades med rullprojektet. Originalfiler måste importeras separat.${data.migratedIndividualCrops?' Äldre individuella exportutsnitt har bevarats som beskärningar.':''}${retiredRaw?' Äldre RAW-kalibrering har nollställts.':''}`)
+ }catch(err){if(read===projectReadSequence)setStatus('Projektimport: '+err.message)}finally{if(read===projectReadSequence)e.target.value=''}};
 
 

@@ -8,7 +8,7 @@ let dragTimer38=null,previewTick38=null;
 let ensureWorker38,sendPreview38;
 convertImage=function(image,mode,params){const im=image===previewSrc?workingPreview:working;if(!im)return new ImageData(1,1);const r=NSPixelKernel.render(im,configuration38(params),mode,Math.max(im.width,im.height));const out=new ImageData(r.width,r.height);out.data.set(r.data);return out;};
 function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;drawHistogram38(r.bins);drawCrop();}
-function drawHistogram38(bins){const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);const a=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,a[Math.floor(a.length*.99)]);cx.fillStyle=globalThis.getComputedStyle?.(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';for(let i=0;i<256;i++){const v=Math.min(1,bins[i]/max);cx.fillRect(i*w/256,h-v*(h-4),Math.ceil(w/256),v*(h-4));}$('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';}
+function drawHistogram38(bins){const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);if(!working){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('histogramInfo'),'Ingen bild');else $('histogramInfo').textContent='Ingen bild';return;}const a=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,a[Math.floor(a.length*.99)]);cx.fillStyle=globalThis.getComputedStyle?.(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';for(let i=0;i<256;i++){const v=Math.min(1,bins[i]/max);cx.fillRect(i*w/256,h-v*(h-4),Math.ceil(w/256),v*(h-4));}$('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';}
 const previewPerf={cancelledDetail:0,intermediateShown:0,deduplicated:0,workerFailures:0,lastWorkerError:null};
 let previewActive=null,previewInteractive=false,previewShown=-1,previewCompletedKey=null;
 function stopPreviewWork(){
@@ -104,8 +104,8 @@ chooseFrame=async function(i,opts={}){
  if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){
   stopPreviewWork();lastPreview38=null;clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;previewShown=-1;
  }
- return chooseBeforePreview(i,opts);
+ const result=await chooseBeforePreview(i,opts);if(!working)drawHistogram38(new Uint32Array(256));return result;
 };
 const clearBeforePreview=$('clearQueue').onclick;
-$('clearQueue').onclick=()=>{previewActive=null;previewCompletedKey=null;previewShown=-1;previewInteractive=false;return clearBeforePreview();};
+$('clearQueue').onclick=()=>{if(rollLoading||exportBusy||rollingExport)return;previewActive=null;previewCompletedKey=null;previewShown=-1;previewInteractive=false;const result=clearBeforePreview();if(!working&&!roll.length)drawHistogram38(new Uint32Array(256));return result;};
 globalThis.FILMLABB_PERFORMANCE={snapshot:()=>({...stats38,...previewPerf,analyses:analysisCount38,worker:!!previewWorker38,activeLimit:previewActive?.limit||null,pendingLimit:queued38?.limit||null,interactiveLimit:240,detailLimit:workerDisabled38?480:1400,queueLength:roll.length})};

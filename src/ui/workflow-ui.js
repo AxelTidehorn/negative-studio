@@ -43,7 +43,7 @@ const hideTools=document.createElement('button');hideTools.id='hideImageTools';h
 const showTools=document.createElement('button');showTools.id='showImageTools';showTools.className='btn';showTools.type='button';showTools.setAttribute('aria-controls','imageTools3');$('picture').append(showTools);toolbar.prepend(hideTools);
 function toolsVisibility3(){toolbar.hidden=toolsHidden3;showTools.hidden=!toolsHidden3;showTools.setAttribute('aria-expanded',String(!toolsHidden3));t(hideTools,'Dölj');hideTools.setAttribute('aria-label',FILMLABB_I18N.fromSource('Dölj bildverktyg'));hideTools.title=FILMLABB_I18N.fromSource('Dölj bildverktyg');t(showTools,'Visa bildverktyg');}
 hideTools.onclick=()=>{toolsHidden3=true;toolsVisibility3();showTools.focus();};showTools.onclick=()=>{toolsHidden3=false;toolsVisibility3();hideTools.focus();};
-const methods={log39:'Original · tidigare kanalnormalisering',calibrated4:'Standard · sparad färgrespons och separat tonomfång',curve3:'Curve · mjuk kurvform',density3:'Density · gemensam densitetston',matrix3:'Matrix · begränsad statistisk färgtransform'};
+const methods={log39:'Original · tidigare kanalnormalisering',calibrated4:'Standard · sparad färgrespons och separat tonomfång',curve3:'Curve · mjuk kurvform',density3:'Density · gemensam densitetston',matrix3:'Matrix · begränsad statistisk färgtransform',v2:'V2 · fryst filmrespons och separat positiv återgivning'};
 const description=document.createElement('p');description.id='methodDescription3';description.className='hint';description.setAttribute('aria-live','polite');$('engineMode').closest('.field').after(description);
 const labels={rotateLeft:'Rotera 90° åt vänster',rotateRight:'Rotera 90° åt höger',compositionEdit:'Beskär komposition',compositionReset:'Återställ kompositionsbeskärning',cropReset:'Återställ teknisk filmruta'};
 const shortNames={rotateLeft:'90° vänster',rotateRight:'90° höger',compositionEdit:'Beskär',compositionReset:'Återställ komposition'};t($('straighten'),'Räta upp');$('straighten').setAttribute('aria-label',FILMLABB_I18N.fromSource('Räta upp med linje'));
@@ -64,7 +64,7 @@ function baseState(){
 }
 function refresh(){
  const snap=baseState();
- for(const option of $('engineMode').options)if(methods[option.value])option.textContent=({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix'})[option.value];
+ for(const option of $('engineMode').options)if(methods[option.value])option.textContent=({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · experimentell'})[option.value];
  t(description,methods[state.engine]||'Äldre projekt');
  const model=roll[activeFrame]?.geometry;$('rotationReset').hidden=!(state.rotation||model?.rotation?.fineDegrees);$('compositionReset').hidden=!model?.compositionCrop;
  const active=globalThis.FILMLABB_GEOMETRY?.mode();toolbar.dataset.mode=active||'view';showTools.dataset.mode=active||'view';toolsVisibility3();

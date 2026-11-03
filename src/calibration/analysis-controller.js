@@ -31,7 +31,7 @@ function analyzeSharedLevels(){
  analysisCount38++;technicalCache38=null;config38=null;stats38.analysisMs=now38()-start;updateCalibrationUI();saveCurrentFrame();scheduleRender();
 };
 const calibrationUI38=updateCalibrationUI;
-updateCalibrationUI=function(){calibrationUI38();$('engineMode').value=state.engine==='beta3'?'legacy':state.engine||'legacy';$('balanceStrength').disabled=['beta2','density38'].includes(state.engine);if(sharedLight&&sharedLight.encoding===sourceInfo.encoding)$('referenceStatus').textContent='Gemensam ljuskälla aktiv · '+sharedLight.name+' · samma korrektion på motiv och filmbas';};
+updateCalibrationUI=function(){calibrationUI38();$('engineMode').value=state.engine==='beta3'?'legacy':state.engine||'legacy';$('balanceStrength').disabled=['beta2','density38'].includes(state.engine);if(lightCompatible())$('referenceStatus').textContent='Gemensam ljuskälla aktiv · '+sharedLight.name+' · samma korrektion på motiv och filmbas';};
 const finish38=finishImport;
 finishImport=function(message){sourceVersion38++;lastPreview38=null;config38=null;technicalCache38=null;finish38(message);};
 $('engineMode').onchange=e=>{state.engine=e.target.value;analyzeLevels();render();persist();};
