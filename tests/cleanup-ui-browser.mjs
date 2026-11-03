@@ -11,7 +11,11 @@ try{
  await page.locator('#engineMode').selectOption('v2');await page.waitForFunction(()=>state.engine==='v2'&&!!state.v2Recipe&&!rollLoading);
  await page.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
  const descriptions={sv:await page.locator('#methodDescription3').textContent()};
- for(const language of ['en','fr','es','de']){await page.locator('#languageSelect').selectOption(language);descriptions[language]=await page.locator('#methodDescription3').textContent();}
+ for(const language of ['en','fr','es','de']){
+  await page.locator('#languageSelect').selectOption(language);descriptions[language]=await page.locator('#methodDescription3').textContent();
+  const label=await page.evaluate(()=>{updateCalibrationUI();return {actual:$('engineMode').querySelector('[value="v2"]').textContent,expected:FILMLABB_I18N.fromSource('V2 · experimentell')};});
+  if(!probe)assert.equal(label.actual,label.expected,'V2 option remains localized after controller refresh in '+language);
+ }
  for(const viewport of [{width:1440,height:900},{width:820,height:1180},{width:390,height:844}]){
   await page.setViewportSize(viewport);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
   assert.equal(await page.locator('footer.foot').count(),1,'footer remains in the document');
