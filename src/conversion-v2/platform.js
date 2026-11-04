@@ -15,7 +15,7 @@ function validSource(im){return !!im&&im.data instanceof Float32Array&&im.channe
 function pointImage(im,cols,rows){const data=new Float32Array(cols*rows*3);for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){const sx=Math.min(im.width-1,Math.floor((x+.5)*im.width/cols)),sy=Math.min(im.height-1,Math.floor((y+.5)*im.height/rows));data.set(read(im,(sy*im.width+sx)*3), (y*cols+x)*3);}return {width:cols,height:rows,data,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};}
 function preview(im,limit=1400){const s=Math.min(1,limit/Math.max(im.width,im.height));return pointImage(im,Math.max(1,Math.round(im.width*s)),Math.max(1,Math.round(im.height*s)));}
 function region(im,cx=.5,cy=.5,size=320){const width=Math.min(size,im.width),height=Math.min(size,im.height),clamp=(v,hi)=>Math.max(0,Math.min(hi,v)),x0=clamp(Math.round(cx*im.width-width/2),im.width-width),y0=clamp(Math.round(cy*im.height-height/2),im.height-height),data=new Float32Array(width*height*3);for(let y=0;y<height;y++)for(let x=0;x<width;x++)data.set(read(im,((y0+y)*im.width+x0+x)*3),(y*width+x)*3);return {width,height,data,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',x0,y0};}
-function prepare(im,{sourceKey,recipe,capture,measurement,area,previous,calibration:explicitCalibration,algorithmVersion:explicitAlgorithm}={}){
+function prepare(im,{sourceKey,recipe,capture,measurement,area,previous,calibration:explicitCalibration,algorithmVersion:explicitAlgorithm,photographic:photo}={}){
  if(!validSource(im))throw Error('V2_SOURCE_DOMAIN');
  const source=V.source({...im,flatField:null},{revision:'v2-'+fingerprint(sourceKey),format:recipe?.format||'TIFF',bitDepth:im.bits||16,recipe:{decoder:recipe?.decoder||'verified-linear-tiff',version:recipe?.version||null,options:recipe?.options||null},verification:recipe?.decoder?'decoder':'user-declared'});
  const ctx=V.capture(V.clone(capture)),m=measurement&&measurement.measured?.every(v=>Number.isFinite(v)&&v>0)?{...measurement,sourceRevision:source.revision}:null;
@@ -26,7 +26,7 @@ function prepare(im,{sourceKey,recipe,capture,measurement,area,previous,calibrat
  // a new image or an explicit calibration operation selects the latest prior.
  const calibration=explicitCalibration||previous?.calibration||V.latestPrior||V.prior;
  const algorithmVersion=selectAlgorithm(calibration,explicitAlgorithm??(previous?.calibration.version===calibration.version?previous.algorithmVersion:undefined));
- const analysisOptions={analysisArea:area,algorithmVersion},k=V.compile(source,base,calibration),analysisSignature=R.analysisKey(k,analysisOptions);
+ const analysisOptions={analysisArea:area,algorithmVersion,photographic:photo??previous?.intent.tone==='luminance-photographic-1'},k=V.compile(source,base,calibration),analysisSignature=R.analysisKey(k,analysisOptions);
  if(previous?.analysisSignature===analysisSignature){base={...base,id:previous.base.id};return V.freeze({...previous,source,base,intent:{...previous.intent,baseId:base.id,analysis:{...previous.intent.analysis,baseId:base.id}}});}
  const cols=Math.min(160,im.width),rows=Math.min(im.height,Math.max(1,Math.floor(24000/cols))),samples=im.flatField?pointImage(im,cols,rows):im;
  const intent=R.analyze(samples,k,analysisOptions);

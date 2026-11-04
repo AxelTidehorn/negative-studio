@@ -45,7 +45,7 @@ function compile(k,intent,{viewMode='auto'}={}){
   out[2]=.18*10**Math.max(-20,Math.min(20,((a[2]+m[2][0]*v0)+m[2][1]*v1)+m[2][2]*v2));return out;
  }
  const technical=c.version===3?baseZeroTechnical:affineTechnical;
- function pixel(r,g,b,out){technical(r,g,b,out);r=out[0];g=out[1];b=out[2];if(color){const y=.2627*r+.678*g+.0593*b;if(y>1e-30){const band=y<color.knots[1]?0:1;let t=Math.max(0,Math.min(1,(y-color.knots[band])/(color.knots[band+1]-color.knots[band])));t=t*t*(3-2*t);r*=color.gains[band][0]+t*(color.gains[band+1][0]-color.gains[band][0]);g*=color.gains[band][1]+t*(color.gains[band+1][1]-color.gains[band][1]);b*=color.gains[band][2]+t*(color.gains[band+1][2]-color.gains[band][2]);const norm=y/(.2627*r+.678*g+.0593*b);r*=norm;g*=norm;b*=norm;}}const y=(.2627*r+.678*g+.0593*b)*e,scale=e/(1+y);return output(r*scale,g*scale,b*scale,out);}
+ function pixel(r,g,b,out){technical(r,g,b,out);r=out[0];g=out[1];b=out[2];if(color){const y=.2627*r+.678*g+.0593*b;if(y>1e-30){const band=y<color.knots[1]?0:1;let t=Math.max(0,Math.min(1,(y-color.knots[band])/(color.knots[band+1]-color.knots[band])));t=t*t*(3-2*t);r*=color.gains[band][0]+t*(color.gains[band+1][0]-color.gains[band][0]);g*=color.gains[band][1]+t*(color.gains[band+1][1]-color.gains[band][1]);b*=color.gains[band][2]+t*(color.gains[band+1][2]-color.gains[band][2]);const norm=y/(.2627*r+.678*g+.0593*b);r*=norm;g*=norm;b*=norm;}}const y=(.2627*r+.678*g+.0593*b)*e,c=intent.tone==='luminance-photographic-1'?R.photographicScale(y):1,scale=e*c/(1+y*c);return output(r*scale,g*scale,b*scale,out);}
  function technicalDisplay(r,g,b,out){technical(r,g,b,out);return display(out[0],out[1],out[2],out);}
  return {pixel:viewMode==='technical'?technicalDisplay:pixel,technical};
 }

@@ -8,20 +8,20 @@ import fs from 'node:fs';import path from 'node:path';import http from 'node:htt
 import {ensureBuild} from './build-artifact.mjs';
 import {launchBrowser} from '../tests/helpers/browser-runtime.mjs';
 const [packageArg,rawArg,outArg,...args]=process.argv.slice(2);
-if(!packageArg||!rawArg||!outArg||args.some(x=>x.startsWith('--')&&!['--export04','--algorithm3'].includes(x)))throw Error('Usage: node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3]');
-const algorithm3=args.includes('--algorithm3'),fullExport04=args.includes('--export04'),selected=(args.find(x=>!x.startsWith('--'))||'04,05,06,09,10').split(',');
+if(!packageArg||!rawArg||!outArg||args.some(x=>x.startsWith('--')&&!['--export04','--algorithm3','--photographic'].includes(x)))throw Error('Usage: node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3]');
+const photo=args.includes('--photographic'),algorithm3=args.includes('--algorithm3')||photo,fullExport04=args.includes('--export04'),selected=(args.find(x=>!x.startsWith('--'))||'04,05,06,09,10').split(',');
 if(selected.some(x=>!['04','05','06','09','10'].includes(x))||new Set(selected).size!==selected.length)throw Error('Select unique cases from 04, 05, 06, 09, 10');
 const repo=fs.realpathSync('.'),site=path.join(repo,'site'),pack=path.resolve(packageArg,'results'),rawRoot=fs.realpathSync(rawArg),outRoot=path.resolve(outArg),read=name=>JSON.parse(fs.readFileSync(path.join(pack,name))),inventory=read('inventory.json'),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 fs.mkdirSync(outRoot,{recursive:true});const actualOut=fs.realpathSync(outRoot);
 if(actualOut===repo||actualOut.startsWith(repo+path.sep))throw Error('Private output must remain outside the repository');
 for(const name of ['core','render'])await import('../src/conversion-v2/'+name+'.js');
-const candidate={calibration:NSConversionV2.latestPrior,tone:NSV2Render.exposureRecipeFor(NSConversionV2.latestPrior),color:algorithm3?NSV2Render.balanceRecipeFor(3):NSV2Render.balanceRecipe,...(algorithm3?{algorithmVersion:3,output:NSV2Render.outputRecipe}:{})},freezePath=path.join(outRoot,'parameter-freeze.json');
+const candidate={calibration:NSConversionV2.latestPrior,tone:NSV2Render.exposureRecipeFor(NSConversionV2.latestPrior),color:algorithm3?NSV2Render.balanceRecipeFor(3):NSV2Render.balanceRecipe,...(algorithm3?{algorithmVersion:3,output:NSV2Render.outputRecipe,...(photo?{photographic:NSV2Render.photographicRecipe}:{})}:{})},freezePath=path.join(outRoot,'parameter-freeze.json');
 if(!candidate.calibration)throw Error('LATEST_PRIOR_MISSING');
 // Freeze before decoding/viewing any selected controls. All cases were used
 // historically; withholding them here does not make an unseen validation dataset.
 if(!fs.existsSync(freezePath))fs.writeFileSync(freezePath,JSON.stringify({schema:'filmlabb.private-quality-freeze',version:1,frozenAt:new Date().toISOString(),development:algorithm3?['05','09']:['04','05','06'],validation:algorithm3?['04','06','10']:['09','10'],caveat:algorithm3?'04/06/10 were held back from tuning this candidate; all cases historically seen, not an unseen dataset':'09/10 were withheld from parameter tuning in this task; historically seen, not an unseen dataset',...candidate},null,2));
 const frozen=JSON.parse(fs.readFileSync(freezePath)),freezeSha256=sha(fs.readFileSync(freezePath));
-for(const key of ['calibration','tone','color',...(algorithm3?['algorithmVersion','output']:[])])if(JSON.stringify(frozen[key])!==JSON.stringify(candidate[key]))throw Error('FROZEN_PARAMETERS_CHANGED: '+key);
+for(const key of ['calibration','tone','color',...(algorithm3?['algorithmVersion','output']:[]),...(photo?['photographic']:[])])if(JSON.stringify(frozen[key])!==JSON.stringify(candidate[key]))throw Error('FROZEN_PARAMETERS_CHANGED: '+key);
 ensureBuild();
 const server=http.createServer((req,res)=>{const u=new URL(req.url,'http://localhost');
  if(req.method==='POST'&&u.pathname.startsWith('/save/')){const name=path.basename(u.pathname);if(!/^\d\d_[\w.-]+$/.test(name)){res.writeHead(403).end();return;}const out=fs.createWriteStream(path.join(outRoot,name));req.pipe(out);out.on('finish',()=>res.end('OK'));out.on('error',()=>res.writeHead(500).end());return;}
@@ -35,13 +35,13 @@ try{browser=await launchBrowser({headless:true,args:['--no-sandbox','--disable-d
  const analysis=read(prefix+'_analysis.json'),decode=read(prefix+'_decode.json'),context=await browser.newContext(),page=await context.newPage();page.setDefaultTimeout(300000);page.on('pageerror',e=>console.error('PAGE',prefix,e.message));
  await page.goto(url+'/v2.html');for(const name of ['raw-input','raw-decoder','film-base-measurement','v2-base','v2-fast','srgb-profile','tiff-header','tiff-codec'])await page.addScriptTag({url:url+'/'+name+'.js'});
  console.log('START',prefix);
- const result=await page.evaluate(async({prefix,filename,analysis,decode,fullExport04,frozen,algorithm3})=>{
+ const result=await page.evaluate(async({prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo})=>{
   const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast,save=async(name,data)=>{const r=await fetch('/save/'+prefix+'_'+name,{method:'POST',body:data});if(!r.ok)throw Error('SAVE_FAILED');},json=(name,data)=>save(name,JSON.stringify(data,null,2));
   if(frozen&&(JSON.stringify(V.latestPrior)!==JSON.stringify(frozen.calibration)||JSON.stringify(R.exposureRecipeFor(V.latestPrior))!==JSON.stringify(frozen.tone)||JSON.stringify(algorithm3?R.balanceRecipeFor(3):R.balanceRecipe)!==JSON.stringify(frozen.color)||algorithm3&&(frozen.algorithmVersion!==3||JSON.stringify(R.outputRecipe)!==JSON.stringify(frozen.output))))throw Error('FROZEN_PARAMETERS_CHANGED');
   const started=performance.now(),file=new File([await(await fetch('/raw/'+filename)).arrayBuffer()],'private.RAF'),options={...NSRawInput.options('wide'),useAutoWb:false,noInterpolation:false,halfSize:false,userQual:3,useCameraMatrix:3,highlight:0,threshold:0},raw=await NSRawDecoder.decode(file,'wide',{options});raw.im.encoding='linear';const im=raw.im,source=V.source(im,{revision:'quality-'+prefix,recipe:{decoder:'libraw-wasm',version:'1.6.0',options}}),ctx=V.capture({session:'quality-response',recipe:source.recipe}),measurement=NSV2Base.measure(im,source,[analysis.measurement.region]),base=V.accept(measurement,source,ctx),crop=decode.reference.exportCrop,area={region:crop,status:'estimated',method:'application-frame',confidence:decode.config.opts.cropConfidence},g=O.geometry(im,crop,0,1000),decodeMs=performance.now()-started;
   const variants={},metrics={};
    for(const [name,calibration,algorithm]of (algorithm3?[['prior',V.latestPrior,2],['candidate',V.latestPrior,3]]:[['prior',V.prior,null],['candidate',V.latestPrior,null]])){
-    const k=V.compile(source,base,calibration),analyzed=R.analyzeWithMask(im,k,{analysisArea:area,...(algorithm?{algorithmVersion:algorithm}:{})}),intent=analyzed.intent;
+    const k=V.compile(source,base,calibration),analyzed=R.analyzeWithMask(im,k,{analysisArea:area,...(algorithm?{algorithmVersion:algorithm}:{})}),intent=photo&&name==='candidate'?R.photographic(analyzed.intent):analyzed.intent;
     variants[name]={k,intent,mask:analyzed.mask};
     if(name==='candidate')variants.candidate_identity={k,intent:{...intent,colorCorrection:{version:1,kind:'identity'}},mask:analyzed.mask};
    }
@@ -65,7 +65,7 @@ try{browser=await launchBrowser({headless:true,args:['--no-sandbox','--disable-d
    if(maxRGB16Error>1||decoded.bits!==16||decoded.icc.length!==NSSRGBProfile.length||decoded.icc.some((v,i)=>v!==NSSRGBProfile[i]))throw Error('EXPORT_ORACLE_MISMATCH');exports={width:decoded.width,height:decoded.height,tiffBits:decoded.bits,iccBytes:decoded.icc.length,tiffBytes:tiff.size,jpegBytes:jpeg.size,maxRGB16Error,stripeBytes:fg.width*8*6,jpegScope:'Browser Canvas JPEG from exact V2 scalar path; main export ICC/header is separately exercised by production tests'};cv.width=cv.height=0;
   }
   return {schema:'filmlabb.v2-response-validation',version:1,case:prefix,source:{width:im.width,height:im.height,bytes:im.data.byteLength},baseDifference:base.rgb.map((v,c)=>v-analysis.base.rgb[c]),analysisArea:area,crop,output:{width:g.width,height:g.height},metrics,exports,decodeMs,totalMs:performance.now()-started};
- },{prefix,filename,analysis,decode,fullExport04,frozen,algorithm3});
+ },{prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo});
  result.originalSha256=item.sha256;result.freezeSha256=freezeSha256;fs.writeFileSync(path.join(outRoot,prefix+'_validation.json'),JSON.stringify(result,null,2));
  const savedA=path.join(pack,prefix+'_A.png');if(fs.existsSync(savedA))fs.copyFileSync(savedA,path.join(outRoot,prefix+'_saved_A.png'));
  console.log('DONE',prefix,JSON.stringify({baseDifference:result.baseDifference,seconds:result.totalMs/1000,EV:[result.metrics.prior.exposure.appliedEV,result.metrics.candidate.exposure.appliedEV],exports:result.exports}));await context.close();
