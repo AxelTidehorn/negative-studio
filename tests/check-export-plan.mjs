@@ -10,4 +10,6 @@ for(const encoding of ['linear','srgb'])for(const scale of [1,255,65535])for(con
  checked++;
 }
 assert.ok(h.run('NSExportPlan.rows(16384,100)*16384*3*4')<=786432);assert.equal(h.run("NSExportPlan.budgets('safe',8)[0]"),12000000);assert.equal(h.run("NSExportPlan.budgets('original',2)[0]"),24000000);
+// Safari and Firefox expose no navigator.deviceMemory; unknown memory must get the low budget.
+assert.equal(h.run("NSExportPlan.budgets('original',undefined)[0]"),24000000);assert.equal(h.run("NSExportPlan.budgets('original',8)[0]"),40000000);assert.equal(h.run("NSExportPlan.budgets('original',4)[0]"),40000000);
 console.log('PASS',checked,'striped worker/direct export combinations: RGB(A), integer/float, sRGB/linear, flat-field, crop, rotation; bounded transfer memory');

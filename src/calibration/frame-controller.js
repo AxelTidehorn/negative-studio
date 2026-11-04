@@ -183,7 +183,7 @@ jpegBytes=async function(skipBusyCheck=false){
  const im=working,opts={...state},config=configuration38(opts);
  const snapshot={im,g:exportGeometrySnapshot(im,opts).g,pixels:NSPixelKernel.prepare(im,config)};
  let lastError=null;
- for(const budget of (state.jpegSize==='safe'?[12000000,6000000,3000000]:[Math.min(60000000,Number(navigator.deviceMemory)<4?24000000:40000000),12000000,6000000,3000000])){
+ for(const budget of (state.jpegSize==='safe'?[12000000,6000000,3000000]:[Math.min(60000000,Number(navigator.deviceMemory)>=4?40000000:24000000),12000000,6000000,3000000])){
   let result;
   try{
    result=await makeSafeJpegExportCanvas(budget,snapshot);
