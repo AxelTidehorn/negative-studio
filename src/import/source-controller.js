@@ -2,28 +2,26 @@
 async function readFile(file){
  if(!file)return;
  if(NSFileFormats.isRaw(file.name)){
+  setStatus('RAW: laddar LibRaw och avkodar bilden… Detta kan ta tid.');
   try {
-   setStatus('RAW: laddar LibRaw och avkodar bilden… Detta kan ta tid.');
-   try {
-     const locked=NSV2Platform.usesLockedSource(state),{im,meta,provenance}=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});
-     if(locked){state.rawMode4='wide';state.rawSourceRecipeV2=1;}
-     im.v2Decoded=locked;im.decoderRecipe=provenance;await importRawRGB16(im,file.name,meta);
-     sourceInfo.rawMetadata=provenance;
-     if(roll[activeFrame])roll[activeFrame].sourceMetadata=provenance;
-   } catch(rawError) {
-     if(state.engine==='v2')throw rawError;
-     setStatus('RAW-avkodning misslyckades: '+rawError.message);
-     const jpeg=/\.raf$/i.test(file.name)?await readRafJpeg(file):null;
-     if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
-     if((globalThis.FILMLABB_I18N?.confirmSource||confirm)('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
-       await importBrowserImage(new File([jpeg],file.name+'.jpg',{type:'image/jpeg'}),
-          `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`);
-     }
-   }
-  }catch(e){throw e;}
+    const locked=NSV2Platform.usesLockedSource(state),{im,meta,provenance}=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});
+    if(locked){state.rawMode4='wide';state.rawSourceRecipeV2=1;}
+    im.v2Decoded=locked;im.decoderRecipe=provenance;await importRawRGB16(im,file.name,meta);
+    sourceInfo.rawMetadata=provenance;
+    if(roll[activeFrame])roll[activeFrame].sourceMetadata=provenance;
+  } catch(rawError) {
+    if(state.engine==='v2')throw rawError;
+    setStatus('RAW-avkodning misslyckades: '+rawError.message);
+    const jpeg=/\.raf$/i.test(file.name)?await readRafJpeg(file):null;
+    if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
+    if((globalThis.FILMLABB_I18N?.confirmSource||confirm)('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
+      await importBrowserImage(new File([jpeg],file.name+'.jpg',{type:'image/jpeg'}),
+         `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`);
+    }
+  }
   return;
  }
- if(!file)return;setStatus('Läser in bild…');src=null;hires=null;
+ setStatus('Läser in bild…');src=null;hires=null;
  if(/\.tiff?$/i.test(file.name)||file.type==='image/tiff'){
   try{const raw=prepareTiff(await NSTiff.decode(await file.arrayBuffer()));hires=raw;fullWidth=raw.width;fullHeight=raw.height;
    const scale=Math.min(1,1600/Math.max(raw.width,raw.height));const w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
