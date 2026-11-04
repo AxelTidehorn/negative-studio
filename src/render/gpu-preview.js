@@ -39,7 +39,7 @@
  }
  function sendHistogram(job){histBusy=true;histWorker.postMessage(job);}
  function updateHistogram(config,version,source,sequence){
-  const job={id:sequence,config,mode:display,limit:160};
+  const job={id:sequence,config,mode:display==='split'?'positive':display,limit:160};
   if(!histDisabled&&typeof Worker!=='undefined'){
    try{
     if(!histWorker){
@@ -47,7 +47,7 @@
      worker.onmessage=({data:r})=>{
       if(worker!==histWorker)return;histBusy=false;
       if(r.error){histDisabled=true;stopHistogram();if(active)scheduleHistogram(configuration38());return;}
-      if(active&&r.id===histSequence&&histSource===sourceVersion38){drawHistogram38(r.bins);}
+      if(active&&r.id===histSequence&&histSource===sourceVersion38){drawHistogram38(r.histogram||r.bins);}
       if(histPending){const next=histPending;histPending=null;sendHistogram(next);}
      };
      worker.onerror=()=>{if(worker!==histWorker)return;histDisabled=true;stopHistogram();if(active)scheduleHistogram(configuration38());};
@@ -57,7 +57,7 @@
    }catch{histDisabled=true;stopHistogram();if(active)scheduleHistogram(config);return;}
   }
   // Small idle-only fallback. Never run a CPU histogram in the slider's frame loop.
-  if(active&&version===sourceVersion38&&source===workingPreview&&sequence===histSequence){const r=NSPixelKernel.render(source,config,display,100);drawHistogram38(r.bins);}
+  if(active&&version===sourceVersion38&&source===workingPreview&&sequence===histSequence){const r=NSPixelKernel.render(source,config,display==='split'?'positive':display,100);drawHistogram38(r.histogram||r.bins);}
  }
  function scheduleHistogram(config){
   clearTimeout(histTimer);const sequence=++histSequence,version=sourceVersion38,source=workingPreview;

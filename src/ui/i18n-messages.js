@@ -2,6 +2,17 @@
 (function(root){
 'use strict';
 const rows=[
+["Luminans","Luminance","Luminance","Luminancia","Luminanz"],
+["RGB och luminans för aktuell förhandsvisning","RGB and luminance of the current preview","RVB et luminance de l’aperçu actuel","RGB y luminancia de la vista previa actual","RGB und Luminanz der aktuellen Vorschau"],
+["Negativ · RGB + luminans","Negative · RGB + luminance","Négatif · RVB + luminance","Negativo · RGB + luminancia","Negativ · RGB + Luminanz"],
+["Positiv · RGB + luminans","Positive · RGB + luminance","Positif · RVB + luminance","Positivo · RGB + luminancia","Positiv · RGB + Luminanz"],
+["Jämförelse · positiv","Comparison · positive","Comparaison · positif","Comparación · positivo","Vergleich · Positiv"],
+["Svart / vitt","Black / white","Noir / blanc","Negro / blanco","Schwarz / Weiß"],
+["Andel prov med visningsvärde 0 / 255. Inte mätning av RAW-klippning.","Sample share at display value 0 / 255. Not a measurement of RAW clipping.","Part des échantillons à la valeur d’affichage 0 / 255. Ne mesure pas l’écrêtage RAW.","Proporción de muestras con valor de visualización 0 / 255. No mide recorte RAW.","Probenanteil beim Anzeigewert 0 / 255. Keine Messung des RAW-Clippings."],
+["Filmruta, rotation och beskärning","Film frame, rotation and crop","Cadre du film, rotation et recadrage","Fotograma, rotación y recorte","Filmrahmen, Drehung und Zuschnitt"],
+["Exponering och ton","Exposure and tone","Exposition et tonalité","Exposición y tono","Belichtung und Tonwerte"],
+["Färg","Color","Couleur","Color","Farbe"],
+["Dubbeltryck på ett reglage för att återställa det.","Double-tap a slider to reset it.","Touchez deux fois un curseur pour le réinitialiser.","Toca dos veces un deslizador para restablecerlo.","Zum Zurücksetzen doppelt auf einen Regler tippen."],
 ["Dölj","Hide","Masquer","Ocultar","Ausblenden"],
 ["Återställ komposition","Reset composition","Réinitialiser la composition","Restablecer composición","Komposition zurücksetzen"],
 ["Exportera bilddiagnostik (.json)","Export image diagnostics (.json)","Exporter le diagnostic d’image (.json)","Exportar diagnóstico de imagen (.json)","Bilddiagnose exportieren (.json)"],

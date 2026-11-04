@@ -32,6 +32,6 @@ refreshRollUI=function(...args){const r=oldRollUI(...args);$('filmstrip').queryS
 for(const label of document.querySelectorAll('label[for]'))if($(label.htmlFor)?.type==='file'){label.tabIndex=0;label.setAttribute('role','button');label.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$(label.htmlFor).click();}};}
 const oldHistogram=drawHistogram38;let lastBins=null;
 drawHistogram38=function(bins){lastBins=bins;return oldHistogram(bins);};
-window.addEventListener('filmlabb:appearance',()=>{if(lastBins)oldHistogram(lastBins);});
+for(const event of ['filmlabb:appearance','filmlabb:language'])window.addEventListener(event,()=>{if(lastBins)oldHistogram(lastBins);});
 summary();tabs();
 })();

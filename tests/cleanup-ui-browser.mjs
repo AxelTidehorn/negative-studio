@@ -6,7 +6,7 @@ const probe=process.argv.includes('--probe'),h=await browserHarness(),errors=[];
 try{
  const page=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE',hasTouch:true});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url);
  const empty=await page.evaluate(()=>({left:$('rotateLeft').disabled,right:$('rotateRight').disabled}));
- await page.locator('#diagnostics3').evaluate(el=>el.open=true);await page.locator('#previewBackend').selectOption('cpu');
+ await page.locator('#previewBackend').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#previewBackend').selectOption('cpu');
  await page.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await page.waitForFunction(()=>working&&!rollLoading);
  await page.locator('#engineMode').selectOption('v2');await page.waitForFunction(()=>state.engine==='v2'&&!!state.v2Recipe&&!rollLoading);
  await page.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
