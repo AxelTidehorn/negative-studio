@@ -50,6 +50,11 @@ for(const mode of ['auto','technical','fixed']){
 const report=NSV2Diagnostics.diagnostic(im,k,next);
 assert.deepEqual(report.colorBalance.value.gains,model.gains);assert.equal(report.colorBalance.value.application,'global-terminal');
 assert.equal(report.colorBalance.methodVersion,R.photographicColorRecipe.version);
+for(const intent of [neutral,old,next]){
+ const d=NSV2Diagnostics.diagnostic(im,k,intent).darkness.value,y=d.technicalMedianY,expected=R.toneOnly([y,y,y],intent)[0];
+ close(d.medianAfterTone,expected);
+ close(d.toneChangeEV,Math.log2(expected/d.medianAfterExposure));
+}
 
 const input={sourceKey:'photo-color',capture,measurement:{measured:rgb,kind:'manual-region',status:'review'},area,photographic:2},recipe=P.prepare(im,input);
 P.validate(recipe);assert.equal(P.prepare(im,{...input,previous:recipe}).intent.id,recipe.intent.id);
