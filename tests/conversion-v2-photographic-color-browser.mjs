@@ -32,6 +32,8 @@ try{
    const pixels=O.rows(im,g,0,height,(x,y)=>O.pixel(im,k,active.intent,x,y));r.b.forEach((v,i)=>check(Math.abs(v-pixels[i])<=1,'worker preview uses another recipe'));
    const jpeg=await owner.run('export',{...view,engine:'B',format:'jpeg'}),head=new Uint8Array(await jpeg.blob.slice(0,2).arrayBuffer());check(head[0]===255&&head[1]===216,'JPEG missing');
    const report=(await owner.run('diagnostic',view)).report;check(report.colorBalance.value.application==='global-terminal','diagnostic reports the analyzed rather than applied balance');
+   const median=report.darkness.value.technicalMedianY,expectedMedian=R.toneOnly([median,median,median],active.intent)[0];
+   check(report.methodVersion===8&&Math.abs(report.darkness.value.medianAfterTone-expectedMedian)<1e-12,'worker reports neutral tone median for photographic2');
    const count=active.metrics.toneAnalysisCount;r=await owner.run('photographic',{...view,enabled:true,version:2});check(r.snapshot.metrics.toneAnalysisCount===count&&r.snapshot.intent.id===active.intent.id,'identical rendering selection reanalyzes');
    let rejected=false;try{await owner.run('photographic',{...view,enabled:true,version:99});}catch{rejected=true;}check(rejected,'unknown version accepted');r=await owner.run('pair',view);check(r.snapshot.intent.id===active.intent.id,'invalid version mutated recipe');
    r=await owner.run('reuse',{...view,base:{...active.base,id:'changed',rgb:active.base.rgb.map(v=>v*1.01)}});check(r.snapshot.intent.tone==='luminance-photographic-2','base update lost rendering version');
@@ -44,6 +46,7 @@ try{
  await page.evaluate(()=>$('cropReset').click());
  const selected=await page.evaluate(()=>{const cal=JSON.stringify(state.v2Recipe.calibration);FILMLABB_V2.setRendering('photographic',{version:2});NSV2Platform.validate(state.v2Recipe);return {cal,recipe:state.v2Recipe};});
  assert.equal(selected.recipe.intent.tone,'luminance-photographic-2');assert.equal(JSON.stringify(selected.recipe.calibration),selected.cal);
+ assert.equal(await page.evaluate(()=>{const r=FILMLABB_DIAGNOSTICS.report(),y=r.darkness.value.technicalMedianY,expected=NSV2Render.toneOnly([y,y,y],state.v2Recipe.intent)[0];return r.methodVersion===8&&Math.abs(r.darkness.value.medianAfterTone-expected)<1e-12;}),true,'main diagnostic uses the actual photographic2 tone curve');
  const exported=await page.evaluate(async()=>{
   const previous=downloadBlob;let blob;downloadBlob=b=>{blob=b;};
   try{const c=configuration38(),g=exportGeometrySnapshot(working).g,expected=NSPixelKernel.exportRows(working,c,g,0,g.height);await exportTiff();const im=NSTiff.decodeSync(await blob.arrayBuffer()),jpeg=await jpegBytes();let max=0;im.data.forEach((v,i)=>max=Math.max(max,Math.abs(v-expected[i])));return {tone:c.v2.intent.tone,bits:im.bits,icc:im.icc.length,max,jpeg:jpeg[0]===255&&jpeg[1]===216};}finally{downloadBlob=previous;}

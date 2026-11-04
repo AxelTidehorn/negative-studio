@@ -1,0 +1,634 @@
+{
+  "schema": "filmlabb.v2-stage3-verification",
+  "version": 1,
+  "baseCommit": "d17b8c9be4e4822a5209f5ffc82e7812b5ca2dd7",
+  "decision": "retain-optional-not-general-default",
+  "renderingParametersChanged": false,
+  "imagePixelsChanged": false,
+  "diagnosticMethod": {
+    "before": 7,
+    "after": 8
+  },
+  "coverage": {
+    "existingCases": [
+      "04",
+      "05",
+      "06",
+      "09",
+      "10"
+    ],
+    "additionalCases": [
+      "00",
+      "01",
+      "02",
+      "03",
+      "08",
+      "11"
+    ],
+    "uniqueRAF": 11,
+    "duplicateArchiveCases": [
+      "06",
+      "07"
+    ],
+    "independentFilmValidation": false,
+    "verifiedNightSeries": false,
+    "tiffFilesFound": 8,
+    "tiffTested": 0,
+    "tiffReason": "HTTP413: 419027542-byte example exceeds connector 268435456-byte limit; bounded unauthenticated fallback returned HTML, not TIFF; domain unverified"
+  },
+  "cases": {
+    "00": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.78,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 4.467406564880901,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.018816417342949636,
+                0.4016657205090186,
+                0.5698844284738803,
+                0.6045516241928701
+              ],
+              "toneMedian": 0.40268807759875325,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 4.467406564880901,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.013363459988180231,
+                0.3823121842794716,
+                0.621661657927151,
+                0.6630165182369481
+              ],
+              "toneMedian": 0.3826898324137361,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 4.467406564880901,
+              "balance": "global-terminal",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.013407199228717671,
+                0.3822926249198154,
+                0.621661657927151,
+                0.6630165182369481
+              ],
+              "toneMedian": 0.3826898324137361,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    },
+    "01": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.78,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 5.84575181950021,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.35655172459638695,
+                0.8110487417101719,
+                0.8299280414530856
+              ],
+              "toneMedian": 0.35744255242074296,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 5.84575181950021,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.3207397242577136,
+                0.8578028323385902,
+                0.873067804209941
+              ],
+              "toneMedian": 0.3201337474114995,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 5.84575181950021,
+              "balance": "global-terminal",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.3208781103318218,
+                0.8578028323385902,
+                0.873067804209941
+              ],
+              "toneMedian": 0.3201337474114995,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    },
+    "02": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.65,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 0,
+              "balance": "identity",
+              "balanceFallback": "ANALYSIS_AREA_UNCONFIRMED",
+              "outputYQuantiles": [
+                2.191464821222607e-05,
+                0.01833313562058829,
+                0.08690692789223586,
+                0.10661989438729204
+              ],
+              "toneMedian": 0.018387754738211422,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 0,
+              "balance": "identity",
+              "balanceFallback": "ANALYSIS_AREA_UNCONFIRMED",
+              "outputYQuantiles": [
+                2.191464821222607e-05,
+                0.01310048635103147,
+                0.0630419475171004,
+                0.07778454144091158
+              ],
+              "toneMedian": 0.013072686547798385,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 0,
+              "balance": "identity",
+              "balanceFallback": "ANALYSIS_AREA_UNCONFIRMED",
+              "outputYQuantiles": [
+                2.191464821222607e-05,
+                0.01310048635103147,
+                0.0630419475171004,
+                0.07778454144091158
+              ],
+              "toneMedian": 0.013072686547798385,
+              "diagnosticMethod": 8
+            }
+          }
+        },
+        "_confirmed": {
+          "areaStatus": "confirmed",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 5.099880550351923,
+              "balance": "identity",
+              "balanceFallback": "NO_SUPPORTED_NEUTRAL_ANCHOR",
+              "outputYQuantiles": [
+                0.0013989258389319552,
+                0.3900498630436751,
+                0.7648401672303482,
+                0.8050059616234694
+              ],
+              "toneMedian": 0.39113504657864473,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 5.099880550351923,
+              "balance": "identity",
+              "balanceFallback": "NO_SUPPORTED_NEUTRAL_ANCHOR",
+              "outputYQuantiles": [
+                0.000975595110789187,
+                0.36472975560254633,
+                0.8195350226896115,
+                0.8532230024367736
+              ],
+              "toneMedian": 0.36616116739017807,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 5.099880550351923,
+              "balance": "identity",
+              "balanceFallback": "NO_SUPPORTED_NEUTRAL_ANCHOR",
+              "outputYQuantiles": [
+                0.000975595110789187,
+                0.36472975560254633,
+                0.8195350226896115,
+                0.8532230024367736
+              ],
+              "toneMedian": 0.36616116739017807,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    },
+    "03": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.68,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 4.234628988731014,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.3878941727076186,
+                0.6975694291596267,
+                0.7833514428201634
+              ],
+              "toneMedian": 0.3942804321899905,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 4.234628988731014,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.36209657615560553,
+                0.7594468359679524,
+                0.834222173302875
+              ],
+              "toneMedian": 0.37062828225301553,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 4.234628988731014,
+              "balance": "global-terminal",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.36202379081337366,
+                0.7594468359679524,
+                0.834222173302875
+              ],
+              "toneMedian": 0.37062828225301553,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    },
+    "08": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.68,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 3.421002022643423,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.40242126531148775,
+                0.630424419746754,
+                0.7240116665122807
+              ],
+              "toneMedian": 0.4097872529628702,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 3.421002022643423,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0,
+                0.38260645085418676,
+                0.6919107545394477,
+                0.7831068768215425
+              ],
+              "toneMedian": 0.39299864997625383,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 3.421002022643423,
+              "balance": "historical-band-fallback",
+              "balanceFallback": "NO_SUPPORTED_TERMINAL_ANCHOR",
+              "outputYQuantiles": [
+                0,
+                0.38260645085418676,
+                0.6919107545394477,
+                0.7831068768215425
+              ],
+              "toneMedian": 0.39299864997625383,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    },
+    "11": {
+      "baseMaxDifference": 0,
+      "automaticConfidence": 0.78,
+      "scenarios": {
+        "automatic": {
+          "areaStatus": "estimated",
+          "metrics": {
+            "neutral": {
+              "exposureEV": 4.49299098780825,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.051628555669689734,
+                0.4067364457595458,
+                0.602033521434089,
+                0.629525948468035
+              ],
+              "toneMedian": 0.4059041052240019,
+              "diagnosticMethod": 8
+            },
+            "photo1": {
+              "exposureEV": 4.49299098780825,
+              "balance": "neutral-anchor-bands",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.03712292188763293,
+                0.3887069117413785,
+                0.6601433635478843,
+                0.6914300700263625
+              ],
+              "toneMedian": 0.3873467008542856,
+              "diagnosticMethod": 8
+            },
+            "photo2": {
+              "exposureEV": 4.49299098780825,
+              "balance": "global-terminal",
+              "balanceFallback": null,
+              "outputYQuantiles": [
+                0.037270198598287,
+                0.3885476368047665,
+                0.6601433635478843,
+                0.6914300700263625
+              ],
+              "toneMedian": 0.3873467008542856,
+              "diagnosticMethod": 8
+            }
+          }
+        }
+      }
+    }
+  },
+  "toneProbes": {
+    "04": {
+      "reportedToneMedianBefore": 0.3762830803918133,
+      "correctToneMedian": 0.34543912951903943,
+      "reportDifferenceEV": -0.12338690693710318,
+      "exposure": {
+        "requestedEV": 5.579584677250329,
+        "appliedEV": 5.563677925016902,
+        "highlightReductionEV": 0.015906752233426857,
+        "fallback": null
+      },
+      "visibleLinearSRGBPointProbes": {
+        "base": {
+          "preToneEV": 0,
+          "editing": null,
+          "outputY": [
+            6.01992132122532e-20,
+            0.3313473133082828,
+            0.71936155488726,
+            0.7521134519443721
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV05": {
+          "preToneEV": 0.5,
+          "editing": null,
+          "outputY": [
+            8.513454376895807e-20,
+            0.451812644027577,
+            0.7891548201697867,
+            0.814261852518292
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        }
+      }
+    },
+    "05": {
+      "reportedToneMedianBefore": 0.28044049737926524,
+      "correctToneMedian": 0.22943060798322779,
+      "reportDifferenceEV": -0.28963682675774055,
+      "exposure": {
+        "requestedEV": 5.34487103312428,
+        "appliedEV": 4.895904403331288,
+        "highlightReductionEV": 0.4489666297929915,
+        "fallback": null
+      },
+      "visibleLinearSRGBPointProbes": {
+        "base": {
+          "preToneEV": 0,
+          "editing": null,
+          "outputY": [
+            3.789387122350731e-20,
+            0.21122604389276092,
+            0.8455020113809096,
+            0.9376959407581582
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV05": {
+          "preToneEV": 0.5,
+          "editing": null,
+          "outputY": [
+            5.3590026615103587e-20,
+            0.2915810539337169,
+            0.8860275774477488,
+            0.9551336548972444
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        }
+      }
+    },
+    "06": {
+      "reportedToneMedianBefore": 0.36671953780381084,
+      "correctToneMedian": 0.33244895327065566,
+      "reportDifferenceEV": -0.14154429560351933,
+      "exposure": {
+        "requestedEV": 6.724284481549971,
+        "appliedEV": 6.670953387055774,
+        "highlightReductionEV": 0.05333109449419737,
+        "fallback": null
+      },
+      "visibleLinearSRGBPointProbes": {
+        "base": {
+          "preToneEV": 0,
+          "editing": null,
+          "outputY": [
+            1.2969223998955933e-19,
+            0.2578250321907946,
+            0.7291973513134337,
+            0.8358020720055218
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV05": {
+          "preToneEV": 0.5,
+          "editing": null,
+          "outputY": [
+            1.8341252472778113e-19,
+            0.356957093098573,
+            0.796680866615437,
+            0.8786141115880002
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        }
+      }
+    },
+    "09": {
+      "reportedToneMedianBefore": 0.38496109232434544,
+      "correctToneMedian": 0.3574701890408728,
+      "reportDifferenceEV": -0.10688970683606176,
+      "exposure": {
+        "requestedEV": 3.8529991215824055,
+        "appliedEV": 3.849102276868685,
+        "highlightReductionEV": 0.0038968447137204265,
+        "fallback": null
+      },
+      "visibleLinearSRGBPointProbes": {
+        "base": {
+          "preToneEV": 0,
+          "editing": null,
+          "outputY": [
+            1.834212338640078e-20,
+            0.3453398251635554,
+            0.5582305225770259,
+            0.5866574706530233
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV05": {
+          "preToneEV": 0.5,
+          "editing": null,
+          "outputY": [
+            2.5939679655768693e-20,
+            0.46825409821722425,
+            0.6661583065029043,
+            0.6882155514758379
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV1": {
+          "preToneEV": 1,
+          "editing": null,
+          "outputY": [
+            3.668424677280154e-20,
+            0.5918761959804579,
+            0.7486754522785802,
+            0.7654167187008178
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "editEV05": {
+          "preToneEV": 0,
+          "editing": {
+            "exposure": 0.5
+          },
+          "outputY": [
+            2.593793567628557e-20,
+            0.4273099409780862,
+            0.641138758485486,
+            0.6674576161905708
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "editEV1": {
+          "preToneEV": 0,
+          "editing": {
+            "exposure": 1
+          },
+          "outputY": [
+            3.66702771434136e-20,
+            0.513476385162805,
+            0.716390110206377,
+            0.7394768572800438
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        }
+      }
+    },
+    "10": {
+      "reportedToneMedianBefore": 0.38695542991917586,
+      "correctToneMedian": 0.36026606074086404,
+      "reportDifferenceEV": -0.10310465675862426,
+      "exposure": {
+        "requestedEV": 5.532565920152138,
+        "appliedEV": 5.507195344702261,
+        "highlightReductionEV": 0.02537057544987764,
+        "fallback": null
+      },
+      "visibleLinearSRGBPointProbes": {
+        "base": {
+          "preToneEV": 0,
+          "editing": null,
+          "outputY": [
+            0.02900190041330096,
+            0.3603739044796932,
+            0.7831019730679424,
+            0.8049121049847031
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        },
+        "preEV05": {
+          "preToneEV": 0.5,
+          "editing": null,
+          "outputY": [
+            0.04053757675454147,
+            0.48532115936494125,
+            0.8381098625135839,
+            0.8549012462917117
+          ],
+          "photographicCandidate": false,
+          "purpose": "isolated evaluation only; frozen application recipe unchanged"
+        }
+      }
+    }
+  },
+  "artifact05": {
+    "basis": "512x512 retained native window crop; floating-point linear-sRGB bright blue pixels: Y>.4,B>.4,B-G>.015; diagnostic selection, not a correction rule",
+    "samples": 70242,
+    "blueAlreadyBeforePositiveBalance": 70242,
+    "invalidSource": 0,
+    "sourceClipping": 0,
+    "logFloor": 0,
+    "preGamutNegative": 0,
+    "preGamutAboveOne": 14479,
+    "purpleSubset": {
+      "criterion": "same native crop: Y>.4,R-G>.015,B-G>.015 in floating-point linear sRGB",
+      "samples": 118,
+      "purpleAlreadyBeforePositiveBalance": 0,
+      "purpleBeforeGamut": 118,
+      "perVariant": {
+        "identity": 0,
+        "photo1": 81,
+        "photo2": 118
+      }
+    }
+  },
+  "fallback08PixelIdenticalToPhoto1": true
+}
