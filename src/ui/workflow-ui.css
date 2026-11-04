@@ -17,6 +17,7 @@
 #histogramClipping{font-size:10px;line-height:1.5;margin:4px 0 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 #histogramClipping:empty{display:none}
 .adjustment-group3 h3{font-size:12px;color:var(--ui-muted);margin:8px 0 3px}
+.bw-active .adjustment-group3:has(#temperature){display:none}
 #imageGeometry3 h2{font-size:14px}
 #imageGeometry3 .geometry-body{display:grid;grid-template-columns:1fr;gap:4px}
 #imageGeometry3 .geometry-body .toolrow:empty{display:none}
