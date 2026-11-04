@@ -13,7 +13,7 @@ try{
  const geometry=h.run('CE.exportGeometry(working,cropRegion,state.cropExport,state.rotation)');
  console.log('Rendering full-resolution TIFF…');const start=performance.now();await h.run('exportTiff()');const blob=h.context.outputBlob;assert.ok(blob,'No TIFF output');
  const head=new DataView(await blob.slice(0,64).arrayBuffer());assert.equal(head.getUint32(10+0*12+8,true),geometry.width);assert.equal(head.getUint32(10+1*12+8,true),geometry.height);
- const bitsOffset=8+2+12*12+4,iccOffset=bitsOffset+6,pixelOffset=iccOffset+h.context.NSSRGBProfile.length+(h.context.NSSRGBProfile.length%2);
+ const pixelOffset=new DataView(await blob.slice(0,8+2+12*12).arrayBuffer()).getUint32(10+5*12+8,true);
  assert.equal(blob.size,geometry.width*geometry.height*6+pixelOffset);
  const centerX=Math.floor(geometry.width/2),centerY=Math.floor(geometry.height/2),centerOffset=pixelOffset+(centerY*geometry.width+centerX)*6;
  const actual=new DataView(await blob.slice(centerOffset,centerOffset+6).arrayBuffer());
