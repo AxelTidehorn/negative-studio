@@ -118,7 +118,8 @@ function compile(c){
  if(c.kind==='v2'){
   NSV2Platform.validate(c.v2);
   const k=NSV2Fast.compile(NSConversionV2.compile(c.v2.source,c.v2.base,c.v2.calibration),c.v2.intent),out=new Float64Array(3);
-  function pixel(p){if(!c.v2Positive){k.pixel(p[0],p[1],p[2],out);p=Array.from(out,NSV2Render.encode);}
+  // Fixed RGB arity avoids Array.from's typed-array iterator/callback per pixel.
+  function pixel(p){if(!c.v2Positive){k.pixel(p[0],p[1],p[2],out);p=[NSV2Render.encode(out[0]),NSV2Render.encode(out[1]),NSV2Render.encode(out[2])];}
    if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
    if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});return p;
   }

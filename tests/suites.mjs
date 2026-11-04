@@ -7,7 +7,7 @@ export const nodeSuites={
  calibration:['image-quality-experiments.mjs','image-diagnostics.mjs','film-base2.mjs','film-base2-detection.mjs','film-base2-roll.mjs','check-manual-frame.mjs','check-source-analysis.mjs','check-source-border.mjs'],
  import:['raw-chain-quality.mjs','raf-preview-io.mjs','check-raw-fixture.mjs','check-raw-support.mjs','check-next.mjs'],
  geometry:['beta6-geometry.mjs','preview-geometry.mjs'],
- export:['tiff-header.mjs','check-export-plan.mjs','check-tiff-codec.mjs','check-export-tiff-perf.mjs','presentation-sampling.mjs','presentation-worker.mjs','stability-export.mjs','downscale-investigation.mjs'],
+ export:['jpeg-export-pixels.mjs','tiff-header.mjs','check-export-plan.mjs','check-tiff-codec.mjs','check-export-tiff-perf.mjs','presentation-sampling.mjs','presentation-worker.mjs','stability-export.mjs','downscale-investigation.mjs'],
  performance:['preview-area.mjs','check-preview-performance.mjs'],
  platform:['v2-platform-state.mjs','test-infrastructure.mjs','ui-i18n.mjs','check-i18n-static.mjs','stability-cache.mjs']
 };
