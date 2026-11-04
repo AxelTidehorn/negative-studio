@@ -42,7 +42,11 @@ function setProposal2(measurement){
 }
 async function detectBase2(){
  if(!working||exportBusy||rollLoading)return;
+ const refreshV2=state.engine==='v2'&&(state.filmBaseVersion!==2||previewBase2);
  state.filmBaseVersion=2;previewBase2=false;const revision=++revision2,source=working,context=capture2(),region=CE.rect(cropRegion);$('base2Status').textContent='Söker homogena regioner i negativets källvärden…';
+ // V2 must stop using an unapproved automatic base immediately, including
+ // when a previous proposal preview is replaced by a new search.
+ if(refreshV2){analyzeLevels();render();}
  // Yield before bounded sampling. Source/revision guards reject stale image and cancelled work.
  await new Promise(r=>setTimeout(r,0));
  if(revision!==revision2||source!==working)return;

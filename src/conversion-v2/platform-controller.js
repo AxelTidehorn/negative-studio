@@ -9,9 +9,11 @@ function preparePlatformV2(){
  if(state.engine!=='v2'||!working)return;
  if(!NSV2Platform.validSource(working))throw Error('V2 kräver verifierad linjär Rec.2020.');
  const file=roll[activeFrame]?.file,ctx=capture2(),saved=accepted2(),proposed=effectiveProposal2()?.measurement,explicit=state.filmBaseVersion===2?saved?.measurement:!state.auto?calibrationBase():null;
- const regionKey=JSON.stringify(cropRegion);
- if(!explicit&&!state.noBase&&(v2AutomaticCache?.source!==working||v2AutomaticCache.regionKey!==regionKey))v2AutomaticCache={source:working,regionKey,measurement:CE.findBase(working,cropRegion)};
- const automatic=!explicit&&!state.noBase?v2AutomaticCache?.measurement:null;
+ // Filmbas 2 owns proposal/acceptance. Its findBase guard must also apply to
+ // an automatic result cached before Filmbas 2 was activated.
+ const regionKey=JSON.stringify(cropRegion),automaticAllowed=state.filmBaseVersion!==2&&!explicit&&!state.noBase;
+ if(automaticAllowed&&(v2AutomaticCache?.source!==working||v2AutomaticCache.regionKey!==regionKey))v2AutomaticCache={source:working,regionKey,measurement:CE.findBase(working,cropRegion)};
+ const automatic=automaticAllowed?v2AutomaticCache?.measurement:null;
  const measurement=!state.noBase?(proposed?{...proposed,preview:true}:explicit||(automatic?{...automatic,acceptance:'automatic-platform'}:null)):null;
  const sourceKey=JSON.stringify([file?.name,file?.size,file?.lastModified,working.width,working.height,sourceInfo.rawMetadata?.options||sourceInfo.domain,ctx]);
  const key=JSON.stringify([sourceKey,measurement?.measured,measurement?.kind,!!proposed,!!state.noBase,state.v2Recipe?.algorithmVersion??NSV2Platform.ALGORITHM,state.v2Recipe?.calibration||NSConversionV2.latestPrior||NSConversionV2.prior,v2Area()]);

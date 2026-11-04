@@ -25,7 +25,18 @@ jobs:
         with:
           node-version: '22'
       - run: npm ci --no-audit --no-fund
-      - run: npm test
+      - name: Prepare browser
+        run: |
+          filmlabb_chrome_bin="$(command -v google-chrome || command -v chromium || true)"
+          if [ -n "$filmlabb_chrome_bin" ]; then
+            printf 'FILMLABB_CHROMIUM_BIN=%s\n' "$filmlabb_chrome_bin" >> "$GITHUB_ENV"
+            "$filmlabb_chrome_bin" --version
+          else
+            npx playwright install --with-deps chromium
+          fi
+      # Deployment is gated by the full suite for this exact checkout. The
+      # independent Build workflow may still be running or may have failed.
+      - run: npm run test:full
       - run: npm run build
       - name: Check that this is still current main
         id: current

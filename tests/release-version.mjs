@@ -17,4 +17,12 @@ try{git('init','-b','main');git('config','user.name','Version test');git('config
  fs.mkdirSync('docs/filmbas2/screenshots',{recursive:true});fs.writeFileSync('docs/filmbas2/screenshots/generated.png','test output');fs.mkdirSync('.cache',{recursive:true});fs.writeFileSync('.cache/generated.json','{}');fs.mkdirSync('site',{recursive:true});fs.writeFileSync('site/index.html','build output');assert.equal(sourceIdentity().dirty,false,'generated artifacts and documentation are not built source');
 }finally{process.chdir(cwd);fs.rmSync(dir,{recursive:true,force:true});}
 const workflow=fs.readFileSync('.github/workflows/pages.yml','utf8');assert.match(workflow,/ref: main/);assert.match(workflow,/fetch-depth: 0/);assert.match(workflow,/cancel-in-progress: false/);assert.match(workflow,/steps.current.outputs.publish/);
+// All publication steps must be gated by the complete suite in the SAME job
+// and checkout, rather than racing the independent Build workflow.
+const steps=workflow.split(/\n    steps:\n/)[1];
+assert.match(steps,/name: Prepare browser/);
+assert.match(steps,/- run: npm run test:full\s*\n/);
+const gate=steps.indexOf('- run: npm run test:full');
+for(const action of ['actions/configure-pages@','actions/upload-pages-artifact@','actions/deploy-pages@'])assert.ok(steps.indexOf(action)>gate,action+' requires the full test gate');
+assert.doesNotMatch(steps,/continue-on-error|always\(|if:\s*failure\(|npm run test:full[^\n]*(?:\|\||;)/);
 console.log('PASS actual Git first-parent merges, independent feature commits, stable reruns/unique beta ordinals, dev IDs/dirty built inputs, fail-closed history and serialized latest-main deployment');
