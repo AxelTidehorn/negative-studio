@@ -25,7 +25,7 @@ function displayNeutral(r,g,b,out){
 }
 function compile(k,intent,{viewMode='auto'}={}){
  if(!['auto','technical','fixed'].includes(viewMode))throw Error('VIEW_MODE_INVALID');
- V.validateCalibration(k.calibration);R.render([0,0,0],intent);const color=viewMode==='auto'?R.prepareBalance(intent):null,output=R.outputVersion(intent,viewMode)===2?displayNeutral:display;
+ V.validateCalibration(k.calibration);R.render([0,0,0],intent);const color=viewMode==='auto'?R.prepareBalance(intent):null,outputVersion=R.outputVersion(intent,viewMode),output=outputVersion===3?(r,g,b,out)=>R.present(displayNeutral(r,g,b,out),out):outputVersion===2?displayNeutral:display;
  const c=k.calibration,lb=k.base.rgb.map(Math.log10),lf=c.epsilon.map(Math.log10),s=c.responses.map(r=>r.slope),d0=c.responses.map(r=>r.referenceDensity),m=c.matrix,a=c.offset,photo=R.photographicVersion(intent),e=viewMode==='fixed'?1:2**intent.exposure;
  function density(j,i){return -Math.max(lf[i],Number.isFinite(j)&&j>0?Math.log10(j)-lb[i]:-Infinity);}
  function affineTechnical(r,g,b,out){

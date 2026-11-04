@@ -62,5 +62,6 @@ const changed=P.prepare(im,{...input,photographic:undefined,previous:recipe,meas
 assert.equal(changed.intent.tone,'luminance-photographic-2');assert.deepEqual(changed.calibration,recipe.calibration);
 assert.equal(P.prepare(im,{...input,photographic:false,previous:recipe}).intent.tone,'luminance-reinhard-1');
 assert.equal(P.prepare(im,{...input,photographic:true,previous:recipe}).intent.tone,'luminance-photographic-1');
-assert.equal(P.prepare(im,{...input,photographic:undefined}).intent.tone,'luminance-reinhard-1','new candidate never becomes default');
+assert.equal(P.prepare(im,{...input,photographic:undefined}).intent.tone,'luminance-photographic-2','fresh automatic V2 uses the existing photographic rendering');
+assert.equal(P.prepare(im,{...input,photographic:undefined}).intent.output,R.presentationRecipe.version);
 console.log('PASS opt-in photographic color: qualified global anchor, intensity-invariant chromatic ratios, unchanged luminance/tone/technical response, explicit fallback, historical PR45/neutral, versioned persistence, all view modes/rotations/RGB16 and applied-model diagnostics');
