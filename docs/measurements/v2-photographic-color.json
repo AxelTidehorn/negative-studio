@@ -1,0 +1,209 @@
+{
+  "schema": "filmlabb.v2-photographic-color-validation",
+  "version": 1,
+  "baseCommit": "c90368929a4977290855e48a8c9ae89ebc4f080f",
+  "algorithmVersion": 3,
+  "rendering": "photographic-global-terminal-1",
+  "development": [
+    "05",
+    "06"
+  ],
+  "controls": [
+    "04",
+    "09",
+    "10"
+  ],
+  "independentValidation": false,
+  "freezeSha256": "8f6ed3587aaf04be3a3dba47e8c2b658d951281ba0bc61b87f5308508619b1b8",
+  "historicalComparison": {
+    "samplesPerCasePerMode": 775,
+    "modes": [
+      "neutral3",
+      "photographic1"
+    ],
+    "maxPixelDifference": 0
+  },
+  "cases": {
+    "04": {
+      "baseMaxDifference": 0,
+      "rawDecodeMaxDifferenceBeforeDomainTransform": 0,
+      "exposureEV": 5.563677925016902,
+      "exposureDifferenceEV": 0.0,
+      "historicalPixelMaxDifference": 0,
+      "details": [
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 9.330642783411669e-07,
+          "horizontalGradientCosine": 0.9999999999994313
+        },
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 9.912902220188258e-07,
+          "horizontalGradientCosine": 0.9999999999967043
+        }
+      ],
+      "outputEndpointsWholeSourceGrid": {
+        "samples": 24000,
+        "before": [
+          6326,
+          57,
+          61
+        ],
+        "after": [
+          6332,
+          53,
+          61
+        ]
+      },
+      "exports": {
+        "width": 3719,
+        "height": 3678,
+        "tiffBits": 16,
+        "iccBytes": 588,
+        "tiffBytes": 82071650,
+        "jpegBytes": 4008729,
+        "maxRGB16Error": 0,
+        "stripeBytes": 178512,
+        "jpegScope": "Browser Canvas JPEG from exact V2 scalar path; main export ICC/header is separately exercised by production tests"
+      }
+    },
+    "05": {
+      "baseMaxDifference": 0,
+      "rawDecodeMaxDifferenceBeforeDomainTransform": 0,
+      "exposureEV": 4.895904403331288,
+      "exposureDifferenceEV": 0.0,
+      "historicalPixelMaxDifference": 0,
+      "details": [
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 5.590237673436249e-06,
+          "horizontalGradientCosine": 0.9999999999111873
+        },
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 5.8901528685595395e-06,
+          "horizontalGradientCosine": 0.9999999999281949
+        }
+      ],
+      "outputEndpointsWholeSourceGrid": {
+        "samples": 24000,
+        "before": [
+          9693,
+          60,
+          286
+        ],
+        "after": [
+          9534,
+          58,
+          286
+        ]
+      }
+    },
+    "06": {
+      "baseMaxDifference": 0,
+      "rawDecodeMaxDifferenceBeforeDomainTransform": 0,
+      "exposureEV": 6.670953387055774,
+      "exposureDifferenceEV": 0.0,
+      "historicalPixelMaxDifference": 0,
+      "details": [
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.4731719795157971e-06,
+          "horizontalGradientCosine": 0.9999999999986979
+        },
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.4435165808790451e-06,
+          "horizontalGradientCosine": 0.9999999999952653
+        }
+      ],
+      "outputEndpointsWholeSourceGrid": {
+        "samples": 24000,
+        "before": [
+          1298,
+          173,
+          271
+        ],
+        "after": [
+          1285,
+          172,
+          265
+        ]
+      }
+    },
+    "09": {
+      "baseMaxDifference": 0,
+      "rawDecodeMaxDifferenceBeforeDomainTransform": 0,
+      "exposureEV": 3.849102276868685,
+      "exposureDifferenceEV": 0.0,
+      "historicalPixelMaxDifference": 0,
+      "details": [
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.1484303673314766e-06,
+          "horizontalGradientCosine": 0.9999999999979564
+        },
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.1598888671193741e-06,
+          "horizontalGradientCosine": 0.9999999999919318
+        }
+      ],
+      "outputEndpointsWholeSourceGrid": {
+        "samples": 24000,
+        "before": [
+          8943,
+          28,
+          81
+        ],
+        "after": [
+          8938,
+          30,
+          81
+        ]
+      }
+    },
+    "10": {
+      "baseMaxDifference": 0,
+      "rawDecodeMaxDifferenceBeforeDomainTransform": 0,
+      "exposureEV": 5.507195344702261,
+      "exposureDifferenceEV": 0.0,
+      "historicalPixelMaxDifference": 0,
+      "details": [
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.2508232447583367e-06,
+          "horizontalGradientCosine": 0.9999999999956298
+        },
+        {
+          "width": 512,
+          "height": 512,
+          "maxLinearLuminanceDifference": 1.341487303768707e-06,
+          "horizontalGradientCosine": 0.9999999999966102
+        }
+      ],
+      "outputEndpointsWholeSourceGrid": {
+        "samples": 24000,
+        "before": [
+          794,
+          30,
+          103
+        ],
+        "after": [
+          780,
+          31,
+          103
+        ]
+      }
+    }
+  }
+}
