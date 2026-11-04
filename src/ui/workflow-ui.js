@@ -78,7 +78,7 @@ function refresh(){
  syncRetiredEngineOptions();
  const snap=baseState();
  for(const option of $('engineMode').options)if(methods[option.value])t(option,({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · experimentell'})[option.value]);
- t(description,methods[state.engine]||'Äldre projekt');
+ t(description,(retiredEngines.has(state.engine)?'Äldre projektmotor · ':'')+(methods[state.engine]||'Äldre projekt'));
  const model=roll[activeFrame]?.geometry;$('rotationReset').hidden=!(state.rotation||model?.rotation?.fineDegrees);$('compositionReset').hidden=!model?.compositionCrop;
  const active=globalThis.FILMLABB_GEOMETRY?.mode();toolbar.dataset.mode=active||'view';showTools.dataset.mode=active||'view';toolsVisibility3();
  for(const [id,mode]of [['straighten','straighten'],['compositionEdit','composition']])$(id).setAttribute('aria-pressed',String(active===mode));
