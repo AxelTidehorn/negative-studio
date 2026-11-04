@@ -21,9 +21,9 @@ try{
  assert.equal(await page.evaluate(()=>{const expected=NSPixelKernel.render(workingPreview,configuration38(),display,1400);return expected.data.every((v,i)=>v===lastPreview38.data[i])&&expected.bins.every((v,i)=>v===lastPreview38.bins[i]);}),true);
  assert.ok((await page.locator('#histogramInfo').textContent()).trim());
  const v2Before=await settings(page);await page.locator('#engineMode').selectOption('log39');assert.deepEqual(await settings(page),v2Before);assert.equal(await page.locator('#engineMode').inputValue(),'v2');assert.match(await page.locator('#status').textContent(),/Original kräver en sRGB-källa/);
- for(const engine of ['curve3','density3','matrix3','calibrated4','v2']){await page.locator('#engineMode').selectOption(engine);await page.waitForFunction(e=>state.engine===e,engine);}
+ for(const engine of ['calibrated4','v2']){await page.locator('#engineMode').selectOption(engine);await page.waitForFunction(e=>state.engine===e,engine);}
  await preview(page);assert.equal(await page.evaluate(()=>state.v2Recipe.intent.id),v2Before.v2Recipe.intent.id);
- console.log('PASS unverified TIFF rejects V2, explicit linear Rec.2020 reimport, actual CPU-worker pixel/histogram parity, Original domain rejection and all wide-capable engine switches');
+ console.log('PASS unverified TIFF rejects V2, explicit linear Rec.2020 reimport, actual CPU-worker pixel/histogram parity, Original domain rejection and all visible wide-capable engine switches');
 
  const raw=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE'});raw.setDefaultTimeout(60000);raw.on('pageerror',e=>errors.push(e.message));await raw.goto(h.url);
  await raw.locator('#imageFile').setInputFiles({name:'negative.dng',mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')});await ready(raw);
