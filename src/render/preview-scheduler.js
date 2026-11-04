@@ -7,8 +7,24 @@ let workerVersion38=-1,workerDisabled38=false;
 let dragTimer38=null,previewTick38=null;
 let ensureWorker38,sendPreview38;
 convertImage=function(image,mode,params){const im=image===previewSrc?workingPreview:working;if(!im)return new ImageData(1,1);const r=NSPixelKernel.render(im,configuration38(params),mode,Math.max(im.width,im.height));const out=new ImageData(r.width,r.height);out.data.set(r.data);return out;};
-function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;drawHistogram38(r.bins);drawCrop();}
-function drawHistogram38(bins){const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;const w=canvas.width,h=canvas.height;cx.clearRect(0,0,w,h);if(!working){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('histogramInfo'),'Ingen bild');else $('histogramInfo').textContent='Ingen bild';return;}const a=Array.from(bins).sort((a,b)=>a-b),max=Math.max(1,a[Math.floor(a.length*.99)]);cx.fillStyle=globalThis.getComputedStyle?.(document.body).getPropertyValue('--ns-muted').trim()||'#9fb1b5';for(let i=0;i<256;i++){const v=Math.min(1,bins[i]/max);cx.fillRect(i*w/256,h-v*(h-4),Math.ceil(w/256),v*(h-4));}$('histogramInfo').textContent=display==='negative'?'Negativ · luminans':display==='split'?'Jämförelse · luminans':'Positiv · luminans';}
+function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;drawHistogram38(r.histogram||r.bins);drawCrop();}
+// The luminance trace retains the existing display-referred weighted sRGB bins.
+// RGB is counted at those same bounded preview sample points, after all edits.
+function drawHistogram38(histogram){
+ const canvas=$('histogram'),cx=canvas?.getContext('2d');if(!cx||typeof cx.clearRect!=='function')return;
+ const w=canvas.width,h=canvas.height,info=$('histogramInfo'),clip=$('histogramClipping'),source=(el,text)=>{if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(el,text);else el.textContent=text;};
+ cx.clearRect(0,0,w,h);
+ if(!working){source(info,'Ingen bild');if(clip)clip.textContent='';return;}
+ const rgb=histogram?.red?histogram:null,bins=rgb?.luminance||histogram;
+ if(!bins)return;
+ const curves=rgb?[[rgb.red,'#ff7373'],[rgb.green,'#62db95'],[rgb.blue,'#80adff']]:[],all=[bins,...curves.map(([b])=>b)].flatMap(b=>Array.from(b)).sort((a,b)=>a-b),max=Math.max(1,all[Math.floor(all.length*.99)]);
+ function path(b){cx.beginPath();cx.moveTo(0,h);for(let i=0;i<256;i++)cx.lineTo(i*w/255,h-Math.min(1,b[i]/max)*(h-5)-2);cx.lineTo(w,h);cx.closePath();}
+ for(const [b,color]of curves){path(b);cx.globalAlpha=.25;cx.fillStyle=color;cx.fill();cx.globalAlpha=.85;cx.strokeStyle=color;cx.lineWidth=1;cx.stroke();}
+ path(bins);cx.globalAlpha=1;cx.strokeStyle='#f4f1e9';cx.lineWidth=2;cx.stroke();
+ source(info,display==='negative'?'Negativ · RGB + luminans':display==='split'?'Jämförelse · positiv':'Positiv · RGB + luminans');
+ if(clip){const percent=n=>(100*n/Math.max(1,rgb.samples)).toFixed(1);clip.textContent=rgb?FILMLABB_I18N.fromSource('Svart / vitt')+' · '+[['R',rgb.red],['G',rgb.green],['B',rgb.blue]].map(([name,b])=>name+' '+percent(b[0])+' / '+percent(b[255])+' %').join(' · '):'';}
+}
+
 const previewPerf={cancelledDetail:0,intermediateShown:0,deduplicated:0,workerFailures:0,lastWorkerError:null};
 let previewActive=null,previewInteractive=false,previewShown=-1,previewCompletedKey=null;
 function stopPreviewWork(){
@@ -76,6 +92,7 @@ render=function(limit=1400){
  }else{
   const bounded=interactive?240:480;
   const r=NSPixelKernel.render(workingPreview,config,display,Math.min(limit,bounded));
+  if(display==='split'){const positive=NSPixelKernel.render(workingPreview,config,'positive',Math.min(limit,bounded));r.positive=positive.data;r.bins=positive.bins;r.histogram=positive.histogram;}
   displayPreviewResult({...r,id},job);stats38.lastRenderMs=now38()-t;
  }
  stats38.lastDispatchMs=now38()-t;
