@@ -2,6 +2,9 @@
   "name": "filmlabb",
   "version": "2.0.0-beta.0",
   "private": true,
+  "engines": {
+    "node": ">=22"
+  },
   "type": "module",
   "scripts": {
     "build": "node tools/build-artifact.mjs --force",
