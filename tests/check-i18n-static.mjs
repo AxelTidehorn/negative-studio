@@ -7,5 +7,7 @@ assert.match(html,/id="languageSelect"/);
 assert.match(html,/<button\b(?=[^>]*\bid="supportLink")(?=[^>]*\bdisabled)[^>]*>/);
 assert.match(html,/<footer class="foot"><div class="footer-links">/);
 assert.doesNotMatch(html,/<span class="version" title="Bilderna stannar/);
+// Icon-only zoom buttons and the preview canvas need accessible names that the catalogue translates.
+for(const [id,name] of [['zoomOut','Zooma ut'],['zoomIn','Zooma in'],['preview','Bildförhandsvisning']]){assert.match(html,new RegExp('<(?:button|canvas)\\b(?=[^>]*\\bid="'+id+'")(?=[^>]*\\baria-label="'+name+'")[^>]*>'),id);assert.ok(locale.includes('["'+name+'",'),name);}
 assert.match(sw,/cache-worker\.js/);assert.ok(assets['i18n.js']);assert.match(readSource('cache-worker.js','utf8'),/const ASSETS=\[\];/);
 console.log('PASS i18n scaffolding, header/footer and current cache entry point');
