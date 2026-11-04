@@ -14,7 +14,7 @@ function preparePlatformV2(){
  const automatic=!explicit&&!state.noBase?v2AutomaticCache?.measurement:null;
  const measurement=!state.noBase?(proposed?{...proposed,preview:true}:explicit||(automatic?{...automatic,acceptance:'automatic-platform'}:null)):null;
  const sourceKey=JSON.stringify([file?.name,file?.size,file?.lastModified,working.width,working.height,sourceInfo.rawMetadata?.options||sourceInfo.domain,ctx]);
- const key=JSON.stringify([sourceKey,measurement?.measured,measurement?.kind,!!proposed,!!state.noBase,state.v2Recipe?.calibration||NSConversionV2.latestPrior||NSConversionV2.prior,v2Area()]);
+ const key=JSON.stringify([sourceKey,measurement?.measured,measurement?.kind,!!proposed,!!state.noBase,state.v2Recipe?.algorithmVersion??NSV2Platform.ALGORITHM,state.v2Recipe?.calibration||NSConversionV2.latestPrior||NSConversionV2.prior,v2Area()]);
  if(v2LastSource===working&&v2LastKey===key&&state.v2Recipe)return;
  const previous=state.v2Recipe;
  state.v2Recipe=NSV2Platform.prepare(working,{sourceKey,recipe:sourceInfo.rawMetadata,capture:{session:state.captureSession2||'local-session',recipe:{domain:sourceInfo.domain,options:sourceInfo.rawMetadata?.options||null},whiteBalance:sourceInfo.whiteBalance||null,flatField:working.flatField||null},measurement,area:v2Area(),previous});

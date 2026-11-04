@@ -5,22 +5,25 @@ for(let y=0;y<height;y++)for(let x=0;x<width;x++)im.data.set(rgb.map((v,c)=>v*10
 const input={sourceKey:'version-fixture',recipe:{decoder:'fixture',version:'1',options:{}},capture:{session:'test',recipe:{decoder:'fixture'}},measurement:{measured:rgb,kind:'manual-region',status:'review'},area:{region:{x:0,y:0,w:1,h:1},status:'confirmed'}};
 assert.equal(V.prior.id,'rec2020-common-prior-1');assert.equal(V.prior.version,2);
 assert.equal(V.latestPrior.version,3);assert.notEqual(V.latestPrior.id,V.prior.id);
-const legacy=P.prepare(im,{...input,calibration:V.prior}),saved=JSON.parse(JSON.stringify(legacy)),current=P.prepare(im,input);
-assert.equal(legacy.algorithmVersion,1);assert.equal(current.algorithmVersion,2);
+const legacy=P.prepare(im,{...input,calibration:V.prior}),saved=JSON.parse(JSON.stringify(legacy)),current=P.prepare(im,input),algorithm2=P.prepare(im,{...input,algorithmVersion:2});
+assert.equal(legacy.algorithmVersion,1);assert.equal(current.algorithmVersion,3);assert.equal(algorithm2.algorithmVersion,2);assert.equal(current.intent.algorithmVersion,3);assert.equal(current.intent.output,'luminance-gamut-2');assert.equal(algorithm2.intent.algorithmVersion,undefined);
 assert.equal(legacy.intent.analysisVersion,'robust-p60-highlight-1');assert.equal(current.intent.analysisVersion,'robust-p60-highlight-2');
-P.validate(saved);P.validate(current);
+P.validate(saved);P.validate(algorithm2);P.validate(current);
 const restored=P.prepare(im,{...input,previous:saved});assert.deepEqual(restored,saved,'opening an existing recipe keeps all frozen parameters and intent');
 const oldKernel=V.compile(saved.source,saved.base,saved.calibration),roundTrip=V.compile(restored.source,restored.base,restored.calibration);
 for(let i=0;i<im.data.length;i+=39){const j=Array.from(im.data.subarray(i,i+3)),a=oldKernel.pixel(j),b=roundTrip.pixel(j);
  assert.deepEqual(a,b);for(let c=0;c<3;c++)assert.ok(Math.abs(a.positive[c]-.18*10**((-Math.log10(j[c]/rgb[c])-1)/.65))<1e-12);
  assert.deepEqual(R.view(a.positive,saved.intent),R.view(b.positive,restored.intent));
 }
-for(const previous of [saved,JSON.parse(JSON.stringify(current))]){
+for(const previous of [saved,JSON.parse(JSON.stringify(algorithm2)),JSON.parse(JSON.stringify(current))]){
+ const reopened=P.prepare(im,{...input,previous});assert.deepEqual(reopened,previous);
  const changed=P.prepare(im,{...input,previous,measurement:{...input.measurement,measured:rgb.map(v=>v*1.05)}});
- assert.deepEqual(changed.calibration,previous.calibration);assert.equal(changed.algorithmVersion,previous.algorithmVersion);assert.notEqual(changed.intent.id,previous.intent.id);
+ assert.deepEqual(changed.calibration,previous.calibration);assert.equal(changed.algorithmVersion,previous.algorithmVersion);assert.notEqual(changed.intent.id,previous.intent.id);assert.equal(changed.intent.algorithmVersion,previous.intent.algorithmVersion);
+ const back=P.prepare(im,{...input,previous:changed});const before=V.compile(previous.source,previous.base,previous.calibration),after=V.compile(back.source,back.base,back.calibration);for(let i=0;i<im.data.length;i+=81)assert.deepEqual(R.view(before.pixel(Array.from(im.data.subarray(i,i+3))).positive,previous.intent),R.view(after.pixel(Array.from(im.data.subarray(i,i+3))).positive,back.intent));
 }
 const explicit=P.prepare(im,{...input,previous:current,calibration:V.prior});assert.equal(explicit.algorithmVersion,1);assert.deepEqual(explicit.calibration,V.prior);assert.equal(explicit.intent.analysisVersion,'robust-p60-highlight-1');
 assert.throws(()=>P.validate({...saved,algorithmVersion:2}),/INCONSISTENT/);assert.throws(()=>P.validate({...current,algorithmVersion:1}),/INCONSISTENT/);
 assert.throws(()=>P.validate({...current,algorithmVersion:99}),/VERSION/);
-const project={format:P.PROJECT_FORMAT,v2SchemaVersion:1,conversionSchemaVersion:1,frames:[saved,current].map(v2Recipe=>({settings:{engine:'v2',conversionVersion:2,editVersion:2,v2Recipe}}))};P.validateProject(JSON.parse(JSON.stringify(project)));
-console.log('PASS fresh CalibrationV3/algorithm2, exact legacy recipe/pixels/tonal model, frozen response across base edits, explicit old comparison and mixed-version project validation');
+assert.throws(()=>P.validate({...algorithm2,algorithmVersion:3}),/INCONSISTENT/);assert.throws(()=>P.validate({...current,intent:{...current.intent,output:'unknown'}}),/OUTPUT_RECIPE_INVALID/);
+const project={format:P.PROJECT_FORMAT,v2SchemaVersion:1,conversionSchemaVersion:1,frames:[saved,algorithm2,current].map(v2Recipe=>({settings:{engine:'v2',conversionVersion:2,editVersion:2,v2Recipe}}))};P.validateProject(JSON.parse(JSON.stringify(project)));
+console.log('PASS fresh algorithm3, exact saved algorithms1/2, exact legacy recipe/pixels/tonal model, frozen response across base edits, explicit old comparison and mixed-version project validation');

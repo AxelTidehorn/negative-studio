@@ -1,5 +1,7 @@
 # FILMLABB 2.0: pålitlig A/B-referens och färg-/tondiagnostik
 
+> Algoritm 3: [neutralreferenser, högdagrar och versionsskydd](V2_NEUTRAL_HIGHLIGHTS.md).
+
 > Senaste V2-kandidaten: [teknisk rekonstruktion, algoritm 2 och skydd av äldre recept](V2_TECHNICAL_RECONSTRUCTION.md). Beskrivningarna nedan dokumenterar tidigare leveranser.
 
 > V2 ansluts nu också som experimentellt motorval i huvudplattformen. Se [integration, CPU-previewbegränsningar och användarprotokoll](V2_PLATFORM_INTEGRATION.md). Labbet behålls som referensverktyg. Historiska gren-/publiceringsuppgifter nedan avser tidigare leveranser; integrationen levereras som PR och publicerar inte produktion automatiskt.
