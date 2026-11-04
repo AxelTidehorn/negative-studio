@@ -15,7 +15,8 @@ function areaDescriptor(area){
  const r=area?.region,valid=r&&['x','y','w','h'].every(c=>Number.isFinite(r[c]))&&r.x>=0&&r.y>=0&&r.w>0&&r.h>0&&r.x+r.w<=1.000001&&r.y+r.h<=1.000001;
  const automatic=valid&&area.status==='estimated'&&area.method==='application-frame'&&Number.isFinite(area.confidence)&&area.confidence>=.67&&area.confidence<=1;return {region:valid?{x:r.x,y:r.y,w:r.w,h:r.h}:{...fullRegion},status:valid&&area.status==='confirmed'?'confirmed':automatic?'estimated':valid?'unconfirmed':area?'invalid':'missing',method:valid&&area.status==='confirmed'?'manual-frame':automatic?'application-frame':'unconfirmed-frame',confidence:automatic?area.confidence:valid&&area.status==='confirmed'?1:0};
 }
-function analysisKey(k,options={}){return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipe.version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content'});}
+function algorithmFor(k,options={}){const a=options.algorithmVersion??(k.calibration.version===3?2:1);if(!(a===1&&k.calibration.version===2||[2,3].includes(a)&&k.calibration.version===3))throw Error('V2_ALGORITHM_INVALID');return a;}
+function analysisKey(k,options={}){const algorithm=algorithmFor(k,options);return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipeFor(algorithm).version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content',...(algorithm===3?{algorithmVersion:3,outputVersion:outputRecipe.version}:{})});}
 // Public fingerprint is opaque; exact signatures stay private in the worker.
 function fingerprint(text){let hash=2166136261;for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619)>>>0;return 'analysis-'+hash.toString(16);}
 function exposureFromStatistics({p50,p60,p99,samples=0,validFraction=0,areaStatus='missing',areaConfidence=0}={},recipe=exposureRecipe){
@@ -29,35 +30,45 @@ function exposureFromStatistics({p50,p60,p99,samples=0,validFraction=0,areaStatu
 }
 // A bounded positive-domain hypothesis, never a film-response calibration.
 const balanceRecipe=V.freeze({version:'neutral-anchor-bands-1',binEV:.18,maxAnchorSpanEV:1.75,maxAnchorAxisEV:1.25,maxCorrectionEV:.6,strength:.85,minSupport:32,minTiles:4,minDiversity:.15,maxBandDifferenceEV:.65});
-const identityBalance=reason=>({version:1,kind:'identity',status:'prior',recipeVersion:balanceRecipe.version,reason,gains:[[1,1,1],[1,1,1],[1,1,1]],knots:[0,1,2],evidence:[]});
-function estimateBalance(positive,luma,mask,cols,rows,area,enabled=true){
- if(!enabled)return identityBalance('EXPLICIT_IDENTITY');
- if(!trustedArea(area))return identityBalance('ANALYSIS_AREA_UNCONFIRMED');
+const balanceRecipe2=V.freeze({...balanceRecipe,version:'neutral-anchor-bands-2',dominantAxisEV:.30,dominantTiles:8,dominantSupport:.65,dominantDispersionEV:.40,terminalBand:[.90,.985],terminalAxisEV:.25});
+const balanceRecipeFor=algorithm=>algorithm===3?balanceRecipe2:balanceRecipe;
+const identityBalance=(reason,recipe=balanceRecipe)=>({version:1,kind:'identity',status:'prior',recipeVersion:recipe.version,reason,gains:[[1,1,1],[1,1,1],[1,1,1]],knots:[0,1,2],evidence:[]});
+function estimateBalance(positive,luma,mask,cols,rows,area,enabled=true,recipe=balanceRecipe){
+ const balanceRecipe=recipe,adaptive=recipe.version==='neutral-anchor-bands-2';
+ if(!enabled)return identityBalance('EXPLICIT_IDENTITY',balanceRecipe);
+ if(!trustedArea(area))return identityBalance('ANALYSIS_AREA_UNCONFIRMED',balanceRecipe);
  const points=[];for(let i=0;i<mask.length;i++)if(mask[i]){const p=positive.subarray(i*3,i*3+3),u=Math.log2(p[0]/p[1]),v=Math.log2(p[2]/p[1]);if(Number.isFinite(u)&&Number.isFinite(v)&&luma[i]>0){const x=((i%cols+.5)/cols-area.region.x)/area.region.w,y=((Math.floor(i/cols)+.5)/rows-area.region.y)/area.region.h;points.push({u,v,y:luma[i],tile:Math.min(3,Math.max(0,Math.floor(y*4)))*4+Math.min(3,Math.max(0,Math.floor(x*4)))});}}
- if(points.length<128)return identityBalance('INSUFFICIENT_COLOR_SAMPLES');
- const ys=points.map(p=>p.y),q05=quantile(ys,.05),q55=quantile(ys,.55),q90=quantile(ys,.9);if(!(q05<q55&&q55<q90))return identityBalance('INSUFFICIENT_LUMINANCE_RANGE');
+ if(points.length<128)return identityBalance('INSUFFICIENT_COLOR_SAMPLES',balanceRecipe);
+ const ys=points.map(p=>p.y),q05=quantile(ys,.05),q55=quantile(ys,.55),q90=quantile(ys,.9);if(!(q05<q55&&q55<q90))return identityBalance('INSUFFICIENT_LUMINANCE_RANGE',balanceRecipe);
  function anchor(low,high){
-  const lo=quantile(ys,low),hi=quantile(ys,high),pool=points.filter(p=>p.y>=lo&&p.y<=hi&&Math.max(Math.abs(p.u),Math.abs(p.v))<=balanceRecipe.maxAnchorAxisEV&&Math.max(0,p.u,p.v)-Math.min(0,p.u,p.v)<=balanceRecipe.maxAnchorSpanEV),bins=new Map();
+  const lo=quantile(ys,low),hi=quantile(ys,high),pool=points.filter(p=>p.y>=lo&&p.y<=hi&&Math.max(Math.abs(p.u),Math.abs(p.v))<=(adaptive&&low>=balanceRecipe.terminalBand[0]?balanceRecipe.terminalAxisEV:balanceRecipe.maxAnchorAxisEV)&&Math.max(0,p.u,p.v)-Math.min(0,p.u,p.v)<=balanceRecipe.maxAnchorSpanEV),bins=new Map();
   for(const p of pool){const x=Math.floor(p.u/balanceRecipe.binEV),y=Math.floor(p.v/balanceRecipe.binEV),id=x+','+y;if(!bins.has(id))bins.set(id,{x,y,points:[]});bins.get(id).points.push(p);}
   const candidates=[...bins.values()].map(cell=>{const members=[];for(let y=-1;y<=1;y++)for(let x=-1;x<=1;x++)members.push(...(bins.get((cell.x+x)+','+(cell.y+y))?.points||[]));return {members,count:members.length};}).sort((a,b)=>b.count-a.count);
   const best=candidates[0];if(!best||best.count<balanceRecipe.minSupport)return {status:'missing',reason:'INSUFFICIENT_NEUTRAL_ANCHORS'};
   const u=quantile(best.members.map(p=>p.u),.5),v=quantile(best.members.map(p=>p.v),.5),tiles=new Set(best.members.map(p=>p.tile)).size,diversity=points.filter(p=>Math.max(Math.abs(p.u-u),Math.abs(p.v-v))>.4).length/points.length;
+  // A tightly clustered, spatially distributed near-neutral scene can be snow
+  // or cloud. This is a bounded photographic assumption, not measured WB.
+  const dominantNeutral=adaptive&&diversity<balanceRecipe.minDiversity&&Math.max(Math.abs(u),Math.abs(v))<=balanceRecipe.dominantAxisEV&&tiles>=balanceRecipe.dominantTiles&&best.count>=pool.length*balanceRecipe.dominantSupport&&['u','v'].every(axis=>quantile(best.members.map(p=>p[axis]),.95)-quantile(best.members.map(p=>p[axis]),.05)<=balanceRecipe.dominantDispersionEV);
   const other=candidates.find(c=>{if(c.count<best.count*.8)return false;const cu=quantile(c.members.map(p=>p.u),.5),cv=quantile(c.members.map(p=>p.v),.5);return Math.max(Math.abs(cu-u),Math.abs(cv-v))>.6;});
-  if(tiles<balanceRecipe.minTiles||diversity<balanceRecipe.minDiversity||other)return {status:'missing',reason:other?'AMBIGUOUS_NEUTRAL_CLUSTERS':tiles<balanceRecipe.minTiles?'LOCALIZED_COLOR_ANCHOR':'DOMINANT_COLOR_AMBIGUITY',support:best.count,tiles,diversity};
-  const confidence=Math.min(1,tiles/8)*Math.min(1,best.count/Math.max(1,pool.length*.25))*Math.min(1,diversity/.25),raw=[-u,0,-v],center=raw[0]*.2627+raw[1]*.678+raw[2]*.0593,ev=raw.map(c=>Math.max(-balanceRecipe.maxCorrectionEV,Math.min(balanceRecipe.maxCorrectionEV,(c-center)*balanceRecipe.strength*confidence)));
-  return {status:'estimated',logRatios:[u,v],EV:ev,gain:ev.map(v=>2**v),support:best.count,tiles,diversity,confidence,band:[low,high]};
+  if(tiles<balanceRecipe.minTiles||(diversity<balanceRecipe.minDiversity&&!dominantNeutral)||other)return {status:'missing',reason:other?'AMBIGUOUS_NEUTRAL_CLUSTERS':tiles<balanceRecipe.minTiles?'LOCALIZED_COLOR_ANCHOR':'DOMINANT_COLOR_AMBIGUITY',support:best.count,tiles,diversity};
+  const confidence=Math.min(1,tiles/8)*Math.min(1,best.count/Math.max(1,pool.length*.25))*(dominantNeutral?1:Math.min(1,diversity/.25)),raw=[-u,0,-v],center=raw[0]*.2627+raw[1]*.678+raw[2]*.0593,ev=raw.map(c=>Math.max(-balanceRecipe.maxCorrectionEV,Math.min(balanceRecipe.maxCorrectionEV,(c-center)*balanceRecipe.strength*confidence)));
+  return {status:'estimated',logRatios:[u,v],EV:ev,gain:ev.map(v=>2**v),support:best.count,tiles,diversity,confidence,band:[low,high],...(adaptive?{dominantNeutral}:{})};
  }
- const mid=anchor(.30,.75),high=anchor(.70,.97),evidence=[mid,high];
- if(mid.status!=='estimated'&&high.status!=='estimated')return {...identityBalance('NO_SUPPORTED_NEUTRAL_ANCHOR'),evidence};
- if(mid.status==='estimated'&&high.status==='estimated'&&mid.logRatios.some((v,c)=>Math.abs(v-high.logRatios[c])>balanceRecipe.maxBandDifferenceEV))return {...identityBalance('BAND_DISAGREEMENT'),evidence};
- return {version:1,kind:'neutral-anchor-bands',status:'estimated',recipeVersion:balanceRecipe.version,recipe:balanceRecipe,reason:'STATISTICAL_NEUTRAL_SURFACE_HYPOTHESIS',knots:[q05,q55,q90],gains:[[1,1,1],mid.gain||[1,1,1],high.gain||[1,1,1]],evidence,assumption:'Spatially distributed recurring low-chroma surfaces across luminance bands; not proof of neutral illumination or film calibration'};
+ const mid=anchor(.30,.75),originalHigh=anchor(.70,.97),terminal=adaptive?anchor(...balanceRecipe.terminalBand):null;
+ // Retain the historical anchor if the narrow highlight pool is unsupported
+ // or conflicts with the midtone evidence.
+ const useTerminal=terminal?.status==='estimated'&&(mid.status!=='estimated'||!mid.logRatios.some((v,c)=>Math.abs(v-terminal.logRatios[c])>balanceRecipe.maxBandDifferenceEV));
+ const high=useTerminal?terminal:originalHigh,evidence=[mid,high];
+ if(mid.status!=='estimated'&&high.status!=='estimated')return {...identityBalance('NO_SUPPORTED_NEUTRAL_ANCHOR',balanceRecipe),evidence};
+ if(mid.status==='estimated'&&high.status==='estimated'&&mid.logRatios.some((v,c)=>Math.abs(v-high.logRatios[c])>balanceRecipe.maxBandDifferenceEV))return {...identityBalance('BAND_DISAGREEMENT',balanceRecipe),evidence};
+ return {version:1,kind:'neutral-anchor-bands',status:'estimated',recipeVersion:balanceRecipe.version,recipe:balanceRecipe,reason:'STATISTICAL_NEUTRAL_SURFACE_HYPOTHESIS',knots:[q05,q55,q90],gains:[[1,1,1],mid.gain||[1,1,1],high.gain||[1,1,1]],evidence,...(adaptive?{terminal:{...terminal,selected:useTerminal,fallback:useTerminal?null:terminal?.status!=='estimated'?'INSUFFICIENT_TERMINAL_ANCHOR':'TERMINAL_BAND_DISAGREEMENT'}}:{}),assumption:'Spatially distributed recurring low-chroma surfaces across luminance bands; not proof of neutral illumination or film calibration'};
 }
 function prepareBalance(intent){const c=intent?.colorCorrection;if(!c||c.kind==='identity')return null;if(c.version!==1||c.kind!=='neutral-anchor-bands'||c.knots?.length!==3||!c.knots.every(Number.isFinite)||c.knots[0]<0||!(c.knots[0]<c.knots[1]&&c.knots[1]<c.knots[2])||c.gains?.length!==3||!c.gains.every(g=>g.length===3&&g.every(v=>Number.isFinite(v)&&v>=.25&&v<=4)))throw Error('COLOR_BALANCE_INVALID');return c;}
 function balance(p,intent){const c=prepareBalance(intent);if(!c)return p;const y=V.luminance(p);if(y<=1e-30)return p;let band=y<c.knots[1]?0:1,t=Math.max(0,Math.min(1,(y-c.knots[band])/(c.knots[band+1]-c.knots[band])));t=t*t*(3-2*t);const q=p.map((v,i)=>v*(c.gains[band][i]+t*(c.gains[band+1][i]-c.gains[band][i]))),qy=V.luminance(q);return q.map(v=>v*y/qy);}
 // Content selection is source anchored and belongs only to RenderIntent.
 // It does not modify BaseReference or CalibrationV2, and never reads crop/zoom.
 function analyzeWithMask(im,k,options={}){
- const {maskMode='content'}=options,area=areaDescriptor(options.analysisArea),region=area.region,key=analysisKey(k,options);
+ const algorithm=algorithmFor(k,options),{maskMode='content'}=options,area=areaDescriptor(options.analysisArea),region=area.region,key=analysisKey(k,options);
  const cols=Math.min(160,im.width),rows=Math.min(im.height,Math.max(1,Math.floor(24000/cols))),n=cols*rows,luma=new Float64Array(n),positive=new Float64Array(n*3),kind=new Uint8Array(n),edge=new Uint8Array(n),mask=new Uint8Array(n),queue=new Uint32Array(n),knownBase=k.base.origin!=='prior';let head=0,tail=0;
  const counts={invalid:0,clipped:0,logFloor:0,edgeBase:0,edgeHolder:0,edgeClear:0,outsideArea:0,kept:0};
  for(let y=0;y<rows;y++)for(let x=0;x<cols;x++){
@@ -79,7 +90,7 @@ function analyzeWithMask(im,k,options={}){
  const exposureRecipe=exposureRecipeFor(k.calibration),median=quantile(values,.5),p60=quantile(values,.6),p99=quantile(values,.99),areaSamples=n-counts.outsideArea,exposureAnalysis=exposureFromStatistics({p50:median,p60,p99,samples:values.length,validFraction:values.length/Math.max(1,areaSamples),areaStatus:area.status,areaConfidence:area.confidence},exposureRecipe),ok=!exposureAnalysis.fallback,exposure=exposureAnalysis.appliedEV,requested=exposureAnalysis.requestedEV;
 
  const analysis={version:3,key:fingerprint(key),area,exposure:exposureAnalysis,mode:maskMode==='all'?'frame-source-grid-3':'frame-edge-connected-content-3',status:ok?'estimated':'insufficient',sourceRevision:k.source.revision,baseId:k.base.id,cols,rows,samples:n,counts,keptFraction:values.length/n,maskId:'mask-'+hash.toString(16),baseEvidence:knownBase?'measured':'prior',assumption:'Heuristic edge-connected base/holder/clear regions; not semantic subject detection',fullSourceMedian:quantile(all,.5),fullSourceRequestedEV:all.length?Math.log2(.18/Math.max(1e-30,quantile(all,.5))):null};
- const intent=V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:exposureRecipe.version,sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,requestedExposure:requested,exposureLimited:exposureAnalysis.highlightLimited||!!exposureAnalysis.fallback,tone:'luminance-reinhard-1',colorCorrection:estimateBalance(positive,luma,mask,cols,rows,area,options.colorMode!=='identity'),sampleCount:values.length,median,analysis});
+ const intent=V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:exposureRecipe.version,sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,requestedExposure:requested,exposureLimited:exposureAnalysis.highlightLimited||!!exposureAnalysis.fallback,tone:'luminance-reinhard-1',colorCorrection:estimateBalance(positive,luma,mask,cols,rows,area,options.colorMode!=='identity',balanceRecipeFor(algorithm)),sampleCount:values.length,median,analysis,...(algorithm===3?{algorithmVersion:3,output:outputRecipe.version}:{})});
  return {intent,mask:{cols,rows,data:mask,sourceRevision:k.source.revision,intentId:intent.id}};
 }
 function analyze(im,k,options){return analyzeWithMask(im,k,options).intent;}
@@ -89,7 +100,22 @@ function render(p,intent){return toneOnly(balance(p,intent),intent);}
 // then peak shoulder. Technical headroom survives until here.
 const matrix=[[1.6604910021084345,-.5876411387885495,-.0728498633198848],[-.1245504745215907,1.13289989712596,-.0083494226043694],[-.0181507633549052,-.1005788980080074,1.1187296613629127]];
 function display(p){let q=matrix.map(r=>r.reduce((s,v,k)=>s+v*p[k],0)),y=Math.max(0,.2126*q[0]+.7152*q[1]+.0722*q[2]),min=Math.min(...q),s=min<0?y/Math.max(1e-30,y-min):1;q=q.map(v=>Math.max(0,y+(v-y)*s));const peak=Math.max(...q),target=peak<=.8?peak:.8+.2*(-Math.expm1(-(peak-.8)/.2));return q.map(v=>peak>0?v*target/peak:0);}
+// Compress upper-gamut chroma toward neutral while retaining luminance.
+// Peak scaling alone darkens colored highlights and retains their color cast.
+const outputRecipe=V.freeze({version:'luminance-gamut-2',knee:.8});
+function displayNeutral(p){
+ let q=matrix.map(r=>r.reduce((s,v,k)=>s+v*p[k],0)),y=Math.max(0,.2126*q[0]+.7152*q[1]+.0722*q[2]);
+ if(y>=1)return [1,1,1];
+ const min=Math.min(...q),lower=min<0?y/Math.max(1e-30,y-min):1;q=q.map(v=>Math.max(0,y+(v-y)*lower));
+ const peak=Math.max(...q),start=Math.max(outputRecipe.knee,y),tail=1-start,target=peak<=start?peak:start+tail*(-Math.expm1(-(peak-start)/tail)),upper=peak>y?(target-y)/(peak-y):1;
+ return q.map(v=>y+(v-y)*upper);
+}
+function outputVersion(intent,mode='auto'){
+ if(intent?.algorithmVersion===3){if(intent.output!==outputRecipe.version)throw Error('OUTPUT_RECIPE_INVALID');return mode==='auto'?2:1;}
+ if(intent?.output!==undefined)throw Error('OUTPUT_RECIPE_INVALID');return 1;
+}
+const output=(p,intent)=>outputVersion(intent)===2?displayNeutral(p):display(p);
 const encode=v=>v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;
-function view(p,intent,mode='auto'){if(mode==='technical')return display(p);if(mode==='fixed')return display(toneOnly(p,{...intent,exposure:0}));if(mode==='auto')return display(render(p,intent));throw Error('VIEW_MODE_INVALID');}
-root.NSV2Render={balanceRecipe,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,reconstructionExposureRecipe,exposureRecipeFor,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
+function view(p,intent,mode='auto'){if(mode==='technical')return display(p);if(mode==='fixed')return display(toneOnly(p,{...intent,exposure:0}));if(mode==='auto')return output(render(p,intent),intent);throw Error('VIEW_MODE_INVALID');}
+root.NSV2Render={balanceRecipe,balanceRecipe2,balanceRecipeFor,outputRecipe,outputVersion,output,displayNeutral,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,reconstructionExposureRecipe,exposureRecipeFor,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
 })(globalThis);

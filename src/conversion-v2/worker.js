@@ -6,18 +6,19 @@ const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast;
 // MessageChannel yields to incoming jobs without background-tab timer clamps.
 const scheduler=new MessageChannel(),resumers=[];scheduler.port1.onmessage=()=>resumers.shift()?.();
 self.NSV2Yield=()=>new Promise(resolve=>{resumers.push(resolve);scheduler.port2.postMessage(0);});
-let image,source,capture,base,previous,proposal,k,intent,legacy,fast,fastA,calibration,active=0,analysisMask=null,photo=null,currentView='auto',currentComparison='technical',activeRequest=null,analysisOptions={maskMode:'content',analysisArea:null},intentKey=null;
+let image,source,capture,base,previous,proposal,k,intent,legacy,fast,fastA,calibration,algorithmVersion,active=0,analysisMask=null,photo=null,currentView='auto',currentComparison='technical',activeRequest=null,analysisOptions={maskMode:'content',analysisArea:null},intentKey=null;
 const cache=new Map(),metrics={jobs:0,qualityRenders:0,cacheHits:0,cacheBytes:0};
-function snapshot(){return {build:self.NSBuildInfo,source,base,reference:photo?.summary||null,viewMode:currentView,comparison:currentComparison,calibration:k?.calibration||calibration,intent,legacy,proposal,metrics:{...metrics,sourceBytes:image?.data.byteLength||0}};}
+function snapshot(){return {build:self.NSBuildInfo,source,base,algorithmVersion,reference:photo?.summary||null,viewMode:currentView,comparison:currentComparison,calibration:k?.calibration||calibration,intent,legacy,proposal,metrics:{...metrics,sourceBytes:image?.data.byteLength||0}};}
 function progress(id,stage,done=0,total=1){postMessage({id,type:'progress',stage,done,total});}
 function check(id){if(id!==active)throw Object.assign(Error('Avbrutet'),{name:'AbortError'});}
 function job(id){let last=performance.now();return {check:()=>check(id),async tick(stage,done,total){check(id);if(performance.now()-last>12){progress(id,stage,done,total);await self.NSV2Yield();check(id);last=performance.now();}}};}
 function clearCache(){cache.clear();metrics.cacheBytes=0;}
-function selectCalibration(value){const next=value||V.latestPrior||V.prior;V.validateCalibration(next);calibration=V.freeze(V.clone(next));}
+function selectAlgorithm(calibration,version=calibration.version===2?1:3){if(!(calibration.version===2&&version===1||calibration.version===3&&[2,3].includes(version)))throw Error('V2_ALGORITHM_INVALID');return version;}
+function selectCalibration(value,version){const next=value||V.latestPrior||V.prior;V.validateCalibration(next);const selected=selectAlgorithm(next,version);calibration=V.freeze(V.clone(next));algorithmVersion=selected;}
 function parameters(){
- k=V.compile(source,base,calibration,capture);const key=R.analysisKey(k,analysisOptions);
+ k=V.compile(source,base,calibration,capture);const options={...analysisOptions,algorithmVersion},key=R.analysisKey(k,options);
  if(intent&&intentKey===key){if(intent.baseId!==base.id)intent=V.freeze({...intent,baseId:base.id,analysis:{...intent.analysis,baseId:base.id}});return;}
- const toneStart=performance.now(),analyzed=R.analyzeWithMask(image,k,analysisOptions);intent=analyzed.intent;intentKey=key;analysisMask=analyzed.mask;metrics.toneAnalysisMs=performance.now()-toneStart;metrics.toneAnalysisCount=(metrics.toneAnalysisCount||0)+1;
+ const toneStart=performance.now(),analyzed=R.analyzeWithMask(image,k,options);intent=analyzed.intent;intentKey=key;analysisMask=analyzed.mask;metrics.toneAnalysisMs=performance.now()-toneStart;metrics.toneAnalysisCount=(metrics.toneAnalysisCount||0)+1;
  const start=performance.now(),region={x:0,y:0,w:1,h:1},response=NSColorCalibration.estimate(image,region,{base:base.rgb,light:[1,1,1],domain:'linear-rec2020'});
  legacy=V.freeze(V.clone({kind:'calibrated4',opts:{...NSProjectSettings.imageDefaults(),shadow:0,highlight:1,editVersion:1},workingSpace:'rec2020',cal:{beta4:NSColorCalibration.analyze(image,region,response)},profile:{type:'color'},print:{},neutralProfile:true,neutralPrint:true,strength:0}));
  metrics.legacyAnalysisMs=performance.now()-start;fast=F.compile(k,intent,{viewMode:currentView});fastA=F.compileLegacy(legacy);clearCache();
@@ -48,7 +49,7 @@ function attachReference(m){
  if(!image||m.sourceRevision!==source.revision)throw Error('REFERENCE_STALE');
  const im=m.reference.image,bounds=m.reference.bounds||{x:0,y:0,w:image.width,h:image.height};if(im.width!==bounds.w||im.height!==bounds.h||im.channels!==3||bounds.x<0||bounds.y<0||bounds.x+bounds.w>image.width||bounds.y+bounds.h>image.height)throw Error('REFERENCE_DIMENSIONS');
  const config=m.reference.config,prepared=config?NSPixelKernel.prepare(im,config):{pixel(i){return [im.data[i]/im.scale,im.data[i+1]/im.scale,im.data[i+2]/im.scale];}};
- if(currentComparison==='photo'&&activeRequest&&(activeRequest.type==='pair'||['accept','prior','reuse','undo','tone','calibration'].includes(activeRequest.type)||(activeRequest.type==='export'&&activeRequest.engine==='A')))active=0;
+ if(currentComparison==='photo'&&activeRequest&&(activeRequest.type==='pair'||['accept','prior','reuse','undo','tone','calibration','algorithm'].includes(activeRequest.type)||(activeRequest.type==='export'&&activeRequest.engine==='A')))active=0;
  photo={image:im,bounds,config,prepared,summary:{...m.reference.summary,id:V.uuid(),sourceRevision:source.revision}};clearCache();
  metrics.referenceBytes=im.data.byteLength;return {snapshot:snapshot()};
 }
@@ -118,10 +119,10 @@ self.onmessage=async({data:m})=>{
  active=m.id;activeRequest=m;metrics.jobs++;const t=performance.now();
  try{
   let result;
-  if(m.type==='load'){selectCalibration(m.calibration);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await load(m);}
-  else if(m.type==='source'){selectCalibration(m.calibration);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
+  if(m.type==='load'){selectCalibration(m.calibration,m.algorithmVersion);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await load(m);}
+  else if(m.type==='source'){selectCalibration(m.calibration,m.algorithmVersion);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
   else if(!image)throw Error('SOURCE_MISSING');
-  else if(m.type==='calibration'){if(!base)throw Error('ACCEPT_BASE_FIRST');selectCalibration(m.calibration);parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
+  else if(m.type==='calibration'||m.type==='algorithm'){if(!base)throw Error('ACCEPT_BASE_FIRST');const next=m.type==='algorithm'?calibration:m.calibration;selectCalibration(next,m.algorithmVersion??(next?.version===calibration.version?algorithmVersion:undefined));parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
   else if(m.type==='measure'){proposal=NSV2Base.measure(image,source,m.regions);metrics.baseMeasureMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='detect'){progress(m.id,'base');proposal=await NSV2Base.detect(image,source,()=>check(m.id),(done,total)=>progress(m.id,'base',done,total));metrics.baseDetectMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='accept'||m.type==='prior'||m.type==='reuse'||m.type==='undo'){
