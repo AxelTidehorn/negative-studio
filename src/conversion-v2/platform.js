@@ -26,7 +26,8 @@ function prepare(im,{sourceKey,recipe,capture,measurement,area,previous,calibrat
  // a new image or an explicit calibration operation selects the latest prior.
  const calibration=explicitCalibration||previous?.calibration||V.latestPrior||V.prior;
  const algorithmVersion=selectAlgorithm(calibration,explicitAlgorithm??(previous?.calibration.version===calibration.version?previous.algorithmVersion:undefined));
- const analysisOptions={analysisArea:area,algorithmVersion,photographic:photo??R.photographicVersion(previous?.intent)},k=V.compile(source,base,calibration),analysisSignature=R.analysisKey(k,analysisOptions);
+ const freshAutomatic=algorithmVersion===3&&!previous&&photo===undefined;
+ const analysisOptions={analysisArea:area,algorithmVersion,photographic:algorithmVersion===3?(photo??(previous?R.photographicVersion(previous.intent):freshAutomatic?2:0)):false,...(algorithmVersion===3?{output:previous?.intent.output??(freshAutomatic?R.presentationRecipe.version:R.outputRecipe.version)}:{})},k=V.compile(source,base,calibration),analysisSignature=R.analysisKey(k,analysisOptions);
  if(previous?.analysisSignature===analysisSignature){base={...base,id:previous.base.id};return V.freeze({...previous,source,base,intent:{...previous.intent,baseId:base.id,analysis:{...previous.intent.analysis,baseId:base.id}}});}
  const cols=Math.min(160,im.width),rows=Math.min(im.height,Math.max(1,Math.floor(24000/cols))),samples=im.flatField?pointImage(im,cols,rows):im;
  const intent=R.analyze(samples,k,analysisOptions);

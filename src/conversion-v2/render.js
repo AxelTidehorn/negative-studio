@@ -16,7 +16,7 @@ function areaDescriptor(area){
  const automatic=valid&&area.status==='estimated'&&area.method==='application-frame'&&Number.isFinite(area.confidence)&&area.confidence>=.67&&area.confidence<=1;return {region:valid?{x:r.x,y:r.y,w:r.w,h:r.h}:{...fullRegion},status:valid&&area.status==='confirmed'?'confirmed':automatic?'estimated':valid?'unconfirmed':area?'invalid':'missing',method:valid&&area.status==='confirmed'?'manual-frame':automatic?'application-frame':'unconfirmed-frame',confidence:automatic?area.confidence:valid&&area.status==='confirmed'?1:0};
 }
 function algorithmFor(k,options={}){const a=options.algorithmVersion??(k.calibration.version===3?2:1);if(!(a===1&&k.calibration.version===2||[2,3].includes(a)&&k.calibration.version===3))throw Error('V2_ALGORITHM_INVALID');return a;}
-function analysisKey(k,options={}){const algorithm=algorithmFor(k,options);return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipeFor(algorithm).version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content',...(algorithm===3?{algorithmVersion:3,outputVersion:outputRecipe.version}:{}),...(options.photographic?{photographic:photographicRecipeFor(options.photographic).version}:{})});}
+function analysisKey(k,options={}){const algorithm=algorithmFor(k,options),output=options.output??outputRecipe.version;if(algorithm===3&&![outputRecipe.version,presentationRecipe.version].includes(output))throw Error('OUTPUT_RECIPE_INVALID');return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipeFor(algorithm).version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content',...(algorithm===3?{algorithmVersion:3,outputVersion:output}:{}),...(options.photographic?{photographic:photographicRecipeFor(options.photographic).version}:{})});}
 // Public fingerprint is opaque; exact signatures stay private in the worker.
 function fingerprint(text){let hash=2166136261;for(let i=0;i<text.length;i++)hash=Math.imul(hash^text.charCodeAt(i),16777619)>>>0;return 'analysis-'+hash.toString(16);}
 function exposureFromStatistics({p50,p60,p99,samples=0,validFraction=0,areaStatus='missing',areaConfidence=0}={},recipe=exposureRecipe){
@@ -96,7 +96,7 @@ function analyzeWithMask(im,k,options={}){
  const exposureRecipe=exposureRecipeFor(k.calibration),median=quantile(values,.5),p60=quantile(values,.6),p99=quantile(values,.99),areaSamples=n-counts.outsideArea,exposureAnalysis=exposureFromStatistics({p50:median,p60,p99,samples:values.length,validFraction:values.length/Math.max(1,areaSamples),areaStatus:area.status,areaConfidence:area.confidence},exposureRecipe),ok=!exposureAnalysis.fallback,exposure=exposureAnalysis.appliedEV,requested=exposureAnalysis.requestedEV;
 
  const analysis={version:3,key:fingerprint(key),area,exposure:exposureAnalysis,mode:maskMode==='all'?'frame-source-grid-3':'frame-edge-connected-content-3',status:ok?'estimated':'insufficient',sourceRevision:k.source.revision,baseId:k.base.id,cols,rows,samples:n,counts,keptFraction:values.length/n,maskId:'mask-'+hash.toString(16),baseEvidence:knownBase?'measured':'prior',assumption:'Heuristic edge-connected base/holder/clear regions; not semantic subject detection',fullSourceMedian:quantile(all,.5),fullSourceRequestedEV:all.length?Math.log2(.18/Math.max(1e-30,quantile(all,.5))):null};
- const intent=V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:exposureRecipe.version,sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,requestedExposure:requested,exposureLimited:exposureAnalysis.highlightLimited||!!exposureAnalysis.fallback,tone:'luminance-reinhard-1',colorCorrection:estimateBalance(positive,luma,mask,cols,rows,area,options.colorMode!=='identity',balanceRecipeFor(algorithm)),sampleCount:values.length,median,analysis,...(algorithm===3?{algorithmVersion:3,output:outputRecipe.version}:{})});
+ const intent=V.freeze({schema:'RenderIntentV1',version:1,id:'tone-'+V.uuid(),analysisVersion:exposureRecipe.version,sourceRevision:k.source.revision,calibrationId:k.calibration.id,baseId:k.base.id,status:ok?'estimated':'prior',exposure,requestedExposure:requested,exposureLimited:exposureAnalysis.highlightLimited||!!exposureAnalysis.fallback,tone:'luminance-reinhard-1',colorCorrection:estimateBalance(positive,luma,mask,cols,rows,area,options.colorMode!=='identity',balanceRecipeFor(algorithm)),sampleCount:values.length,median,analysis,...(algorithm===3?{algorithmVersion:3,output:options.output??outputRecipe.version}:{})});
  const selected=options.photographic?photographic(intent,options.photographic):intent;return {intent:selected,mask:{cols,rows,data:mask,sourceRevision:k.source.revision,intentId:selected.id}};
 }
 function analyze(im,k,options){return analyzeWithMask(im,k,options).intent;}
@@ -115,6 +115,17 @@ function display(p){let q=matrix.map(r=>r.reduce((s,v,k)=>s+v*p[k],0)),y=Math.ma
 // Compress upper-gamut chroma toward neutral while retaining luminance.
 // Peak scaling alone darkens colored highlights and retains their color cast.
 const outputRecipe=V.freeze({version:'luminance-gamut-2',knee:.8});
+// Presentation revision, not a new selectable mode. Historical output tags keep
+// their exact pixels. Hue/dominant channel and luminance survive this finish.
+const presentationRecipe=V.freeze({version:'photographic-finish-1',saturation:.10,highlightChroma:.18});
+const smooth=(a,b,x)=>{const t=Math.max(0,Math.min(1,(x-a)/(b-a)));return t*t*(3-2*t);};
+function present(p,out=[0,0,0]){
+ const r=p[0],g=p[1],b=p[2],y=.2126*r+.7152*g+.0722*b,hi=Math.max(r,g,b),lo=Math.min(r,g,b),s=hi>0?(hi-lo)/(hi+lo):0;
+ const color=smooth(.04,.14,s)*(1-smooth(.55,.85,s)),mid=smooth(.02,.12,y)*(1-smooth(.40,.65,y));
+ let gain=1+presentationRecipe.saturation*color*mid-presentationRecipe.highlightChroma*smooth(.30,.60,y)*(1-smooth(.10,.30,s));
+ if(gain>1){const bound=Math.min(r>y?(1-y)/(r-y):r<y?y/(y-r):Infinity,g>y?(1-y)/(g-y):g<y?y/(y-g):Infinity,b>y?(1-y)/(b-y):b<y?y/(y-b):Infinity),room=Math.max(0,bound-1),delta=gain-1;gain=room>0?1+delta/(1+delta/room):1;}
+ out[0]=y+(r-y)*gain;out[1]=y+(g-y)*gain;out[2]=y+(b-y)*gain;return out;
+}
 function displayNeutral(p){
  let q=matrix.map(r=>r.reduce((s,v,k)=>s+v*p[k],0)),y=Math.max(0,.2126*q[0]+.7152*q[1]+.0722*q[2]);
  if(y>=1)return [1,1,1];
@@ -123,11 +134,11 @@ function displayNeutral(p){
  return q.map(v=>y+(v-y)*upper);
 }
 function outputVersion(intent,mode='auto'){
- if(intent?.algorithmVersion===3){if(intent.output!==outputRecipe.version)throw Error('OUTPUT_RECIPE_INVALID');return mode==='auto'?2:1;}
+ if(intent?.algorithmVersion===3){if(![outputRecipe.version,presentationRecipe.version].includes(intent.output))throw Error('OUTPUT_RECIPE_INVALID');return mode==='auto'?(intent.output===presentationRecipe.version?3:2):1;}
  if(intent?.output!==undefined)throw Error('OUTPUT_RECIPE_INVALID');return 1;
 }
-const output=(p,intent)=>outputVersion(intent)===2?displayNeutral(p):display(p);
+const output=(p,intent)=>{const version=outputVersion(intent);return version===3?present(displayNeutral(p)):version===2?displayNeutral(p):display(p);};
 const encode=v=>v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;
 function view(p,intent,mode='auto'){if(mode==='technical')return display(p);if(mode==='fixed')return display(toneOnly(p,{...intent,exposure:0}));if(mode==='auto')return output(render(p,intent),intent);throw Error('VIEW_MODE_INVALID');}
-root.NSV2Render={photographicRecipe,photographicColorRecipe,photographicRecipeFor,photographicVersion,photographic,photographicScale,balanceRecipe,balanceRecipe2,balanceRecipeFor,outputRecipe,outputVersion,output,displayNeutral,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,reconstructionExposureRecipe,exposureRecipeFor,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
+root.NSV2Render={photographicRecipe,photographicColorRecipe,photographicRecipeFor,photographicVersion,photographic,photographicScale,balanceRecipe,balanceRecipe2,balanceRecipeFor,outputRecipe,presentationRecipe,present,outputVersion,output,displayNeutral,estimateBalance,prepareBalance,balance,toneOnly,trustedArea,exposureRecipe,reconstructionExposureRecipe,exposureRecipeFor,exposureFromStatistics,areaDescriptor,analysisKey,matrix,view,analyze,analyzeWithMask,render,display,encode,quantile};
 })(globalThis);

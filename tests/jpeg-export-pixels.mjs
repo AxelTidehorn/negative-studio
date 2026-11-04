@@ -18,7 +18,8 @@ for(const mode of ['log39','calibrated4','v2-neutral','v2-photo1','v2-photo2'])f
  h.run(`working.colorSpace=sourceInfo.colorSpace='${mode==='log39'?'srgb':'rec2020'}';state.engine='${mode.startsWith('v2')?'v2':mode}';
  state={...state,...NSEditing2.neutral,editVersion:2,...${style==='neutral'?'{}':"{exposure:.4,contrast:1.16,gamma:.93,shadow:.023,highlight:.97,shadows:14,highlights:-23,temperature:7,tint:-3,saturation:1.12}"}};
  rollShared.profile='${style==='neutral'?'generic':style==='bw'?'hp5':'portra'}';rollShared.profileVersion=2;rollShared.strength=.7;rollShared.print='${style==='neutral'?'neutral':'classic'}';analyzeLevels();`);
- if(mode.startsWith('v2'))h.run(`FILMLABB_V2.setRendering('${mode==='v2-neutral'?'neutral':'photographic'}',{version:${mode==='v2-photo2'?2:1}});`);
+ // These frozen references represent saved historical output, not fresh defaults.
+ if(mode.startsWith('v2'))h.run(`state.v2Recipe={...state.v2Recipe,intent:{...state.v2Recipe.intent,output:'luminance-gamut-2'},analysisSignature:''};FILMLABB_V2.setRendering('${mode==='v2-neutral'?'neutral':'photographic'}',{version:${mode==='v2-photo2'?2:1}});`);
  const im=h.run('working'),config=h.run('configuration38()');
  for(let geometry=0;geometry<4;geometry++)for(const scale of [1,.61]){
   const model=G.create(geometry*90);if(geometry===3){model.rotation.fineDegrees=3.25;model.compositionCrop={cx:0,cy:0,w:.53,h:.41};}
