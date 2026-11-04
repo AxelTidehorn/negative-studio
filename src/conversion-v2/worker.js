@@ -14,7 +14,7 @@ function check(id){if(id!==active)throw Object.assign(Error('Avbrutet'),{name:'A
 function job(id){let last=performance.now();return {check:()=>check(id),async tick(stage,done,total){check(id);if(performance.now()-last>12){progress(id,stage,done,total);await self.NSV2Yield();check(id);last=performance.now();}}};}
 function clearCache(){cache.clear();metrics.cacheBytes=0;}
 function selectAlgorithm(calibration,version=calibration.version===2?1:3){if(!(calibration.version===2&&version===1||calibration.version===3&&[2,3].includes(version)))throw Error('V2_ALGORITHM_INVALID');return version;}
-function selectCalibration(value,version){const next=value||V.latestPrior||V.prior;V.validateCalibration(next);const selected=selectAlgorithm(next,version);calibration=V.freeze(V.clone(next));algorithmVersion=selected;}
+function selectCalibration(value,version){const next=value||V.latestPrior||V.prior;V.validateCalibration(next);const selected=selectAlgorithm(next,version);calibration=V.freeze(V.clone(next));algorithmVersion=selected;if(selected!==3)analysisOptions={...analysisOptions,photographic:false};}
 function parameters(){
  k=V.compile(source,base,calibration,capture);const options={...analysisOptions,algorithmVersion},key=R.analysisKey(k,options);
  if(intent&&intentKey===key){if(intent.baseId!==base.id)intent=V.freeze({...intent,baseId:base.id,analysis:{...intent.analysis,baseId:base.id}});return;}
@@ -123,7 +123,8 @@ self.onmessage=async({data:m})=>{
   else if(m.type==='source'){selectCalibration(m.calibration,m.algorithmVersion);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
   else if(!image)throw Error('SOURCE_MISSING');
   else if(m.type==='calibration'||m.type==='algorithm'){if(!base)throw Error('ACCEPT_BASE_FIRST');const next=m.type==='algorithm'?calibration:m.calibration;selectCalibration(next,m.algorithmVersion??(next?.version===calibration.version?algorithmVersion:undefined));parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
-  else if(m.type==='measure'){proposal=NSV2Base.measure(image,source,m.regions);metrics.baseMeasureMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
+  else if(m.type==='photographic'){analysisOptions={...analysisOptions,photographic:!!m.enabled};parameters();result=await pair(m);}
+   else if(m.type==='measure'){proposal=NSV2Base.measure(image,source,m.regions);metrics.baseMeasureMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='detect'){progress(m.id,'base');proposal=await NSV2Base.detect(image,source,()=>check(m.id),(done,total)=>progress(m.id,'base',done,total));metrics.baseDetectMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='accept'||m.type==='prior'||m.type==='reuse'||m.type==='undo'){
    if(m.type==='undo'){if(!previous)throw Error('NO_PREVIOUS_BASE');[base,previous]=[previous,base];}
