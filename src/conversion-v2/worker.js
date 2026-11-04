@@ -123,7 +123,7 @@ self.onmessage=async({data:m})=>{
   else if(m.type==='source'){selectCalibration(m.calibration,m.algorithmVersion);photo=analysisMask=intentKey=null;analysisOptions={maskMode:'content',analysisArea:null};image=m.image;source=m.source;capture=m.capture;V.validateSource(source,image);clearCache();base=previous=proposal=k=intent=legacy=fast=fastA=null;result=await negative(m.id,m.limit);}
   else if(!image)throw Error('SOURCE_MISSING');
   else if(m.type==='calibration'||m.type==='algorithm'){if(!base)throw Error('ACCEPT_BASE_FIRST');const next=m.type==='algorithm'?calibration:m.calibration;selectCalibration(next,m.algorithmVersion??(next?.version===calibration.version?algorithmVersion:undefined));parameters();postMessage({id:m.id,type:'state',snapshot:snapshot()});result=await pair(m);}
-  else if(m.type==='photographic'){analysisOptions={...analysisOptions,photographic:!!m.enabled};parameters();result=await pair(m);}
+  else if(m.type==='photographic'){const selected=m.enabled?(m.version??1):false;if(selected){R.photographicRecipeFor(selected);if(algorithmVersion!==3)throw Error('PHOTOGRAPHIC_REQUIRES_ALGORITHM3');}analysisOptions={...analysisOptions,photographic:selected};parameters();result=await pair(m);}
    else if(m.type==='measure'){proposal=NSV2Base.measure(image,source,m.regions);metrics.baseMeasureMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='detect'){progress(m.id,'base');proposal=await NSV2Base.detect(image,source,()=>check(m.id),(done,total)=>progress(m.id,'base',done,total));metrics.baseDetectMs=performance.now()-t;result={proposal,snapshot:snapshot()};}
   else if(m.type==='accept'||m.type==='prior'||m.type==='reuse'||m.type==='undo'){
