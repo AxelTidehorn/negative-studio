@@ -1,7 +1,7 @@
 /* Pure export geometry and bounded stripe transport. No DOM or source transfer. */
 (function(root){
 'use strict';
-function budgets(mode,memory){return mode==='safe'?[12000000,6000000,3000000]:[Number(memory)<4?24000000:40000000,12000000,6000000,3000000];}
+function budgets(mode,memory){return mode==='safe'?[12000000,6000000,3000000]:[Number(memory)>=4?40000000:24000000,12000000,6000000,3000000];}
 function size(g,budget){
  if(!Number.isSafeInteger(g.width*g.height)||g.width<1||g.height<1)throw Error('Ogiltig exportstorlek.');
  const side=budget>12000000?16384:8192,f=Math.min(1,side/g.width,side/g.height,Math.sqrt(budget/(g.width*g.height)));
