@@ -1,0 +1,3375 @@
+{
+  "schema": "filmlabb.jpeg-export-performance",
+  "version": 1,
+  "baseCommit": "575f9b64af26cd8a2577c07e15c84f367bb8e1ba",
+  "productionChange": "V2 adapter uses the same three Float64 values and encoder calls directly instead of Array.from iterator/callback",
+  "timings": "milliseconds rounded to 0.001; wall time is independent of sums of per-message latencies, which can overlap",
+  "memory": "typed-array byte lengths measured; canvas logical size and total footprint estimates exclude native encoder/decoder/preview/GPU/Blob/GC",
+  "physicalIPadSafariTested": false,
+  "physicalWindowsEdgeTested": false,
+  "CPUProfile": {
+    "inputMegapixels": 3.84,
+    "profilerChangesTiming": true,
+    "selfTimeMs": {
+      "V2AdapterPixel": 998.49,
+      "baseZeroTechnical": 477.863,
+      "logExpm1": 358.368,
+      "fastPixel": 286.858,
+      "encode": 278.508,
+      "sourceRead": 205.269
+    },
+    "purpose": "localize work, not a normal export timing"
+  },
+  "pixelReferences": {
+    "file": "tests/fixtures/jpeg-export-pixels.json",
+    "cases": 120,
+    "rgb8Unchanged": true,
+    "rgb16Unchanged": true
+  },
+  "cases": [
+    {
+      "id": "procedural-24mp",
+      "order": "baseline then candidate",
+      "before": {
+        "exportCodeSHA256": "4276add1bb1d37102b3d8fbef56fb3146de9c4cef7e37c99e69dd8c1800c6bb5",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.469,
+            "totalMs": {
+              "median": 16556.4,
+              "min": 16233.5,
+              "max": 16791.5,
+              "samples": [
+                16233.5,
+                16556.4,
+                16791.5
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0.1,
+                0.1
+              ]
+            },
+            "prepareMs": {
+              "median": 1.2,
+              "min": 1.1,
+              "max": 1.4,
+              "samples": [
+                1.4,
+                1.2,
+                1.1
+              ]
+            },
+            "packMs": {
+              "median": 121.3,
+              "min": 118.3,
+              "max": 125.2,
+              "samples": [
+                121.3,
+                118.3,
+                125.2
+              ]
+            },
+            "renderMs": {
+              "median": 15898.9,
+              "min": 15547.6,
+              "max": 16100.8,
+              "samples": [
+                15547.6,
+                15898.9,
+                16100.8
+              ]
+            },
+            "canvasMs": {
+              "median": 26.7,
+              "min": 26.4,
+              "max": 28.8,
+              "samples": [
+                26.7,
+                26.4,
+                28.8
+              ]
+            },
+            "encodingMs": {
+              "median": 92.2,
+              "min": 90.6,
+              "max": 92.4,
+              "samples": [
+                92.2,
+                90.6,
+                92.4
+              ]
+            },
+            "yieldMs": {
+              "median": 171.0,
+              "min": 158.099,
+              "max": 189.698,
+              "samples": [
+                189.698,
+                171.0,
+                158.099
+              ]
+            },
+            "transferToMainMs": {
+              "median": 143.597,
+              "min": 141.127,
+              "max": 232.282,
+              "samples": [
+                141.127,
+                143.597,
+                232.282
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 54.698,
+              "min": 14.761,
+              "max": 64.442,
+              "samples": [
+                64.442,
+                54.698,
+                14.761
+              ]
+            },
+            "otherMs": {
+              "median": 48.932,
+              "min": 37.957,
+              "max": 51.605,
+              "samples": [
+                48.932,
+                51.605,
+                37.957
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 0.826,
+            "totalMs": {
+              "median": 29448.1,
+              "min": 28953.9,
+              "max": 29462.7,
+              "samples": [
+                29462.7,
+                29448.1,
+                28953.9
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0,
+                0.1,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 0.3,
+              "min": 0.3,
+              "max": 0.3,
+              "samples": [
+                0.3,
+                0.3,
+                0.3
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 20873.6,
+              "min": 20377.7,
+              "max": 20888.3,
+              "samples": [
+                20888.3,
+                20873.6,
+                20377.7
+              ]
+            },
+            "canvasMs": {
+              "median": 36.1,
+              "min": 34.6,
+              "max": 37.4,
+              "samples": [
+                37.4,
+                36.1,
+                34.6
+              ]
+            },
+            "encodingMs": {
+              "median": 101.2,
+              "min": 100.3,
+              "max": 108.6,
+              "samples": [
+                100.3,
+                108.6,
+                101.2
+              ]
+            },
+            "yieldMs": {
+              "median": 8247.2,
+              "min": 8247.1,
+              "max": 8262.6,
+              "samples": [
+                8247.2,
+                8247.1,
+                8262.6
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 182.3,
+              "min": 177.3,
+              "max": 189.2,
+              "samples": [
+                189.2,
+                182.3,
+                177.3
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.677,
+            "totalMs": {
+              "median": 9083.7,
+              "min": 8717.1,
+              "max": 9545.1,
+              "samples": [
+                8717.1,
+                9083.7,
+                9545.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.5,
+              "min": 0.5,
+              "max": 1.2,
+              "samples": [
+                1.2,
+                0.5,
+                0.5
+              ]
+            },
+            "packMs": {
+              "median": 226.6,
+              "min": 220.8,
+              "max": 240.3,
+              "samples": [
+                226.6,
+                240.3,
+                220.8
+              ]
+            },
+            "renderMs": {
+              "median": 8407.3,
+              "min": 8079.0,
+              "max": 8861.8,
+              "samples": [
+                8079.0,
+                8407.3,
+                8861.8
+              ]
+            },
+            "canvasMs": {
+              "median": 33.3,
+              "min": 28.3,
+              "max": 49.2,
+              "samples": [
+                28.3,
+                49.2,
+                33.3
+              ]
+            },
+            "encodingMs": {
+              "median": 93.5,
+              "min": 91.3,
+              "max": 108.1,
+              "samples": [
+                93.5,
+                108.1,
+                91.3
+              ]
+            },
+            "yieldMs": {
+              "median": 93.299,
+              "min": 72.501,
+              "max": 124.701,
+              "samples": [
+                93.299,
+                72.501,
+                124.701
+              ]
+            },
+            "transferToMainMs": {
+              "median": 189.441,
+              "min": 176.459,
+              "max": 196.283,
+              "samples": [
+                176.459,
+                189.441,
+                196.283
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 1.018,
+              "min": -1.42,
+              "max": 1.359,
+              "samples": [
+                1.018,
+                -1.42,
+                1.359
+              ]
+            },
+            "otherMs": {
+              "median": 17.724,
+              "min": 15.057,
+              "max": 17.779,
+              "samples": [
+                17.724,
+                17.779,
+                15.057
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.43,
+            "totalMs": {
+              "median": 17005.2,
+              "min": 16964.5,
+              "max": 17035.4,
+              "samples": [
+                17035.4,
+                16964.5,
+                17005.2
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.2,
+              "samples": [
+                0.1,
+                0.2,
+                0.1
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 8446.9,
+              "min": 8422.0,
+              "max": 8494.9,
+              "samples": [
+                8494.9,
+                8422.0,
+                8446.9
+              ]
+            },
+            "canvasMs": {
+              "median": 35.4,
+              "min": 34.2,
+              "max": 39.2,
+              "samples": [
+                35.4,
+                39.2,
+                34.2
+              ]
+            },
+            "encodingMs": {
+              "median": 105.4,
+              "min": 104,
+              "max": 114,
+              "samples": [
+                114,
+                104,
+                105.4
+              ]
+            },
+            "yieldMs": {
+              "median": 8258.4,
+              "min": 8252.6,
+              "max": 8275.7,
+              "samples": [
+                8252.6,
+                8258.4,
+                8275.7
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 140.7,
+              "min": 138.4,
+              "max": 142.9,
+              "samples": [
+                138.4,
+                140.7,
+                142.9
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 57.9
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 60.3
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 88.3
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 63.9
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 63.3
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 58.4
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          }
+        ]
+      },
+      "after": {
+        "exportCodeSHA256": "15c5c7e8f24dc38ac3a60a870e84ffe53f7b592b6b7161f3277cb17aeb851f86",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.903,
+            "totalMs": {
+              "median": 8379,
+              "min": 8359.4,
+              "max": 8471,
+              "samples": [
+                8471,
+                8359.4,
+                8379
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0.1,
+                0.1
+              ]
+            },
+            "prepareMs": {
+              "median": 1,
+              "min": 0.9,
+              "max": 1.4,
+              "samples": [
+                1.4,
+                1,
+                0.9
+              ]
+            },
+            "packMs": {
+              "median": 115.5,
+              "min": 115.1,
+              "max": 119.9,
+              "samples": [
+                115.1,
+                119.9,
+                115.5
+              ]
+            },
+            "renderMs": {
+              "median": 7773.1,
+              "min": 7760.0,
+              "max": 7865.7,
+              "samples": [
+                7865.7,
+                7773.1,
+                7760.0
+              ]
+            },
+            "canvasMs": {
+              "median": 26.8,
+              "min": 25.4,
+              "max": 29.4,
+              "samples": [
+                29.4,
+                26.8,
+                25.4
+              ]
+            },
+            "encodingMs": {
+              "median": 92.4,
+              "min": 91.9,
+              "max": 93.2,
+              "samples": [
+                91.9,
+                92.4,
+                93.2
+              ]
+            },
+            "yieldMs": {
+              "median": 164.802,
+              "min": 144.599,
+              "max": 173.3,
+              "samples": [
+                164.802,
+                144.599,
+                173.3
+              ]
+            },
+            "transferToMainMs": {
+              "median": 111.82,
+              "min": 34.437,
+              "max": 122.853,
+              "samples": [
+                34.437,
+                111.82,
+                122.853
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 44.721,
+              "min": 44.641,
+              "max": 76.379,
+              "samples": [
+                76.379,
+                44.641,
+                44.721
+              ]
+            },
+            "otherMs": {
+              "median": 45.04,
+              "min": 43.026,
+              "max": 91.783,
+              "samples": [
+                91.783,
+                45.04,
+                43.026
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.18,
+            "totalMs": {
+              "median": 20615.6,
+              "min": 20563.7,
+              "max": 20635.1,
+              "samples": [
+                20563.7,
+                20615.6,
+                20635.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0.2,
+                0.1,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.4,
+              "min": 0.2,
+              "max": 1.2,
+              "samples": [
+                0.2,
+                0.4,
+                1.2
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 12088.0,
+              "min": 12047.7,
+              "max": 12102.0,
+              "samples": [
+                12047.7,
+                12088.0,
+                12102.0
+              ]
+            },
+            "canvasMs": {
+              "median": 34.1,
+              "min": 32.2,
+              "max": 36.3,
+              "samples": [
+                32.2,
+                36.3,
+                34.1
+              ]
+            },
+            "encodingMs": {
+              "median": 105.2,
+              "min": 104.7,
+              "max": 117.3,
+              "samples": [
+                105.2,
+                104.7,
+                117.3
+              ]
+            },
+            "yieldMs": {
+              "median": 8253.0,
+              "min": 8244.1,
+              "max": 8257.3,
+              "samples": [
+                8244.1,
+                8257.3,
+                8253.0
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 128.8,
+              "min": 127.5,
+              "max": 134.1,
+              "samples": [
+                134.1,
+                128.8,
+                127.5
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.636,
+            "totalMs": {
+              "median": 9228.1,
+              "min": 8517.1,
+              "max": 9391.3,
+              "samples": [
+                9391.3,
+                8517.1,
+                9228.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.5,
+              "min": 0.5,
+              "max": 0.8,
+              "samples": [
+                0.5,
+                0.8,
+                0.5
+              ]
+            },
+            "packMs": {
+              "median": 235.8,
+              "min": 224.2,
+              "max": 237.2,
+              "samples": [
+                237.2,
+                224.2,
+                235.8
+              ]
+            },
+            "renderMs": {
+              "median": 8558.0,
+              "min": 7885.0,
+              "max": 8737.5,
+              "samples": [
+                8737.5,
+                7885.0,
+                8558.0
+              ]
+            },
+            "canvasMs": {
+              "median": 26.7,
+              "min": 26.6,
+              "max": 28.5,
+              "samples": [
+                26.6,
+                26.7,
+                28.5
+              ]
+            },
+            "encodingMs": {
+              "median": 93.1,
+              "min": 93,
+              "max": 93.4,
+              "samples": [
+                93,
+                93.1,
+                93.4
+              ]
+            },
+            "yieldMs": {
+              "median": 101.0,
+              "min": 98.8,
+              "max": 107.701,
+              "samples": [
+                101.0,
+                98.8,
+                107.701
+              ]
+            },
+            "transferToMainMs": {
+              "median": 109.142,
+              "min": 34.698,
+              "max": 117.417,
+              "samples": [
+                34.698,
+                109.142,
+                117.417
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 45.237,
+              "min": 36.98,
+              "max": 77.597,
+              "samples": [
+                77.597,
+                36.98,
+                45.237
+              ]
+            },
+            "otherMs": {
+              "median": 42.378,
+              "min": 41.546,
+              "max": 83.105,
+              "samples": [
+                83.105,
+                42.378,
+                41.546
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.383,
+            "totalMs": {
+              "median": 17585.3,
+              "min": 17451.6,
+              "max": 17777.3,
+              "samples": [
+                17451.6,
+                17585.3,
+                17777.3
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0,
+                0.1,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0.1,
+                0,
+                0.2
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 9055.2,
+              "min": 8928.3,
+              "max": 9247.4,
+              "samples": [
+                8928.3,
+                9055.2,
+                9247.4
+              ]
+            },
+            "canvasMs": {
+              "median": 36.1,
+              "min": 35.9,
+              "max": 37.8,
+              "samples": [
+                35.9,
+                36.1,
+                37.8
+              ]
+            },
+            "encodingMs": {
+              "median": 100.9,
+              "min": 100.2,
+              "max": 110.2,
+              "samples": [
+                100.9,
+                110.2,
+                100.2
+              ]
+            },
+            "yieldMs": {
+              "median": 8236.2,
+              "min": 8231.3,
+              "max": 8239.6,
+              "samples": [
+                8236.2,
+                8231.3,
+                8239.6
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 152.1,
+              "min": 150.2,
+              "max": 152.4,
+              "samples": [
+                150.2,
+                152.4,
+                152.1
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 58.1
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 50.9
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381,
+            "firstNeedMs": 47.2
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "v2",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2651381
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 51.1
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 44.8
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164,
+            "firstNeedMs": 51
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          }
+        ]
+      },
+      "comparison": [
+        {
+          "engine": "v2",
+          "backend": "worker",
+          "shorterTimePercent": 49.391
+        },
+        {
+          "engine": "v2",
+          "backend": "main",
+          "shorterTimePercent": 29.993
+        },
+        {
+          "engine": "calibrated4",
+          "backend": "worker",
+          "shorterTimePercent": -1.59
+        },
+        {
+          "engine": "calibrated4",
+          "backend": "main",
+          "shorterTimePercent": -3.411
+        }
+      ],
+      "preEncoderRGBAHashesMatch": null
+    },
+    {
+      "id": "private-RAF-24mp",
+      "order": "candidate then baseline",
+      "before": {
+        "exportCodeSHA256": "4276add1bb1d37102b3d8fbef56fb3146de9c4cef7e37c99e69dd8c1800c6bb5",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.447,
+            "totalMs": {
+              "median": 16804.8,
+              "min": 16271.1,
+              "max": 17123.8,
+              "samples": [
+                16804.8,
+                17123.8,
+                16271.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.2,
+              "samples": [
+                0.1,
+                0.1,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 1,
+              "min": 1,
+              "max": 1.2,
+              "samples": [
+                1.2,
+                1,
+                1
+              ]
+            },
+            "packMs": {
+              "median": 122.7,
+              "min": 119.5,
+              "max": 123.2,
+              "samples": [
+                119.5,
+                123.2,
+                122.7
+              ]
+            },
+            "renderMs": {
+              "median": 16037.8,
+              "min": 15556.7,
+              "max": 16335.2,
+              "samples": [
+                16037.8,
+                16335.2,
+                15556.7
+              ]
+            },
+            "canvasMs": {
+              "median": 26.0,
+              "min": 25.4,
+              "max": 31.3,
+              "samples": [
+                26.0,
+                31.3,
+                25.4
+              ]
+            },
+            "encodingMs": {
+              "median": 125.6,
+              "min": 123.9,
+              "max": 125.9,
+              "samples": [
+                125.6,
+                125.9,
+                123.9
+              ]
+            },
+            "yieldMs": {
+              "median": 149.902,
+              "min": 145.602,
+              "max": 173.6,
+              "samples": [
+                149.902,
+                173.6,
+                145.602
+              ]
+            },
+            "transferToMainMs": {
+              "median": 206.2,
+              "min": 145.699,
+              "max": 232.542,
+              "samples": [
+                145.699,
+                232.542,
+                206.2
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 15.583,
+              "min": -5.7,
+              "max": 53.396,
+              "samples": [
+                53.396,
+                15.583,
+                -5.7
+              ]
+            },
+            "otherMs": {
+              "median": 95.097,
+              "min": 85.374,
+              "max": 145.603,
+              "samples": [
+                145.603,
+                85.374,
+                95.097
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.896,
+            "totalMs": {
+              "median": 8396.9,
+              "min": 8220.1,
+              "max": 8587.2,
+              "samples": [
+                8587.2,
+                8396.9,
+                8220.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0.1,
+                0.1
+              ]
+            },
+            "prepareMs": {
+              "median": 0.6,
+              "min": 0.4,
+              "max": 0.6,
+              "samples": [
+                0.4,
+                0.6,
+                0.6
+              ]
+            },
+            "packMs": {
+              "median": 126.5,
+              "min": 122.1,
+              "max": 132.6,
+              "samples": [
+                132.6,
+                122.1,
+                126.5
+              ]
+            },
+            "renderMs": {
+              "median": 7679.3,
+              "min": 7546.7,
+              "max": 7844.8,
+              "samples": [
+                7844.8,
+                7679.3,
+                7546.7
+              ]
+            },
+            "canvasMs": {
+              "median": 26.0,
+              "min": 24.9,
+              "max": 26.5,
+              "samples": [
+                26.5,
+                24.9,
+                26.0
+              ]
+            },
+            "encodingMs": {
+              "median": 164.9,
+              "min": 164.1,
+              "max": 168.9,
+              "samples": [
+                164.1,
+                168.9,
+                164.9
+              ]
+            },
+            "yieldMs": {
+              "median": 122.699,
+              "min": 88.202,
+              "max": 123.3,
+              "samples": [
+                122.699,
+                123.3,
+                88.202
+              ]
+            },
+            "transferToMainMs": {
+              "median": 121.881,
+              "min": 104.839,
+              "max": 197.205,
+              "samples": [
+                121.881,
+                197.205,
+                104.839
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 37.879,
+              "min": -1.1,
+              "max": 51.359,
+              "samples": [
+                51.359,
+                -1.1,
+                37.879
+              ]
+            },
+            "otherMs": {
+              "median": 122.761,
+              "min": 81.595,
+              "max": 124.38,
+              "samples": [
+                122.761,
+                81.595,
+                124.38
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "private RAF through existing import; path omitted",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 78.3,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 59.6,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 65.3,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 53.3,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 55.5,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 65.9,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          }
+        ]
+      },
+      "after": {
+        "exportCodeSHA256": "15c5c7e8f24dc38ac3a60a870e84ffe53f7b592b6b7161f3277cb17aeb851f86",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.73,
+            "totalMs": {
+              "median": 8909.2,
+              "min": 8806.6,
+              "max": 8951.9,
+              "samples": [
+                8909.2,
+                8806.6,
+                8951.9
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.2,
+              "min": 0.1,
+              "max": 0.2,
+              "samples": [
+                0.2,
+                0.1,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 1.1,
+              "min": 1,
+              "max": 1.2,
+              "samples": [
+                1,
+                1.2,
+                1.1
+              ]
+            },
+            "packMs": {
+              "median": 237.3,
+              "min": 237.2,
+              "max": 250.0,
+              "samples": [
+                237.3,
+                250.0,
+                237.2
+              ]
+            },
+            "renderMs": {
+              "median": 8079.9,
+              "min": 7985.1,
+              "max": 8118.7,
+              "samples": [
+                8079.9,
+                7985.1,
+                8118.7
+              ]
+            },
+            "canvasMs": {
+              "median": 26.4,
+              "min": 24.5,
+              "max": 29.1,
+              "samples": [
+                24.5,
+                26.4,
+                29.1
+              ]
+            },
+            "encodingMs": {
+              "median": 126.8,
+              "min": 125.5,
+              "max": 127.9,
+              "samples": [
+                125.5,
+                126.8,
+                127.9
+              ]
+            },
+            "yieldMs": {
+              "median": 158.001,
+              "min": 146.501,
+              "max": 163.502,
+              "samples": [
+                163.502,
+                146.501,
+                158.001
+              ]
+            },
+            "transferToMainMs": {
+              "median": 36.18,
+              "min": 26.038,
+              "max": 124.181,
+              "samples": [
+                36.18,
+                26.038,
+                124.181
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 72.46,
+              "min": 39.66,
+              "max": 76.384,
+              "samples": [
+                72.46,
+                76.384,
+                39.66
+              ]
+            },
+            "otherMs": {
+              "median": 168.078,
+              "min": 115.858,
+              "max": 168.657,
+              "samples": [
+                168.657,
+                168.078,
+                115.858
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 2.878,
+            "totalMs": {
+              "median": 8452.1,
+              "min": 8374.4,
+              "max": 8471.6,
+              "samples": [
+                8374.4,
+                8471.6,
+                8452.1
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.2,
+              "min": 0.1,
+              "max": 0.2,
+              "samples": [
+                0.2,
+                0.1,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 0.6,
+              "min": 0.5,
+              "max": 0.7,
+              "samples": [
+                0.6,
+                0.5,
+                0.7
+              ]
+            },
+            "packMs": {
+              "median": 224.1,
+              "min": 221.6,
+              "max": 224.6,
+              "samples": [
+                224.6,
+                221.6,
+                224.1
+              ]
+            },
+            "renderMs": {
+              "median": 7691.1,
+              "min": 7620.2,
+              "max": 7727.8,
+              "samples": [
+                7620.2,
+                7727.8,
+                7691.1
+              ]
+            },
+            "canvasMs": {
+              "median": 25.6,
+              "min": 25.4,
+              "max": 35.4,
+              "samples": [
+                35.4,
+                25.4,
+                25.6
+              ]
+            },
+            "encodingMs": {
+              "median": 166.3,
+              "min": 165.1,
+              "max": 167.4,
+              "samples": [
+                166.3,
+                165.1,
+                167.4
+              ]
+            },
+            "yieldMs": {
+              "median": 89.601,
+              "min": 87.4,
+              "max": 99.9,
+              "samples": [
+                87.4,
+                89.601,
+                99.9
+              ]
+            },
+            "transferToMainMs": {
+              "median": 90.41,
+              "min": 17.341,
+              "max": 101.199,
+              "samples": [
+                17.341,
+                90.41,
+                101.199
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 31.342,
+              "min": 29.5,
+              "max": 71.583,
+              "samples": [
+                71.583,
+                31.342,
+                29.5
+              ]
+            },
+            "otherMs": {
+              "median": 119.748,
+              "min": 112.402,
+              "max": 150.776,
+              "samples": [
+                150.776,
+                119.748,
+                112.402
+              ]
+            },
+            "stripes": [
+              404,
+              404,
+              404
+            ],
+            "messagesSent": 405,
+            "messagesReceived": 810,
+            "transferredBytes": 291852288,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 723840,
+              "maxOutputBytes": 241280,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "private RAF through existing import; path omitted",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 67.8,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 56.2,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 3787068,
+            "firstNeedMs": 59.1,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "fed47a982e7d13dad96b52383cabf0d273d0d85f259e08f590ff10da5f305d04"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 48.9,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 56.5,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 6352517,
+            "firstNeedMs": 49.2,
+            "pixelStripeSHA256Count": 404,
+            "sha256OfConcatenatedStripeHashes": "408c02b74bc5fb1c9848c8c98e1feb1058494023c08226af2d83b66c8c346f2a"
+          }
+        ]
+      },
+      "comparison": [
+        {
+          "engine": "v2",
+          "backend": "worker",
+          "shorterTimePercent": 46.984
+        },
+        {
+          "engine": "calibrated4",
+          "backend": "worker",
+          "shorterTimePercent": -0.657
+        }
+      ],
+      "preEncoderRGBAHashesMatch": true
+    },
+    {
+      "id": "free-rotation-3-degrees",
+      "order": "baseline then candidate",
+      "before": {
+        "exportCodeSHA256": "4276add1bb1d37102b3d8fbef56fb3146de9c4cef7e37c99e69dd8c1800c6bb5",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 2400,
+          "height": 1600,
+          "bytes": 46080000,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": true,
+          "target": {
+            "width": 2228,
+            "height": 1485
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 3.309,
+            "megapixelsPerSecond": 0.356,
+            "totalMs": {
+              "median": 9303.3,
+              "min": 9235.8,
+              "max": 9465.8,
+              "samples": [
+                9235.8,
+                9303.3,
+                9465.8
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0.1,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 1.1,
+              "min": 1,
+              "max": 1.4,
+              "samples": [
+                1,
+                1.4,
+                1.1
+              ]
+            },
+            "packMs": {
+              "median": 194.1,
+              "min": 193.8,
+              "max": 198.5,
+              "samples": [
+                194.1,
+                198.5,
+                193.8
+              ]
+            },
+            "renderMs": {
+              "median": 8898.2,
+              "min": 8834.4,
+              "max": 9033.6,
+              "samples": [
+                8834.4,
+                8898.2,
+                9033.6
+              ]
+            },
+            "canvasMs": {
+              "median": 4.9,
+              "min": 4.7,
+              "max": 5,
+              "samples": [
+                4.9,
+                4.7,
+                5
+              ]
+            },
+            "encodingMs": {
+              "median": 14,
+              "min": 13.1,
+              "max": 14.1,
+              "samples": [
+                13.1,
+                14,
+                14.1
+              ]
+            },
+            "yieldMs": {
+              "median": 9.1,
+              "min": 6.9,
+              "max": 19.401,
+              "samples": [
+                19.401,
+                6.9,
+                9.1
+              ]
+            },
+            "transferToMainMs": {
+              "median": 79.617,
+              "min": 71.081,
+              "max": 82.785,
+              "samples": [
+                82.785,
+                71.081,
+                79.617
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 30.108,
+              "min": 19.908,
+              "max": 32.192,
+              "samples": [
+                19.908,
+                30.108,
+                32.192
+              ]
+            },
+            "otherMs": {
+              "median": 78.311,
+              "min": 66.106,
+              "max": 97.292,
+              "samples": [
+                66.106,
+                78.311,
+                97.292
+              ]
+            },
+            "stripes": [
+              88,
+              88,
+              88
+            ],
+            "messagesSent": 89,
+            "messagesReceived": 178,
+            "transferredBytes": 158811840,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 46080000,
+              "canvasBytes": 13234320,
+              "maxInputBytes": 1818048,
+              "maxOutputBytes": 151504,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 3.309,
+            "megapixelsPerSecond": 0.603,
+            "totalMs": {
+              "median": 5491,
+              "min": 5168.5,
+              "max": 5717.7,
+              "samples": [
+                5168.5,
+                5717.7,
+                5491
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0,
+                0.1,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.7,
+              "min": 0.6,
+              "max": 1.1,
+              "samples": [
+                0.7,
+                1.1,
+                0.6
+              ]
+            },
+            "packMs": {
+              "median": 193.7,
+              "min": 190.6,
+              "max": 196.3,
+              "samples": [
+                190.6,
+                196.3,
+                193.7
+              ]
+            },
+            "renderMs": {
+              "median": 5134.2,
+              "min": 4802.6,
+              "max": 5347.1,
+              "samples": [
+                4802.6,
+                5347.1,
+                5134.2
+              ]
+            },
+            "canvasMs": {
+              "median": 4.3,
+              "min": 4.1,
+              "max": 5.0,
+              "samples": [
+                4.3,
+                5.0,
+                4.1
+              ]
+            },
+            "encodingMs": {
+              "median": 14.3,
+              "min": 12.9,
+              "max": 14.8,
+              "samples": [
+                14.3,
+                12.9,
+                14.8
+              ]
+            },
+            "yieldMs": {
+              "median": 49.201,
+              "min": 48.401,
+              "max": 50.3,
+              "samples": [
+                48.401,
+                49.201,
+                50.3
+              ]
+            },
+            "transferToMainMs": {
+              "median": 12.301,
+              "min": 0.716,
+              "max": 37.482,
+              "samples": [
+                37.482,
+                0.716,
+                12.301
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 17.5,
+              "min": 12.308,
+              "max": 27.792,
+              "samples": [
+                12.308,
+                27.792,
+                17.5
+              ]
+            },
+            "otherMs": {
+              "median": 63.499,
+              "min": 57.808,
+              "max": 77.491,
+              "samples": [
+                57.808,
+                77.491,
+                63.499
+              ]
+            },
+            "stripes": [
+              88,
+              88,
+              88
+            ],
+            "messagesSent": 89,
+            "messagesReceived": 178,
+            "transferredBytes": 158811840,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 46080000,
+              "canvasBytes": 13234320,
+              "maxInputBytes": 1818048,
+              "maxOutputBytes": 151504,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "presentation",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 58.6
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 63.1
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 76
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 60.3
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 61.5
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 55.5
+          }
+        ]
+      },
+      "after": {
+        "exportCodeSHA256": "15c5c7e8f24dc38ac3a60a870e84ffe53f7b592b6b7161f3277cb17aeb851f86",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 2400,
+          "height": 1600,
+          "bytes": 46080000,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": true,
+          "target": {
+            "width": 2228,
+            "height": 1485
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "megapixels": 3.309,
+            "megapixelsPerSecond": 0.644,
+            "totalMs": {
+              "median": 5134.8,
+              "min": 5113.5,
+              "max": 5142.3,
+              "samples": [
+                5113.5,
+                5134.8,
+                5142.3
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0.1,
+                0,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 1,
+              "min": 1,
+              "max": 1.2,
+              "samples": [
+                1,
+                1.2,
+                1
+              ]
+            },
+            "packMs": {
+              "median": 195.2,
+              "min": 194.2,
+              "max": 201.3,
+              "samples": [
+                201.3,
+                194.2,
+                195.2
+              ]
+            },
+            "renderMs": {
+              "median": 4760.3,
+              "min": 4724.5,
+              "max": 4762.6,
+              "samples": [
+                4724.5,
+                4762.6,
+                4760.3
+              ]
+            },
+            "canvasMs": {
+              "median": 5.0,
+              "min": 4.2,
+              "max": 5.2,
+              "samples": [
+                5.0,
+                5.2,
+                4.2
+              ]
+            },
+            "encodingMs": {
+              "median": 13.6,
+              "min": 13.2,
+              "max": 14.4,
+              "samples": [
+                14.4,
+                13.2,
+                13.6
+              ]
+            },
+            "yieldMs": {
+              "median": 73.6,
+              "min": 69.0,
+              "max": 74.9,
+              "samples": [
+                73.6,
+                69.0,
+                74.9
+              ]
+            },
+            "transferToMainMs": {
+              "median": 32.219,
+              "min": 13.636,
+              "max": 35.817,
+              "samples": [
+                35.817,
+                32.219,
+                13.636
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 10.491,
+              "min": 9.391,
+              "max": 18.182,
+              "samples": [
+                10.491,
+                9.391,
+                18.182
+              ]
+            },
+            "otherMs": {
+              "median": 47.79,
+              "min": 47.292,
+              "max": 61.082,
+              "samples": [
+                47.292,
+                47.79,
+                61.082
+              ]
+            },
+            "stripes": [
+              88,
+              88,
+              88
+            ],
+            "messagesSent": 89,
+            "messagesReceived": 178,
+            "transferredBytes": 158811840,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 46080000,
+              "canvasBytes": 13234320,
+              "maxInputBytes": 1818048,
+              "maxOutputBytes": 151504,
+              "extraFullSourceCopies": 0
+            }
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "megapixels": 3.309,
+            "megapixelsPerSecond": 0.637,
+            "totalMs": {
+              "median": 5197.8,
+              "min": 5027.5,
+              "max": 5533.4,
+              "samples": [
+                5027.5,
+                5197.8,
+                5533.4
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0.1,
+                0,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 0.6,
+              "min": 0.5,
+              "max": 0.6,
+              "samples": [
+                0.5,
+                0.6,
+                0.6
+              ]
+            },
+            "packMs": {
+              "median": 197.7,
+              "min": 193.1,
+              "max": 203.2,
+              "samples": [
+                193.1,
+                203.2,
+                197.7
+              ]
+            },
+            "renderMs": {
+              "median": 4837.5,
+              "min": 4701.8,
+              "max": 5185.7,
+              "samples": [
+                4701.8,
+                4837.5,
+                5185.7
+              ]
+            },
+            "canvasMs": {
+              "median": 4.1,
+              "min": 3.8,
+              "max": 4.6,
+              "samples": [
+                4.6,
+                4.1,
+                3.8
+              ]
+            },
+            "encodingMs": {
+              "median": 13.7,
+              "min": 13.4,
+              "max": 14.3,
+              "samples": [
+                14.3,
+                13.7,
+                13.4
+              ]
+            },
+            "yieldMs": {
+              "median": 31.101,
+              "min": 26.0,
+              "max": 49.201,
+              "samples": [
+                26.0,
+                49.201,
+                31.101
+              ]
+            },
+            "transferToMainMs": {
+              "median": 17,
+              "min": 12.605,
+              "max": 32.327,
+              "samples": [
+                32.327,
+                12.605,
+                17
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 18.095,
+              "min": 11.086,
+              "max": 19.4,
+              "samples": [
+                11.086,
+                18.095,
+                19.4
+              ]
+            },
+            "otherMs": {
+              "median": 58.799,
+              "min": 43.687,
+              "max": 64.499,
+              "samples": [
+                43.687,
+                58.799,
+                64.499
+              ]
+            },
+            "stripes": [
+              88,
+              88,
+              88
+            ],
+            "messagesSent": 89,
+            "messagesReceived": 178,
+            "transferredBytes": 158811840,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 46080000,
+              "canvasBytes": 13234320,
+              "maxInputBytes": 1818048,
+              "maxOutputBytes": 151504,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "presentation",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 46.6
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 50.4
+          },
+          {
+            "engine": "v2",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 295056,
+            "firstNeedMs": 50.1
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 1,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 43.7
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 2,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 50.8
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "worker",
+            "rep": 3,
+            "dimensions": [
+              2228,
+              1485
+            ],
+            "jpegBytes": 274174,
+            "firstNeedMs": 57.1
+          }
+        ]
+      },
+      "comparison": [
+        {
+          "engine": "v2",
+          "backend": "worker",
+          "shorterTimePercent": 44.807
+        },
+        {
+          "engine": "calibrated4",
+          "backend": "worker",
+          "shorterTimePercent": 5.34
+        }
+      ],
+      "preEncoderRGBAHashesMatch": null
+    },
+    {
+      "id": "standard-fallback-control",
+      "order": "candidate then baseline",
+      "before": {
+        "exportCodeSHA256": "4276add1bb1d37102b3d8fbef56fb3146de9c4cef7e37c99e69dd8c1800c6bb5",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.365,
+            "totalMs": {
+              "median": 17821.7,
+              "min": 17816,
+              "max": 18059.8,
+              "samples": [
+                17821.7,
+                17816,
+                18059.8
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0,
+                0
+              ]
+            },
+            "prepareMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.1,
+              "samples": [
+                0,
+                0.1,
+                0.1
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 9343.6,
+              "min": 9331.1,
+              "max": 9554.1,
+              "samples": [
+                9331.1,
+                9343.6,
+                9554.1
+              ]
+            },
+            "canvasMs": {
+              "median": 32.6,
+              "min": 31.8,
+              "max": 34.2,
+              "samples": [
+                31.8,
+                32.6,
+                34.2
+              ]
+            },
+            "encodingMs": {
+              "median": 107.3,
+              "min": 94.6,
+              "max": 112.5,
+              "samples": [
+                112.5,
+                94.6,
+                107.3
+              ]
+            },
+            "yieldMs": {
+              "median": 8235.4,
+              "min": 8232.2,
+              "max": 8243.3,
+              "samples": [
+                8232.2,
+                8235.4,
+                8243.3
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 114.0,
+              "min": 109.7,
+              "max": 120.8,
+              "samples": [
+                114.0,
+                109.7,
+                120.8
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          }
+        ]
+      },
+      "after": {
+        "exportCodeSHA256": "15c5c7e8f24dc38ac3a60a870e84ffe53f7b592b6b7161f3277cb17aeb851f86",
+        "environment": {
+          "node": "v24.22.1",
+          "browser": "155.0.8059.79",
+          "os": "linux 6.18.57",
+          "cpu": "AMD EPYC 9V45 96-Core Processor",
+          "logicalCPUs": 3,
+          "headless": true,
+          "physicalIPadOrEdge": false
+        },
+        "source": {
+          "width": 6032,
+          "height": 4032,
+          "bytes": 291852288,
+          "encoding": "linear",
+          "colorSpace": "rec2020",
+          "presentation": false,
+          "target": {
+            "width": 6032,
+            "height": 4032
+          },
+          "deviceMemory": 8
+        },
+        "summary": [
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "megapixels": 24.321,
+            "megapixelsPerSecond": 1.368,
+            "totalMs": {
+              "median": 17772.3,
+              "min": 17701.5,
+              "max": 17820.3,
+              "samples": [
+                17701.5,
+                17772.3,
+                17820.3
+              ]
+            },
+            "recipeGeometryMs": {
+              "median": 0.1,
+              "min": 0,
+              "max": 0.2,
+              "samples": [
+                0,
+                0.1,
+                0.2
+              ]
+            },
+            "prepareMs": {
+              "median": 0.1,
+              "min": 0.1,
+              "max": 0.1,
+              "samples": [
+                0.1,
+                0.1,
+                0.1
+              ]
+            },
+            "packMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "renderMs": {
+              "median": 9304.5,
+              "min": 9234.4,
+              "max": 9337.7,
+              "samples": [
+                9234.4,
+                9304.5,
+                9337.7
+              ]
+            },
+            "canvasMs": {
+              "median": 31.6,
+              "min": 31.0,
+              "max": 33.8,
+              "samples": [
+                31.0,
+                31.6,
+                33.8
+              ]
+            },
+            "encodingMs": {
+              "median": 102.6,
+              "min": 98.9,
+              "max": 105,
+              "samples": [
+                102.6,
+                105,
+                98.9
+              ]
+            },
+            "yieldMs": {
+              "median": 8228.7,
+              "min": 8224.1,
+              "max": 8237.7,
+              "samples": [
+                8224.1,
+                8228.7,
+                8237.7
+              ]
+            },
+            "transferToMainMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "transferToWorkerMs": {
+              "median": 0,
+              "min": 0,
+              "max": 0,
+              "samples": [
+                0,
+                0,
+                0
+              ]
+            },
+            "otherMs": {
+              "median": 109.3,
+              "min": 102.3,
+              "max": 111.9,
+              "samples": [
+                109.3,
+                102.3,
+                111.9
+              ]
+            },
+            "stripes": [
+              2016,
+              2016,
+              2016
+            ],
+            "messagesSent": 0,
+            "messagesReceived": 0,
+            "transferredBytes": 0,
+            "memory": {
+              "kind": "estimated buffer sizes; excludes native encoder/browser/GC memory",
+              "sourceBytes": 291852288,
+              "canvasBytes": 97284096,
+              "maxInputBytes": 0,
+              "maxOutputBytes": 48256,
+              "extraFullSourceCopies": 0
+            }
+          }
+        ],
+        "repeats": 3,
+        "warmupsPerCombination": 1,
+        "input": "procedural Float32 linear Rec.2020 negative",
+        "geometry": "plain",
+        "jpegQuality": 0.94,
+        "inputSHA256": null,
+        "runs": [
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 1,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 2,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          },
+          {
+            "engine": "calibrated4",
+            "backend": "main",
+            "rep": 3,
+            "dimensions": [
+              6032,
+              4032
+            ],
+            "jpegBytes": 2465164
+          }
+        ]
+      },
+      "comparison": [
+        {
+          "engine": "calibrated4",
+          "backend": "main",
+          "shorterTimePercent": 0.277
+        }
+      ],
+      "preEncoderRGBAHashesMatch": null
+    }
+  ],
+  "verification": {
+    "pixelReferenceCases": 120,
+    "localFullSuite": {
+      "passed": 107,
+      "total": 107,
+      "seconds": 280.36,
+      "node": "24.22.1",
+      "browser": "Chromium 155.0.8059.79"
+    },
+    "npmCi": true,
+    "build": true,
+    "diffCheck": true,
+    "instrumentationSmokeWorkerFallback": true,
+    "CI": "See linked completed GitHub Actions run on pull request; not inferred from local results"
+  }
+}
