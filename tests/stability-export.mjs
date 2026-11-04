@@ -75,4 +75,10 @@ await test('ZIP names declare UTF-8 in both headers',async()=>{
  const h=setup();const buf=await h.run("makeZip([['Sommarö_01.jpg',new Uint8Array([1,2,3])]])").arrayBuffer(),v=new DataView(buf);
  assert.equal(v.getUint16(6,true)&0x800,0x800);const offset=30+new TextEncoder().encode('Sommarö_01.jpg').length+3;assert.equal(v.getUint16(offset+8,true)&0x800,0x800);
 });
+await test('ZIP entries carry a valid DOS modification time in both headers',async()=>{
+ const h=setup();const buf=await h.run("makeZip([['a.jpg',new Uint8Array([1,2,3])]],new Date(2026,10,4,9,31,58))").arrayBuffer(),v=new DataView(buf);
+ const time=(9<<11)|(31<<5)|29,date=((2026-1980)<<9)|(11<<5)|4,central=30+5+3;
+ assert.equal(v.getUint16(10,true),time);assert.equal(v.getUint16(12,true),date);
+ assert.equal(v.getUint32(central,true),0x02014b50);assert.equal(v.getUint16(central+12,true),time);assert.equal(v.getUint16(central+14,true),date);
+});
 if(failed)process.exitCode=1;
