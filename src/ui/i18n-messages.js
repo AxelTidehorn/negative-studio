@@ -567,6 +567,7 @@ const rows=[
 ["ICC-tonkurvan stöds inte.", "Unsupported ICC tone curve.", "Courbe tonale ICC non prise en charge.", "Curva tonal ICC no admitida.", "ICC-Tonkurve wird nicht unterstützt."],
 ["ICC-parametrisk tonkurva stöds inte.", "Unsupported parametric ICC curve.", "Courbe ICC paramétrique non prise en charge.", "Curva ICC paramétrica no admitida.", "Parametrische ICC-Kurve wird nicht unterstützt."],
 ["ICC RGB matris/TRC → linjär sRGB", "ICC RGB matrix/TRC → linear sRGB", "Matrice/TRC ICC RGB → sRGB linéaire", "Matriz/TRC ICC RGB → sRGB lineal", "ICC-RGB-Matrix/TRC → lineares sRGB"],
+["ICC gråskala kTRC → linjär", "ICC grayscale kTRC → linear", "ICC niveaux de gris kTRC → linéaire", "ICC escala de grises kTRC → lineal", "ICC-Graustufen kTRC → linear"],
 ["TIFF-data utanför filen", "TIFF data outside file", "Données TIFF hors fichier", "Datos TIFF fuera del archivo", "TIFF-Daten außerhalb der Datei"],
 ["BigTIFF stöds inte", "BigTIFF is unsupported", "BigTIFF non pris en charge", "BigTIFF no admitido", "BigTIFF wird nicht unterstützt"],
 ["Ogiltigt TIFF-fält", "Invalid TIFF field", "Champ TIFF invalide", "Campo TIFF no válido", "Ungültiges TIFF-Feld"],
