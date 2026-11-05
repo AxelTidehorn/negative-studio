@@ -605,8 +605,8 @@ header,footer.foot {
 @supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
   #adjustmentPanel > .tool-card > summary {
     background:var(--ui-card-glass,color-mix(in srgb,var(--ui-card-header) 76%,transparent));
-    -webkit-backdrop-filter:blur(10px);
-    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(2px);
+    backdrop-filter:blur(2px);
   }
 }
 #adjustmentPanel .tool-subsection,
