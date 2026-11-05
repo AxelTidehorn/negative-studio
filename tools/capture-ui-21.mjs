@@ -1,9 +1,9 @@
 // Real application screenshots using the existing public demo, never private RAFs.
 import fs from 'node:fs';
 import {browserHarness} from '../tests/helpers/browser.mjs';
-const phase=process.argv[2]||'after',dir=`docs/ui-2.1/${phase}`;
+const phase=process.argv[2]||'after',dir=`${process.argv[3]||'docs/ui-2.1'}/${phase}`;
 fs.mkdirSync(dir,{recursive:true});
-const h=await browserHarness();
+const h=await browserHarness(),metrics=[];
 try{
  for(const [name,width,height,touch] of [['desktop',1440,900,false],['ipad-landscape',1024,768,true],['ipad-portrait',768,1024,true],['mobile',390,844,true]]){
   const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage();
@@ -27,6 +27,16 @@ try{
    }
    await p.evaluate(()=>FILMLABB_APPEARANCE.set('classic','light'));await p.screenshot({path:`${dir}/${name}-light.png`});
   }
+  await p.evaluate(()=>FILMLABB_APPEARANCE.set('classic','dark'));
+  metrics.push(await p.evaluate(name=>{
+   const ids=['imageAdjustments','creativeProfiles','calibration3','advancedSettings','exportProject'],states=ids.map(id=>$(id).open),cards={};
+   for(const id of ids){const e=$(id),s=e.querySelector(':scope > summary'),body=e.querySelector(':scope > .tool-card-body');e.open=true;cards[id]={openHeight:e.getBoundingClientRect().height,headerHeight:s.getBoundingClientRect().height,padding:getComputedStyle(body).padding};e.open=false;cards[id].closedHeight=e.getBoundingClientRect().height;}
+   $('imageAdjustments').open=true;
+   const row=id=>$(id).closest('.control').getBoundingClientRect(),a=row('exposure'),b=row('contrast');
+   const result={name,cards,rowHeight:a.height,rowPitch:b.top-a.top,sliderHeight:$('exposure').getBoundingClientRect().height,panelWidth:$('adjustmentPanel').getBoundingClientRect().width,pictureWidth:$('picture').getBoundingClientRect().width};
+   ids.forEach((id,i)=>$(id).open=states[i]);return result;
+  },name));
   await c.close();
  }
+ fs.writeFileSync(`${dir}/metrics.json`,JSON.stringify(metrics,null,2)+'\n');
 }finally{await h.close();}

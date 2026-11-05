@@ -247,7 +247,33 @@ input[type=checkbox] {
   border:1px solid var(--ui-border);
   border-radius:var(--ui-radius);
   list-style:none;
-  background:var(--ui-surface)
+  background:transparent;
+  border-color:transparent;
+  gap:6px
+}
+/* Modes stay in the same toolbar order, distinct from import/export actions. */
+.workspace-toolbar .workspace-toggle {
+ padding:3px 5px;
+ border-color:transparent;
+ background:transparent;
+ color:var(--ui-muted);
+ box-shadow:none;
+}
+.workspace-toolbar .workspace-toggle[aria-pressed=true] {
+ background:var(--ui-active);
+ color:var(--ui-text);
+ border-color:transparent;
+ box-shadow:none;
+}
+.workspace-toolbar .workspace-toggle:hover,.fl-info-menu>summary:hover {background:var(--ui-hover)}
+.fl-info-menu>summary::after {
+ content:'';
+ order:-1;
+ width:15px;
+ height:15px;
+ flex:0 0 15px;
+ background:currentColor;
+ mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='1.8' stroke-linejoin='round'%3E%3Cpath d='m9 3-.6 2.4-2 .9-2.2-.7-2 3.4 1.6 1.7v2.6L2.2 15l2 3.4 2.2-.7 2 .9L9 21h4l.6-2.4 2-.9 2.2.7 2-3.4-1.6-1.7v-2.6L19.8 9l-2-3.4-2.2.7-2-.9L13 3Z'/%3E%3Ccircle cx='11' cy='12' r='3'/%3E%3C/svg%3E") center/contain no-repeat;
 }
 .fl-info-menu>summary::-webkit-details-marker {
   display:none
@@ -302,12 +328,13 @@ main.workspace {
   height:var(--fl-workspace-height,calc(100dvh - var(--fl-header-height,52px) - var(--fl-toolbar-height,45px)));
   min-height:240px;
   padding:6px;
-  max-width:none
+  max-width:none;
+  background:var(--ui-bg)
 }
 /* Explicit tracks prevent auto-placement into a collapsed panel column. */
 .workspace>.queue-panel {grid-column:1;grid-row:1}
 .workspace>.divider-left {grid-column:2;grid-row:1}
-.workspace>.image-panel {grid-column:3;grid-row:1}
+.workspace>.image-panel {grid-column:3;grid-row:1;background:var(--ui-bg);border-color:transparent}
 .workspace>.divider-right {grid-column:4;grid-row:1}
 .workspace>.editor-panel {grid-column:5;grid-row:1}
 main.workspace.queue-collapsed {
@@ -503,8 +530,9 @@ main.workspace.adjust-collapsed {
 /* UI 2.1: independent disclosures. Only the small header surfaces are frosted;
    a single opaque body owns content padding, including nested legacy controls. */
 #adjustmentPanel {
-  background:transparent;
+  background:var(--ui-bg);
   border:0;
+  container-type:inline-size;
 }
 #adjustmentPanel > .tool-card {
   margin:0 0 8px;
@@ -517,19 +545,20 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel > .tool-card > summary {
   display:grid;
   grid-template-columns:6px minmax(0,1fr);
-  column-gap:10px;
+  column-gap:8px;
   row-gap:2px;
   min-height:44px;
-  padding:8px 12px;
+  padding:6px 10px;
   border-radius:5px;
   background:var(--ui-card-header);
   font-size:14px;
   font-weight:650;
 }
-#adjustmentPanel > .tool-card > summary::before {grid-row:1 / 3;align-self:center}
-.card-title {min-width:0;overflow-wrap:anywhere}
+#adjustmentPanel > .tool-card > summary::before {grid-row:1;grid-column:1;align-self:center}
+.card-title {grid-row:1;grid-column:2;min-width:0;overflow-wrap:anywhere}
 .card-status {
   grid-column:2;
+  grid-row:2;
   min-width:0;
   font-size:11px;
   font-weight:400;
@@ -541,7 +570,7 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel > .tool-card[open] > summary {border-radius:5px 5px 0 0}
 #adjustmentPanel > .tool-card > .tool-card-body {
   margin:0;
-  padding:10px;
+  padding:8px;
   border-top:1px solid var(--ui-border);
   border-radius:0 0 5px 5px;
   background:var(--ui-card);
@@ -553,8 +582,14 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel .tool-card-body > :first-child {margin-top:0}
 #adjustmentPanel .tool-card-body > :last-child {margin-bottom:0}
 #adjustmentPanel .tool-card-body > .sidebar-profile {padding:0}
-#adjustmentPanel .control {margin:6px 0}
-#adjustmentPanel .adjustment-group3 + .adjustment-group3 {margin-top:12px}
+#adjustmentPanel .control {margin:5px 0}
+#adjustmentPanel .adjustment-group3 + .adjustment-group3 {margin-top:10px}
+/* Wide user-resized editors can put status beside its title. Narrow editors
+   keep a second aligned row without centering the chevron between both rows. */
+@container (min-width:440px) {
+ #adjustmentPanel > .tool-card > summary {grid-template-columns:6px auto minmax(0,1fr)}
+ .tool-card > summary .card-status {grid-column:3;grid-row:1;text-align:right}
+}
 header,footer.foot {
   background:var(--ui-chrome);
   opacity:1;
