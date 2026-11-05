@@ -21,10 +21,11 @@ t(source.querySelector('legend'),'Ojämn belysning');t($('clearReference'),'Ta b
 const tiff=$('tiffEncoding').closest('label');
 const calibrationSection=document.createElement('section');calibrationSection.id='calibration3';calibrationSection.className='tool-section';const heading=document.createElement('h2');t(heading,'Filmbas och kalibrering');calibrationSection.append(heading);
 $('imageAdjustments').after(calibrationSection);move('base2Panel',calibrationSection);$('base2Panel').removeAttribute('data-i18n-ignore');$('base2Panel').querySelector('h3').hidden=true;$('base2Panel').querySelector('p').hidden=true;
-// Reparent the existing controls; geometry and calibration owners stay unchanged.
-const geometrySection=document.createElement('section');geometrySection.id='imageGeometry3';geometrySection.className='tool-section';
-const geometryHeading=document.createElement('h2');t(geometryHeading,'Filmruta, rotation och beskärning');geometrySection.append(geometryHeading);calibrationSection.after(geometrySection);
-move('frameSettingsGroup',geometrySection);move('geometryTools',geometrySection);
+// The technical analysis frame belongs to calibration. Rotation/crop tools are
+// already in the floating image toolbar; keep the numeric fine controls in Advanced.
+move('frameSettingsGroup',calibrationSection);
+move('geometryTools',advanced);
+t($('geometryTools').querySelector('summary'),'Finrotation och komposition');
 // Creative profiles belong to the everyday photographic workflow, ahead of calibration and geometry.
 $('imageAdjustments').after($('creativeProfiles'));
 const adjustments=$('imageAdjustments');adjustments.querySelector('h2').after(adjustments.querySelector('.histogram-panel'));
@@ -95,7 +96,7 @@ function refresh(){
  if(active!==lastTool3){if(active==='straighten'||active==='composition'){
   $('geometryTools').open=true;
   // Scroll only the editor on tablets/desktops; keep direct manipulation in view.
-  if(matchMedia('(min-width:761px)').matches){const b=$('geometryTools').getBoundingClientRect(),p=panel.getBoundingClientRect();if(b.bottom>p.bottom||b.top<p.top)panel.scrollTop+=b.top-p.top;}
+  if(advanced.open&&matchMedia('(min-width:761px)').matches){const b=$('geometryTools').getBoundingClientRect(),p=panel.getBoundingClientRect();if(b.bottom>p.bottom||b.top<p.top)panel.scrollTop+=b.top-p.top;}
  }lastTool3=active;}
  $('geometryTools').hidden=active==='base';
  $('base2Lock').hidden=!snap?.accepted;
