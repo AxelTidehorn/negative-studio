@@ -18,10 +18,12 @@
 #histogramClipping:empty{display:none}
 .adjustment-group3 h3{font-size:12px;color:var(--ui-muted);margin:8px 0 3px}
 .bw-active .adjustment-group3:has(#temperature){display:none}
-#imageGeometry3 h2{font-size:14px}
-#imageGeometry3 .geometry-body{display:grid;grid-template-columns:1fr;gap:4px}
-#imageGeometry3 .geometry-body .toolrow:empty{display:none}
-#imageGeometry3 .rotation-inputs{min-width:0}
+#calibration3 > #frameSettingsGroup{margin:8px 0 0;padding:4px 0 0;border:0;border-top:1px solid var(--ui-border)}
+#advancedSettings > #geometryTools{margin:6px 0 0 12px;padding:0;border:0}
+#advancedSettings > #geometryTools > summary{font-size:13px;font-weight:500}
+#geometryTools .geometry-body{display:grid;grid-template-columns:1fr;gap:4px}
+#geometryTools .geometry-body .toolrow:empty{display:none}
+#geometryTools .rotation-inputs{min-width:0}
 @media(pointer:coarse){
  #adjustmentPanel input[type=range]{min-height:36px}
  #adjustmentPanel .btn,#adjustmentPanel select{min-height:44px}
