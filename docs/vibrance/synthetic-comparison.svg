@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1040" height="604" viewBox="0 0 1040 604" role="img" aria-label="Samma sRGB-färgprover med lyster 0, +30, +60 och -30"><rect width="100%" height="100%" fill="#eeeae2"/><g font-family="sans-serif" fill="#242424"><text x="20" y="28" font-size="18">Editing 2.0 · samma färgprov och övriga inställningar</text>
+<text x="230" y="65" font-size="16">Lyster 0</text>
+<text x="430" y="65" font-size="16">Lyster +30</text>
+<text x="630" y="65" font-size="16">Lyster +60</text>
+<text x="830" y="65" font-size="16">Lyster -30</text>
+<text x="20" y="113" font-size="14">Grå</text>
+<rect x="215" y="82" width="180" height="44" rx="2" fill="rgb(128,128,128)"><title>Grå, lyster 0: RGB 128, 128, 128</title></rect>
+<rect x="415" y="82" width="180" height="44" rx="2" fill="rgb(128,128,128)"><title>Grå, lyster 30: RGB 128, 128, 128</title></rect>
+<rect x="615" y="82" width="180" height="44" rx="2" fill="rgb(128,128,128)"><title>Grå, lyster 60: RGB 128, 128, 128</title></rect>
+<rect x="815" y="82" width="180" height="44" rx="2" fill="rgb(128,128,128)"><title>Grå, lyster -30: RGB 128, 128, 128</title></rect>
+<text x="20" y="169" font-size="14">Nästan neutral</text>
+<rect x="215" y="138" width="180" height="44" rx="2" fill="rgb(179,179,178)"><title>Nästan neutral, lyster 0: RGB 179, 179, 178</title></rect>
+<rect x="415" y="138" width="180" height="44" rx="2" fill="rgb(179,179,178)"><title>Nästan neutral, lyster 30: RGB 179, 179, 178</title></rect>
+<rect x="615" y="138" width="180" height="44" rx="2" fill="rgb(179,179,178)"><title>Nästan neutral, lyster 60: RGB 179, 179, 178</title></rect>
+<rect x="815" y="138" width="180" height="44" rx="2" fill="rgb(179,179,178)"><title>Nästan neutral, lyster -30: RGB 179, 179, 178</title></rect>
+<text x="20" y="225" font-size="14">Hudliknande ljus</text>
+<rect x="215" y="194" width="180" height="44" rx="2" fill="rgb(199,145,115)"><title>Hudliknande ljus, lyster 0: RGB 199, 145, 115</title></rect>
+<rect x="415" y="194" width="180" height="44" rx="2" fill="rgb(204,143,108)"><title>Hudliknande ljus, lyster 30: RGB 204, 143, 108</title></rect>
+<rect x="615" y="194" width="180" height="44" rx="2" fill="rgb(208,141,102)"><title>Hudliknande ljus, lyster 60: RGB 208, 141, 102</title></rect>
+<rect x="815" y="194" width="180" height="44" rx="2" fill="rgb(194,147,121)"><title>Hudliknande ljus, lyster -30: RGB 194, 147, 121</title></rect>
+<text x="20" y="281" font-size="14">Hudliknande mörk</text>
+<rect x="215" y="250" width="180" height="44" rx="2" fill="rgb(122,77,56)"><title>Hudliknande mörk, lyster 0: RGB 122, 77, 56</title></rect>
+<rect x="415" y="250" width="180" height="44" rx="2" fill="rgb(127,74,51)"><title>Hudliknande mörk, lyster 30: RGB 127, 74, 51</title></rect>
+<rect x="615" y="250" width="180" height="44" rx="2" fill="rgb(131,72,45)"><title>Hudliknande mörk, lyster 60: RGB 131, 72, 45</title></rect>
+<rect x="815" y="250" width="180" height="44" rx="2" fill="rgb(118,79,61)"><title>Hudliknande mörk, lyster -30: RGB 118, 79, 61</title></rect>
+<text x="20" y="337" font-size="14">Himmel</text>
+<rect x="215" y="306" width="180" height="44" rx="2" fill="rgb(97,166,217)"><title>Himmel, lyster 0: RGB 97, 166, 217</title></rect>
+<rect x="415" y="306" width="180" height="44" rx="2" fill="rgb(89,166,222)"><title>Himmel, lyster 30: RGB 89, 166, 222</title></rect>
+<rect x="615" y="306" width="180" height="44" rx="2" fill="rgb(81,166,227)"><title>Himmel, lyster 60: RGB 81, 166, 227</title></rect>
+<rect x="815" y="306" width="180" height="44" rx="2" fill="rgb(104,165,212)"><title>Himmel, lyster -30: RGB 104, 165, 212</title></rect>
+<text x="20" y="393" font-size="14">Grönt</text>
+<rect x="215" y="362" width="180" height="44" rx="2" fill="rgb(56,135,64)"><title>Grönt, lyster 0: RGB 56, 135, 64</title></rect>
+<rect x="415" y="362" width="180" height="44" rx="2" fill="rgb(50,136,60)"><title>Grönt, lyster 30: RGB 50, 136, 60</title></rect>
+<rect x="615" y="362" width="180" height="44" rx="2" fill="rgb(44,137,56)"><title>Grönt, lyster 60: RGB 44, 137, 56</title></rect>
+<rect x="815" y="362" width="180" height="44" rx="2" fill="rgb(61,134,68)"><title>Grönt, lyster -30: RGB 61, 134, 68</title></rect>
+<text x="20" y="449" font-size="14">Mättat rött</text>
+<rect x="215" y="418" width="180" height="44" rx="2" fill="rgb(242,15,5)"><title>Mättat rött, lyster 0: RGB 242, 15, 5</title></rect>
+<rect x="415" y="418" width="180" height="44" rx="2" fill="rgb(242,15,5)"><title>Mättat rött, lyster 30: RGB 242, 15, 5</title></rect>
+<rect x="615" y="418" width="180" height="44" rx="2" fill="rgb(242,15,5)"><title>Mättat rött, lyster 60: RGB 242, 15, 5</title></rect>
+<rect x="815" y="418" width="180" height="44" rx="2" fill="rgb(241,22,10)"><title>Mättat rött, lyster -30: RGB 241, 22, 10</title></rect>
+<text x="20" y="505" font-size="14">Mättat blått</text>
+<rect x="215" y="474" width="180" height="44" rx="2" fill="rgb(8,13,242)"><title>Mättat blått, lyster 0: RGB 8, 13, 242</title></rect>
+<rect x="415" y="474" width="180" height="44" rx="2" fill="rgb(8,13,242)"><title>Mättat blått, lyster 30: RGB 8, 13, 242</title></rect>
+<rect x="615" y="474" width="180" height="44" rx="2" fill="rgb(8,13,242)"><title>Mättat blått, lyster 60: RGB 8, 13, 242</title></rect>
+<rect x="815" y="474" width="180" height="44" rx="2" fill="rgb(7,16,241)"><title>Mättat blått, lyster -30: RGB 7, 16, 241</title></rect>
+<text x="20" y="561" font-size="14">Svagt varm högdager</text>
+<rect x="215" y="530" width="180" height="44" rx="2" fill="rgb(242,240,237)"><title>Svagt varm högdager, lyster 0: RGB 242, 240, 237</title></rect>
+<rect x="415" y="530" width="180" height="44" rx="2" fill="rgb(242,240,237)"><title>Svagt varm högdager, lyster 30: RGB 242, 240, 237</title></rect>
+<rect x="615" y="530" width="180" height="44" rx="2" fill="rgb(242,240,237)"><title>Svagt varm högdager, lyster 60: RGB 242, 240, 237</title></rect>
+<rect x="815" y="530" width="180" height="44" rx="2" fill="rgb(242,240,237)"><title>Svagt varm högdager, lyster -30: RGB 242, 240, 237</title></rect>
+</g></svg>

@@ -4,13 +4,13 @@
 (function(root){
 'use strict';
 const W=[.2126,.7152,.0722],X=[0,.01,.04,.1,.18,.35,.6,.85,1];
-const neutral=Object.freeze({editVersion:1,exposure:0,contrast:1,gamma:1,shadows:0,highlights:0,shadow:.015,highlight:.99,temperature:0,tint:0,saturation:1});
+const neutral=Object.freeze({editVersion:1,exposure:0,contrast:1,gamma:1,shadows:0,highlights:0,shadow:.015,highlight:.99,temperature:0,tint:0,saturation:1,vibrance:0});
 const clamp=v=>Math.max(0,Math.min(1,v));
 const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
 const encode=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
 const dot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
 const version=v=>v===2?2:1;
-function options(o){const out={};for(const [k,a,b] of [['exposure',-2,2],['contrast',.5,1.7],['gamma',.65,1.6],['shadows',-100,100],['highlights',-100,100],['shadow',0,.12],['highlight',.85,1],['temperature',-35,35],['tint',-35,35],['saturation',0,1.8]])out[k]=Number.isFinite(o[k])?Math.max(a,Math.min(b,o[k])):neutral[k];return out;}
+function options(o){const out={};for(const [k,a,b] of [['exposure',-2,2],['contrast',.5,1.7],['gamma',.65,1.6],['shadows',-100,100],['highlights',-100,100],['shadow',0,.12],['highlight',.85,1],['temperature',-35,35],['tint',-35,35],['saturation',0,1.8],['vibrance',-100,100]])out[k]=Number.isFinite(o[k])?Math.max(a,Math.min(b,o[k])):neutral[k];return out;}
 // PCHIP weighted harmonic tangents; endpoint limiting and monotone constant runs.
 function curve(values){
  const h=X.slice(1).map((v,i)=>v-X[i]),d=h.map((v,i)=>(values[i+1]-values[i])/v),m=new Array(X.length);
@@ -22,7 +22,7 @@ function curve(values){
 }
 function evaluate(tone,y){y=clamp(y);let k=0;while(k<7&&y>X[k+1])k++;const t=(y-X[k])/(X[k+1]-X[k]),a=tone.coefficients[k];return ((a[3]*t+a[2])*t+a[1])*t+a[0];}
 function prepare(input,monochrome=false){
- const o=options(input);if(monochrome){o.temperature=0;o.tint=0;o.saturation=1;}
+ const o=options(input);if(monochrome){o.temperature=0;o.tint=0;o.saturation=1;o.vibrance=0;}
  const gain=2**o.exposure,black=decode(o.shadow)-decode(neutral.shadow),white=1+decode(o.highlight)-decode(neutral.highlight);
  const sigmoid=v=>1/(1+Math.exp(-v)),logit=v=>Math.log(v/(1-v)),pivot=logit(.18);
  const values=X.map(x=>{
@@ -38,14 +38,27 @@ function prepare(input,monochrome=false){
   return y;
  });
  const gains=[Math.exp(o.temperature/180+o.tint/350),Math.exp(-o.tint/120),Math.exp(-o.temperature/180+o.tint/350)],normalization=dot(W,gains);
+ // Keep the historical tone/gamut parameters: lyster only modifies chroma.
  const amount=Math.max(Math.abs(o.exposure)/2,Math.abs(o.contrast-1)/.7,Math.abs(o.gamma-1)/.6,Math.abs(o.shadows)/100,Math.abs(o.highlights)/100,Math.abs(o.shadow-neutral.shadow)/.105,Math.abs(o.highlight-neutral.highlight)/.14,Math.abs(o.temperature)/35,Math.abs(o.tint)/35,Math.abs(o.saturation-1));
- return {knee:.1*Math.min(1,amount),tone:curve(values),gains:gains.map(v=>v/normalization),saturation:o.saturation,identity:Object.keys(o).every(k=>o[k]===neutral[k])};
+ return {knee:.1*Math.min(1,amount),tone:curve(values),gains:gains.map(v=>v/normalization),saturation:o.saturation,vibrance:o.vibrance/100,identity:Object.keys(o).every(k=>o[k]===neutral[k])};
 }
 // Ottosson's published D65 linear-sRGB/OKLab matrices; independent implementation.
 const M1=[[.4122214708,.5363325363,.0514459929],[.2119034982,.6806995451,.1073969566],[.0883024619,.2817188376,.6299787005]],M2=[[.2104542553,.793617785,-.0040720468],[1.9779984951,-2.428592205,.4505937099],[.0259040371,.7827717662,-.808675766]],I1=[[1,.3963377774,.2158037573],[1,-.1055613458,-.0638541728],[1,-.0894841775,-1.291485548]],I2=[[4.0767416621,-3.3077115913,.2309699292],[-1.2684380046,2.6097574011,-.3413193965],[-.0041960863,-.7034186147,1.707614701]];
 const lab=p=>{const lms=M1.map(row=>Math.cbrt(dot(row,p)));return M2.map(row=>dot(row,lms));};
 const rgb=p=>{const lms=I1.map(row=>dot(row,p)**3);return I2.map(row=>dot(row,lms));};
-function saturation(p,s){if(s===1||Math.max(...p)-Math.min(...p)<1e-7)return p;const q=lab(p);return rgb([q[0],q[1]*s,q[2]*s]);}
+// Manual chroma selectivity, shared with GLSL. No hue/scene/skin classification.
+// W(C) = C²/(C²+n²) * (s²/(C²+s²))²; both gray and strong chroma tend to zero.
+const vibranceRecipe=Object.freeze({version:1,neutralChroma:.03,strongChroma:.12,gamutMargin:.04});
+const vibranceN2=vibranceRecipe.neutralChroma**2,vibranceS2=vibranceRecipe.strongChroma**2;
+function vibranceWeightSquared(c2){const f=vibranceS2/(c2+vibranceS2);return c2/(c2+vibranceN2)*f*f;}
+const vibranceWeight=c=>vibranceWeightSquared(c*c);
+function vibranceEdge(x){const t=clamp(x/vibranceRecipe.gamutMargin);return t*t*(3-2*t);}
+function vibranceHeadroom(lo,hi){return vibranceEdge(lo)*vibranceEdge(1-hi);}
+function saturation(p,s,vibrance=0){
+ if((s===1&&vibrance===0)||Math.max(...p)-Math.min(...p)<1e-7)return p;
+ const q=lab(p),a=q[1]*s,b=q[2]*s,k=vibrance===0?1:1+vibrance/100*vibranceWeightSquared(a*a+b*b)*(vibrance>0?vibranceHeadroom(Math.min(...p),Math.max(...p)):1);
+ if(s===1&&k===1)return p;return rgb([q[0],a*k,b*k]);
+}
 function gamut(p,knee=.1){
  const y=clamp(dot(W,p)),d=p.map(v=>v-y);let bound=1e20;
  for(let k=0;k<3;k++){if(d[k]>0)bound=Math.min(bound,(1-y)/d[k]);else if(d[k]<0)bound=Math.min(bound,-y/d[k]);}
@@ -61,11 +74,12 @@ function compile(input,monochrome=false){
   r=black+r*scale;g=black+g*scale;b=black+b*scale;
   // Scalar hot path: no per-pixel matrix/vector temporaries. Coefficients are
   // the same shared matrices used to generate GLSL and the reference helpers.
-  if(p.saturation!==1&&Math.max(r,g,b)-Math.min(r,g,b)>=1e-7){
+  if((p.saturation!==1||p.vibrance!==0)&&Math.max(r,g,b)-Math.min(r,g,b)>=1e-7){
    const l=Math.cbrt(M1[0][0]*r+M1[0][1]*g+M1[0][2]*b),m=Math.cbrt(M1[1][0]*r+M1[1][1]*g+M1[1][2]*b),s=Math.cbrt(M1[2][0]*r+M1[2][1]*g+M1[2][2]*b);
-   const L=M2[0][0]*l+M2[0][1]*m+M2[0][2]*s,a=(M2[1][0]*l+M2[1][1]*m+M2[1][2]*s)*p.saturation,c=(M2[2][0]*l+M2[2][1]*m+M2[2][2]*s)*p.saturation;
-   const lr=L+I1[0][1]*a+I1[0][2]*c,mr=L+I1[1][1]*a+I1[1][2]*c,sr=L+I1[2][1]*a+I1[2][2]*c,ll=lr*lr*lr,mm=mr*mr*mr,ss=sr*sr*sr;
-   r=I2[0][0]*ll+I2[0][1]*mm+I2[0][2]*ss;g=I2[1][0]*ll+I2[1][1]*mm+I2[1][2]*ss;b=I2[2][0]*ll+I2[2][1]*mm+I2[2][2]*ss;
+   const L=M2[0][0]*l+M2[0][1]*m+M2[0][2]*s;let a=(M2[1][0]*l+M2[1][1]*m+M2[1][2]*s)*p.saturation,c=(M2[2][0]*l+M2[2][1]*m+M2[2][2]*s)*p.saturation;
+   let factor=1;if(p.vibrance!==0){factor+=p.vibrance*vibranceWeightSquared(a*a+c*c)*(p.vibrance>0?vibranceHeadroom(Math.min(r,g,b),Math.max(r,g,b)):1);a*=factor;c*=factor;}
+   if(p.saturation!==1||factor!==1){const lr=L+I1[0][1]*a+I1[0][2]*c,mr=L+I1[1][1]*a+I1[1][2]*c,sr=L+I1[2][1]*a+I1[2][2]*c,ll=lr*lr*lr,mm=mr*mr*mr,ss=sr*sr*sr;
+   r=I2[0][0]*ll+I2[0][1]*mm+I2[0][2]*ss;g=I2[1][0]*ll+I2[1][1]*mm+I2[1][2]*ss;b=I2[2][0]*ll+I2[2][1]*mm+I2[2][2]*ss;}
   }
   const Y=clamp(.2126*r+.7152*g+.0722*b),dr=r-Y,dg=g-Y,db=b-Y;let bound=1e20;
   if(dr>0)bound=Math.min(bound,(1-Y)/dr);else if(dr<0)bound=Math.min(bound,-Y/dr);
@@ -81,7 +95,7 @@ const matrix=(name,rows)=>`vec3 ${name}(vec3 p){return vec3(${rows.map(r=>'dot('
 const glsl=`
 uniform bool uEdit2,uEditIdentity;
 uniform vec3 uEditGains;
-uniform float uEditSaturation,uEditKnee;
+uniform float uEditSaturation,uEditVibrance,uEditKnee;
 uniform vec4 uEditCurve[8];
 const float EDIT_X[9]=float[9](${X.map(v=>Number.isInteger(v)?v.toFixed(1):String(v)).join(',')});
 vec3 editDecode(vec3 p){return mix(pow((p+vec3(.055))/1.055,vec3(2.4)),p/12.92,lessThanEqual(p,vec3(.04045)));}
@@ -90,9 +104,10 @@ ${matrix('editM1',M1)}
 ${matrix('editM2',M2)}
 ${matrix('editI1',I1)}
 ${matrix('editI2',I2)}
-vec3 editSaturate(vec3 p){if(uEditSaturation==1.0||max(p.r,max(p.g,p.b))-min(p.r,min(p.g,p.b))<1e-7)return p;vec3 q=editM2(pow(max(vec3(0.0),editM1(p)),vec3(1.0/3.0)));q.yz*=uEditSaturation;vec3 t=editI1(q);return editI2(t*t*t);}
+float editVibranceWeight(float c2){float f=${vibranceS2}/(c2+${vibranceS2});return c2/(c2+${vibranceN2})*f*f;}
+vec3 editSaturate(vec3 p){if((uEditSaturation==1.0&&uEditVibrance==0.0)||max(p.r,max(p.g,p.b))-min(p.r,min(p.g,p.b))<1e-7)return p;vec3 q=editM2(pow(max(vec3(0.0),editM1(p)),vec3(1.0/3.0)));q.yz*=uEditSaturation;float factor=1.0;if(uEditVibrance!=0.0){float headroom=uEditVibrance>0.0?smoothstep(0.0,${vibranceRecipe.gamutMargin},min(p.r,min(p.g,p.b)))*smoothstep(0.0,${vibranceRecipe.gamutMargin},1.0-max(p.r,max(p.g,p.b))):1.0;factor+=uEditVibrance*editVibranceWeight(dot(q.yz,q.yz))*headroom;}if(uEditSaturation==1.0&&factor==1.0)return p;q.yz*=factor;vec3 t=editI1(q);return editI2(t*t*t);}
 vec3 editGamut(vec3 p){float y=clamp(dot(vec3(.2126,.7152,.0722),p),0.0,1.0);vec3 d=p-vec3(y);float bound=1e20;for(int k=0;k<3;k++){if(d[k]>0.0)bound=min(bound,(1.0-y)/d[k]);else if(d[k]<0.0)bound=min(bound,-y/d[k]);}float u=1.0/max(1e-20,bound),start=1.0-uEditKnee,s=u<=start?1.0:uEditKnee>0.0?(start+uEditKnee*(1.0-exp(-(u-start)/uEditKnee)))/u:1.0/u;return clamp(vec3(y)+d*s,0.0,1.0);}
 vec3 editPositive(vec3 encoded){if(uEditIdentity)return encoded;vec3 p=editDecode(encoded)*uEditGains;float y=dot(vec3(.2126,.7152,.0722),p),target=editTone(y),black=uEditCurve[0].x,scale=y>1e-12?(target-black)/y:uEditCurve[0].y/EDIT_X[1];p=vec3(black)+p*scale;p=editGamut(editSaturate(p));return mix(1.055*pow(p,vec3(1.0/2.4))-vec3(.055),12.92*p,lessThanEqual(p,vec3(.0031308)));}
 `;
-root.NSEditing2={PROJECT_FORMAT:'negative-studio-roll-beta6-edit2',version,neutral,options,prepare,compile,curve,evaluate,lab,rgb,saturation,gamut,X,W,glsl};
+root.NSEditing2={VIBRANCE_PROJECT_FORMAT:'negative-studio-roll-edit2-vibrance1',PROJECT_FORMAT:'negative-studio-roll-beta6-edit2',version,neutral,options,prepare,compile,curve,evaluate,lab,rgb,saturation,vibranceRecipe,vibranceWeight,gamut,X,W,glsl};
 })(globalThis);
