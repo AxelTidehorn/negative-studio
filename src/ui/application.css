@@ -357,6 +357,7 @@ main.workspace.adjust-collapsed {
   background:var(--ui-active)
 }
 .queue-panel {
+  background:var(--ui-queue-surface,var(--ui-panel));
   display:flex;
   flex-direction:column;
   gap:8px;
