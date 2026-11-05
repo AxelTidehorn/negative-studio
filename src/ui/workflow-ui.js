@@ -25,6 +25,8 @@ $('imageAdjustments').after(calibrationSection);move('base2Panel',calibrationSec
 const geometrySection=document.createElement('section');geometrySection.id='imageGeometry3';geometrySection.className='tool-section';
 const geometryHeading=document.createElement('h2');t(geometryHeading,'Filmruta, rotation och beskärning');geometrySection.append(geometryHeading);calibrationSection.after(geometrySection);
 move('frameSettingsGroup',geometrySection);move('geometryTools',geometrySection);
+// Creative profiles belong to the everyday photographic workflow, ahead of calibration and geometry.
+$('imageAdjustments').after($('creativeProfiles'));
 const adjustments=$('imageAdjustments');adjustments.querySelector('h2').after(adjustments.querySelector('.histogram-panel'));
 for(const [title,ids]of [['Exponering och ton',['exposure','contrast','highlights','shadows']],['Färg',['temperature','tint','saturation']]]){
  const group=document.createElement('section');group.className='adjustment-group3';const h=document.createElement('h3');t(h,title);group.append(h);$('simpleControls').append(group);for(const id of ids)group.append($(id).closest('.control'));
