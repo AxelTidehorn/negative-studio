@@ -16,19 +16,25 @@ Light palettes retain their existing colors. */
 :root[data-theme="classic"]:not([data-mode="light"]) {
   --ui-card-header:#493126;
   --ui-card:#171210;
-  --ui-card-glass:linear-gradient(125deg,rgba(215,159,66,.18) 0%,rgba(193,125,42,.15) 42%,rgba(153,91,27,.20) 100%);
+  --ui-card-glass:linear-gradient(125deg,rgba(235,182,84,.18) 0%,rgba(215,151,57,.15) 42%,rgba(175,112,34,.20) 100%);
   --ui-card-backdrop:none;
-  --ui-card-edge:#f0b48133;
-  --ui-card-shadow:0 2px 5px #0002;
-  --ui-glass-edge:rgba(255,216,177,.18);
+  --ui-card-edge:rgba(238,192,112,.24);
+  --ui-card-shadow:0 2px 5px #0002,0 0 3px rgba(240,188,94,.06);
+  --ui-glass-edge:rgba(255,226,172,.30);
+  --ui-glass-shade:rgba(0,0,0,.18);
   --ui-queue-surface:rgba(24,24,25,.20);
   --ui-smoke-overlay:rgba(24,24,25,.85);
   --ui-smoke-overlay-solid:#181819;
   --ui-smoke-overlay-backdrop:none;
-  /* Static SVG, supplied 340x220 paths and 23-unit blur. Scale both axes to
-     keep every edge in view on portrait as well as wide workspaces. sRGB
-     filter interpolation avoids amplified dark-channel quantization. */
-  --ui-workspace-material:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20340%20220%22%20preserveAspectRatio%3D%22none%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22vignette-base%22%20cx%3D%2248%25%22%20cy%3D%2243%25%22%20r%3D%2275%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2338251D%22%2F%3E%0A%3Cstop%20offset%3D%2248%25%22%20stop-color%3D%22%232B1B15%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23100805%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3Cfilter%20color-interpolation-filters%3D%22sRGB%22%20id%3D%22organic-blur%22%20x%3D%22-65%25%22%20y%3D%22-65%25%22%20width%3D%22230%25%22%20height%3D%22230%25%22%3E%0A%3CfeGaussianBlur%20stdDeviation%3D%2223%22%2F%3E%0A%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22340%22%20height%3D%22220%22%20fill%3D%22url%28%23vignette-base%29%22%2F%3E%0A%3Cg%20filter%3D%22url%28%23organic-blur%29%22%3E%0A%3Cpath%20d%3D%22M-60%20-40%20C88%20-35%20111%2023%20109%2065%20C124%2099%2065%20121%20117%20174%20C161%20219%20168%20251%20-60%20260%20Z%22%20fill%3D%22%2326150F%22%20opacity%3D%22.95%22%2F%3E%0A%3Cpath%20d%3D%22M-65%20-20%20C43%20-12%2065%2033%2070%2076%20C89%20118%2023%20140%2078%20180%20C111%20215%20104%20250%20-65%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20d%3D%22M405%20-45%20C289%20-21%20258%2022%20271%2068%20C291%20111%20229%20141%20236%20181%20C256%20229%20326%20251%20405%20260%20Z%22%20fill%3D%22%2324140F%22%20opacity%3D%22.96%22%2F%3E%0A%3Cpath%20d%3D%22M406%20-25%20C326%20-15%20300%2038%20317%2082%20C334%20122%20275%20153%20300%20194%20C319%20228%20363%20251%20406%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20d%3D%22M-35%20265%20C25%20174%2094%20180%20131%20204%20C183%20245%20240%20185%20286%20192%20C318%20200%20352%20230%20380%20265%20Z%22%20fill%3D%22%23140A07%22%20opacity%3D%22.9%22%2F%3E%0A%3Cpath%20d%3D%22M-30%20-35%20C60%2016%20137%20-2%20176%2015%20C243%2039%20294%20-9%20378%20-35%20Z%22%20fill%3D%22%23160B08%22%20opacity%3D%22.83%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A');
+  --ui-card-header-shadow:inset 0 1px var(--ui-glass-edge),inset 0 3px 6px -4px rgba(255,226,172,.12),inset 0 -1px var(--ui-glass-shade);
+  --ui-smoke-edge:rgba(220,224,228,.20);
+  --ui-smoke-shadow:inset 0 1px rgba(245,247,250,.14),inset 0 3px 6px -4px rgba(245,247,250,.08),0 1px 3px #0002;
+  /* Six original 340x220 curves, no path scaling. Mid-brown side forms
+     cross the panels; the right fill fades toward the outer edge instead
+     of forming a uniform sheet. Darkest cores stay translated outside.
+     An 18-unit blur preserves broad curves; keep the workspace mapping
+     and sRGB interpolation. Glass materials are independent of this SVG. */
+  --ui-workspace-material:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20340%20220%22%20preserveAspectRatio%3D%22none%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22vignette-base%22%20cx%3D%2248%25%22%20cy%3D%2243%25%22%20r%3D%2275%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2338251D%22%2F%3E%0A%3Cstop%20offset%3D%2248%25%22%20stop-color%3D%22%232B1B15%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23100805%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3ClinearGradient%20id%3D%22organic-warm-side%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22215%22%20y1%3D%220%22%20x2%3D%22285%22%20y2%3D%220%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23593B29%22%2F%3E%0A%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23513525%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23513525%22%20stop-opacity%3D%220%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cfilter%20color-interpolation-filters%3D%22sRGB%22%20id%3D%22organic-blur%22%20x%3D%22-65%25%22%20y%3D%22-65%25%22%20width%3D%22230%25%22%20height%3D%22230%25%22%3E%0A%3CfeGaussianBlur%20stdDeviation%3D%2218%22%2F%3E%0A%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22340%22%20height%3D%22220%22%20fill%3D%22url(%23vignette-base)%22%2F%3E%0A%3Cg%20filter%3D%22url(%23organic-blur)%22%3E%0A%3Cpath%20transform%3D%22translate(-95%200)%22%20d%3D%22M-60%20-40%20C88%20-35%20111%2023%20109%2065%20C124%2099%2065%20121%20117%20174%20C161%20219%20168%20251%20-60%20260%20Z%22%20fill%3D%22%23543725%22%20opacity%3D%22.95%22%2F%3E%0A%3Cpath%20transform%3D%22translate(-100%200)%22%20d%3D%22M-65%20-20%20C43%20-12%2065%2033%2070%2076%20C89%20118%2023%20140%2078%20180%20C111%20215%20104%20250%20-65%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(20%20-110)%22%20d%3D%22M405%20-45%20C289%20-21%20258%2022%20271%2068%20C291%20111%20229%20141%20236%20181%20C256%20229%20326%20251%20405%20260%20Z%22%20fill%3D%22url(%23organic-warm-side)%22%20opacity%3D%22.96%22%2F%3E%0A%3Cpath%20transform%3D%22translate(100%200)%22%20d%3D%22M406%20-25%20C326%20-15%20300%2038%20317%2082%20C334%20122%20275%20153%20300%20194%20C319%20228%20363%20251%20406%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%2055)%22%20d%3D%22M-35%20265%20C25%20174%2094%20180%20131%20204%20C183%20245%20240%20185%20286%20192%20C318%20200%20352%20230%20380%20265%20Z%22%20fill%3D%22%23140A07%22%20opacity%3D%22.9%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%20-45)%22%20d%3D%22M-30%20-35%20C60%2016%20137%20-2%20176%2015%20C243%2039%20294%20-9%20378%20-35%20Z%22%20fill%3D%22%23160B08%22%20opacity%3D%22.83%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A');
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
