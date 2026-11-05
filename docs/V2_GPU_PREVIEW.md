@@ -1,5 +1,8 @@
 # V2 GPU preview, stage 1
 
+> Historical stage-1 design and measurements. Current full GPU reconstruction
+> is described in [stage 2](V2_GPU_RECONSTRUCTION.md).
+
 Based on `eb2e685` (main, merged #62 including Vibrance). This changes preview
 ownership, not V2 reconstruction, photographic rendering, Editing 2.0 math,
 project schemas or JPEG/TIFF processing. Original stays CPU; Standard retains its
@@ -42,7 +45,9 @@ existing V2 analysis invalidation; a different resulting applied recipe rebuilds
 the positive. If all applied values remain identical, its pixels can be reused.
 
 The complete serialized key decides validity, not the short diagnostic hash.
-Pending worker results must match request ID, full key, image object, source
+At most one reconstruction runs at once; rapid technical changes coalesce into
+the latest recipe after discarding the active outdated result. Pending worker
+results must match request ID, full key, image object, source
 version and currently selected V2 recipe. Image import/navigation terminates the
 old worker and releases old textures. Rapid edits use the latest manual settings
 when preparation completes. Positive and negative textures remain distinct.
