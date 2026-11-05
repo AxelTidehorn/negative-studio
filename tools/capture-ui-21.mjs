@@ -14,7 +14,9 @@ try{
     await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-open.png`});
     await p.locator('#imageAdjustments > summary').click();await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-closed.png`});
     await p.screenshot({path:`${dir}/desktop-closed.png`});
-    await p.locator('footer').screenshot({path:`${dir}/footer.png`});
+    // Capture the document in place: scrolling triggers the existing workspace
+    // height owner and can move the footer while a viewport clip is taken.
+    await p.screenshot({path:`${dir}/footer.png`,fullPage:true});
     await p.evaluate(()=>window.scrollTo(0,0));
     // Uniform test images isolate toolbar readability; no private photographs.
     for(const [label,value]of [['light',.015],['dark',.92]]){
