@@ -33,10 +33,9 @@ for(const [title,ids]of [['Exponering och ton',['exposure','contrast','highlight
  const group=document.createElement('section');group.className='adjustment-group3';const h=document.createElement('h3');t(h,title);group.append(h);$('simpleControls').append(group);for(const id of ids)group.append($(id).closest('.control'));
 }
 const resetHint=document.createElement('p');resetHint.className='hint';t(resetHint,'Dubbeltryck på ett reglage för att återställa det.');$('reset').after(resetHint);
-move('base2Status',$('base2Panel')).before($('base2Panel').querySelector('.toolrow'));
 const sampleDetails=details('sampleDetails3','Prov och godkännande',$('base2Panel'));move('base2Status',sampleDetails);
 const baseSummary=document.createElement('p');baseSummary.id='baseSummary3';baseSummary.className='status';baseSummary.setAttribute('role','status');$('base2Panel').prepend(baseSummary);
-for(const id of ['base2Stats','base2Compare','base2Preview','base2Accept','base2Cancel','base2Undo','base2Auto','base2Lock'])move(id,sampleDetails);
+for(const id of ['base2Stats','base2Compare','base2Preview','base2Accept','base2Cancel','base2Undo','base2Auto'])move(id,sampleDetails);
 const rollDetails=details('rollCalibration3','Filmrullens referens',$('base2Panel'));
 field('base2Session',rollDetails);for(const id of ['shareBase','clearRollBase','rollBaseStatus'])move(id,rollDetails);rollDetails.append($('useRollBase').closest('label'));
 oldTechnical.hidden=true;move('base2ResponseLock',technical);move('base2Lock',$('base2Panel'));
