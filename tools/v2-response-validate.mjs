@@ -1,5 +1,5 @@
 /* Targeted private RAF comparison. No images or RAW data leave localhost.
-   node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3|--photographic|--photographic-color] [--candidate-only]
+   node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3|--photographic|--photographic-color] [--candidate-only|--cache-only]
    PACKAGE: extracted 399-file evaluation; ORIGINALS: inventory-ID.RAF files.
    Saved FILMLABB A is reused separately: its protected-sRGB decoder and creative
    settings differ, so it is a photographic reference, not a colorimetric target.
@@ -8,10 +8,11 @@ import fs from 'node:fs';import path from 'node:path';import http from 'node:htt
 import {ensureBuild} from './build-artifact.mjs';
 import {launchBrowser} from '../tests/helpers/browser-runtime.mjs';
 const [packageArg,rawArg,outArg,...args]=process.argv.slice(2);
-if(!packageArg||!rawArg||!outArg||args.some(x=>x.startsWith('--')&&!['--export04','--algorithm3','--photographic','--photographic-color','--candidate-only'].includes(x)))throw Error('Usage: node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3|--photographic|--photographic-color] [--candidate-only]');
-const photoColor=args.includes('--photographic-color'),candidateOnly=args.includes('--candidate-only'),photo=args.includes('--photographic')||photoColor,algorithm3=args.includes('--algorithm3')||photo,fullExport04=args.includes('--export04'),selected=(args.find(x=>!x.startsWith('--'))||'04,05,06,09,10').split(',');
+if(!packageArg||!rawArg||!outArg||args.some(x=>x.startsWith('--')&&!['--export04','--algorithm3','--photographic','--photographic-color','--candidate-only','--cache-only'].includes(x)))throw Error('Usage: node tools/v2-response-validate.mjs PACKAGE ORIGINALS OUTPUT [04,05,06,09,10] [--export04] [--algorithm3|--photographic|--photographic-color] [--candidate-only|--cache-only]');
+const cacheOnly=args.includes('--cache-only'),photoColor=args.includes('--photographic-color'),candidateOnly=args.includes('--candidate-only'),photo=args.includes('--photographic')||photoColor,algorithm3=args.includes('--algorithm3')||photo||cacheOnly,fullExport04=args.includes('--export04'),selected=(args.find(x=>!x.startsWith('--'))||'04,05,06,09,10').split(',');
 if(candidateOnly&&!algorithm3)throw Error('--candidate-only requires --algorithm3, --photographic or --photographic-color');
-if(selected.some(x=>!['04','05','06','09','10'].includes(x))||new Set(selected).size!==selected.length)throw Error('Select unique cases from 04, 05, 06, 09, 10');
+if(selected.some(x=>!(cacheOnly?/^(0[0-9]|1[01])$/.test(x):['04','05','06','09','10'].includes(x)))||new Set(selected).size!==selected.length)throw Error('Select unique cases (00–11 for --cache-only; otherwise 04,05,06,09,10)');
+if(cacheOnly&&fullExport04)throw Error('--cache-only does not export images');
 const repo=fs.realpathSync('.'),site=path.join(repo,'site'),pack=path.resolve(packageArg,'results'),rawRoot=fs.realpathSync(rawArg),outRoot=path.resolve(outArg),read=name=>JSON.parse(fs.readFileSync(path.join(pack,name))),inventory=read('inventory.json'),sha=b=>crypto.createHash('sha256').update(b).digest('hex');
 fs.mkdirSync(outRoot,{recursive:true});const actualOut=fs.realpathSync(outRoot);
 if(actualOut===repo||actualOut.startsWith(repo+path.sep))throw Error('Private output must remain outside the repository');
@@ -36,11 +37,22 @@ try{browser=await launchBrowser({headless:true,args:['--no-sandbox','--disable-d
  const analysis=read(prefix+'_analysis.json'),decode=read(prefix+'_decode.json'),context=await browser.newContext(),page=await context.newPage();page.setDefaultTimeout(300000);page.on('pageerror',e=>console.error('PAGE',prefix,e.message));
  await page.goto(url+'/v2.html');for(const name of ['raw-input','raw-decoder','film-base-measurement','v2-base','v2-fast','srgb-profile','tiff-header','tiff-codec'])await page.addScriptTag({url:url+'/'+name+'.js'});
  console.log('START',prefix);
- const result=await page.evaluate(async({prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo,photoColor,candidateOnly})=>{
+ const result=await page.evaluate(async({prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo,photoColor,candidateOnly,cacheOnly,sourceSha256})=>{
   const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast,save=async(name,data)=>{const r=await fetch('/save/'+prefix+'_'+name,{method:'POST',body:data});if(!r.ok)throw Error('SAVE_FAILED');},json=(name,data)=>save(name,JSON.stringify(data,null,2));
   if(frozen&&(JSON.stringify(V.latestPrior)!==JSON.stringify(frozen.calibration)||JSON.stringify(R.exposureRecipeFor(V.latestPrior))!==JSON.stringify(frozen.tone)||JSON.stringify(algorithm3?R.balanceRecipeFor(3):R.balanceRecipe)!==JSON.stringify(frozen.color)||algorithm3&&(frozen.algorithmVersion!==3||JSON.stringify(R.outputRecipe)!==JSON.stringify(frozen.output))))throw Error('FROZEN_PARAMETERS_CHANGED');
   const started=performance.now(),file=new File([await(await fetch('/raw/'+filename)).arrayBuffer()],'private.RAF'),options={...NSRawInput.options('wide'),useAutoWb:false,noInterpolation:false,halfSize:false,userQual:3,useCameraMatrix:3,highlight:0,threshold:0},raw=await NSRawDecoder.decode(file,'wide',{options});raw.im.encoding='linear';const im=raw.im,source=V.source(im,{revision:'quality-'+prefix,recipe:{decoder:'libraw-wasm',version:'1.6.0',options}}),ctx=V.capture({session:'quality-response',recipe:source.recipe}),measurement=NSV2Base.measure(im,source,[analysis.measurement.region]),base=V.accept(measurement,source,ctx),crop=decode.reference.exportCrop,area={region:crop,status:'estimated',method:'application-frame',confidence:decode.config.opts.cropConfidence},g=O.geometry(im,crop,0,1000),decodeMs=performance.now()-started;
   const variants={},metrics={};
+  if(cacheOnly){
+   // Bounded point caches, not new decoding or rendering. Reuse the exact
+   // geometry/source grid used by the existing quality comparisons.
+   const point=async(name,geometry)=>{const data=new Float32Array(geometry.width*geometry.height*3);for(let y=0;y<geometry.height;y++)for(let x=0;x<geometry.width;x++){
+    const [sx,sy]=geometry.at(Math.min(geometry.sourceWidth-1,Math.floor((x+.5)*geometry.sourceWidth/geometry.width)),Math.min(geometry.sourceHeight-1,Math.floor((y+.5)*geometry.sourceHeight/geometry.height))),i=(sy*im.width+sx)*3;data.set(im.data.subarray(i,i+3),(y*geometry.width+x)*3);
+   }await save(name+'.f32',data);return {width:geometry.width,height:geometry.height,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};};
+   const k=V.compile(source,base,V.latestPrior),intent=R.analyze(im,k,{analysisArea:area,algorithmVersion:3}),overview=await point('overview',O.geometry(im,crop,0,900)),grid=await point('grid',{...O.geometry(im),width:160,height:150});
+   const x=Math.max(0,Math.min(im.width-512,Math.round((crop.x+.5*crop.w)*im.width-256))),y=Math.max(0,Math.min(im.height-512,Math.round((crop.y+.5*crop.h)*im.height-256))),detail=await point('detail0',O.geometry(im,{x:x/im.width,y:y/im.height,w:512/im.width,h:512/im.height}));
+   await json('source.json',{source,base,calibration:V.latestPrior,intent,area,crop,overview,grid,details:[{x,y,...detail}],sourceSha256,sourceBufferBytes:im.data.byteLength,baseDifference:base.rgb.map((v,c)=>v-analysis.base.rgb[c]),sampling:'source-center point cache; overview for color/tone only, native detail for artifacts'});
+   return {case:prefix,cacheOnly:true,source:{width:im.width,height:im.height},baseDifference:base.rgb.map((v,c)=>v-analysis.base.rgb[c]),decodeMs,totalMs:performance.now()-started};
+  }
    for(const [name,calibration,algorithm]of (candidateOnly?[['candidate',V.latestPrior,3]]:algorithm3?[['prior',V.latestPrior,2],['candidate',V.latestPrior,3]]:[['prior',V.prior,null],['candidate',V.latestPrior,null]])){
     const k=V.compile(source,base,calibration),analyzed=R.analyzeWithMask(im,k,{analysisArea:area,...(algorithm?{algorithmVersion:algorithm}:{})}),intent=photo&&name==='candidate'?R.photographic(analyzed.intent,photoColor?2:1):analyzed.intent;
     variants[name]={k,intent,mask:analyzed.mask};
@@ -66,12 +78,14 @@ try{browser=await launchBrowser({headless:true,args:['--no-sandbox','--disable-d
    if(maxRGB16Error>1||decoded.bits!==16||decoded.icc.length!==NSSRGBProfile.length||decoded.icc.some((v,i)=>v!==NSSRGBProfile[i]))throw Error('EXPORT_ORACLE_MISMATCH');exports={width:decoded.width,height:decoded.height,tiffBits:decoded.bits,iccBytes:decoded.icc.length,tiffBytes:tiff.size,jpegBytes:jpeg.size,maxRGB16Error,stripeBytes:fg.width*8*6,jpegScope:'Browser Canvas JPEG from exact V2 scalar path; main export ICC/header is separately exercised by production tests'};cv.width=cv.height=0;
   }
   return {schema:'filmlabb.v2-response-validation',version:1,case:prefix,source:{width:im.width,height:im.height,bytes:im.data.byteLength},baseDifference:base.rgb.map((v,c)=>v-analysis.base.rgb[c]),analysisArea:area,crop,output:{width:g.width,height:g.height},metrics,exports,decodeMs,totalMs:performance.now()-started};
- },{prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo,photoColor,candidateOnly});
+ },{prefix,filename,analysis,decode,fullExport04,frozen,algorithm3,photo,photoColor,candidateOnly,cacheOnly,sourceSha256:item.sha256});
  result.originalSha256=item.sha256;result.freezeSha256=freezeSha256;fs.writeFileSync(path.join(outRoot,prefix+'_validation.json'),JSON.stringify(result,null,2));
- const savedA=path.join(pack,prefix+'_A.png');if(fs.existsSync(savedA))fs.copyFileSync(savedA,path.join(outRoot,prefix+'_saved_A.png'));
- console.log('DONE',prefix,JSON.stringify({baseDifference:result.baseDifference,seconds:result.totalMs/1000,EV:[result.metrics.prior?.exposure.appliedEV,result.metrics.candidate.exposure.appliedEV],exports:result.exports}));await context.close();
+ const savedA=path.join(pack,prefix+'_A.png');if(!cacheOnly&&fs.existsSync(savedA))fs.copyFileSync(savedA,path.join(outRoot,prefix+'_saved_A.png'));
+ console.log('DONE',prefix,JSON.stringify({baseDifference:result.baseDifference,seconds:result.totalMs/1000,...(!cacheOnly?{EV:[result.metrics.prior?.exposure.appliedEV,result.metrics.candidate.exposure.appliedEV],exports:result.exports}:{cacheOnly:true})}));await context.close();
 }
+if(!cacheOnly){
 const columns=candidateOnly?[['candidate','Photographic color candidate']]:[['saved_A','Saved FILMLABB A (different source domain/settings)'],['prior',algorithm3?'Current V2 / algorithm2':'Previous V2 / prior1'],['candidate','Candidate automatic positive'],['candidate_identity','Candidate / identity positive balance']];
 const figures=selected.map(c=>'<section><h2>Case '+c+'</h2><div>'+columns.map(([file,label])=>'<figure><img src="'+c+'_'+file+'.png" alt="'+label+'"><figcaption>'+label+'</figcaption></figure>').join('')+'</div></section>').join('');
 fs.writeFileSync(path.join(outRoot,'comparison.html'),'<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width"><title>FILMLABB private V2 comparison</title><style>body{background:#181818;color:#eee;font:16px system-ui;margin:1rem}section div{display:flex;gap:1rem;flex-wrap:wrap}figure{margin:0;flex:1 1 240px;max-width:600px}img{max-width:100%;height:auto}figcaption{margin:.5rem 0}</style><h1>Private V2 comparison</h1><p>Identical linear Rec.2020 source and measured base for the selected V2 outputs. Source-area filtering after conversion. Saved A uses different RAW/creative settings and is not a colorimetric target. '+(photoColor?'Images04/09/10 were held back from tuning this candidate; all cases historically seen.':algorithm3?'Images04/06/10 were held back from tuning this candidate; all cases historically seen.':'Images09/10 were held back for this task but were historically seen.')+' No night series.</p><p>Frozen parameters SHA256: '+freezeSha256+'</p>'+figures);
+}
 }finally{await browser?.close();server.closeAllConnections();await new Promise(r=>server.close(r));}
