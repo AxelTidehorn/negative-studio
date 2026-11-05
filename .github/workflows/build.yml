@@ -88,6 +88,15 @@ jobs:
         run: |
           filmlabb_main_sha="$(git ls-remote origin refs/heads/main | cut -f1)"
           node tools/verified-artifact.mjs current "$filmlabb_main_sha" >> "$GITHUB_OUTPUT"
+      # Recovery for the orphaned 2026-11-05 Pages deployment. Its Actions job
+      # timed out, but Pages still reports it as in progress and rejects main.
+      # Target only the obsolete deployment ID; remove this one-off step after recovery.
+      - name: Cancel orphaned Pages deployment
+        if: steps.current.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api --method POST "repos/${GITHUB_REPOSITORY}/pages/deployments/274036e9c1d6210ed708620b8ea968c408ddd9b3/cancel"
       - if: steps.current.outputs.publish == 'true'
         id: deployment
         uses: actions/deploy-pages@v4
