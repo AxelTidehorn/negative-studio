@@ -5,16 +5,24 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
+permissions:
+  contents: read
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Cancel obsolete verification, never an in-flight Pages deployment.
+    concurrency:
+      group: filmlabb-verify-${{ github.ref }}
+      cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.sha }}
           fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Prepare browser
         run: |
@@ -25,8 +33,55 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
+      # The full runner prepares site/ before browser tests. Never rebuild after it.
       - run: npm run test:full
+      - name: Seal the tested artifact
+        run: node tools/verified-artifact.mjs seal
       - uses: actions/upload-artifact@v4
         with:
           name: FILMLABB-WASM
-          path: site/
+          overwrite: true
+          path: |
+            site/
+            .cache/publication/verification.json
+          include-hidden-files: true
+          if-no-files-found: error
+          compression-level: 1
+  deploy:
+    needs: build
+    if: github.repository == 'AxelTidehorn/negative-studio' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    # Keep this group shared with the former pages.yml. A running deploy is
+    # allowed to finish; queued old runs recheck main immediately before publish.
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: FILMLABB-WASM
+          path: verified
+      - name: Verify tested bytes and release identity
+        run: node tools/verified-artifact.mjs verify verified --release
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: verified/site/
+      - name: Check that this is still current main
+        id: current
+        run: |
+          filmlabb_main_sha="$(git ls-remote origin refs/heads/main | cut -f1)"
+          node tools/verified-artifact.mjs current "$filmlabb_main_sha" >> "$GITHUB_OUTPUT"
+      - if: steps.current.outputs.publish == 'true'
+        id: deployment
+        uses: actions/deploy-pages@v4

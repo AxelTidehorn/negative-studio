@@ -1,6 +1,7 @@
 import fs from 'node:fs';import http from 'node:http';import path from 'node:path';import os from 'node:os';import {spawn} from 'node:child_process';import {performance} from 'node:perf_hooks';
 import {nodeSuites,browserTests} from '../tests/suites.mjs';import {browserExecutable} from '../tests/helpers/browser-runtime.mjs';
-import {ensureBuild} from './build-artifact.mjs';
+import {ensureBuild,inputHash} from './build-artifact.mjs';
+import {contentIdentity} from './build-identity.mjs';
 const level=process.argv[2]||'fast';if(!['fast','integration','full','browser'].includes(level))throw Error('Unknown test level: '+level);
 const engineIndex=process.argv.indexOf('--engine'),engine=engineIndex<0?'all':process.argv[engineIndex+1];if(!['all','curve3','density3','matrix3','log39','calibrated4'].includes(engine))throw Error('Unknown engine: '+engine);
 const start=performance.now(),rows=[],env={...process.env,FILMLABB_TEST_ENGINE:engine},report={level,engine,node:process.version,jobs:level==='full'?Math.min(2,os.availableParallelism()):1,tests:rows};let failures=0;
@@ -13,7 +14,7 @@ const files=level==='full'?Object.values(nodeSuites).flat():level==='browser'?[]
 await pool(files.map(f=>'tests/'+f),level==='full'?report.jobs:1);
 if(failures){console.error('Fast/Node checks failed; browser/build not started.');}else if(level!=='fast'){
  if(level==='full')await run('tests/stability-build.mjs');
- if(!failures){report.build=ensureBuild();const {chromium}=await import(process.env.FILMLABB_PLAYWRIGHT_MODULE||'playwright');let browserServer,server;
+ if(!failures){const building=performance.now();report.build=ensureBuild();report.buildMs=performance.now()-building;console.log('Build readiness:',report.buildMs.toFixed(1)+'ms');const {chromium}=await import(process.env.FILMLABB_PLAYWRIGHT_MODULE||'playwright');let browserServer,server;
  try{
   browserServer=await chromium.launchServer({headless:true,executablePath:browserExecutable(),args:['--no-sandbox','--enable-unsafe-swiftshader']});env.FILMLABB_BROWSER_WS=browserServer.wsEndpoint();report.browserProcesses=1;
   const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
@@ -22,5 +23,11 @@ if(failures){console.error('Fast/Node checks failed; browser/build not started.'
   for(const file of selected)await run('tests/'+file);
  }catch(e){failures++;report.error=e.message;console.error(e);}finally{if(browserServer)await browserServer.close();if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}}
  }
+}
+// Record the exact site AFTER all checks; publication must retain these bytes.
+if(level==='full'&&!failures){
+ if(report.build?.input!==inputHash())throw Error('Build inputs changed during full verification');
+ const info=JSON.parse(fs.readFileSync('site/build-info.json'));
+ report.artifact={sourceCommit:info.sourceCommit,version:info.version,sha256:contentIdentity('site')};
 }
 report.ms=performance.now()-start;report.failures=failures;fs.writeFileSync('.cache/test-'+level+'.json',JSON.stringify(report,null,2));console.log(`${rows.length-failures}/${rows.length} groups passed; ${level}: ${(report.ms/1000).toFixed(2)}s`);if(failures)process.exitCode=1;
