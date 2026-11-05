@@ -537,10 +537,10 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel > .tool-card {
   margin:0 0 8px;
   padding:0;
-  border:1px solid var(--ui-border);
+  border:1px solid var(--ui-card-edge,var(--ui-border));
   border-radius:6px;
   background:transparent;
-  box-shadow:none;
+  box-shadow:var(--ui-card-shadow,none);
 }
 #adjustmentPanel > .tool-card > summary {
   display:grid;
@@ -603,7 +603,7 @@ header,footer.foot {
 }
 @supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
   #adjustmentPanel > .tool-card > summary {
-    background:color-mix(in srgb,var(--ui-card-header) 76%,transparent);
+    background:var(--ui-card-glass,color-mix(in srgb,var(--ui-card-header) 76%,transparent));
     -webkit-backdrop-filter:blur(10px);
     backdrop-filter:blur(10px);
   }

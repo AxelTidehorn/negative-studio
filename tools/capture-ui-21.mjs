@@ -9,7 +9,7 @@ try{
   const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage();
   await p.goto(h.url);await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0&&!$('histogramInfo').textContent.includes('…'));await p.waitForTimeout(100);
   await p.screenshot({path:`${dir}/${name}.png`});
-  if(phase==='after'){
+  if(phase==='after'||phase==='before'){
    if(name==='desktop'){
     await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-open.png`});
     await p.locator('#imageAdjustments > summary').click();await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-closed.png`});

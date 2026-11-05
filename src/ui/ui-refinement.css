@@ -14,7 +14,18 @@ Light palettes retain their existing colors. */
   --ui-active:#403630
 }
 :root[data-theme="classic"]:not([data-mode="light"]) {
-  --ui-card-header:#373837;
+  --ui-card-header:#493126;
+  --ui-card:#171210;
+  --ui-card-glass:linear-gradient(125deg,#a96b4d70 0%,#a8704c47 42%,#5d342b78 100%);
+  --ui-card-edge:#f0b4814a;
+  --ui-card-shadow:0 2px 5px #0002;
+  --ui-glass-edge:rgba(255,216,177,.22);
+  --ui-workspace-material:
+    radial-gradient(ellipse 85% 38% at 12% 8%,#71402c70 0%,transparent 76%),
+    radial-gradient(ellipse 72% 30% at 104% 58%,#a65a3452 0%,transparent 74%),
+    radial-gradient(ellipse 95% 34% at 22% 96%,#56302280 0%,transparent 79%),
+    radial-gradient(ellipse 48% 75% at 68% 20%,#3e241b80 0%,transparent 85%),
+    linear-gradient(135deg,#211715 0%,#130f0e 55%,#221714 100%);
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
@@ -192,4 +203,14 @@ Light palettes retain their existing colors. */
   --ui-error:#a12d2a;
   --ui-warning:#805b13;
   --ui-viewer:#dedbd5
+}
+
+/* Amber Glass is the dark Classic material only. The gradient belongs to the
+   workspace, so editor scrolling does not move or restart the light fields.
+   Image/queue surfaces remain opaque; photographs never receive a filter. */
+:root[data-theme="classic"]:not([data-mode="light"]) main.workspace {
+ background-image:var(--ui-workspace-material);
+}
+:root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel {
+ background:transparent;
 }
