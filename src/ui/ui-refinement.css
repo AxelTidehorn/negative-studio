@@ -16,16 +16,18 @@ Light palettes retain their existing colors. */
 :root[data-theme="classic"]:not([data-mode="light"]) {
   --ui-card-header:#493126;
   --ui-card:#171210;
-  --ui-card-glass:linear-gradient(125deg,#a96b4d70 0%,#a8704c47 42%,#5d342b78 100%);
-  --ui-card-edge:#f0b4814a;
+  --ui-card-glass:linear-gradient(125deg,#b77d564f 0%,#ad775733 42%,#65433759 100%);
+  --ui-card-edge:#f0b48133;
   --ui-card-shadow:0 2px 5px #0002;
-  --ui-glass-edge:rgba(255,216,177,.22);
+  --ui-glass-edge:rgba(255,216,177,.18);
+  --ui-queue-surface:rgba(24,24,25,.58);
+  /* Dark fields subtract light from a quiet warm-neutral midtone. */
   --ui-workspace-material:
-    radial-gradient(ellipse 85% 38% at 12% 8%,#71402c70 0%,transparent 76%),
-    radial-gradient(ellipse 72% 30% at 104% 58%,#a65a3452 0%,transparent 74%),
-    radial-gradient(ellipse 95% 34% at 22% 96%,#56302280 0%,transparent 79%),
-    radial-gradient(ellipse 48% 75% at 68% 20%,#3e241b80 0%,transparent 85%),
-    linear-gradient(135deg,#211715 0%,#130f0e 55%,#221714 100%);
+    radial-gradient(ellipse 85% 60% at -18% -12%,#050506c7 0%,transparent 76%),
+    radial-gradient(ellipse 65% 105% at 120% 80%,#070609b3 0%,transparent 80%),
+    radial-gradient(ellipse 90% 60% at 20% 118%,#060506d9 0%,transparent 82%),
+    radial-gradient(ellipse 48% 60% at 68% -20%,#0b080778 0%,transparent 85%),
+    linear-gradient(135deg,#302a27 0%,#302b28 55%,#262220 100%);
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
@@ -207,10 +209,16 @@ Light palettes retain their existing colors. */
 
 /* Amber Glass is the dark Classic material only. The gradient belongs to the
    workspace, so editor scrolling does not move or restart the light fields.
-   Image/queue surfaces remain opaque; photographs never receive a filter. */
+   The photo stays opaque; only the neutral queue surface transmits the backdrop. */
 :root[data-theme="classic"]:not([data-mode="light"]) main.workspace {
  background-image:var(--ui-workspace-material);
 }
 :root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel {
  background:transparent;
+}
+
+@media (prefers-reduced-transparency:reduce) {
+ :root[data-theme="classic"]:not([data-mode="light"]) {
+  --ui-queue-surface:#1b1b1c;
+ }
 }
