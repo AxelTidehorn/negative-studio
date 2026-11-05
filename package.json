@@ -17,6 +17,7 @@
     "test:build": "node tests/stability-build.mjs",
     "test:browser": "node tools/test-runner.mjs browser",
     "test:fast": "node tools/test-runner.mjs fast",
+    "test:style": "node tools/test-runner.mjs style",
     "test:integration": "node tools/test-runner.mjs integration",
     "test:full": "node tools/test-runner.mjs full",
     "test:benchmark": "node tools/benchmark-conversion3.mjs",
