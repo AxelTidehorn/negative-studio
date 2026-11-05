@@ -71,7 +71,7 @@ const description=document.createElement('p');description.id='methodDescription3
 const labels={rotateLeft:'Rotera 90° åt vänster',rotateRight:'Rotera 90° åt höger',compositionEdit:'Beskär komposition',compositionReset:'Återställ kompositionsbeskärning',cropReset:'Återställ teknisk filmruta'};
 const shortNames={rotateLeft:'90° vänster',rotateRight:'90° höger',compositionEdit:'Beskär',compositionReset:'Återställ komposition'};t($('straighten'),'Räta upp');$('straighten').setAttribute('aria-label',FILMLABB_I18N.fromSource('Räta upp med linje'));
 for(const [id,s]of Object.entries(labels)){t($(id),shortNames[id]||s);$(id).setAttribute('aria-label',FILMLABB_I18N.fromSource(s));$(id).title=FILMLABB_I18N.fromSource(s);}
-t(document.querySelector('label[for="engineMode"]'),'Konverteringsmetod');t($('imageAdjustments').querySelector('summary'),'Bildjusteringar');
+t(document.querySelector('label[for="engineMode"]'),'Konverteringsmotor');t($('imageAdjustments').querySelector('summary'),'Bildjusteringar');
 const creativeHint=document.createElement('p');creativeHint.className='hint';t(creativeHint,'Kreativ återgivning · ingen uppmätt filmprofil');$('creativeProfiles').append(creativeHint);
 // Five existing groups, with one opaque content surface each. Move the live
 // controls; never clone them or bind a second set of image-control handlers.
@@ -89,6 +89,9 @@ for(const id of cards){
  for(const node of [...card.childNodes])if(node!==summary&&node!==body)body.append(node);
  card.append(body);
 }
+// Reuse the original selector and live explanation in one compact advanced field.
+const engineField=engineSelect.closest('.field');engineField.classList.add('engine-settings');
+$('advancedSettings').querySelector(':scope > .tool-card-body').prepend(engineField,description);
 const tr=s=>FILMLABB_I18N.fromSource(s);
 function cardSummaries(){
  const number=(v,d=0)=>new Intl.NumberFormat(FILMLABB_I18N.get(),{maximumFractionDigits:d}).format(v);
@@ -114,7 +117,9 @@ function cardSummaries(){
   [tr(state.useRollBase2?'Rullreferens':accepted.measurement.kind.startsWith('manual')?'Manuell referens':'Automatisk referens'),tr('Godkänd')]:[tr(baseSummary.textContent)];
  if(working&&state.engine==='v2'&&state.v2Recipe?.base?.origin==='prior')baseItems.splice(0,baseItems.length,tr('Antagen filmbas · ej uppmätt'));
  write('calibration3',baseItems,'Filmbas saknas');
- const advancedItems=[],fine=roll[activeFrame]?.geometry?.rotation?.fineDegrees||0;
+ const advancedItems=[];
+ if(state.engine!=='v2')advancedItems.push(tr('Konverteringsmotor')+': '+tr(({calibrated4:'Standard',log39:'Original'})[state.engine]||engineSelect.selectedOptions[0]?.textContent||state.engine));
+ const fine=roll[activeFrame]?.geometry?.rotation?.fineDegrees||0;
  if(fine)advancedItems.push(tr('Finrotation')+' '+signed(fine,2)+'°');
  if(state.rotation)advancedItems.push(tr('Rotation')+' '+number(state.rotation)+'°');
  if(working?.flatField)advancedItems.push(tr('Belysningskorrigering aktiv'));
@@ -147,7 +152,7 @@ function baseState(){
 function refresh(){
  syncRetiredEngineOptions();
  const snap=baseState();
- for(const option of $('engineMode').options)if(methods[option.value])t(option,({log39:'Original',calibrated4:'Standard',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · experimentell'})[option.value]);
+ for(const option of $('engineMode').options)if(methods[option.value])t(option,({log39:'Original · historisk referens',calibrated4:'Standard · referens',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · standard'})[option.value]);
  t(description,(retiredEngines.has(state.engine)?'Äldre projektmotor · ':'')+(methods[state.engine]||'Äldre projekt'));
  const model=roll[activeFrame]?.geometry;$('rotationReset').hidden=!(state.rotation||model?.rotation?.fineDegrees);$('compositionReset').hidden=!model?.compositionCrop;
  const active=globalThis.FILMLABB_GEOMETRY?.mode();toolbar.dataset.mode=active||'view';showTools.dataset.mode=active||'view';toolsVisibility3();

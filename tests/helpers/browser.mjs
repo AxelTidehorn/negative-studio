@@ -16,3 +16,14 @@ export async function browserHarness(){
  }catch(e){await new Promise(r=>server.close(r));throw e;}
  return {browser,url:'http://127.0.0.1:'+server.address().port+'/',async close(){try{await browser.close();}finally{await new Promise(r=>server.close(r));}}};
 }
+
+// Engine selection is an advanced action in UI 2.2. Reveal the existing native
+// disclosure only when changing its value; do not alter recipe/data bindings.
+export async function selectEngine(page,value){
+ await page.waitForFunction(()=>!rollLoading);
+ const control=page.locator('#engineMode');
+ if(await control.inputValue()===value)return;
+ await control.evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});
+ await control.selectOption(value);
+ await page.waitForFunction(()=>!rollLoading);
+}

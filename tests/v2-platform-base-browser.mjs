@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {ensureBuild} from '../tools/build-artifact.mjs';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 import {makeTiffHeader} from './helpers/legacy-tiff.mjs';
 
 // Unprofiled RGB16 negative with a real border, imported through the ordinary
@@ -27,7 +27,7 @@ try{
   await open(page.locator('#tiffEncoding'));await page.locator('#tiffEncoding').selectOption('linear-rec2020');
   await page.waitForFunction(()=>working&&!rollLoading&&working.colorSpace==='rec2020');
   await open(page.locator('#cropInset'));await page.locator('#cropInset').evaluate(e=>{e.value='14';e.dispatchEvent(new Event('input',{bubbles:true}));});
-  await page.locator('#engineMode').selectOption('v2');await page.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe);
+  await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe);
   await open(page.locator('#base2Panel'));
  }
  await selectV2();
@@ -51,7 +51,7 @@ try{
  // Reanalysis/engine changes must not leak a new response or invalidate an
  // unchanged recipe. Exercise ordinary selectors as well as frozen snapshots.
  const stable=await page.evaluate(()=>({recipe:state.v2Recipe,count:FILMLABB_V2.snapshot().analysisCount}));
- await page.locator('#engineMode').selectOption('calibrated4');await page.locator('#engineMode').selectOption('v2');
+ await selectEngine(page,'calibrated4');await selectEngine(page,'v2');
  await page.evaluate(()=>{for(let i=0;i<3;i++){configuration38();analyzeLevels();}});
  assert.deepEqual(await page.evaluate(()=>({recipe:state.v2Recipe,count:FILMLABB_V2.snapshot().analysisCount})),stable);
 

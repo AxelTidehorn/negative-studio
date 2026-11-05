@@ -7,7 +7,10 @@ async function bytes(download){const stream=await download.createReadStream(),pa
 try{
  for(const fixture of ['tests/fixtures/synthetic-negative.dng',{name:'colored-negative.dng',mimeType:'image/x-adobe-dng',buffer:colored}]){
  // The expected file is a real download from the unchanged, ordinary application.
- const normal=await h.browser.newContext(),app=await normal.newPage();await app.goto(h.url);await app.locator('#imageFile').setInputFiles(fixture);await app.waitForFunction(()=>!document.getElementById('exportTiff').disabled);
+ const normal=await h.browser.newContext(),app=await normal.newPage();await app.goto(h.url);await app.locator('#imageFile').setInputFiles(fixture);await app.waitForFunction(()=>working&&!rollLoading);
+ // Compare the explicit Standard reference with an ordinary explicit Standard import.
+ await app.evaluate(()=>importRoll([roll[0].file],{engine:'calibrated4'}));
+ await app.waitForFunction(()=>working&&!rollLoading&&!document.getElementById('exportTiff').disabled);
  const expectedDownload=app.waitForEvent('download');await app.locator('#exportTiff').click();const expectedBytes=await bytes(await expectedDownload),expected=NSTiff.decodeSync(expectedBytes.buffer.slice(expectedBytes.byteOffset,expectedBytes.byteOffset+expectedBytes.byteLength));console.log('ordinary export',expected.width,expected.height,await app.evaluate(()=>({width:working.width,height:working.height,geometry:(()=>{const p=exportGeometrySnapshot(working);return {crop:p.crop,rotation:p.rotation,width:p.g.width,height:p.g.height,presentation:p.g.presentation,spec:p.g.spec};})()})));await normal.close();
  const context=await h.browser.newContext({viewport:{width:820,height:1180},hasTouch:true}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url+'v2.html');
  await page.evaluate(()=>{localStorage.setItem('negative-studio-v03',JSON.stringify({engine:'reference',temperature:35,exposure:2}));localStorage.setItem('project-sentinel','do-not-change');window.beforeStorage=JSON.stringify(Object.entries(localStorage).sort());});

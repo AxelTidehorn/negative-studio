@@ -11,7 +11,7 @@ try{
  await page.waitForFunction(()=>working&&!rollLoading);
  const report=await page.evaluate(()=>{
   const select=$('engineMode'),choices=()=>Array.from(select.options,o=>o.value);
-  const expected=['log39','calibrated4','v2'];
+  const expected=['v2','calibrated4','log39'];
   const initial=choices();
   const legacy={};
   for(const engine of ['curve3','density3','matrix3']){

@@ -21,7 +21,7 @@ finishImport=function(message){
  for(const id of ['export','exportTiff','sample','recalc','analyzeLevels'])$(id).disabled=false;
  sampleMode=false;
  const f=roll[activeFrame];if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.cropConfidence=d.confidence;state.cropMethod='auto';state.cropConfirmed=d.confidence>=.7;}
- $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.'));
+ $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.')+(f&&!NSFileFormats.isRaw(f.file.name)&&state.engine==='calibrated4'&&!NSV2Platform.validSource(working)?' · Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.':''));
 };
 const importRawOriginal=importRawRGB16;
 importRawRGB16=async function(im,name,meta){sourceInfo={rawMetadata:im.decoderRecipe||null,v2Decoded:!!im.v2Decoded,encoding:'linear',gain:im.linearGain4||1,whiteBalance:meta?.color_data?.cam_mul||null,decoder:'libraw-wasm@1.6.0',domain:'raw-'+(im.v2Decoded?'wide-v2-1':im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',colorSpace:im.colorSpace||'srgb',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='wide'?'Experimentell RAW · Rec.2020 · flyttal · inversion före sRGB':im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};

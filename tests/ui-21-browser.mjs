@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness();
 const cards=['imageAdjustments','creativeProfiles','calibration3','advancedSettings','exportProject'];
 try{
@@ -16,18 +16,28 @@ try{
  const bytes=fs.readFileSync('tests/fixtures/synthetic-negative.dng');
  await p.locator('#imageFile').setInputFiles(['a.dng','b.dng'].map(name=>({name,mimeType:'image/x-adobe-dng',buffer:bytes})));
  await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');
- await p.locator('#engineMode').selectOption('v2');await p.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe&&!rollLoading);
+ await selectEngine(p,'v2');await p.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe&&!rollLoading);
  await p.waitForTimeout(600);
  const frozen=()=>p.evaluate(()=>({state:JSON.stringify({state,rollShared,calibration,cropRegion}),source:sourceVersion38,analysis:analysisCount38,v2:FILMLABB_V2.snapshot().analysisCount,uploads:FILMLABB_GPU.snapshot().sourceUploads,reconstructions:FILMLABB_GPU.snapshot().positiveReconstructions}));
  const before=await frozen();
- const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').gridRowStart,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
+ const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').display,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
  assert.equal(structure.workspace,structure.editor);assert.equal(structure.workspace,structure.image);
- assert.notEqual(structure.gear,'none');assert.equal(structure.gap,'8px');assert.equal(structure.chevron,'1');assert.equal(structure.bodyPadding,'8px');
+ assert.notEqual(structure.gear,'none');assert.equal(structure.gap,'8px');assert.equal(structure.chevron,'none');assert.equal(structure.bodyPadding,'6px');
  await p.evaluate(()=>$('workspace').style.setProperty('--adjust-width','500px'));
  assert.equal(await p.locator('#creativeProfilesSummary').evaluate(e=>getComputedStyle(e).gridRowStart),'1','wide card status shares title row');
  await p.evaluate(()=>$('workspace').style.removeProperty('--adjust-width'));
 
- for(const id of cards){await p.locator('#'+id+' > summary').click();await p.locator('#'+id+' > summary').click();}
+ assert.equal(await p.locator('#adjustmentPanel summary').evaluateAll(es=>es.every(e=>getComputedStyle(e,'::before').display==='none')),true);
+ assert.equal(await p.locator('label[for="imageFile"]').textContent(),'Importera');
+ assert.equal(await p.locator('label[for="imageFile"]').evaluate(e=>e.classList.contains('ui3-icon')),true);
+ for(const id of cards){
+  for(let i=0;i<2;i++){
+   const summary=p.locator('#'+id+' > summary');await summary.hover();await summary.focus();
+   assert.equal(await summary.evaluate(e=>getComputedStyle(e,'::before').display),'none');
+   assert.equal(await summary.evaluate(e=>getComputedStyle(e).listStyleType),'none');
+   await summary.click();
+  }
+ }
  assert.deepEqual(await open(),[true,false,false,false,false]);
  // Native summary keyboard semantics, plus a visible focus outline.
  await p.locator('#creativeProfiles > summary').focus();await p.keyboard.press('Enter');assert.equal((await open())[1],true);
@@ -66,8 +76,9 @@ try{
  assert.equal(await p.locator('#calibration3Summary').textContent(),'Manuell referens · Godkänd');
  await p.locator('#base2Undo').click();await p.waitForFunction(()=>!FILMLABB_BASE2.snapshot().accepted);
  assert.doesNotMatch(await p.locator('#calibration3Summary').textContent(),/Godkänd/);
+ await p.locator('#advancedSettings').evaluate(e=>e.open=true);
  const beforeEngine=await open();
- for(const engine of ['calibrated4','log39','v2']){await p.locator('#engineMode').selectOption(engine);await p.waitForFunction(e=>state.engine===e&&!rollLoading,engine);assert.deepEqual(await open(),beforeEngine);}
+ for(const engine of ['calibrated4','log39','v2']){await selectEngine(p,engine);await p.waitForFunction(e=>state.engine===e&&!rollLoading,engine);assert.deepEqual(await open(),beforeEngine);}
  const backend=p.locator('#previewBackend');await backend.evaluate(el=>{for(let a=el.parentElement;a;a=a.parentElement)if(a.tagName==='DETAILS')a.open=true;});
  await backend.selectOption('cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38);
  await backend.selectOption('auto');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
@@ -80,11 +91,11 @@ try{
    return {body:style('#imageAdjustments > .tool-card-body'),head:style('#imageAdjustments > summary'),header:style('header'),footer:style('footer'),toolbar:style('#imageTools3')};
   });
   for(const key of ['body','header','footer']){assert.match(material[key].background,/^rgb\(/);assert.equal(material[key].filter,'none');assert.equal(material[key].opacity,'1');assert.equal(material[key].image,'none');}
-  assert.equal(material.head.filter,'blur(9px)');assert.match(material.head.background,/0\.91\)/);
+  assert.equal(material.head.filter,'blur(10px)');assert.match(material.head.background,/0\.76\)/);
   assert.equal(material.toolbar.filter,'blur(10px)');assert.match(material.toolbar.background,/0\.83\)/);
   await p.locator('#imageAdjustments > summary').click();
   assert.equal(await p.locator('#imageAdjustments > .tool-card-body').isVisible(),false);
-  assert.equal(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backdropFilter),'blur(9px)');
+  assert.equal(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backdropFilter),'blur(10px)');
  }
  const cdp=await p.context().newCDPSession(p);
  await cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'reduce'}]});

@@ -29,7 +29,7 @@ function crop(){const r={};for(const key of ['x','y','w','h'])r[key]=Number($(ke
 function view(){return {crop:crop(),rotation:Number($('rotation').value),limit,quick:!fullImages,comparison:$('comparison').value,viewMode:$('viewMode').value};}
 function conditions(){
  const photo=$('comparison').value==='photo',reference=state.reference;
- $('aFigure').querySelector('strong').textContent=photo?(reference?.kind==='historical-export'?'A – Historisk faktisk FILMLABB-export':reference?.kind==='user-declared-automatic-export'?'A – Faktisk export · användardeklarerat recept':'A – Verklig automatisk FILMLABB'):'A – Standard · teknisk jämförelse';
+ $('aFigure').querySelector('strong').textContent=photo?(reference?.kind==='historical-export'?'A – Historisk faktisk FILMLABB-export':reference?.kind==='user-declared-automatic-export'?'A – Faktisk export · användardeklarerat recept':'A – FILMLABB Standard · automatisk'):'A – Standard · teknisk jämförelse';
  $('a').setAttribute('aria-label',$('aFigure').querySelector('strong').textContent);
  $('aConditions').textContent=photo?'Huvudapplikationens verkliga kodväg eller faktisk export':'Neutralt snapshot · inte ordinarie automatiskt FILMLABB';
  $('conditions').textContent=photo?'Fotografisk jämförelse: A behåller ordinarie import, automatisk bas, analys och efterbehandling. B använder linjär Rec.2020 och din bas. RAW-domän och recept kan skilja sig; detta är inte samma råpixlar. Utsnitt, visningsstorlek och boxfilter är gemensamma.':'Teknisk jämförelse: samma linjära Rec.2020-källa, uppmätta bas, utsnitt, neutrala kreativa reglage, profil och filter. A är inte en ny automatisk konvertering i huvudapplikationen.';

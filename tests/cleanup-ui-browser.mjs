@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 
 // The build/suite owner prepares site/. --probe records the frozen baseline.
 const probe=process.argv.includes('--probe'),h=await browserHarness(),errors=[];
@@ -8,12 +8,12 @@ try{
  const empty=await page.evaluate(()=>({left:$('rotateLeft').disabled,right:$('rotateRight').disabled}));
  await page.locator('#previewBackend').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#previewBackend').selectOption('cpu');
  await page.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await page.waitForFunction(()=>working&&!rollLoading);
- await page.locator('#engineMode').selectOption('v2');await page.waitForFunction(()=>state.engine==='v2'&&!!state.v2Recipe&&!rollLoading);
+ await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&!!state.v2Recipe&&!rollLoading);
  await page.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
  const descriptions={sv:await page.locator('#methodDescription3').textContent()};
  for(const language of ['en','fr','es','de']){
   await page.locator('#languageSelect').selectOption(language);descriptions[language]=await page.locator('#methodDescription3').textContent();
-  const label=await page.evaluate(()=>{updateCalibrationUI();return {actual:$('engineMode').querySelector('[value="v2"]').textContent,expected:FILMLABB_I18N.fromSource('V2 · experimentell')};});
+  const label=await page.evaluate(()=>{updateCalibrationUI();return {actual:$('engineMode').querySelector('[value="v2"]').textContent,expected:FILMLABB_I18N.fromSource('V2 · standard')};});
   if(!probe)assert.equal(label.actual,label.expected,'V2 option remains localized after controller refresh in '+language);
  }
  for(const viewport of [{width:1440,height:900},{width:820,height:1180},{width:390,height:844}]){

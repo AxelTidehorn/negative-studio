@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness(),errors=[];
 const settled=p=>p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu'&&!FILMLABB_GPU.snapshot().positivePending&&FILMLABB_GEOMETRY.snapshot().sourceVersion===sourceVersion38&&FILMLABB_GEOMETRY.snapshot().configKey===previewConfigKey38(configuration38()));
 try{
  const p=await h.browser.newPage({viewport:{width:1024,height:768},hasTouch:true,locale:'sv-SE',serviceWorkers:'block'});p.setDefaultTimeout(60000);p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
- await p.locator('#imageFile').setInputFiles(['one.dng','two.dng'].map(name=>({name,mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')})));await p.waitForFunction(()=>working&&!rollLoading);await p.locator('#engineMode').selectOption('v2');await settled(p);
+ await p.locator('#imageFile').setInputFiles(['one.dng','two.dng'].map(name=>({name,mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')})));await p.waitForFunction(()=>working&&!rollLoading);await selectEngine(p,'v2');await settled(p);
  const parity=await p.evaluate(()=>{
   const K=NSPixelKernel,P=NSV2Platform,gpu=NSGpuPreview.create(document.createElement('canvas')),gl=gpu.context,ext=gl.getExtension('WEBGL_debug_renderer_info'),renderer=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);
   const width=53,height=37,rgb=[.8,.45,.2],data=new Float32Array(width*height*3);
@@ -59,8 +59,8 @@ try{
  await p.evaluate(()=>{window.loss=$('gpuPreview').getContext('webgl2').getExtension('WEBGL_lose_context');loss.loseContext();});await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&lastPreview38);await p.evaluate(()=>loss.restoreContext());await settled(p);assert.equal(await p.evaluate(()=>JSON.stringify(state.v2Recipe)),current);assert.equal(await p.evaluate(()=>FILMLABB_GPU.snapshot().positiveReconstructions),before.gpu.positiveReconstructions+3);
  // Start a new recipe preparation then switch image immediately. Late jobs may
  // not paint over the next image (the source owner terminates its old worker).
- await p.evaluate(()=>{state.v2Recipe={...state.v2Recipe,intent:{...state.v2Recipe.intent,exposure:state.v2Recipe.intent.exposure+.1}};render();return chooseFrame(1);});await p.waitForFunction(()=>activeFrame===1&&!rollLoading);await p.locator('#engineMode').selectOption('v2');await settled(p);assert.equal(await p.evaluate(()=>FILMLABB_GEOMETRY.snapshot().sourceVersion),await p.evaluate(()=>sourceVersion38));
- await p.locator('#engineMode').selectOption('log39');await p.waitForFunction(()=>state.engine==='log39'&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='cpu');await p.locator('#engineMode').selectOption('calibrated4');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');await p.locator('#engineMode').selectOption('v2');await settled(p);
+ await p.evaluate(()=>{state.v2Recipe={...state.v2Recipe,intent:{...state.v2Recipe.intent,exposure:state.v2Recipe.intent.exposure+.1}};render();return chooseFrame(1);});await p.waitForFunction(()=>activeFrame===1&&!rollLoading);await selectEngine(p,'v2');await settled(p);assert.equal(await p.evaluate(()=>FILMLABB_GEOMETRY.snapshot().sourceVersion),await p.evaluate(()=>sourceVersion38));
+ await selectEngine(p,'log39');await p.waitForFunction(()=>state.engine==='log39'&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='cpu');await selectEngine(p,'calibrated4');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');await selectEngine(p,'v2');await settled(p);
  // The ordinary FilmBas 2 acceptance/undo owners invalidate the GPU source
  // while leaving the frozen technical response unchanged.
  const baseBefore=await p.evaluate(()=>({rgb:state.v2Recipe.base.rgb,cal:state.v2Recipe.calibration,count:FILMLABB_GPU.snapshot().positiveReconstructions}));
@@ -100,7 +100,7 @@ try{
   await q.addInitScript(fault=>{const get=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){if(type==='webgl2'&&this.id==='gpuPreview'){
    if(fault==='webgl')return null;const gl=get.call(this,type,...args);if(fault==='float-target'){const ext=gl.getExtension.bind(gl);gl.getExtension=name=>name==='EXT_color_buffer_float'?null:ext(name);}else if(fault==='allocation'){gl.checkFramebufferStatus=()=>gl.FRAMEBUFFER_UNSUPPORTED;}else if(fault==='validation'){const read=gl.readPixels.bind(gl);gl.readPixels=(...a)=>{read(...a);if(document.getElementById('engineMode')?.value==='v2'&&a[6] instanceof Uint8Array)a[6].fill(255);};}else if(fault==='precision'){gl.getShaderPrecisionFormat=()=>({precision:10});}else{const param=gl.getProgramParameter.bind(gl);gl.getProgramParameter=(program,key)=>key===gl.LINK_STATUS?false:param(program,key);}return gl;
   }return get.call(this,type,...args);};},fault);
-  await q.goto(h.url);await q.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await q.waitForFunction(()=>working&&!rollLoading);await q.locator('#engineMode').selectOption('v2');await q.waitForFunction(()=>state.engine==='v2'&&!rollLoading&&lastPreview38&&!workerBusy38&&!queued38);
+  await q.goto(h.url);await q.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await q.waitForFunction(()=>working&&!rollLoading);await selectEngine(q,'v2');await q.waitForFunction(()=>state.engine==='v2'&&!rollLoading&&lastPreview38&&!workerBusy38&&!queued38);
   const state=await q.evaluate(()=>({gpu:FILMLABB_GPU.snapshot(),queue:roll.length,recipe:!!state.v2Recipe,pixels:lastPreview38.data.length}));assert.equal(state.gpu.backend,'cpu');assert.ok(state.gpu.reason);assert.ok(state.recipe&&state.queue&&state.pixels);await q.close();
  }
  assert.deepEqual(errors,[]);console.log('PASS V2 fallback for missing WebGL2/float target, allocation/shader/precision errors and actual out-of-tolerance validation');

@@ -5,7 +5,8 @@
 if(!window.FILMLABB_REFERENCE_ISOLATED)throw Error('REFERENCE_ISOLATION_REQUIRED');
 const clone=x=>JSON.parse(JSON.stringify(x));
 window.FILMLABB_REFERENCE={async load(file){
- await importRoll([file]);
+ // A is the photographic Standard reference, independently of the app default.
+ await importRoll([file],{engine:'calibrated4'});
  if(!working||rollLoading)throw Error('REFERENCE_IMPORT_FAILED');
  const selection=exportGeometrySnapshot(working),g=selection.g;
  if(g.presentation||selection.rotation)throw Error('REFERENCE_GEOMETRY_UNSUPPORTED');

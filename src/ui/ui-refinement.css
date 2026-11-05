@@ -13,6 +13,9 @@ Light palettes retain their existing colors. */
   --ui-accent-label:#dca65f;
   --ui-active:#403630
 }
+:root[data-theme="classic"]:not([data-mode="light"]) {
+  --ui-card-header:#373837;
+}
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
   --ui-panel:#f4f1eb;
@@ -149,6 +152,8 @@ Light palettes retain their existing colors. */
   /* Material colors follow all six identities and both light modes. */
   --ui-card:var(--ui-panel);
   --ui-card-header:var(--ui-active);
+  --ui-glass-edge:rgba(255,255,255,.13);
+  --ui-glass-shade:rgba(0,0,0,.12);
   --ui-chrome:var(--ui-surface);
   --ui-field:var(--ui-surface);
   --ui-hover:var(--ui-active);

@@ -1,6 +1,6 @@
 import {readSource,scripts} from './source.mjs';
 import vm from 'node:vm';
-export function harness({editingVersion}={}){
+export function harness({editingVersion,initialEngine='calibrated4'}={}){
 const elements=new Map();
 class Element{constructor(tag='div'){this.tagName=tag;this.value='';this.checked=false;this.style={setProperty(k,v){this[k]=v;},removeProperty(k){delete this[k];}};this.dataset={};this.listeners={};this.children=[];this.classList={toggle(){},add(){},remove(){}};this.clientWidth=800;this.clientHeight=600;this.textContent='';this.width=1;this.height=1;}append(...a){this.children.push(...a);}appendChild(a){this.append(a);}setAttribute(k,v){this[k]=v;}addEventListener(k,fn){(this.listeners[k]||=[]).push(fn);}getBoundingClientRect(){return {left:0,top:0,width:this.clientWidth,height:this.clientHeight};}setPointerCapture(){}closest(){return null;}remove(){}click(){}getContext(){return {createImageData:(w,h)=>new ImageData(w,h),putImageData:im=>{this.lastImage=im;},getImageData:()=>this.lastImage,drawImage(){},translate(){},rotate(){}};}toBlob(fn,type){fn(new Blob([this.lastImage?.data||new Uint8Array(1)],{type}));}}
 class ImageData{constructor(w,h){this.width=w;this.height=h;this.data=new Uint8ClampedArray(w*h*4);}}
@@ -8,6 +8,9 @@ const html=readSource('index.html','utf8');for(const [,id]of html.matchAll(/id="
 const context={console,Math,JSON,Number,performance,DecompressionStream,ImageData,Blob,TextEncoder,TextDecoder,Uint8Array,Uint8ClampedArray,Uint16Array,Float32Array,ArrayBuffer,DataView,atob,URL,setTimeout:fn=>{queueMicrotask(fn);return 0;},clearTimeout(){},confirm:()=>false,navigator:{},location:{protocol:'https:'},localStorage:{getItem(){return null;},setItem(){}},document:{getElementById(id){if(!elements.has(id))elements.set(id,new Element());return elements.get(id);},createElement:tag=>new Element(tag),querySelector:()=>null,body:new Element()},ResizeObserver:class{observe(){}}};
 vm.createContext(context);
 for(const asset of scripts.filter(a=>a.harness)){vm.runInContext(readSource(asset.file,'utf8'),context,{filename:asset.source});
+ // Numeric fixtures preserve their pre-V2 initial recipe. Browser tests exercise
+ // the real fresh-workflow default; callers can request initialEngine:'v2'.
+ if(asset.file==='app-bootstrap.js')vm.runInContext("state.engine="+JSON.stringify(initialEngine)+";state.conversionVersion="+(initialEngine==='v2'?2:1)+";"+(editingVersion!==undefined?"state.editVersion="+editingVersion+";":""),context);
  // Frozen conversion fixtures explicitly select their original editing version.
  if(asset.file==='project-settings.js'&&editingVersion!==undefined){const defaults=context.NSProjectSettings.imageDefaults;context.NSProjectSettings.imageDefaults=()=>({...defaults(),editVersion:editingVersion});}
 }
