@@ -1,13 +1,15 @@
 // Real application screenshots using the existing public demo, never private RAFs.
 import fs from 'node:fs';
 import {browserHarness} from '../tests/helpers/browser.mjs';
+const captureImage=process.env.FILMLABB_CAPTURE_IMAGE||'demo-negative.png';
 const phase=process.argv[2]||'after',dir=`${process.argv[3]||'docs/ui-2.1'}/${phase}`;
 fs.mkdirSync(dir,{recursive:true});
 const h=await browserHarness(),metrics=[];
 try{
  for(const [name,width,height,touch] of [['desktop',1440,900,false],['ipad-landscape',1024,768,true],['ipad-portrait',768,1024,true],['mobile',390,844,true]]){
   const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage();
-  await p.goto(h.url);await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0&&!$('histogramInfo').textContent.includes('…'));await p.waitForTimeout(100);
+  await p.goto(h.url);await p.locator('#imageFile').setInputFiles(captureImage);await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0&&!$('histogramInfo').textContent.includes('…'));if(process.env.FILMLABB_CAPTURE_SOURCE_VIEW){await p.locator('#tabNeg').click();await p.waitForFunction(()=>$('histogramInfo').textContent.includes('Negativ'));}
+  await p.waitForTimeout(100);
   await p.screenshot({path:`${dir}/${name}.png`});
   if(phase==='after'||phase==='before'){
    if(name==='desktop'){
@@ -24,7 +26,7 @@ try{
      await p.evaluate(value=>{const im=working;im.data.fill(im.data instanceof Uint8Array||im.data instanceof Uint8ClampedArray?Math.round(value*255):value);workingPreview=working;sourceVersion38++;config38=null;render();zoom=3;applyView();},value);
      await p.waitForTimeout(400);await p.locator('#picture').screenshot({path:`${dir}/toolbar-${label}.png`});
     }
-    await p.locator('#zoomReset').click();await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading&&!$('histogramInfo').textContent.includes('…'));
+    await p.locator('#zoomReset').click();await p.locator('#imageFile').setInputFiles(captureImage);await p.waitForFunction(()=>working&&!rollLoading&&!$('histogramInfo').textContent.includes('…'));
    }
    await p.evaluate(()=>FILMLABB_APPEARANCE.set('classic','light'));await p.screenshot({path:`${dir}/${name}-light.png`});
   }

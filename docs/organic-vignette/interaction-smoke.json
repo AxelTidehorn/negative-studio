@@ -1,0 +1,37 @@
+{
+  "environment": "Headless Chromium/SwiftShader, 1024x768 touch emulation; synthetic DNG, alternating background only. Not a physical iPad/RAF benchmark.",
+  "results": [
+    {
+      "background": "before",
+      "frames": 120,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 19.300000000745058,
+      "maxMs": 20.799999997019768,
+      "gpu": "gpu"
+    },
+    {
+      "background": "after",
+      "frames": 120,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 21.099999997764826,
+      "maxMs": 32.399999998509884,
+      "gpu": "gpu"
+    },
+    {
+      "background": "before",
+      "frames": 120,
+      "medianMs": 16.600000001490116,
+      "p95Ms": 18.300000000745058,
+      "maxMs": 19.300000000745058,
+      "gpu": "gpu"
+    },
+    {
+      "background": "after",
+      "frames": 120,
+      "medianMs": 16.699999999254942,
+      "p95Ms": 18.699999999254942,
+      "maxMs": 22.700000002980232,
+      "gpu": "gpu"
+    }
+  ]
+}
