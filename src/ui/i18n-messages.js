@@ -2,6 +2,11 @@
 (function(root){
 'use strict';
 const rows=[
+["Konverteringsmotor", "Conversion engine", "Moteur de conversion", "Motor de conversión", "Konvertierungsengine"],
+["V2 · standard", "V2 · default", "V2 · par défaut", "V2 · predeterminado", "V2 · Standard"],
+["Standard · referens", "Standard · reference", "Standard · référence", "Standard · referencia", "Standard · Referenz"],
+["Original · historisk referens", "Original · historical reference", "Original · référence historique", "Original · referencia histórica", "Original · historische Referenz"],
+["Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.", "Standard: V2 requires RAW or verified linear Rec.2020 TIFF.", "Standard : V2 nécessite un RAW ou un TIFF Rec.2020 linéaire vérifié.", "Standard: V2 requiere RAW o TIFF Rec.2020 lineal verificado.", "Standard: V2 erfordert RAW oder verifiziertes lineares Rec.2020-TIFF."],
 ["Importera", "Import", "Importer", "Importar", "Importieren"],
 ["Manuell referens", "Manual reference", "Référence manuelle", "Referencia manual", "Manuelle Referenz"],
 ["Inga manuella justeringar", "No manual adjustments", "Aucun réglage manuel", "Sin ajustes manuales", "Keine manuellen Anpassungen"],

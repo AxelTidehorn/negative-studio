@@ -59,3 +59,5 @@
   background:Canvas;color:CanvasText;backdrop-filter:none;
  }
 }
+
+#adjustmentPanel .engine-settings label{font-size:12px;font-weight:650}

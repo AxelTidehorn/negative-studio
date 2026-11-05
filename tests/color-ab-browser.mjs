@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';import path from 'node:path';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 const {browser,url,close}=await browserHarness();
 try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
@@ -7,7 +7,7 @@ try{
  await page.locator('#advancedSettings').evaluate(el=>el.open=true);await page.locator('details.sidebar-details').filter({has:page.locator('#colorMode4')}).evaluate(el=>el.open=true);
  const unchanged=await page.evaluate(()=>JSON.stringify({calibration,stateResponse:state.response4,cropRegion,geometry:roll[activeFrame].geometry,analyses:analysisCount38}));
  for(const variant of ['original','robust','legacy','robust']){await page.locator('#colorMode4').selectOption(variant);assert.equal(await page.evaluate(()=>state.colorMode4),variant);assert.equal(await page.evaluate(()=>JSON.stringify({calibration,stateResponse:state.response4,cropRegion,geometry:roll[activeFrame].geometry,analyses:analysisCount38})),unchanged);}
- await page.locator('#engineMode').selectOption('log39');assert.equal(await page.locator('#colorMode4').isDisabled(),true);await page.locator('#engineMode').selectOption('calibrated4');assert.equal(await page.locator('#colorMode4').isDisabled(),false);
+ await selectEngine(page,'log39');assert.equal(await page.locator('#colorMode4').isDisabled(),true);await selectEngine(page,'calibrated4');assert.equal(await page.locator('#colorMode4').isDisabled(),false);
  const saved=await page.evaluate(async()=>{let blob;const save=downloadBlob;try{downloadBlob=b=>blob=b;$('saveSettings').onclick();return JSON.parse(await blob.text());}finally{downloadBlob=save;}});assert.equal(saved.frames[0].settings.colorMode4,'robust');
  await page.locator('#colorMode4').selectOption('original');await page.locator('#settingsFile').setInputFiles({name:'color-ab.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(saved))});await page.waitForFunction(()=>!rollLoading&&state.colorMode4==='robust');assert.equal(await page.locator('#colorMode4').inputValue(),'robust');
  const old=structuredClone(saved);delete old.frames[0].settings.colorMode4;await page.locator('#settingsFile').setInputFiles({name:'older.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});await page.waitForFunction(()=>!rollLoading&&state.colorMode4==='legacy');assert.equal(await page.locator('#colorMode4').inputValue(),'legacy');

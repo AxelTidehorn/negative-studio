@@ -555,9 +555,9 @@ main.workspace.adjust-collapsed {
   font-size:14px;
   font-weight:650;
 }
-#adjustmentPanel > .tool-card > summary::before,
-#adjustmentPanel > .tool-card > summary::-webkit-details-marker {display:none;content:none}
-#adjustmentPanel > .tool-card > summary::marker {content:''}
+#adjustmentPanel summary::before,
+#adjustmentPanel summary::-webkit-details-marker {display:none;content:none}
+#adjustmentPanel summary::marker {content:''}
 .card-title {grid-row:1;grid-column:1;min-width:0;overflow-wrap:anywhere}
 .card-status {
   grid-column:1;

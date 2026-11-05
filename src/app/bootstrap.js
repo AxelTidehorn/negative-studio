@@ -11,9 +11,9 @@ const $=id=>document.getElementById(id);
 const controls=[['exposure','Exponering',-2,2,.05,0,' EV'],['contrast','Kontrast',.5,1.7,.02,1,'×'],['temperature','Varm / kall',-35,35,1,0,''],['tint','Grön / magenta',-35,35,1,0,''],['saturation','Färgmättnad',0,1.8,.02,1,'×'],['vibrance','Lyster',-100,100,1,0,''],['balanceStrength','Autofärgbalans',0,1,.05,.75,'×'],['shadow','Svartpunkt',0,.12,.005,.015,''],['highlight','Vitpunkt',.85,1,.005,.99,''],['gamma','Mellantoner',.65,1.6,.025,1,'×'],['shadows','Skuggor',-100,100,1,0,''],['highlights','Högdagrar',-100,100,1,0,''],['redSlope','Röd kanallutning',.7,1.3,.01,1,'×'],['blueSlope','Blå kanallutning',.7,1.3,.01,1,'×']];
 const defaultState=NSProjectSettings.imageDefaults;
 let analyzeLevels,finishImport,chooseFrame,setCropByInset,updateBase,render,scheduleRender,convertImage,technicalPositive,neutralLookup,exportTiff,exportFrameTiff,jpegBytes;
-let state=defaultState(),src=null,previewSrc=null,hires=null,display='positive',base=[235,167,105],sampleMode=false,fullWidth=0,fullHeight=0,levels=null;
+let state=NSProjectSettings.newImageDefaults(),src=null,previewSrc=null,hires=null,display='positive',base=[235,167,105],sampleMode=false,fullWidth=0,fullHeight=0,levels=null;
 const clamp=(x,min=0,max=255)=>Math.max(min,Math.min(max,x));
-try{const prev=JSON.parse(localStorage.getItem('negative-studio-v03')||'null');if(prev&&typeof prev==='object')state={...state,...prev,editVersion:prev.editVersion??1,analysisSampling:prev.analysisSampling==='source'?'source':'preview'}}catch(e){}
+try{const prev=JSON.parse(localStorage.getItem('negative-studio-v03')||'null');if(prev&&typeof prev==='object')state={...defaultState(),...prev,editVersion:prev.editVersion??1,analysisSampling:prev.analysisSampling==='source'?'source':'preview'}}catch(e){}
 // Each slider has a visually centered neutral position, even for asymmetric physical ranges.
 // Its data model stays in the original units for compatibility with saved projects.
 function sliderToUI(value,min,max,neutral){const v=clamp(Number(value),min,max);return v<=neutral?(neutral===min?500:500*(v-min)/(neutral-min)):(neutral===max?500:500+500*(v-neutral)/(max-neutral));}

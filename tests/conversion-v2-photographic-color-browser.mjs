@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import {ensureBuild} from '../tools/build-artifact.mjs';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,selectEngine} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness();
 try{
  const page=await h.browser.newPage({locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(30000);
@@ -42,7 +42,7 @@ try{
   }finally{owner.close();}
  });
  await page.goto(h.url);await page.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await page.waitForFunction(()=>working&&!rollLoading);
- await page.locator('#engineMode').selectOption('v2');await page.waitForFunction(()=>state.engine==='v2'&&working&&!rollLoading);
+ await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&working&&!rollLoading);
  await page.evaluate(()=>$('cropReset').click());
  const selected=await page.evaluate(()=>{const cal=JSON.stringify(state.v2Recipe.calibration);FILMLABB_V2.setRendering('photographic',{version:2});NSV2Platform.validate(state.v2Recipe);return {cal,recipe:state.v2Recipe};});
  assert.equal(selected.recipe.intent.tone,'luminance-photographic-2');assert.equal(JSON.stringify(selected.recipe.calibration),selected.cal);

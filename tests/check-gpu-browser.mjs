@@ -1,3 +1,4 @@
+import {selectEngine} from './helpers/browser.mjs';
 import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
 /* Optional browser integration. Install Playwright separately, then:
@@ -68,8 +69,8 @@ try{
  await page.evaluate(()=>{gpuLossTest.restoreContext();});
  await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');check('Real WebGL context loss falls back to CPU and restoration recovers GPU');
  // Unsupported engine uses CPU and returns to GPU when Standard is selected.
- await page.locator('#advancedSettings').evaluate(el=>{el.open=true;});await page.locator('#engineMode').selectOption('log39');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu');
- await page.locator('#engineMode').selectOption('calibrated4');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ await page.locator('#advancedSettings').evaluate(el=>{el.open=true;});await selectEngine(page,'log39');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu');
+ await selectEngine(page,'calibrated4');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  check('Comparison engine automatically uses CPU and Standard returns to GPU');
  await page.locator('#clearQueue').click();assert.equal(await page.locator('#gpuPreview').isVisible(),false);assert.equal(await page.locator('#empty').isVisible(),true);check('Clear queue removes GPU preview and releases resources');
  assert.deepEqual(errors,[]);

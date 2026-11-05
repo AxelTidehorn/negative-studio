@@ -46,6 +46,8 @@ $('settingsFile').onchange=async e=>{
  sharedLight=data.sharedLight||null;
  rollShared.cropExportToFrame=shared;rollShared.profileVersion=data.creativeProfileVersion===1?1:data.creativeProfileVersion===2?2:data.format==='negative-studio-roll-v08'?2:1;if(data.exportNaming){$('exportName').value=String(data.exportNaming.prefix||'');$('exportDigits').value=String(data.exportNaming.digits||3);syncExportNaming();}if(typeof sharedFlatField!=='undefined')sharedFlatField=data.flatField||null;rollShared.profile=filmProfiles[data.profile]?data.profile:'generic';$('filmProfile').value=rollShared.profile;rollShared.print=printStyles[data.print]?data.print:'neutral';$('printStyle').value=rollShared.print;rollShared.strength=Number.isFinite(Number(data.strength))?clamp(Number(data.strength),0,1):.7;$('profileStrength').value=Math.round(rollShared.strength*100);$('profileStrengthValue').textContent=Math.round(rollShared.strength*100)+' %';refreshProfileInfo();
  if(typeof sharedResponse4!=='undefined')sharedResponse4=CC4.valid(data.sharedResponse4)?data.sharedResponse4:null;
+ // defaultState is the historical baseline: a missing engine in a saved
+ // project must never inherit the fresh-workflow V2 default.
  let count=0,retiredRaw=false;for(const saved of data.frames||[]){const found=roll.find(f=>f.file.name===saved.filename);if(found){found.settings={...defaultState(),...saved.settings,editVersion:saved.settings?.editVersion??1,previewSampling:saved.settings?.previewSampling==='area-v1'?'area-v1':'nearest'};
  if(!CC4.valid(found.settings.response4))found.settings.response4=null;
  if(!saved.settings?.rawMode4&&found.settings.engine!=='calibrated4')found.settings.rawMode4='reference';

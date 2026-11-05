@@ -3,7 +3,7 @@
     "name": "desktop",
     "cards": {
       "imageAdjustments": {
-        "openHeight": 836.453125,
+        "openHeight": 741.671875,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -21,7 +21,7 @@
         "closedHeight": 49.53125
       },
       "advancedSettings": {
-        "openHeight": 273,
+        "openHeight": 366.390625,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -43,7 +43,7 @@
     "name": "ipad-landscape",
     "cards": {
       "imageAdjustments": {
-        "openHeight": 1024.09375,
+        "openHeight": 913.3125,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -61,7 +61,7 @@
         "closedHeight": 49.53125
       },
       "advancedSettings": {
-        "openHeight": 297,
+        "openHeight": 406.390625,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -83,7 +83,7 @@
     "name": "ipad-portrait",
     "cards": {
       "imageAdjustments": {
-        "openHeight": 1024.09375,
+        "openHeight": 913.3125,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -101,7 +101,7 @@
         "closedHeight": 49.53125
       },
       "advancedSettings": {
-        "openHeight": 297,
+        "openHeight": 406.390625,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -123,7 +123,7 @@
     "name": "mobile",
     "cards": {
       "imageAdjustments": {
-        "openHeight": 974.90625,
+        "openHeight": 880.921875,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
@@ -141,7 +141,7 @@
         "closedHeight": 49.53125
       },
       "advancedSettings": {
-        "openHeight": 297,
+        "openHeight": 389.59375,
         "headerHeight": 44,
         "padding": "6px",
         "closedHeight": 49.53125
