@@ -40,6 +40,7 @@
  function sendHistogram(job){histBusy=true;histWorker.postMessage(job);}
  function sourceKey(version,source){return JSON.stringify([version,source.width,source.height,source.channels,source.scale,source.normalization,source.encoding,source.colorSpace,source.flatField]);}
  function positiveKey(config){return JSON.stringify([sourceVersion38,NSPixelKernel.v2PreviewKey(workingPreview,config)]);}
+ function seedPositive(worker,source,config){const saved=NSPixelKernel.cachedV2Positive(source,config);if(saved){const data=saved.data.slice();worker.postMessage({type:'v2-seed',config,cacheKey:NSPixelKernel.v2PreviewKey(source,config),data},[data.buffer]);}}
  function histogramWorker(config,version,source){
   if(histDisabled||typeof Worker==='undefined')throw Error('V2 preview worker is unavailable');
   if(!histWorker){
@@ -51,9 +52,9 @@
     if(r.type==='v2-positive'){
      const job=positivePending;if(!job||job.id!==r.id||job.key!==r.key){metrics.positiveDiscards++;return;}
      positivePending=null;
-     const current=workingPreview?configuration38():null;
-     if(job.source!==workingPreview||job.version!==sourceVersion38||current?.kind!=='v2'||job.key!==positiveKey(current)){metrics.positiveDiscards++;return;}
      try{
+     const current=workingPreview?configuration38():null;
+     if(job.source!==workingPreview||job.version!==sourceVersion38||current?.kind!=='v2'||job.key!==positiveKey(current)){metrics.positiveDiscards++;if(current?.kind==='v2'&&eligible(current)){if(job.source===workingPreview&&job.version===sourceVersion38)seedPositive(worker,workingPreview,current);drawGpu(positiveInteractive,current);}return;}
       positive={key:job.key,image:NSPixelKernel.installV2Positive(workingPreview,job.config,r.image.data)};
       metrics.positiveCacheBytes=r.image.data.byteLength;metrics.positivePreparationMs=now38()-job.started;metrics.positiveReconstructionMs=r.reconstructionMs;metrics.positiveCopyMs=r.copyMs;metrics.positiveReadyAt=now38();
       if(eligible(current))drawGpu(positiveInteractive,current);
@@ -68,7 +69,7 @@
   const key=sourceKey(version,source);
   if(histSourceKey!==key){
    const data=source.data.slice();histWorker.postMessage({type:'source',image:{...source,data}},[data.buffer]);histSource=version;histSourceKey=key;
-   if(config.kind==='v2'){const saved=NSPixelKernel.cachedV2Positive(source,config);if(saved){const copy=saved.data.slice();histWorker.postMessage({type:'v2-seed',config,cacheKey:NSPixelKernel.v2PreviewKey(source,config),data:copy},[copy.buffer]);}}
+   if(config.kind==='v2')seedPositive(histWorker,source,config);
   }
   return histWorker;
  }
@@ -77,7 +78,9 @@
   if(positive?.key===key)return true;
   const saved=NSPixelKernel.cachedV2Positive(workingPreview,config);
   if(saved){positive={key,image:saved};metrics.positiveCacheBytes=saved.data.byteLength;return true;}
-  if(positivePending?.key===key)return false;
+  // One active reconstruction; when it returns, discard it if necessary and
+  // prepare only the latest recipe. Technical changes cannot grow a backlog.
+  if(positivePending)return false;
   stopPreviewWork();clearTimeout(histTimer);histSequence++;histPending=null;
   const started=now38(),id=++positiveSequence;positivePending={id,key,config,source:workingPreview,version:sourceVersion38,started};metrics.positiveRequests++;metrics.positiveStartedAt=started;
   const worker=histogramWorker(config,sourceVersion38,workingPreview);worker.postMessage({type:'v2-positive',id,key,config});

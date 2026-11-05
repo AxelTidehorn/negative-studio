@@ -42,7 +42,9 @@ existing V2 analysis invalidation; a different resulting applied recipe rebuilds
 the positive. If all applied values remain identical, its pixels can be reused.
 
 The complete serialized key decides validity, not the short diagnostic hash.
-Pending worker results must match request ID, full key, image object, source
+At most one reconstruction runs at once; rapid technical changes coalesce into
+the latest recipe after discarding the active outdated result. Pending worker
+results must match request ID, full key, image object, source
 version and currently selected V2 recipe. Image import/navigation terminates the
 old worker and releases old textures. Rapid edits use the latest manual settings
 when preparation completes. Positive and negative textures remain distinct.
