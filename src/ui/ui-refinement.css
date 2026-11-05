@@ -14,6 +14,26 @@ Light palettes retain their existing colors. */
   --ui-active:#403630
 }
 :root[data-theme="classic"]:not([data-mode="light"]) {
+  /* Solid controls and interaction roles, independent of the glass materials. */
+  --ui-control-surface:#24211f;
+  --ui-control-edge:#7b6c5f;
+  --ui-control-hover-edge:#c79d66;
+  --ui-control-shadow:inset 0 1px rgba(255,244,224,.06);
+  --ui-pressed:#171412;
+  --ui-pressed-shadow:inset 0 1px 3px #0006;
+  --ui-hover:#342d27;
+  --ui-muted:#c6bbb0;
+  --ui-field:#211e1c;
+  --ui-disabled:#211e1c;
+  --ui-disabled-text:#9d9187;
+  --ui-disabled-edge:#554c44;
+  --ui-disabled-opacity:1;
+  --ui-slider-track:var(--ui-control-edge);
+  --ui-raised:var(--ui-control-surface);
+  --ui-raised-shadow:inset 0 1px rgba(255,244,224,.06),0 4px 12px #0004;
+  --ui-plot-surface:#191919;
+  --ui-batch-shadow:inset 0 -2px var(--ui-muted);
+  --line:var(--ui-border);
   --ui-card-header:#493126;
   --ui-card:#171210;
   --ui-card-glass:linear-gradient(125deg,rgba(235,182,84,.18) 0%,rgba(215,151,57,.15) 42%,rgba(175,112,34,.20) 100%);
@@ -241,5 +261,21 @@ Light palettes retain their existing colors. */
 @media (prefers-reduced-transparency:reduce) {
  :root[data-theme="classic"]:not([data-mode="light"]) {
   --ui-queue-surface:#1b1b1c;
+ }
+}
+@media (forced-colors:active) {
+ :root[data-theme="classic"]:not([data-mode="light"]) {
+  --ui-control-surface:ButtonFace;
+  --ui-control-edge:ButtonBorder;
+  --ui-control-hover-edge:Highlight;
+  --ui-hover:ButtonFace;
+  --ui-pressed:ButtonFace;
+  --ui-active:ButtonFace;
+  --ui-accent:Highlight;
+  --ui-accent-text:HighlightText;
+  --ui-accent-label:Highlight;
+  --ui-text:ButtonText;
+  --ui-disabled-text:GrayText;
+  --ui-disabled-edge:GrayText;
  }
 }

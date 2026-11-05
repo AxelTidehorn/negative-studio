@@ -10,9 +10,9 @@
 #imageTools3 #hideImageTools::before,#showImageTools::before{display:none}
 #showImageTools{min-height:32px;padding:5px 9px;font-size:11px}
 /* Keep the existing panel/viewport layout. Only the editor's contents move. */
-#histogram{background:#191b1f;border-radius:3px;height:82px}
+#histogram{background:var(--ui-plot-surface,#191b1f);border-radius:3px;height:82px}
 .histogram-heading{flex-wrap:wrap}
-.histogram-legend{display:flex;gap:12px;padding:3px 6px;background:#191b1f;font-size:11px;border-radius:3px}
+.histogram-legend{display:flex;gap:12px;padding:3px 6px;background:var(--ui-plot-surface,#191b1f);font-size:11px;border-radius:3px}
 .hist-r{color:#ff7373}.hist-g{color:#62db95}.hist-b{color:#80adff}.hist-y{color:#f4f1e9}
 #histogramClipping{font-size:10px;line-height:1.5;margin:4px 0 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 #histogramClipping:empty{display:none}
@@ -40,6 +40,13 @@
  border-radius:8px;
  box-shadow:var(--ui-smoke-shadow,0 1px 3px #0002);
 }
+:root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:hover:not(:focus-visible) {
+ outline:1px solid var(--ui-control-hover-edge);
+ outline-offset:-3px;
+}
+:root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:active {
+ color:var(--ui-accent-label);
+}
 @media (prefers-reduced-transparency:reduce) {
  #adjustmentPanel > .tool-card > summary,#imageTools3,#showImageTools {
   -webkit-backdrop-filter:none;
@@ -52,6 +59,13 @@
  #adjustmentPanel .tool-card,#imageTools3,#showImageTools {animation:none;transition:none}
 }
 @media (forced-colors:active) {
+ /* Canvas strokes are data pixels, not system-colored text. Preserve only
+    their dark plot/legend backing; the surrounding UI keeps native colors. */
+ #histogram,.histogram-legend {
+  forced-color-adjust:none;
+  background:var(--ui-plot-surface,#191b1f);
+  color:#f4f1e9;
+ }
  #adjustmentPanel > .tool-card > summary,#imageTools3,#showImageTools {
   background:Canvas;color:CanvasText;
   -webkit-backdrop-filter:none;backdrop-filter:none;
