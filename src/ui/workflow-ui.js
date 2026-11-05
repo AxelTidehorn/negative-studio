@@ -77,7 +77,7 @@ for(const [selector,name]of [['label[for="imageFile"]','import'],['#export','exp
 function localizeBase(){for(const id of ['base2Status','base2Preview','base2Lock','base2ResponseLock','base2Cancel','base2Accept','base2Undo','base2Auto']){const el=$(id);if(el.textContent!==FILMLABB_I18N.fromSource(el.textContent))t(el,el.textContent);}}
 function baseState(){
  localizeBase();const snap=globalThis.FILMLABB_BASE2?.snapshot(),a=snap?.accepted;
- let label='Filmbas saknas';
+ let label=working?'Ingen separat filmbasreferens godkänd':'Importera en bild för att analysera filmbasen';
  if(a)label=state.useRollBase2?'Rullreferens':a.measurement.kind.startsWith('manual')?'Manuellt godkänd':'Automatisk referens';
  else if(snap?.proposal)label=snap.proposal.measurement.status==='missing'?'Filmbas saknas':'Kontrollera kandidaten';
  else if(state.filmBaseVersion===2&&(state.acceptedCalibration2||state.useRollBase2))label='Referens pausad';
@@ -101,7 +101,17 @@ function refresh(){
  $('base2Lock').hidden=!snap?.accepted;
  const v2=state.filmBaseVersion===2;legacy.hidden=v2;
  t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');
- const proposal=snap?.proposal;sampleDetails.open=!!proposal||!!snap?.tool;
+ // A review panel is useful only for an actual proposal, active sample tool or undo.
+ // Keep all original controls/bindings intact; this is presentation only.
+ const proposal=snap?.proposal,reviewActive=!!proposal||!!snap?.tool;
+ const canUndo=!$('base2Undo').disabled;
+ sampleDetails.hidden=!reviewActive&&!canUndo;
+ if(reviewActive||canUndo)sampleDetails.open=true;
+ $('base2Status').hidden=!reviewActive;
+ $('base2Stats').hidden=!reviewActive||!$('base2Stats').textContent;
+ $('base2Compare').hidden=!reviewActive||!$('base2Compare').textContent;
+ for(const id of ['base2Preview','base2Accept','base2Cancel','base2Auto'])$(id).hidden=!reviewActive;
+ $('base2Undo').hidden=!canUndo;
  const isRaw=!!working&&NSFileFormats.isRaw(roll[activeFrame]?.file?.name||'');raw.hidden=!isRaw;
  tiff.hidden=!working||!(/\.tiff?$/i.test(roll[activeFrame]?.file?.name||''))||!!hires?.icc;
 }
@@ -109,7 +119,7 @@ const ui=updateCalibrationUI;updateCalibrationUI=function(...a){const r=ui(...a)
 $('engineMode').addEventListener('change',refresh);
 new MutationObserver(refresh).observe($('rotationSummary'),{childList:true,subtree:true});
 new MutationObserver(refresh).observe($('geometryHint'),{childList:true,subtree:true});
-new MutationObserver(()=>{const snap=baseState();t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');sampleDetails.open=!!globalThis.FILMLABB_BASE2?.snapshot().proposal||!!snap?.tool;}).observe($('base2Status'),{childList:true});
+new MutationObserver(refresh).observe($('base2Status'),{childList:true});
 $('filmProfile').setAttribute('aria-label',FILMLABB_I18N.fromSource('Kreativ profil'));
 window.addEventListener('filmlabb:language',refresh);
 refresh();
