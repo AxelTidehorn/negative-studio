@@ -358,6 +358,8 @@ main.workspace.adjust-collapsed {
 }
 .queue-panel {
   background:var(--ui-queue-surface,var(--ui-panel));
+  border-color:var(--ui-smoke-edge,var(--ui-border));
+  box-shadow:var(--ui-smoke-shadow,none);
   display:flex;
   flex-direction:column;
   gap:8px;
@@ -552,7 +554,7 @@ main.workspace.adjust-collapsed {
   padding:5px 8px;
   border-radius:5px;
   background:var(--ui-card-glass,var(--ui-card-header));
-  box-shadow:inset 0 1px var(--ui-glass-edge),inset 0 -1px var(--ui-glass-shade);
+  box-shadow:var(--ui-card-header-shadow,inset 0 1px var(--ui-glass-edge),inset 0 -1px var(--ui-glass-shade));
   font-size:14px;
   font-weight:650;
 }
