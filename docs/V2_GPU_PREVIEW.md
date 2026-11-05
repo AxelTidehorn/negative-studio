@@ -1,5 +1,8 @@
 # V2 GPU preview, stage 1
 
+> Historical stage-1 design and measurements. Current full GPU reconstruction
+> is described in [stage 2](V2_GPU_RECONSTRUCTION.md).
+
 Based on `eb2e685` (main, merged #62 including Vibrance). This changes preview
 ownership, not V2 reconstruction, photographic rendering, Editing 2.0 math,
 project schemas or JPEG/TIFF processing. Original stays CPU; Standard retains its

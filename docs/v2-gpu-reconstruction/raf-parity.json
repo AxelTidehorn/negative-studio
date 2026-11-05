@@ -1,0 +1,170 @@
+[
+  {
+    "id": "04",
+    "dimensions": [
+      900,
+      890
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "floatMax": 1.1175870895385742e-06,
+        "meanAbsolute": 2.9130253849354972e-05,
+        "signedMean": [
+          1.7478152309612985e-05,
+          7.49063670411985e-06,
+          3.245942571785268e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "floatMax": 1.1175870895385742e-06,
+        "meanAbsolute": 7.324178110694964e-05,
+        "signedMean": [
+          5.617977528089888e-05,
+          3.245942571785268e-05,
+          6.6167290886392e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "floatMax": 1.1175870895385742e-06,
+        "meanAbsolute": 3.204327923429047e-05,
+        "signedMean": [
+          2.746566791510612e-05,
+          1.2484394506866417e-05,
+          1.622971285892634e-05
+        ],
+        "aboveOne": 0
+      }
+    ]
+  },
+  {
+    "id": "09",
+    "dimensions": [
+      900,
+      852
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "floatMax": 5.960464477539062e-07,
+        "meanAbsolute": 1.7822987306555382e-05,
+        "signedMean": [
+          7.82472613458529e-06,
+          3.912363067292645e-06,
+          2.0865936358894105e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "floatMax": 5.960464477539062e-07,
+        "meanAbsolute": 5.694661797948183e-05,
+        "signedMean": [
+          3.6515388628064685e-05,
+          1.9561815336463222e-05,
+          3.9123630672926444e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "floatMax": 5.960464477539062e-07,
+        "meanAbsolute": 2.0865936358894105e-05,
+        "signedMean": [
+          1.0432968179447053e-05,
+          0,
+          1.564945226917058e-05
+        ],
+        "aboveOne": 0
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "dimensions": [
+      900,
+      896
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "floatMax": 8.977949619293213e-07,
+        "meanAbsolute": 2.1908068783068784e-05,
+        "signedMean": [
+          -3.7202380952380952e-06,
+          7.4404761904761905e-06,
+          1.984126984126984e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "floatMax": 8.977949619293213e-07,
+        "meanAbsolute": 8.55654761904762e-05,
+        "signedMean": [
+          6.324404761904761e-05,
+          3.968253968253968e-05,
+          5.70436507936508e-05
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "floatMax": 8.977949619293213e-07,
+        "meanAbsolute": 2.4388227513227514e-05,
+        "signedMean": [
+          6.200396825396825e-06,
+          1.736111111111111e-05,
+          1.4880952380952381e-05
+        ],
+        "aboveOne": 0
+      }
+    ]
+  }
+]

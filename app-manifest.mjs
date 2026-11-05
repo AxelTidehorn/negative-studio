@@ -2,6 +2,7 @@
 // One source map serves the build, DOM harness and developer tools.
 export const assets = {
  "v2-platform.js":"src/conversion-v2/platform.js",
+ "v2-gpu.js":"src/conversion-v2/gpu.js",
  "v2-platform-controller.js":"src/conversion-v2/platform-controller.js",
  "build-info.js":"src/platform/build-info.js",
  "tiff-header.js":"src/export/tiff-header.js",
@@ -133,6 +134,7 @@ export const scripts = [
  {"file":"tiff-writer.js","harness":true,"defer":false},
  {"file":"source-analysis.js","harness":true,"defer":false},
  {"file":"slider-response.js","harness":true,"defer":false},
+ {"file":"v2-gpu.js","harness":false,"defer":false},
  {"file":"gpu-renderer.js","harness":false,"defer":false},
  {"file":"gpu-preview.js","harness":false,"defer":false},
  {"file":"next-workflow.js","harness":false,"defer":false},
