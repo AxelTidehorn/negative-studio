@@ -551,7 +551,7 @@ main.workspace.adjust-collapsed {
   min-height:44px;
   padding:5px 8px;
   border-radius:5px;
-  background:var(--ui-card-header);
+  background:var(--ui-card-glass,var(--ui-card-header));
   box-shadow:inset 0 1px var(--ui-glass-edge),inset 0 -1px var(--ui-glass-shade);
   font-size:14px;
   font-weight:650;
@@ -604,7 +604,6 @@ header,footer.foot {
 }
 @supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
   #adjustmentPanel > .tool-card > summary {
-    background:var(--ui-card-glass,color-mix(in srgb,var(--ui-card-header) 76%,transparent));
     -webkit-backdrop-filter:var(--ui-card-backdrop,blur(2px));
     backdrop-filter:var(--ui-card-backdrop,blur(2px));
   }

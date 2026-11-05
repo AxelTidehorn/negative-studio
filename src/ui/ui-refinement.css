@@ -22,6 +22,9 @@ Light palettes retain their existing colors. */
   --ui-card-shadow:0 2px 5px #0002;
   --ui-glass-edge:rgba(255,216,177,.18);
   --ui-queue-surface:rgba(24,24,25,.20);
+  --ui-smoke-overlay:rgba(24,24,25,.85);
+  --ui-smoke-overlay-solid:#181819;
+  --ui-smoke-overlay-backdrop:none;
   /* Static SVG, supplied 340x220 paths and 23-unit blur. Scale both axes to
      keep every edge in view on portrait as well as wide workspaces. sRGB
      filter interpolation avoids amplified dark-channel quantization. */
@@ -163,6 +166,9 @@ Light palettes retain their existing colors. */
   /* Material colors follow all six identities and both light modes. */
   --ui-card:var(--ui-panel);
   --ui-card-header:var(--ui-active);
+  --ui-smoke-overlay:var(--ui-card-header);
+  --ui-smoke-overlay-solid:var(--ui-card-header);
+  --ui-smoke-overlay-backdrop:none;
   --ui-glass-edge:rgba(255,255,255,.13);
   --ui-glass-shade:rgba(0,0,0,.12);
   --ui-chrome:var(--ui-surface);
@@ -198,6 +204,15 @@ Light palettes retain their existing colors. */
   --ns-accent-ink:var(--ui-accent-text);
   --ns-accent-soft:var(--ui-active);
   --ns-accent-line:var(--ui-accent-label)
+}
+/* Keep existing materials in the other identities. Dark Classic overrides these
+   tokens independently of blur support. */
+@supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
+ :root {
+  --ui-card-glass:color-mix(in srgb,var(--ui-card-header) 76%,transparent);
+  --ui-smoke-overlay:color-mix(in srgb,var(--ui-card-header) 83%,transparent);
+  --ui-smoke-overlay-backdrop:blur(10px);
+ }
 }
 :root[data-mode="light"] {
   --ui-error:#a12d2a;
