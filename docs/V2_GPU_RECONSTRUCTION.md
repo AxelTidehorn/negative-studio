@@ -102,8 +102,8 @@ NaN/Infinity, low transmission, headroom and near-base values.
 - [Existing RAF point overviews](v2-gpu-reconstruction/raf-parity.json), 04 portrait,
   09 snow and 10 outdoor couple, also max **1 RGB8 level**. Largest float difference
   is 1.118e-6. Frozen base/calibration/exposure/color are retained; current Photo 2
-  and photographic-finish-1 apply identically to CPU and GPU. No new full RAF series
-  or subjective photographic-quality claim. No private photos/pixels are committed.
+  and photographic-finish-1 apply identically to CPU and GPU. No new full photographic RAF series
+  or subjective photographic-quality claim (one full RAF was used for timing). No private photos/pixels are committed.
 
 Actual GPU preview is compared to decoded RGB16 TIFF at native size with identical
 recipe/geometric settings (**0 display levels** in the native DNG fixture), plus backend-independent identical
@@ -143,6 +143,8 @@ retains CPU 240px and GPU initially 700px.
 | 1400×1000 → 1400×1000 | interactive | GPU | 342.8 / 365.7 | 236.0–1268.3 | 1580.3 |
 | 6032×4032 → 1400×936 | detail | CPU | 830.7 / 865.5 | 651.1–870.6 | 1325.6 |
 | 6032×4032 → 1400×936 | detail | GPU | 915.7 / 997.9 | 871.7–1026.6 | 1501.7 |
+| RAF 6032×4032 → 1400×936 | detail | CPU | 788.2 / 806.7 | 573.8–821.9 | 17949.1 |
+| RAF 6032×4032 → 1400×936 | detail | GPU | 907.4 / 953.3 | 861.9–973.8 | 17987.5 |
 
 [All timing samples, components and memory estimates](v2-gpu-reconstruction/measurements.json).
 Every manual series has **0 primary reconstructions, 0 raw/positive uploads,
@@ -186,6 +188,24 @@ compute-speed ratio**. Full cold-switch times above include shader validation,
 scheduling, actual rendering waits and presentation. Synthetic import measures
 neither disk RAF throughput nor LibRaw decoding.
 
+
+A full **private portrait RAF, 6032×4032**, was also run through ordinary import
+and V2 selection, three times/backend with twelve edits each. The same file,
+automatic base/analysis and applied recipe were used on both paths; the tool
+asserts recipe equality. No original/EXIF/private filename is included.
+
+| RAF component median | CPU path | GPU path |
+| --- | ---: | ---: |
+| Initial Standard import, including its decode (s) | 14.31 | 15.56 |
+| Locked V2 RAW re-decode (s) | 16.53 | 16.41 |
+| V2 selection → presentation opportunity (s) | 17.95 | 17.99 |
+
+The existing decoder dominates the first switch (~16.4–16.5 s); GPU reconstruction
+does not remove that required domain re-decode. Initial import precedes that
+switch, so opening the file and then selecting V2 costs both stages. Warm CPU
+edits measure 788.2 ms versus GPU 907.4 ms here. This is another **software-GPU
+result**, not an iPad speed claim. Every manual cache delta is zero on this RAF too.
+
 Memory reports measure unique main-thread source ArrayBuffer byte lengths and
 estimate worker/texture costs. For N preview pixels the new GPU caches use raw
 12N bytes (possibly 16N driver storage) plus positive 16N bytes and about 0.44 MB
@@ -209,6 +229,7 @@ node tools/benchmark-v2-preview.mjs --detail --width 700 --height 500 --repeats 
 node tools/benchmark-v2-preview.mjs --detail --width 1400 --height 1000 --repeats 3
 node tools/benchmark-v2-preview.mjs --width 1400 --height 1000 --repeats 3
 node tools/benchmark-v2-preview.mjs --detail --width 6032 --height 4032 --repeats 3 --switches 3
+node tools/benchmark-v2-preview.mjs --raf /local/portrait.RAF --detail --repeats 3
 FILMLABB_V2_GPU_REFERENCES=/local/existing-overviews node tests/v2-gpu-browser.mjs
 npm run test:full
 npm run build
