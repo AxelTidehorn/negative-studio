@@ -16,7 +16,7 @@ Light palettes retain their existing colors. */
 :root[data-theme="classic"]:not([data-mode="light"]) {
   --ui-card-header:#493126;
   --ui-card:#171210;
-  --ui-card-glass:linear-gradient(125deg,#b77d5638 0%,#ad775724 42%,#65433740 100%);
+  --ui-card-glass:linear-gradient(125deg,#d39a493f 0%,#c98a3830 42%,#9f612b48 100%);
   --ui-card-edge:#f0b48133;
   --ui-card-shadow:0 2px 5px #0002;
   --ui-glass-edge:rgba(255,216,177,.18);
