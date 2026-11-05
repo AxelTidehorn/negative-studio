@@ -33,8 +33,14 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
-      # The full runner prepares site/ before browser tests. Never rebuild after it.
-      - run: npm run test:full
+      # Fail closed: only a pure src/ui/*.css diff gets the shorter visual suite.
+      # The runner prepares site/ before browser tests. Never rebuild after it.
+      - name: Select verification scope
+        id: scope
+        run: |
+          level="$(node tools/verification-scope.mjs)"
+          echo "level=$level" >> "$GITHUB_OUTPUT"
+      - run: npm run test:${{ steps.scope.outputs.level }}
       - name: Seal the tested artifact
         run: node tools/verified-artifact.mjs seal
       - uses: actions/upload-artifact@v4

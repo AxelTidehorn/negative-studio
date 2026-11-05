@@ -2,10 +2,12 @@
    Node built-ins and this checkout; it never installs, renders or rebuilds. */
 import fs from 'node:fs';import path from 'node:path';import {fileURLToPath} from 'node:url';
 import {contentIdentity} from './build-identity.mjs';
-import {nodeSuites,browserTests} from '../tests/suites.mjs';
+import {nodeSuites,browserTests,styleNodeTests,styleBrowserTests} from '../tests/suites.mjs';
+import {verificationScope,isStyleOnly} from './verification-scope.mjs';
 export function completeSuite(report){
- const expected=[...Object.values(nodeSuites).flat(),'stability-build.mjs',...browserTests].map(f=>'tests/'+f),actual=report?.tests;
- if(report?.level!=='full'||report.engine!=='all'||report.failures!==0||!Array.isArray(actual)||actual.length!==expected.length||actual.some(t=>t.status!==0)||new Set(actual.map(t=>t.file)).size!==expected.length||expected.some(f=>!actual.some(t=>t.file===f)))throw Error('A complete successful full suite is required');
+ const style=report?.level==='style';
+ const expected=(style?[...styleNodeTests,...styleBrowserTests]:[...Object.values(nodeSuites).flat(),'stability-build.mjs',...browserTests]).map(f=>'tests/'+f),actual=report?.tests;
+ if(!['full','style'].includes(report?.level)||report.engine!=='all'||report.failures!==0||!Array.isArray(actual)||actual.length!==expected.length||actual.some(t=>t.status!==0)||new Set(actual.map(t=>t.file)).size!==expected.length||expected.some(f=>!actual.some(t=>t.file===f))||(style&&!isStyleOnly(report.changedPaths||[])))throw Error('A complete successful scope-appropriate suite is required');
 }
 export function verify(root,expected,{release=false}={}){
  const record=JSON.parse(fs.readFileSync(path.join(root,'.cache/publication/verification.json'))),info=JSON.parse(fs.readFileSync(path.join(root,'site/build-info.json')));
@@ -21,7 +23,9 @@ export function currentMain({event,ref,commit,main}){
 if(process.argv[1]&&path.resolve(process.argv[1])===fileURLToPath(import.meta.url)){
  const [mode,root='.']=process.argv.slice(2),expected=process.env.GITHUB_SHA;
  if(mode==='seal'){
-  const report=JSON.parse(fs.readFileSync('.cache/test-full.json'));completeSuite(report);
+  const scope=verificationScope();
+  const report=JSON.parse(fs.readFileSync('.cache/test-'+scope.level+'.json'));completeSuite(report);
+  if(report.level!==scope.level||(scope.level==='style'&&JSON.stringify(report.changedPaths)!==JSON.stringify(scope.paths)))throw Error('Verification scope and changed files mismatch');
   const {inputHash}=await import('./build-artifact.mjs');
   if(report.build?.input!==inputHash())throw Error('Build inputs changed after verification');
   fs.mkdirSync('.cache/publication',{recursive:true});fs.writeFileSync('.cache/publication/verification.json',JSON.stringify({schema:'filmlabb.verified-build',version:1,report},null,2)+'\n');

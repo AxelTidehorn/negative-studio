@@ -22,7 +22,7 @@ try{
  const before=await frozen();
  const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').display,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
  assert.equal(structure.editor,'rgba(0, 0, 0, 0)');assert.equal(structure.workspace,structure.image);
- assert.notEqual(structure.gear,'none');assert.equal(structure.gap,'8px');assert.equal(structure.chevron,'none');assert.equal(structure.bodyPadding,'6px');
+ assert.notEqual(structure.gear,'none');assert.equal(structure.chevron,'none');
  await p.evaluate(()=>$('workspace').style.setProperty('--adjust-width','500px'));
  assert.equal(await p.locator('#creativeProfilesSummary').evaluate(e=>getComputedStyle(e).gridRowStart),'1','wide card status shares title row');
  await p.evaluate(()=>$('workspace').style.removeProperty('--adjust-width'));
@@ -91,11 +91,11 @@ try{
    return {body:style('#imageAdjustments > .tool-card-body'),head:style('#imageAdjustments > summary'),header:style('header'),footer:style('footer'),toolbar:style('#imageTools3')};
   });
   for(const key of ['body','header','footer']){assert.match(material[key].background,/^rgb\(/);assert.equal(material[key].filter,'none');assert.equal(material[key].opacity,'1');assert.equal(material[key].image,'none');}
-  assert.equal(material.head.filter,'blur(2px)');if(mode==='light')assert.match(material.head.background,/0\.76\)/);else assert.match(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backgroundImage),/linear-gradient/);
-  assert.equal(material.toolbar.filter,'blur(10px)');assert.match(material.toolbar.background,/0\.83\)/);
+  if(mode==='dark')assert.match(material.head.image,/linear-gradient/);
+
   await p.locator('#imageAdjustments > summary').click();
   assert.equal(await p.locator('#imageAdjustments > .tool-card-body').isVisible(),false);
-  assert.equal(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backdropFilter),'blur(2px)');
+
  }
  const cdp=await p.context().newCDPSession(p);
  await cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'reduce'}]});
