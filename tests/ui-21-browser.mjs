@@ -91,11 +91,11 @@ try{
    return {body:style('#imageAdjustments > .tool-card-body'),head:style('#imageAdjustments > summary'),header:style('header'),footer:style('footer'),toolbar:style('#imageTools3')};
   });
   for(const key of ['body','header','footer']){assert.match(material[key].background,/^rgb\(/);assert.equal(material[key].filter,'none');assert.equal(material[key].opacity,'1');assert.equal(material[key].image,'none');}
-  assert.equal(material.head.filter,'blur(10px)');if(mode==='light')assert.match(material.head.background,/0\.76\)/);else assert.match(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backgroundImage),/linear-gradient/);
+  assert.equal(material.head.filter,'blur(2px)');if(mode==='light')assert.match(material.head.background,/0\.76\)/);else assert.match(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backgroundImage),/linear-gradient/);
   assert.equal(material.toolbar.filter,'blur(10px)');assert.match(material.toolbar.background,/0\.83\)/);
   await p.locator('#imageAdjustments > summary').click();
   assert.equal(await p.locator('#imageAdjustments > .tool-card-body').isVisible(),false);
-  assert.equal(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backdropFilter),'blur(10px)');
+  assert.equal(await p.locator('#imageAdjustments > summary').evaluate(e=>getComputedStyle(e).backdropFilter),'blur(2px)');
  }
  const cdp=await p.context().newCDPSession(p);
  await cdp.send('Emulation.setEmulatedMedia',{features:[{name:'prefers-reduced-transparency',value:'reduce'}]});
