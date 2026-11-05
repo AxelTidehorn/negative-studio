@@ -1,9 +1,7 @@
 /* Panel presentation only; the actual controls keep their IDs and handlers. */
 (() => {
 'use strict';
-const advanced=$('advancedSettings'),key='filmlabb-advanced-open-v2';
-try{advanced.open=localStorage.getItem(key)==='true';}catch{}
-advanced.addEventListener('toggle',()=>{try{localStorage.setItem(key,String(advanced.open));}catch{}});
+// Main cards have session-only disclosure state, initialized in workflow-ui.js.
 for(const id of ['gamma','shadow','highlight']){const control=$(id).closest('.control');if(control)$('toneFineControls').append(control);}
 const everyday=['exposure','contrast','highlights','shadows','temperature','tint','saturation','vibrance'];
 for(const id of everyday){const control=$(id).closest('.control');if(control)$('simpleControls').append(control);}

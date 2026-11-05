@@ -2,16 +2,16 @@
 Dark identities use near-neutral surfaces; color is reserved for active details.
 Light palettes retain their existing colors. */
 :root,:root[data-theme="classic"] {
-  --ui-bg:#202020;
-  --ui-panel:#2a2a29;
-  --ui-surface:#242423;
-  --ui-text:#eeeae5;
-  --ui-muted:#bdb9b2;
-  --ui-border:#525250;
-  --ui-accent:#bc957d;
+  --ui-bg:#292421;
+  --ui-panel:#292320;
+  --ui-surface:#211d1b;
+  --ui-text:#f0ece8;
+  --ui-muted:#b8ada5;
+  --ui-border:rgba(238,220,204,.12);
+  --ui-accent:#c68b43;
   --ui-accent-text:#211c18;
-  --ui-accent-label:#d2ae96;
-  --ui-active:#38332f
+  --ui-accent-label:#dca65f;
+  --ui-active:#39302b
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;
@@ -146,6 +146,10 @@ Light palettes retain their existing colors. */
   --ui-active:#e1d3e7
 }
 :root {
+  /* Material colors follow all six identities and both light modes. */
+  --ui-card:var(--ui-panel);
+  --ui-card-header:var(--ui-active);
+  --ui-chrome:var(--ui-surface);
   --ui-field:var(--ui-surface);
   --ui-hover:var(--ui-active);
   --ui-focus:var(--ui-accent-label);

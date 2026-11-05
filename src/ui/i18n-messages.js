@@ -2,6 +2,17 @@
 (function(root){
 'use strict';
 const rows=[
+["Manuell referens", "Manual reference", "Référence manuelle", "Referencia manual", "Manuelle Referenz"],
+["Inga manuella justeringar", "No manual adjustments", "Aucun réglage manuel", "Sin ajustes manuales", "Keine manuellen Anpassungen"],
+["Ingen kreativ profil", "No creative profile", "Aucun profil créatif", "Sin perfil creativo", "Kein Kreativprofil"],
+["Godkänd", "Accepted", "Validée", "Aceptada", "Bestätigt"],
+["Antagen filmbas · ej uppmätt", "Assumed film base · not measured", "Base supposée · non mesurée", "Base supuesta · sin medir", "Angenommene Filmbasis · nicht gemessen"],
+["Standardinställningar", "Default settings", "Réglages par défaut", "Ajustes predeterminados", "Standardeinstellungen"],
+["Manuellt tonomfång", "Manual tonal range", "Plage tonale manuelle", "Rango tonal manual", "Manueller Tonwertumfang"],
+["JPEG · högst 12 megapixel", "JPEG · up to 12 megapixels", "JPEG · jusqu’à 12 mégapixels", "JPEG · hasta 12 megapíxeles", "JPEG · bis zu 12 Megapixel"],
+["JPEG · originalstorlek", "JPEG · original size", "JPEG · taille originale", "JPEG · tamaño original", "JPEG · Originalgröße"],
+["TIFF 16-bit · full upplösning", "TIFF 16-bit · full resolution", "TIFF 16 bits · pleine résolution", "TIFF 16 bits · resolución completa", "TIFF 16-Bit · volle Auflösung"],
+["Beskär till filmrutan", "Crop to film frame", "Recadrer au cadre du film", "Recortar al fotograma", "Auf Filmrahmen zuschneiden"],
 ["Lyster","Vibrance","Vibrance","Intensidad","Dynamik"],
 ["Förstärker främst svagt och måttligt mättade färger.","Primarily enhances weakly and moderately saturated colors.","Renforce surtout les couleurs peu ou modérément saturées.","Realza principalmente los colores poco o moderadamente saturados.","Verstärkt vor allem schwach und mäßig gesättigte Farben."],
 ["Lyster kräver Redigering 2.0. Äldre redigering behåller sitt utseende.","Vibrance requires Editing 2.0. Legacy editing keeps its appearance.","La vibrance nécessite Édition 2.0. L’ancien rendu reste inchangé.","La intensidad requiere Edición 2.0. La edición anterior conserva su aspecto.","Dynamik erfordert Bearbeitung 2.0. Die bisherige Bearbeitung bleibt unverändert."],

@@ -12,7 +12,7 @@ try{
   assert.equal(await p.locator('#'+id).evaluate(e=>!!e.closest('#diagnostics3')&&!!e.closest('#advancedSettings')),true);
  }
  assert.equal(await p.evaluate(()=>JSON.stringify({state,rollShared,calibration})),hiddenState,'UI grouping does not mutate recipes');
- assert.equal(await p.evaluate(()=>$('frameSettingsGroup').parentElement===$('calibration3')&&$('geometryTools').parentElement===$('advancedSettings')),true);
+ assert.equal(await p.evaluate(()=>$('frameSettingsGroup').closest('.tool-card')===$('calibration3')&&$('geometryTools').closest('.tool-card')===$('advancedSettings')),true);
  // Active controls are moved, never cloned; no second geometry section remains.
  assert.equal(await p.evaluate(()=>!document.getElementById('imageGeometry3')&&['rotateLeft','rotateRight','straighten','compositionEdit','geometryDone','rotationReset','compositionReset'].every(id=>document.querySelectorAll('#'+id).length===1&&!!document.querySelector('#imageTools3 #'+id))),true);
  assert.equal(await p.evaluate(()=>!!($('imageAdjustments').compareDocumentPosition($('calibration3'))&Node.DOCUMENT_POSITION_FOLLOWING)),true);
