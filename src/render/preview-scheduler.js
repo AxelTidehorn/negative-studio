@@ -3,6 +3,7 @@
 let sourceVersion38=0,previewWorker38=null,workerBusy38=false,queued38=null,request38=0,lastPreview38=null;
 const stats38={renders:0,stale:0,lastRenderMs:0,lastDispatchMs:0,analysisMs:0};
 const now38=()=>globalThis.performance?.now?.()||Date.now();
+const previewConfigKey38=config=>globalThis.NSV2Platform?.fingerprint(JSON.stringify(config))??JSON.stringify(config);
 let workerVersion38=-1,workerDisabled38=false;
 let dragTimer38=null,previewTick38=null;
 let ensureWorker38,sendPreview38;
@@ -36,7 +37,7 @@ function displayPreviewResult(r,job){
  // During a drag, intermediate results keep the picture moving. After release,
  // show the small result before detail only if it matches the final settings.
  const intermediate=job.interactive&&r.id>previewShown&&job.mode===display&&(previewInteractive||JSON.stringify(job.config)===JSON.stringify(configuration38()));
- if(r.id===request38||intermediate){showPreview38(r);previewCompletedKey=job.key;previewShown=r.id;if(intermediate&&r.id!==request38)previewPerf.intermediateShown++;}
+ if(r.id===request38||intermediate){showPreview38({...r,configKey:previewConfigKey38(job.config)});previewCompletedKey=job.key;previewShown=r.id;if(intermediate&&r.id!==request38)previewPerf.intermediateShown++;}
  else stats38.stale++;
 }
 function failPreviewWorker(worker,message){
@@ -58,7 +59,7 @@ ensureWorker38=function(){
    const job=previewActive;
    if(r.error){failPreviewWorker(worker,r.error);return;}
    if(!job||r.id!==job.id)return;
-   workerBusy38=false;previewActive=null;stats38.lastRenderMs=r.renderMs||0;
+   workerBusy38=false;previewActive=null;stats38.lastRenderMs=r.renderMs||0;stats38.v2Cache=r.v2Cache||null;
    displayPreviewResult(r,job);
    if(queued38){const next=queued38;queued38=null;sendPreview38(next);}
   };
@@ -76,6 +77,7 @@ render=function(limit=1400){
  limit=typeof limit==='number'?limit:1400;
  const interactive=limit<1400;
  if(!interactive){clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=null;dragTimer38=null;previewInteractive=false;}
+ workingPreview.previewRevision=sourceVersion38;
  const config=configuration38(),key=JSON.stringify([sourceVersion38,display,limit,config]);
  if(!queued38&&previewActive?.key===key){previewPerf.deduplicated++;return;}
  if(queued38?.key===key){previewPerf.deduplicated++;return;}
@@ -87,7 +89,7 @@ render=function(limit=1400){
  if(!workerDisabled38)ensureWorker38();
  const job={id,key,config,mode:display,limit,interactive,sourceVersion:sourceVersion38,source:workingPreview};
  if(previewWorker38){
-  if(workerVersion38!==sourceVersion38){const data=workingPreview.data.slice();previewWorker38.postMessage({type:'source',image:{...workingPreview,data}},[data.buffer]);workerVersion38=sourceVersion38;}
+  if(workerVersion38!==sourceVersion38){const data=workingPreview.data.slice();previewWorker38.postMessage({type:'source',image:{...workingPreview,data}},[data.buffer]);if(config.kind==='v2'){const positive=NSPixelKernel.cachedV2Positive(workingPreview,config);if(positive){const copy=positive.data.slice();previewWorker38.postMessage({type:'v2-seed',config,cacheKey:NSPixelKernel.v2PreviewKey(workingPreview,config),data:copy},[copy.buffer]);}}workerVersion38=sourceVersion38;}
   sendPreview38(job);
  }else{
   const bounded=interactive?240:480;

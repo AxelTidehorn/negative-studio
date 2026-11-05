@@ -16,7 +16,7 @@ uniform float uChromaLimit;
 uniform float uRobustStrength;
 uniform int uColorVariant;
 uniform float uLo,uSpan,uExposure,uBlack,uWhiteRange,uInvGamma,uContrast,uSaturation,uShadows,uHighlights,uStrength;
-uniform int uMode,uAuto,uShoulder,uProfile,uPrint,uWide;
+uniform int uV2Positive,uMode,uAuto,uShoulder,uProfile,uPrint,uWide;
 uniform mat3 uMatrix;
 uniform float uTone[9],uChroma[6];
 uniform vec3 uLow,uHigh,uMono;
@@ -59,12 +59,18 @@ vec3 displayWide(vec3 p){
 vec3 softDensity(vec3 p,vec3 start,vec3 range){vec3 d=max(vec3(0.0),p-start);return p-d+range*(vec3(1.0)-exp(-d/range));}
 ${NSEditing2.glsl}
 ${NSConversion3.glsl}
+vec3 finishPositive(vec3 p){
+ if(uProfile==2||uProfile==3)p=creative(p);else if(uProfile==1&&uStrength>0.0)p=mix(p,creative(p),uStrength);
+ if(uPrint==1){if(uPrintShoulder!=0.0)p=p/(vec3(1.0)+uPrintShoulder*(vec3(1.0)-p));p=clamp(vec3(.5)+(p-vec3(.5))*uPrintContrast,0.0,1.0);}
+ return uEdit2?editPositive(p):p;
+}
 void main(){
  // Texture row zero is the top source row; framebuffer row zero is bottom.
  vec2 pos=vec2(gl_FragCoord.x,uOutputSize.y-gl_FragCoord.y);
  ivec2 at=min(ivec2(uSourceSize)-ivec2(1),ivec2(floor(pos*uSourceSize/uOutputSize)));
  vec3 p=texelFetch(uSource,at,0).rgb;
  if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(uWide==1?displayWide(p):p),1.0);return;}
+ if(uV2Positive==1){color=vec4(finishPositive(p),1.0);return;}
  if(uConversion3!=0){color=vec4(finishConversion3(conversion3(p)),1.0);return;}
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
  vec3 density=p;
@@ -104,11 +110,10 @@ void main(){
   p=mix(p,vec3(mapped),fade);
  }
  p=encode3(p);
- if(uProfile==2||uProfile==3)p=creative(p);else if(uProfile==1&&uStrength>0.0)p=mix(p,creative(p),uStrength);
- if(uPrint==1){if(uPrintShoulder!=0.0)p=p/(vec3(1.0)+uPrintShoulder*(vec3(1.0)-p));p=clamp(vec3(.5)+(p-vec3(.5))*uPrintContrast,0.0,1.0);}
- color=vec4(uEdit2?editPositive(p):p,1.0);
+ color=vec4(finishPositive(p),1.0);
 }`;
 function supports(c){
+ if(c?.kind==='v2')return !!c.v2&&NSEditing2.version(c.opts.editVersion)===2&&!!c.profile&&(c.neutralProfile||c.profile.creativeVersion===2||c.profile.type==='bw');
  if(c?.kind!=='calibrated4'&&!NSConversion3.is(c?.kind)||c?.kind==='calibrated4'&&!c.cal?.beta4||NSConversion3.is(c?.kind)&&!NSConversion3.valid(c.conversion3))return false;
  const f=c.profile;
  return !!f&&(c.neutralProfile||f.creativeVersion===2||f.type==='bw');
@@ -120,20 +125,16 @@ function create(canvas){
  if(!precision||precision.precision<23)throw Error('Otillräcklig grafikprecision');
  // Both 2D and WebGL canvases use the browser's sRGB display path.
  if('drawingBufferColorSpace' in gl)gl.drawingBufferColorSpace='srgb';
- const shaders=[],program=gl.createProgram();let texture=null,source=null,sourceVersion=-1,query=null,queryStarted=0;
- const metrics={uploads:0,draws:0,submitMs:0,gpuMs:null,maxTexture:gl.getParameter(gl.MAX_TEXTURE_SIZE)};
+ const shaders=[],program=gl.createProgram();let texture=null,source=null,sourceVersion=-1,positiveTexture=null,positiveSource=null,positiveVersion=null,validating=false,query=null,queryStarted=0;
+ const metrics={uploads:0,positiveUploads:0,validationUploads:0,sourceTextureBytes:0,positiveTextureBytes:0,lastPositiveUploadMs:0,draws:0,submitMs:0,gpuMs:null,maxTexture:gl.getParameter(gl.MAX_TEXTURE_SIZE)};
  const timer=gl.getExtension('EXT_disjoint_timer_query_webgl2');
  function releaseSource(){
-  if(!source)return;
-  source=null;sourceVersion=-1;
-  if(texture&&!gl.isContextLost()){
-   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
-   gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB32F,1,1,0,gl.RGB,gl.FLOAT,null);
-  }
+  source=positiveSource=null;sourceVersion=-1;positiveVersion=null;metrics.sourceTextureBytes=metrics.positiveTextureBytes=0;
+  if(!gl.isContextLost())for(const t of [texture,positiveTexture])if(t){gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,t);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB32F,1,1,0,gl.RGB,gl.FLOAT,null);}
  }
  function destroy(){
   if(query)gl.deleteQuery(query);query=null;
-  if(texture)gl.deleteTexture(texture);texture=null;
+  if(texture)gl.deleteTexture(texture);if(positiveTexture)gl.deleteTexture(positiveTexture);texture=positiveTexture=null;positiveSource=null;metrics.sourceTextureBytes=metrics.positiveTextureBytes=0;
   for(const s of shaders)gl.deleteShader(s);gl.deleteProgram(program);source=null;
  }
  try{
@@ -141,24 +142,34 @@ function create(canvas){
   gl.linkProgram(program);
   if(!gl.getProgramParameter(program,gl.LINK_STATUS))throw Error(gl.getProgramInfoLog(program)||shaders.map(s=>gl.getShaderInfoLog(s)).join('\n')||'GPU-programmet kunde inte kompileras');
   gl.useProgram(program);gl.disable(gl.DITHER);gl.disable(gl.BLEND);gl.disable(gl.DEPTH_TEST);
-  texture=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);
-  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);
+  texture=newTexture();
   gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
  }catch(e){destroy();throw e;}
  const locations=new Map();const location=name=>{if(!locations.has(name))locations.set(name,gl.getUniformLocation(program,name));return locations.get(name);};
  const f=(name,value)=>gl.uniform1f(location(name),value),i=(name,value)=>gl.uniform1i(location(name),value),v=(name,a)=>gl.uniform3fv(location(name),a);
- function upload(im,version){
+ function newTexture(){const t=gl.createTexture();gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,t);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.NEAREST);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_S,gl.CLAMP_TO_EDGE);gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_WRAP_T,gl.CLAMP_TO_EDGE);return t;}
+ function uploadPositive(im,version){
+  if(!im||im.encoding!=='srgb'||im.colorSpace!=='srgb'||(im.scale||1)!==1||(im.normalization||1)!==1||!(im.data instanceof Float32Array)||im.data.length!==im.width*im.height*3)throw Error('V2_GPU_POSITIVE_DOMAIN');
+  if(!positiveTexture)positiveTexture=newTexture();gl.bindTexture(gl.TEXTURE_2D,positiveTexture);
+  if(positiveSource===im&&positiveVersion===version)return;
+  if(im.width>metrics.maxTexture||im.height>metrics.maxTexture)throw Error('V2_GPU_TEXTURE_LIMIT');
+  const start=performance.now();gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB32F,im.width,im.height,0,gl.RGB,gl.FLOAT,im.data);
+  if(gl.getError()!==gl.NO_ERROR)throw Error('V2_GPU_POSITIVE_UPLOAD');
+  positiveSource=im;positiveVersion=version;
+  if(validating)metrics.validationUploads++;else{metrics.uploads++;metrics.positiveUploads++;metrics.positiveTextureBytes=im.data.byteLength;metrics.lastPositiveUploadMs=performance.now()-start;}
+ }
+ function upload(im,version,v2=false){
+  gl.bindTexture(gl.TEXTURE_2D,texture);
   if(source===im&&sourceVersion===version)return;
   if(im.width>metrics.maxTexture||im.height>metrics.maxTexture)throw Error('Förhandsvisningen överskrider grafikens bildgräns');
   let data=im.data;
-  if(im.channels!==3||im.encoding!=='linear'||(im.scale||1)!==1||(im.normalization||1)!==1||data.BYTES_PER_ELEMENT!==4){
+  if(v2&&im.flatField||im.channels!==3||im.encoding!=='linear'||(im.scale||1)!==1||(im.normalization||1)!==1||data.BYTES_PER_ELEMENT!==4){
    data=new Float32Array(im.width*im.height*3);
-   for(let y=0;y<im.height;y++)for(let x=0;x<im.width;x++)data.set(NSColorEngine.pixel(im,x,y),(y*im.width+x)*3);
+   for(let y=0;y<im.height;y++)for(let x=0;x<im.width;x++)data.set(v2?NSV2Platform.read(im,(y*im.width+x)*3,x,y):NSColorEngine.pixel(im,x,y),(y*im.width+x)*3);
   }
   gl.bindTexture(gl.TEXTURE_2D,texture);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB32F,im.width,im.height,0,gl.RGB,gl.FLOAT,data);
   if(gl.getError()!==gl.NO_ERROR)throw Error('Grafikminnet kunde inte laddas');
-  source=im;sourceVersion=version;metrics.uploads++;
+  source=im;sourceVersion=version;if(validating)metrics.validationUploads++;else{metrics.uploads++;metrics.sourceTextureBytes=data.byteLength;}
  }
  function poll(){
   if(!query)return;
@@ -167,30 +178,30 @@ function create(canvas){
    gl.deleteQuery(query);query=null;
   }else if(performance.now()-queryStarted>2000){gl.deleteQuery(query);query=null;}
  }
- function draw(im,c,mode='positive',limit=1400,version=0){
+ function draw(im,c,mode='positive',limit=1400,version=0,positive=null){
   if(!supports(c))throw Error('Detta färgläge använder CPU');
   if(gl.isContextLost())throw Error('Grafikanslutningen förlorades');
-  const start=performance.now();poll();upload(im,version);
+  const start=performance.now();poll();const v2=c.kind==='v2';if(v2&&mode!=='negative'){if(mode==='split')throw Error('V2_GPU_SPLIT_REQUIRES_PRESENTATION');if(positive?.width!==im.width||positive?.height!==im.height)throw Error('V2_GPU_POSITIVE_SIZE');uploadPositive(positive,version);}else upload(im,version,v2);
   const ratio=Math.min(1,Math.max(1,Math.min(1400,limit))/Math.max(im.width,im.height)),width=Math.max(1,Math.round(im.width*ratio)),height=Math.max(1,Math.round(im.height*ratio));
   const resized=canvas.width!==width||canvas.height!==height;
   if(canvas.width!==width)canvas.width=width;if(canvas.height!==height)canvas.height=height;
-  gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,texture);
+  gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,v2&&mode!=='negative'?positiveTexture:texture);
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
   const edit=NSEditing2.version(c.opts.editVersion)===2?NSEditing2.prepare(c.opts,c.profile.type==='bw'):null;
   const conversion=NSConversion3.is(c.kind)?c.conversion3:null;
-  const a=conversion?{...conversion.reference,response:{offset:conversion.reference.lo,span:conversion.reference.spans},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
-  i('uEdit2',edit?1:0);
+  const a=v2?{light:[1,1,1],base:[1,1,1],response:{offset:[0,0,0],span:[1,1,1]},lo:0,span:1}:conversion?{...conversion.reference,response:{offset:conversion.reference.lo,span:conversion.reference.spans},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
+  i('uEdit2',edit?1:0);i('uV2Positive',v2&&mode!=='negative'?1:0);
   if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditVibrance',edit.vibrance);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
   i('uConversion3',conversion?NSConversion3.ids.indexOf(c.kind)+1:0);
   if(conversion){i('uCurveIdentity3',conversion.curve.kind==='identity'?1:0);i('uMatrixIdentity3',conversion.matrix.kind==='identity'?1:0);i('uNoBase3',conversion.reference.noBase?1:0);gl.uniform4fv(location('uFilmCurve3[0]'),conversion.curve.channels.flatMap(c=>c.coefficients.flat()));const m=conversion.matrix.matrix;gl.uniformMatrix3fv(location('uConversionMatrix3'),false,[0,1,2].flatMap(col=>m.map(row=>row[col])));f('uLegacyBlack3',o.shadow);f('uLegacyRange3',parameters.displayRange);}
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
-  const confidence=conversion?{start:[0,0,0],invRange:[1,1,1],strength:0,robustStrength:0}:NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
+  const confidence=conversion||v2?{start:[0,0,0],invRange:[1,1,1],strength:0,robustStrength:0}:NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
   v('uGains',parameters.gains);
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',parameters.exposureGain);f('uBlack',parameters.black);f('uWhiteRange',parameters.whiteRange);
   f('uInvGamma',parameters.inverseGamma);f('uContrast',o.contrast);f('uSaturation',parameters.saturation);
   f('uShadows',(Number(o.shadows)||0)/100);f('uHighlights',(Number(o.highlights)||0)/100);f('uStrength',c.strength);
-  i('uWide',c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:o.toneMode4==='experimental'?2:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
+  i('uWide',v2||c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:o.toneMode4==='experimental'?2:1);i('uProfile',profile);i('uPrint',c.neutralPrint?0:1);
   const matrix=p.matrix||[[1,0,0],[0,1,0],[0,0,1]];gl.uniformMatrix3fv(location('uMatrix'),false,[0,1,2].flatMap(col=>matrix.map(row=>row[col])));
   gl.uniform1fv(location('uTone[0]'),p.tone||[0,.08,.18,.35,.5,.65,.8,.92,1]);gl.uniform1fv(location('uChroma[0]'),p.chroma||[1,1,1,1,1,1]);
   v('uLow',p.low||[0,0,0]);v('uHigh',p.high||[0,0,0]);v('uMono',p.mono||[.2126,.7152,.0722]);f('uBwCurve',p.bwCurve||1);f('uBwLift',p.bwLift||0);f('uPrintShoulder',c.print.shoulder||0);f('uPrintContrast',c.print.contrast);
@@ -210,9 +221,14 @@ function create(canvas){
   // Detect unusable device precision before showing GPU pixels. Small readback only.
   const width=24,height=16,data=new Float32Array(width*height*3);
   for(let n=0;n<width*height;n++)for(let k=0;k<3;k++)data[n*3+k]=n<8?[0,1/65535,.0001,.001,.01,.1,.5,1][n]:((n*(177+k*263)+k*337)%65536)/65535;
-  const im={width,height,data,channels:3,encoding:'linear',scale:1};draw(im,c,'positive',width,-1);const result=read(),kernel=NSPixelKernel.compile(c);let maxError=0;
+  const im={width,height,data,channels:3,encoding:'linear',colorSpace:c.kind==='v2'?'rec2020':c.workingSpace,scale:1};
+  const positive=c.kind==='v2'?{...im,encoding:'srgb',colorSpace:'srgb'}:null;
+  // Validation uses temporary texture objects, never evicting the real image.
+  const saved={texture,source,sourceVersion,positiveTexture,positiveSource,positiveVersion};validating=true;texture=newTexture();source=null;sourceVersion=-1;positiveTexture=positiveSource=null;positiveVersion=null;
+  try{draw(im,c,'positive',width,-1,positive);const result=read(),kernel=NSPixelKernel.compile(c.kind==='v2'?{...c,v2Positive:true}:c);let maxError=0;
   for(let n=0;n<width*height;n++){const p=kernel.pixel([data[n*3],data[n*3+1],data[n*3+2]]);for(let k=0;k<3;k++)maxError=Math.max(maxError,Math.abs(result.data[n*4+k]-Math.round(p[k]*255)));}
   if(maxError>2)throw Error('GPU-färgkontroll avvek '+maxError+' nivåer');return maxError;
+  }finally{gl.deleteTexture(texture);if(positiveTexture)gl.deleteTexture(positiveTexture);({texture,source,sourceVersion,positiveTexture,positiveSource,positiveVersion}=saved);validating=false;}
  }
  return {draw,read,validate,releaseSource,destroy,metrics,context:gl};
 }

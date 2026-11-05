@@ -150,15 +150,25 @@ function cachedRender(config){const key=JSON.stringify(config);if(!renderCache||
 function lookup(t,v,c){const u=clamp(v)*65535,a=Math.floor(u),b=Math.min(65535,a+1);return t[c][a]+(t[c][b]-t[c][a])*(u-a);}
 function read(im,i,x,y,v2=false){if(v2)return NSV2Platform.read(im,i,x,y);if(im.flatField){const n=i/im.channels,s=im.scale||1;return NSColorEngine.linearPixel(im,[im.data[i]/s,im.data[i+1]/s,im.data[i+2]/s],x??n%im.width,y??Math.floor(n/im.width));}const d=im.data,s=im.scale||1,p=[d[i]/s,d[i+1]/s,d[i+2]/s];if(im.encoding==='srgb')return p.map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4);return p.map(v=>clamp(v/(im.normalization||1)));}
 // One bounded positive preview cache per renderer. Edits/profiles reuse inversion.
-let v2PreviewCache=null,v2PreviewConversions=0;
-function v2PositivePreview(im,config){
- if(im.width*im.height>2000000)return null;
- const key=JSON.stringify(config.v2);
- if(v2PreviewCache?.source===im&&v2PreviewCache.key===key)return v2PreviewCache.data;
- const fast=NSV2Fast.compile(NSConversionV2.compile(config.v2.source,config.v2.base,config.v2.calibration),config.v2.intent),data=new Float32Array(im.width*im.height*3),out=new Float64Array(3);
- for(let i=0;i<data.length;i+=3){const p=NSV2Platform.read(im,i);fast.pixel(p[0],p[1],p[2],out);for(let c=0;c<3;c++)data[i+c]=NSV2Render.encode(out[c]);}
- v2PreviewCache={source:im,key,data};v2PreviewConversions++;return data;
+let v2PreviewCache=null,v2PreviewConversions=0,v2PreviewAdoptions=0,v2PreviewReconstructionMs=0;
+// Pixel dependencies only: creative edits, geometry and metadata-only intent IDs
+// never change the positive source. Source owners increment previewRevision.
+function v2PreviewKey(im,c){const r=c.v2,t=r.intent;return JSON.stringify({image:{revision:im.previewRevision,width:im.width,height:im.height,channels:im.channels,encoding:im.encoding,colorSpace:im.colorSpace,scale:im.scale,normalization:im.normalization,flatField:im.flatField},source:r.source,base:{rgb:r.base.rgb,domain:r.base.domain},calibration:r.calibration,intent:{algorithmVersion:t.algorithmVersion,output:t.output,tone:t.tone,photographic:t.photographic,exposure:t.exposure,colorCorrection:t.colorCorrection}});}
+const positiveImage=(im,data)=>({width:im.width,height:im.height,channels:3,scale:1,normalization:1,encoding:'srgb',colorSpace:'srgb',data});
+function cachedV2Positive(im,c){return v2PreviewCache?.source===im&&v2PreviewCache.key===v2PreviewKey(im,c)&&v2PreviewCache.data.byteLength?positiveImage(im,v2PreviewCache.data):null;}
+function installV2Positive(im,c,data){
+ if(!(data instanceof Float32Array)||data.length!==im.width*im.height*3||im.width*im.height>2000000)throw Error('V2_POSITIVE_CACHE_INVALID');
+ v2PreviewCache={source:im,key:v2PreviewKey(im,c),data};v2PreviewAdoptions++;return positiveImage(im,data);
 }
+function v2PositivePreview(im,config,cache=true){
+ if(im.width*im.height>2000000)return null;
+ const saved=cache&&cachedV2Positive(im,config);if(saved)return saved.data;
+ const started=globalThis.performance?.now?.()||0,fast=NSV2Fast.compile(NSConversionV2.compile(config.v2.source,config.v2.base,config.v2.calibration),config.v2.intent),data=new Float32Array(im.width*im.height*3),out=new Float64Array(3);
+ for(let i=0;i<data.length;i+=3){const p=NSV2Platform.read(im,i);fast.pixel(p[0],p[1],p[2],out);for(let c=0;c<3;c++)data[i+c]=NSV2Render.encode(out[c]);}
+ if(cache){v2PreviewCache={source:im,key:v2PreviewKey(im,config),data};v2PreviewConversions++;v2PreviewReconstructionMs=(globalThis.performance?.now?.()||0)-started;}return data;
+}
+function v2PositiveImage(im,c,{cache=true}={}){const data=v2PositivePreview(im,c,cache);if(!data)throw Error('V2_POSITIVE_PREVIEW_LIMIT');return positiveImage(im,data);}
+
 function render(im,config,mode='positive',limit=1400,cache){
  const positive=config.kind==='v2'&&mode!=='negative'?v2PositivePreview(im,config):null;if(config.kind!=='v2')v2PreviewCache=null;
  const cached=cachedRender(positive?{...config,v2Positive:true}:config),kernel=cached.kernel,table=cached.table,technical=cached.technical,s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Uint8ClampedArray(w*h*4),bins=new Uint32Array(256),histogram={red:new Uint32Array(256),green:new Uint32Array(256),blue:new Uint32Array(256),luminance:bins,samples:0};
@@ -193,5 +203,5 @@ function exportRows(im,config,geometry,y0,rows,table,complete=false,prepared){
  }
  return out;
 }
-root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4,colorVariant4,v2PreviewMetrics:()=>({conversions:v2PreviewConversions,bytes:v2PreviewCache?.data.byteLength||0})};
+root.NSPixelKernel={compile,tables,completeTables,render,exportRows,prepare,lowSignal4,colorVariant4,v2PreviewKey,v2PositiveImage,cachedV2Positive,installV2Positive,clearV2Positive:()=>{v2PreviewCache=null;},v2PreviewMetrics:()=>({conversions:v2PreviewConversions,adoptions:v2PreviewAdoptions,reconstructionMs:v2PreviewReconstructionMs,bytes:v2PreviewCache?.data.byteLength||0})};
 })(globalThis);

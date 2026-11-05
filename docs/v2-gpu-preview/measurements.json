@@ -1,0 +1,915 @@
+{
+  "schema": "filmlabb.v2-preview-measurements-1",
+  "protocols": [
+    {
+      "quality": "ordinary interactive policy: CPU 240px / GPU adaptive initially 700px",
+      "date": "2026-11-05T11:10:03.627Z",
+      "environment": {
+        "node": "v24.22.1",
+        "platform": "linux",
+        "cpus": 2,
+        "cpu": "AMD EPYC 9V45 96-Core Processor",
+        "browser": "155.0.8059.79",
+        "renderer": "See V2 parity report; launch uses --enable-unsafe-swiftshader",
+        "viewport": [
+          1024,
+          768
+        ],
+        "source": "synthetic linear Rec.2020 through importRawRGB16"
+      },
+      "method": "First switch includes source preparation and browser UI dispatch. Edit input→geometry submission→next requestAnimationFrame is a paint-opportunity proxy, not physical display latency. CPU interactive 240px/GPU initially 700px; final 1400px. gpuMs is asynchronous timer-query time, nullable; submission times are CPU wall time. Memory is logical estimate, not measured heap/driver allocation. No interactive readPixels or gl.finish.",
+      "source": {
+        "width": 1400,
+        "height": 1000,
+        "previewWidth": 1400,
+        "previewHeight": 1000,
+        "previewBytes": 16800000
+      },
+      "recipe": {
+        "base": [
+          1,
+          1,
+          1
+        ],
+        "calibrationId": "rec2020-base-zero-prior-2",
+        "exposure": 0,
+        "tone": "luminance-photographic-2",
+        "photographic": {
+          "version": "photographic-global-terminal-1",
+          "pivot": 0.8,
+          "maxEV": 0.5,
+          "widthEV": 1,
+          "colorPolicy": "global-supported-terminal",
+          "fallback": "historical-band-balance"
+        },
+        "output": "photographic-finish-1",
+        "color": {
+          "version": 1,
+          "gains": [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "knots": [
+            0,
+            1,
+            2
+          ]
+        }
+      },
+      "runs": [
+        {
+          "backend": "cpu",
+          "repeat": 0,
+          "coldMs": {
+            "switchToPresentation": 1396.5,
+            "cpuReconstruction": 423.20000000018626,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            87.8999999994412,
+            98.3999999994412,
+            81.5,
+            81.5,
+            81.70000000018626,
+            81.5,
+            81,
+            81.6000000005588,
+            81.70000000018626,
+            81.59999999962747,
+            81.70000000018626,
+            81.79999999981374
+          ],
+          "submissionMs": [
+            71.29999999981374,
+            81.8999999994412,
+            65.09999999962747,
+            65.1000000005588,
+            65.29999999981374,
+            64.90000000037253,
+            64.5,
+            65.1000000005588,
+            65.20000000018626,
+            65.20000000018626,
+            65.09999999962747,
+            65.3999999994412
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "cpu",
+          "repeat": 1,
+          "coldMs": {
+            "switchToPresentation": 1407.300000000745,
+            "cpuReconstruction": 423.79999999981374,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            77.6000000005588,
+            81.5,
+            81.70000000018626,
+            81.79999999981374,
+            81.90000000037253,
+            81.5,
+            81.8999999994412,
+            81.59999999962747,
+            81.70000000018626,
+            81.29999999981374,
+            81.3999999994412,
+            81.6000000005588
+          ],
+          "submissionMs": [
+            61.10000000055879,
+            65,
+            65.1000000005588,
+            65.29999999981374,
+            65.40000000037253,
+            65,
+            65.3999999994412,
+            65.20000000018626,
+            65.1000000005588,
+            64.79999999981374,
+            65,
+            65.1000000005588
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "cpu",
+          "repeat": 2,
+          "coldMs": {
+            "switchToPresentation": 1365.3999999994412,
+            "cpuReconstruction": 419.3999999994412,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            76.69999999925494,
+            81.5,
+            81.79999999981374,
+            82,
+            81.80000000074506,
+            76.09999999962747,
+            81.69999999925494,
+            81.6000000005588,
+            81.79999999981374,
+            82.09999999962747,
+            81.5,
+            81.59999999962747
+          ],
+          "submissionMs": [
+            60.19999999925494,
+            65,
+            65.3999999994412,
+            65.3999999994412,
+            65.5,
+            59.59999999962747,
+            65.09999999962747,
+            65.29999999981374,
+            65.3999999994412,
+            65.59999999962747,
+            65,
+            65.09999999962747
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "gpu",
+          "repeat": 0,
+          "coldMs": {
+            "switchToPresentation": 1807.1000000005588,
+            "cpuReconstruction": 431.29999999981374,
+            "gpuPreparation": 441.6000000005588,
+            "boundedCopy": 5.800000000745058,
+            "uploadSubmission": 5.7999999998137355
+          },
+          "latencyMs": [
+            249.29999999981374,
+            312.69999999925494,
+            338.40000000037253,
+            344.6000000005588,
+            307.29999999981374,
+            332,
+            334.20000000018626,
+            332.79999999981374,
+            339.3999999994412,
+            313.5,
+            337.5,
+            355.70000000018626
+          ],
+          "submissionMs": [
+            249,
+            312.3999999994412,
+            338.20000000018626,
+            344.40000000037253,
+            307.09999999962747,
+            331.69999999925494,
+            333.90000000037253,
+            332.3999999994412,
+            339.29999999981374,
+            313.20000000018626,
+            337.29999999981374,
+            355.40000000037253
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        },
+        {
+          "backend": "gpu",
+          "repeat": 1,
+          "coldMs": {
+            "switchToPresentation": 1744.2000000001863,
+            "cpuReconstruction": 419.1000000005588,
+            "gpuPreparation": 463.59999999962747,
+            "boundedCopy": 3.2999999998137355,
+            "uploadSubmission": 6
+          },
+          "latencyMs": [
+            251.29999999981374,
+            347.90000000037253,
+            341.6000000005588,
+            314,
+            314,
+            345,
+            352,
+            339,
+            330.5,
+            368.29999999981374,
+            327.59999999962747,
+            339.80000000074506
+          ],
+          "submissionMs": [
+            250.8999999994412,
+            347.5,
+            341.40000000037253,
+            313.70000000018626,
+            313.79999999981374,
+            344.6000000005588,
+            351.59999999962747,
+            338.70000000018626,
+            330.19999999925494,
+            368,
+            327.19999999925494,
+            339.5
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        },
+        {
+          "backend": "gpu",
+          "repeat": 2,
+          "coldMs": {
+            "switchToPresentation": 1803.8999999994412,
+            "cpuReconstruction": 436.69999999925494,
+            "gpuPreparation": 485.5,
+            "boundedCopy": 4.900000000372529,
+            "uploadSubmission": 5.800000000745058
+          },
+          "latencyMs": [
+            256.1000000005588,
+            339.70000000018626,
+            357.70000000018626,
+            338.79999999981374,
+            332.90000000037253,
+            316.5,
+            365.70000000018626,
+            328.80000000074506,
+            315.69999999925494,
+            1270.6000000005588,
+            312.1000000005588,
+            344.09999999962747
+          ],
+          "submissionMs": [
+            255.70000000018626,
+            339.40000000037253,
+            357.20000000018626,
+            338.5,
+            332.5,
+            316.29999999981374,
+            365.40000000037253,
+            328.6000000005588,
+            315.3999999994412,
+            1270.2000000001863,
+            308.70000000018626,
+            344
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        }
+      ]
+    },
+    {
+      "quality": "detail 1400px both backends",
+      "date": "2026-11-05T11:11:41.995Z",
+      "environment": {
+        "node": "v24.22.1",
+        "platform": "linux",
+        "cpus": 2,
+        "cpu": "AMD EPYC 9V45 96-Core Processor",
+        "browser": "155.0.8059.79",
+        "renderer": "See V2 parity report; launch uses --enable-unsafe-swiftshader",
+        "viewport": [
+          1024,
+          768
+        ],
+        "source": "synthetic linear Rec.2020 through importRawRGB16"
+      },
+      "method": "First switch includes source preparation and browser UI dispatch. Edit input→geometry submission→next requestAnimationFrame is a paint-opportunity proxy, not physical display latency. CPU interactive 240px/GPU initially 700px; final 1400px. gpuMs is asynchronous timer-query time, nullable; submission times are CPU wall time. Memory is logical estimate, not measured heap/driver allocation. No interactive readPixels or gl.finish.",
+      "source": {
+        "width": 1400,
+        "height": 1000,
+        "previewWidth": 1400,
+        "previewHeight": 1000,
+        "previewBytes": 16800000
+      },
+      "recipe": {
+        "base": [
+          1,
+          1,
+          1
+        ],
+        "calibrationId": "rec2020-base-zero-prior-2",
+        "exposure": 0,
+        "tone": "luminance-photographic-2",
+        "photographic": {
+          "version": "photographic-global-terminal-1",
+          "pivot": 0.8,
+          "maxEV": 0.5,
+          "widthEV": 1,
+          "colorPolicy": "global-supported-terminal",
+          "fallback": "historical-band-balance"
+        },
+        "output": "photographic-finish-1",
+        "color": {
+          "version": 1,
+          "gains": [
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              1,
+              1
+            ]
+          ],
+          "knots": [
+            0,
+            1,
+            2
+          ]
+        }
+      },
+      "runs": [
+        {
+          "backend": "cpu",
+          "repeat": 0,
+          "coldMs": {
+            "switchToPresentation": 1436,
+            "cpuReconstruction": 427.59999999962747,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            914.2000000001863,
+            877.2000000001863,
+            888.8999999994412,
+            901,
+            686.2999999998137,
+            882.0999999996275,
+            913.7999999998137,
+            912.0999999996275,
+            903.4000000003725,
+            863.7000000001863,
+            883.5999999996275,
+            902.5999999996275
+          ],
+          "submissionMs": [
+            863.5,
+            827,
+            835.2999999998137,
+            850.2000000001863,
+            622.6000000005588,
+            809,
+            836.5,
+            855.5999999996275,
+            854.5,
+            799.9000000003725,
+            809.5,
+            822.5999999996275
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "cpu",
+          "repeat": 1,
+          "coldMs": {
+            "switchToPresentation": 1382.6000000005588,
+            "cpuReconstruction": 427.3999999994412,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            893.0999999996275,
+            934.5999999996275,
+            902.5999999996275,
+            920.6000000005588,
+            677.7000000001863,
+            905.0999999996275,
+            879.8999999994412,
+            874.9000000003725,
+            848.2000000001863,
+            891.7000000001863,
+            874.5,
+            884.1000000005588
+          ],
+          "submissionMs": [
+            840.7999999998137,
+            854.7000000001863,
+            826.7999999998137,
+            847.7000000001863,
+            616.8999999994412,
+            835.5,
+            817.0999999996275,
+            802.4000000003725,
+            798.9000000003725,
+            843,
+            821.5,
+            811
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "cpu",
+          "repeat": 2,
+          "coldMs": {
+            "switchToPresentation": 1421.8999999994412,
+            "cpuReconstruction": 479.8999999994412,
+            "gpuPreparation": null,
+            "boundedCopy": null,
+            "uploadSubmission": null
+          },
+          "latencyMs": [
+            884.7999999998137,
+            908.0999999996275,
+            900.2999999998137,
+            890.6000000005588,
+            687.5,
+            900.2999999998137,
+            899.5999999996275,
+            904.3000000007451,
+            893.5999999996275,
+            898.5,
+            895,
+            885.5999999996275
+          ],
+          "submissionMs": [
+            821.5,
+            838.6999999992549,
+            846.5999999996275,
+            840.9000000003725,
+            624,
+            825,
+            848.9000000003725,
+            837.2000000001863,
+            828.0999999996275,
+            826.4000000003725,
+            817.5,
+            822.5
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 16800000,
+            "positiveGpuLogical": 0,
+            "positiveGpuPossibleRGBAStorage": 0
+          },
+          "retainedTextureLogicalBytes": 0
+        },
+        {
+          "backend": "gpu",
+          "repeat": 0,
+          "coldMs": {
+            "switchToPresentation": 1813.4000000003725,
+            "cpuReconstruction": 416,
+            "gpuPreparation": 463.3999999994412,
+            "boundedCopy": 3.7999999998137355,
+            "uploadSubmission": 5.8999999994412065
+          },
+          "latencyMs": [
+            992.6000000005588,
+            999,
+            1019.7999999998137,
+            1012.6000000005588,
+            987.7999999998137,
+            1020.3999999994412,
+            1006.3000000007451,
+            1021,
+            1001.6999999992549,
+            998.7999999998137,
+            1023.4000000003725,
+            1024.7000000001863
+          ],
+          "submissionMs": [
+            3.6000000005587935,
+            9.199999999254942,
+            8.599999999627471,
+            3,
+            3.2999999998137355,
+            13.5,
+            5.2000000001862645,
+            12.400000000372529,
+            3,
+            11,
+            12.200000000186265,
+            3.7999999998137355
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        },
+        {
+          "backend": "gpu",
+          "repeat": 1,
+          "coldMs": {
+            "switchToPresentation": 1842.0999999996275,
+            "cpuReconstruction": 422.6000000005588,
+            "gpuPreparation": 474.59999999962747,
+            "boundedCopy": 4,
+            "uploadSubmission": 5.7000000001862645
+          },
+          "latencyMs": [
+            1017.0999999996275,
+            1041,
+            1065.2999999998137,
+            1087.8999999994412,
+            1001.9000000003725,
+            1037,
+            1056.7000000001863,
+            1040.2000000001863,
+            1047.7999999998137,
+            1042.2000000001863,
+            1062.5,
+            1075.7000000001863
+          ],
+          "submissionMs": [
+            3.3999999994412065,
+            17,
+            6.7999999998137355,
+            3.7999999998137355,
+            12.299999999813735,
+            7.2999999998137355,
+            3.2000000001862645,
+            7.8999999994412065,
+            13.299999999813735,
+            10.900000000372529,
+            2.6000000005587935,
+            4.2999999998137355
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        },
+        {
+          "backend": "gpu",
+          "repeat": 2,
+          "coldMs": {
+            "switchToPresentation": 1759.3999999994412,
+            "cpuReconstruction": 426.59999999962747,
+            "gpuPreparation": 469.8999999994412,
+            "boundedCopy": 3.2999999998137355,
+            "uploadSubmission": 6.2000000001862645
+          },
+          "latencyMs": [
+            939.5,
+            946.2000000001863,
+            1000.8000000007451,
+            990.5000000009313,
+            940.5999999996275,
+            993.7999999988824,
+            964.5,
+            993.3999999985099,
+            1008.3999999985099,
+            1001.2999999988824,
+            973.9000000003725,
+            998.1999999992549
+          ],
+          "submissionMs": [
+            3.599999999627471,
+            3.400000000372529,
+            3.1000000005587935,
+            28.799999999813735,
+            3.900000000372529,
+            8.299999998882413,
+            10.200000001117587,
+            9.699999999254942,
+            12.599999999627471,
+            19.799999998882413,
+            3.299999998882413,
+            26.199999999254942
+          ],
+          "actualGpuTimerMs": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "cacheChanges": {
+            "reconstructions": 0,
+            "positiveUploads": 0,
+            "validationUploads": 0
+          },
+          "estimatedPositiveBytes": {
+            "positiveCpuMainAndWorker": 33600000,
+            "positiveGpuLogical": 16800000,
+            "positiveGpuPossibleRGBAStorage": 22400000
+          },
+          "retainedTextureLogicalBytes": 16800000
+        }
+      ]
+    }
+  ]
+}
