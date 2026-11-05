@@ -500,30 +500,52 @@ main.workspace.adjust-collapsed {
   scrollbar-gutter:stable;
   padding:6px
 }
-.tool-section,.frame-settings-group {
-  margin:0 0 4px;
-  padding:0 0 4px;
+/* Editor hierarchy: a separator belongs to the top-level section only.
+   Nested details use indentation and spacing, not additional horizontal rules. */
+#adjustmentPanel > .tool-section,
+#adjustmentPanel > .frame-settings-group {
+  margin:0;
+  padding:5px 0 8px;
   border:0;
   border-bottom:1px solid var(--ui-border)
 }
-.tool-section>summary,.frame-settings-group>summary {
+#adjustmentPanel > .tool-section > summary,
+#adjustmentPanel > .frame-settings-group > summary {
   font-size:14px;
   font-weight:700;
-  padding:3px 0;
-  min-height:28px
+  min-height:36px;
+  padding:5px 4px
 }
-details.tool-section:not([open]),.frame-settings-group:not([open]) {
-  padding-bottom:0;
-  margin-bottom:4px
+#adjustmentPanel > .tool-section > h2,
+#adjustmentPanel > .tool-section > .section-heading {
+  font-size:14px;
+  font-weight:700;
+  margin:0;
+  padding:7px 4px 5px
 }
-.tool-section>h2 {
-  padding:3px 0 4px
-}
-.tool-subsection,.sidebar-details,#advanced {
+#adjustmentPanel .tool-subsection,
+#adjustmentPanel .sidebar-details,
+#adjustmentPanel #advanced {
   border:0;
-  border-top:1px solid var(--ui-border);
-  padding-top:4px;
-  margin-top:6px
+  padding:0;
+  margin:5px 0 0 12px
+}
+#adjustmentPanel .tool-subsection > summary,
+#adjustmentPanel .sidebar-details > summary,
+#adjustmentPanel #advanced > summary,
+#adjustmentPanel #frameOptions > summary {
+  font-size:13px;
+  font-weight:500;
+  min-height:34px;
+  padding:4px 4px
+}
+#adjustmentPanel .tool-subsection[open] > summary,
+#adjustmentPanel .sidebar-details[open] > summary,
+#adjustmentPanel #advanced[open] > summary {
+  font-weight:600
+}
+#adjustmentPanel .advanced-settings-body > .sidebar-details:first-child {
+  margin-top:2px
 }
 summary {
   cursor:pointer;
