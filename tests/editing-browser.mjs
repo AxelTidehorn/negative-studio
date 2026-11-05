@@ -13,7 +13,7 @@ try{
   const canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas),width=53,height=37,data=new Float32Array(width*height*3);
   for(let i=0;i<data.length;i++)data[i]=i<72?[0,1/65535,.0001,.001,.01,.18,.5,1][i%8]:((i*673+71)%65536)/65535;
   const im={width,height,data,channels:3,encoding:'linear',scale:1},base=configuration38(),failures=[],differences=[];let worst=0,cases=0;
-  const adjustments=[{}, {exposure:2},{exposure:-2},{contrast:1.7},{gamma:1.6,shadows:100,highlights:100},{shadow:0,highlight:1},{shadow:.12,highlight:.85,gamma:.65},{saturation:1.8},{saturation:0},{temperature:35,tint:-35,exposure:.7,contrast:1.4,shadows:40,highlights:30,saturation:1.4}];
+  const adjustments=[{vibrance:30},{vibrance:60},{vibrance:-30},{vibrance:-100},{vibrance:100},{vibrance:60,saturation:1.4},{vibrance:-30,saturation:0},{} , {exposure:2},{exposure:-2},{contrast:1.7},{gamma:1.6,shadows:100,highlights:100},{shadow:0,highlight:1},{shadow:.12,highlight:.85,gamma:.65},{saturation:1.8},{saturation:0},{temperature:35,tint:-35,exposure:.7,contrast:1.4,shadows:40,highlights:30,saturation:1.4}];
   for(const workingSpace of ['srgb','rec2020'])for(const colorMode4 of ['legacy','original','robust'])for(const id of ['generic','gold','hp5'])for(const adjustment of adjustments){
    const c={...base,workingSpace,profile:NSCreativeProfiles.resolve(filmProfiles,id,2),neutralProfile:id==='generic',opts:{...base.opts,editVersion:2,colorMode4,...adjustment}};
    gpu.draw(im,c,'positive',width,1);const actual=gpu.read().data,k=NSPixelKernel.compile(c);let max=0;
@@ -24,7 +24,7 @@ try{
  });console.log('MEASURE Editing 2 GPU parity',JSON.stringify(parity));assert.ok(parity.worst<=2,JSON.stringify(parity.failures));
  // Real CPU worker output before presentation: compare exact color path, then
  // leave the conversion/analysis frozen during a burst and detail view changes.
- await page.evaluate(()=>{state.exposure=.4;state.contrast=1.2;state.shadows=30;state.highlights=25;state.saturation=1.2;$('previewBackend').value='cpu';$('previewBackend').onchange();});await page.waitForFunction(()=>lastPreview38&&!workerBusy38&&!queued38);
+ await page.evaluate(()=>{state.exposure=.4;state.contrast=1.2;state.shadows=30;state.highlights=25;state.saturation=1.2;state.vibrance=60;$('previewBackend').value='cpu';$('previewBackend').onchange();});await page.waitForFunction(()=>lastPreview38&&!workerBusy38&&!queued38);
  assert.equal(await page.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),display,1400);return r.data.every((v,i)=>v===lastPreview38.data[i]);}),true);
  await page.locator('#originalDetail').click();await page.waitForFunction(()=>!$('originalDetailPanel').hidden);await page.locator('#detailScale').click();assert.ok((await page.locator('#detailTitle').textContent()).includes('200'));const detailError=await page.evaluate(()=>{for(const version of ['1','2']){$('editVersion').value=version;$('editVersion').onchange();drawDetailNext();if(detailEditingVersion!==Number(version))throw Error('Detail precision version stale');}drawDetailNext();const actual=detailGPU.read().data,expected=NSPixelKernel.render(detailROI,configuration38(),display,320).data;let worst=0;for(let i=0;i<actual.length;i++)worst=Math.max(worst,Math.abs(actual[i]-expected[i]));return worst;});assert.ok(detailError<=2,String(detailError));await page.locator('#detailClose').click();
  assert.equal(await page.evaluate(()=>analysisCount38),frozen.analyses);

@@ -5,7 +5,7 @@ const advanced=$('advancedSettings'),key='filmlabb-advanced-open-v2';
 try{advanced.open=localStorage.getItem(key)==='true';}catch{}
 advanced.addEventListener('toggle',()=>{try{localStorage.setItem(key,String(advanced.open));}catch{}});
 for(const id of ['gamma','shadow','highlight']){const control=$(id).closest('.control');if(control)$('toneFineControls').append(control);}
-const everyday=['exposure','contrast','highlights','shadows','temperature','tint','saturation'];
+const everyday=['exposure','contrast','highlights','shadows','temperature','tint','saturation','vibrance'];
 for(const id of everyday){const control=$(id).closest('.control');if(control)$('simpleControls').append(control);}
 function source(el,text){if(globalThis.FILMLABB_I18N)FILMLABB_I18N.source(el,text);else el.textContent=text;}
 const frameTitle=$('frameSettingsGroup').querySelector('summary');

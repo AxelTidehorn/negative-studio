@@ -2,6 +2,9 @@
 (function(root){
 'use strict';
 const rows=[
+["Lyster","Vibrance","Vibrance","Intensidad","Dynamik"],
+["Förstärker främst svagt och måttligt mättade färger.","Primarily enhances weakly and moderately saturated colors.","Renforce surtout les couleurs peu ou modérément saturées.","Realza principalmente los colores poco o moderadamente saturados.","Verstärkt vor allem schwach und mäßig gesättigte Farben."],
+["Lyster kräver Redigering 2.0. Äldre redigering behåller sitt utseende.","Vibrance requires Editing 2.0. Legacy editing keeps its appearance.","La vibrance nécessite Édition 2.0. L’ancien rendu reste inchangé.","La intensidad requiere Edición 2.0. La edición anterior conserva su aspecto.","Dynamik erfordert Bearbeitung 2.0. Die bisherige Bearbeitung bleibt unverändert."],
 ["Luminans","Luminance","Luminance","Luminancia","Luminanz"],
 ["RGB och luminans för aktuell förhandsvisning","RGB and luminance of the current preview","RVB et luminance de l’aperçu actuel","RGB y luminancia de la vista previa actual","RGB und Luminanz der aktuellen Vorschau"],
 ["Negativ · RGB + luminans","Negative · RGB + luminance","Négatif · RVB + luminance","Negativo · RGB + luminancia","Negativ · RGB + Luminanz"],

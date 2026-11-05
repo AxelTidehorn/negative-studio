@@ -7,7 +7,7 @@
  for(const [value,text] of [['1','Originalredigering'],['2','Redigering 2.0']]){const option=document.createElement('option');option.value=value;option.textContent=text;select.append(option);}
  select.title='Samma värden kan ge olika styrka. 2.0: +Skuggor lyfter, +Högdagrar dämpar.';
  row.append(label,select);$('simpleControls').prepend(row);
- function sync(){select.value=String(NSEditing2.version(state.editVersion));select.disabled=!working||rollLoading||exportBusy||rollingExport;}
+ function sync(){select.value=String(NSEditing2.version(state.editVersion));select.disabled=!working||rollLoading||exportBusy||rollingExport;$('vibrance').disabled=!working||rollLoading||NSEditing2.version(state.editVersion)!==2;$('vibrance').title=globalThis.FILMLABB_I18N?.fromSource(NSEditing2.version(state.editVersion)===2?'Förstärker främst svagt och måttligt mättade färger.':'Lyster kräver Redigering 2.0. Äldre redigering behåller sitt utseende.')||'';}
  select.onchange=()=>{
   if(!working||rollLoading||exportBusy||rollingExport){sync();return;}
   state.editVersion=Number(select.value)===2?2:1;config38=null;saveCurrentFrame();persist();sync();render();

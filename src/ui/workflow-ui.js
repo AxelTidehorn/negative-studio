@@ -30,7 +30,7 @@ move('geometryTools',advanced);
 // Creative profiles belong to the everyday photographic workflow, ahead of calibration and geometry.
 $('imageAdjustments').after($('creativeProfiles'));
 const adjustments=$('imageAdjustments');adjustments.querySelector('h2').after(adjustments.querySelector('.histogram-panel'));
-for(const [title,ids]of [['Exponering och ton',['exposure','contrast','highlights','shadows']],['Färg',['temperature','tint','saturation']]]){
+for(const [title,ids]of [['Exponering och ton',['exposure','contrast','highlights','shadows']],['Färg',['temperature','tint','saturation','vibrance']]]){
  const group=document.createElement('section');group.className='adjustment-group3';const h=document.createElement('h3');t(h,title);group.append(h);$('simpleControls').append(group);for(const id of ids)group.append($(id).closest('.control'));
 }
 const resetHint=document.createElement('p');resetHint.className='hint';t(resetHint,'Dubbeltryck på ett reglage för att återställa det.');$('reset').after(resetHint);

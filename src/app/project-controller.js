@@ -1,8 +1,18 @@
 'use strict';
 let projectReadSequence=0;
 const projectBusy=()=>rollLoading||exportBusy||rollingExport;
+// Keep historical file tags when every vibrance value is zero. A new feature
+// tag makes older builds reject nonzero lyster, including mixed-engine rolls.
+const projectFormatForFrames=frames=>frames.some(f=>f.settings.engine==='v2'||f.settings.v2Recipe||f.settings.rawSourceRecipeV2)?NSV2Platform.PROJECT_FORMAT:frames.some(f=>NSConversion3.is(f.settings.engine))?NSConversion3.PROJECT_FORMAT:frames.some(f=>f.settings.editVersion===2)?NSEditing2.PROJECT_FORMAT:NSGeometry.FORMAT;
+function prepareVibranceProject(data){
+ const modern=data?.format===NSEditing2.VIBRANCE_PROJECT_FORMAT;
+ if((modern&&data.vibranceVersion!==1)||(!modern&&data?.vibranceVersion!==undefined))throw Error('Unsupported vibrance project version.');
+ if(!Array.isArray(data?.frames))return data; // Existing project validators own the general structure.
+ for(const f of data.frames){const v=f?.settings?.vibrance;if(v!==undefined&&(!Number.isFinite(v)||v< -100||v>100))throw Error('Invalid vibrance setting.');if(v&&!modern)throw Error('Vibrance requires its versioned project format.');}
+ return modern?{...data,format:projectFormatForFrames(data.frames)}:data;
+}
 // Project JSON stores adjustment metadata, never RAF bytes. User must re-import same files on next session.
-$('saveSettings').onclick=()=>{saveCurrentFrame();downloadBlob(new Blob([JSON.stringify({format:roll.some(f=>f.settings.engine==='v2'||f.settings.v2Recipe||f.settings.rawSourceRecipeV2)?NSV2Platform.PROJECT_FORMAT:roll.some(f=>NSConversion3.is(f.settings.engine))?NSConversion3.PROJECT_FORMAT:roll.some(f=>f.settings.editVersion===2)?NSEditing2.PROJECT_FORMAT:NSGeometry.FORMAT,v2SchemaVersion:1,conversionSchemaVersion:1,geometryVersion:NSGeometry.VERSION,roll:{cropExportToFrame:rollShared.cropExportToFrame},sourceCalibrationVersion:39,filmBaseVersion:2,sharedBase2:typeof sharedBase2!=='undefined'?sharedBase2:null,sharedLight,creativeProfileVersion:rollShared.profileVersion,flatField:typeof sharedFlatField!=='undefined'&&NSFlatField.valid(sharedFlatField)?sharedFlatField:null,profile:rollShared.profile,print:rollShared.print,strength:rollShared.strength,exportNaming:{prefix:$('exportName').value,digits:$('exportDigits').value},sharedResponse4:typeof sharedResponse4!=='undefined'&&CC4.valid(sharedResponse4)?sharedResponse4:null,frames:roll.map(f=>({filename:f.file.name,settings:f.settings,base:f.base,levels:f.levels,crop:f.crop,geometry:geometryForFrame(f,f.settings,f.crop),sourceMetadata:f.sourceMetadata||null}))},null,2)],{type:'application/json'}),'filmlabb-rullprojekt.json')};
+$('saveSettings').onclick=()=>{saveCurrentFrame();downloadBlob(new Blob([JSON.stringify({format:roll.some(f=>f.settings.vibrance)?NSEditing2.VIBRANCE_PROJECT_FORMAT:projectFormatForFrames(roll),vibranceVersion:roll.some(f=>f.settings.vibrance)?1:undefined,v2SchemaVersion:1,conversionSchemaVersion:1,geometryVersion:NSGeometry.VERSION,roll:{cropExportToFrame:rollShared.cropExportToFrame},sourceCalibrationVersion:39,filmBaseVersion:2,sharedBase2:typeof sharedBase2!=='undefined'?sharedBase2:null,sharedLight,creativeProfileVersion:rollShared.profileVersion,flatField:typeof sharedFlatField!=='undefined'&&NSFlatField.valid(sharedFlatField)?sharedFlatField:null,profile:rollShared.profile,print:rollShared.print,strength:rollShared.strength,exportNaming:{prefix:$('exportName').value,digits:$('exportDigits').value},sharedResponse4:typeof sharedResponse4!=='undefined'&&CC4.valid(sharedResponse4)?sharedResponse4:null,frames:roll.map(f=>({filename:f.file.name,settings:f.settings,base:f.base,levels:f.levels,crop:f.crop,geometry:geometryForFrame(f,f.settings,f.crop),sourceMetadata:f.sourceMetadata||null}))},null,2)],{type:'application/json'}),'filmlabb-rullprojekt.json')};
 $('settingsFile').onchange=async e=>{
  const read=++projectReadSequence,queue=roll,file=e.target.files?.[0];
  try{
@@ -12,7 +22,7 @@ $('settingsFile').onchange=async e=>{
  if(read!==projectReadSequence)return;
  if(queue!==roll)throw Error('Projektimporten avbröts eftersom bildkön ändrades.');
  if(projectBusy())throw Error('Vänta tills inläsning eller export är klar innan du öppnar ett projekt.');
- const parsed=JSON.parse(text);
+ const parsed=prepareVibranceProject(JSON.parse(text));
  NSV2Platform.validateProject(parsed);
  NSFilmBaseReference.validateProject(parsed);
  NSConversion3.validateProject(parsed);

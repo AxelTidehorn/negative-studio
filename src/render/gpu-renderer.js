@@ -180,7 +180,7 @@ function create(canvas){
   const conversion=NSConversion3.is(c.kind)?c.conversion3:null;
   const a=conversion?{...conversion.reference,response:{offset:conversion.reference.lo,span:conversion.reference.spans},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,p=c.profile,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),bw=parameters.bw,profile=bw?(p.creativeVersion===2?2:3):c.neutralProfile?0:1;
   i('uEdit2',edit?1:0);
-  if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
+  if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditVibrance',edit.vibrance);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
   i('uConversion3',conversion?NSConversion3.ids.indexOf(c.kind)+1:0);
   if(conversion){i('uCurveIdentity3',conversion.curve.kind==='identity'?1:0);i('uMatrixIdentity3',conversion.matrix.kind==='identity'?1:0);i('uNoBase3',conversion.reference.noBase?1:0);gl.uniform4fv(location('uFilmCurve3[0]'),conversion.curve.channels.flatMap(c=>c.coefficients.flat()));const m=conversion.matrix.matrix;gl.uniformMatrix3fv(location('uConversionMatrix3'),false,[0,1,2].flatMap(col=>m.map(row=>row[col])));f('uLegacyBlack3',o.shadow);f('uLegacyRange3',parameters.displayRange);}
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
