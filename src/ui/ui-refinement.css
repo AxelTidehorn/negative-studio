@@ -16,11 +16,12 @@ Light palettes retain their existing colors. */
 :root[data-theme="classic"]:not([data-mode="light"]) {
   --ui-card-header:#493126;
   --ui-card:#171210;
-  --ui-card-glass:linear-gradient(125deg,#d39a493f 0%,#c98a3830 42%,#9f612b48 100%);
+  --ui-card-glass:linear-gradient(125deg,rgba(215,159,66,.18) 0%,rgba(193,125,42,.15) 42%,rgba(153,91,27,.20) 100%);
+  --ui-card-backdrop:none;
   --ui-card-edge:#f0b48133;
   --ui-card-shadow:0 2px 5px #0002;
   --ui-glass-edge:rgba(255,216,177,.18);
-  --ui-queue-surface:rgba(24,24,25,.58);
+  --ui-queue-surface:rgba(24,24,25,.20);
   /* Static SVG, supplied 340x220 paths and 23-unit blur. Scale both axes to
      keep every edge in view on portrait as well as wide workspaces. sRGB
      filter interpolation avoids amplified dark-channel quantization. */
