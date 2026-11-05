@@ -1,0 +1,162 @@
+[
+  {
+    "name": "desktop",
+    "cards": {
+      "imageAdjustments": {
+        "openHeight": 836.453125,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "creativeProfiles": {
+        "openHeight": 180.765625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "calibration3": {
+        "openHeight": 233.390625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "advancedSettings": {
+        "openHeight": 273,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "exportProject": {
+        "openHeight": 499.125,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 65.46875
+      }
+    },
+    "rowHeight": 42.1875,
+    "rowPitch": 46.1875,
+    "sliderHeight": 24,
+    "panelWidth": 320,
+    "pictureWidth": 916
+  },
+  {
+    "name": "ipad-landscape",
+    "cards": {
+      "imageAdjustments": {
+        "openHeight": 1024.09375,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "creativeProfiles": {
+        "openHeight": 230.15625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "calibration3": {
+        "openHeight": 289.390625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "advancedSettings": {
+        "openHeight": 297,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "exportProject": {
+        "openHeight": 604.515625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 65.46875
+      }
+    },
+    "rowHeight": 55.59375,
+    "rowPitch": 59.59375,
+    "sliderHeight": 36,
+    "panelWidth": 270,
+    "pictureWidth": 624
+  },
+  {
+    "name": "ipad-portrait",
+    "cards": {
+      "imageAdjustments": {
+        "openHeight": 1024.09375,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "creativeProfiles": {
+        "openHeight": 230.15625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "calibration3": {
+        "openHeight": 289.390625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "advancedSettings": {
+        "openHeight": 297,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "exportProject": {
+        "openHeight": 604.515625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 65.46875
+      }
+    },
+    "rowHeight": 55.59375,
+    "rowPitch": 59.59375,
+    "sliderHeight": 36,
+    "panelWidth": 270,
+    "pictureWidth": 368
+  },
+  {
+    "name": "mobile",
+    "cards": {
+      "imageAdjustments": {
+        "openHeight": 974.90625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "creativeProfiles": {
+        "openHeight": 212.765625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "calibration3": {
+        "openHeight": 289.390625,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "advancedSettings": {
+        "openHeight": 297,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 49.53125
+      },
+      "exportProject": {
+        "openHeight": 518.734375,
+        "headerHeight": 44,
+        "padding": "6px",
+        "closedHeight": 65.46875
+      }
+    },
+    "rowHeight": 55.59375,
+    "rowPitch": 59.59375,
+    "sliderHeight": 36,
+    "panelWidth": 378,
+    "pictureWidth": 364
+  }
+]

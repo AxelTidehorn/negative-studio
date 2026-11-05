@@ -2,6 +2,7 @@
 (function(root){
 'use strict';
 const rows=[
+["Importera", "Import", "Importer", "Importar", "Importieren"],
 ["Manuell referens", "Manual reference", "Référence manuelle", "Referencia manual", "Manuelle Referenz"],
 ["Inga manuella justeringar", "No manual adjustments", "Aucun réglage manuel", "Sin ajustes manuales", "Keine manuellen Anpassungen"],
 ["Ingen kreativ profil", "No creative profile", "Aucun profil créatif", "Sin perfil creativo", "Kein Kreativprofil"],

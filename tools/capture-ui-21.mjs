@@ -14,6 +14,7 @@ try{
     await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-open.png`});
     await p.locator('#imageAdjustments > summary').click();await p.locator('#imageAdjustments').screenshot({path:`${dir}/card-closed.png`});
     await p.screenshot({path:`${dir}/desktop-closed.png`});
+    await p.locator('#creativeProfiles > summary').click();await p.screenshot({path:`${dir}/creative-open.png`});await p.locator('#creativeProfiles > summary').click();
     // Capture the document in place: scrolling triggers the existing workspace
     // height owner and can move the footer while a viewport clip is taken.
     await p.screenshot({path:`${dir}/footer.png`,fullPage:true});
