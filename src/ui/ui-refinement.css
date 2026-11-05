@@ -2,16 +2,16 @@
 Dark identities use near-neutral surfaces; color is reserved for active details.
 Light palettes retain their existing colors. */
 :root,:root[data-theme="classic"] {
-  --ui-bg:#292421;
-  --ui-panel:#292320;
-  --ui-surface:#211d1b;
+  --ui-bg:#211d1b;
+  --ui-panel:#1b1817;
+  --ui-surface:#191615;
   --ui-text:#f0ece8;
   --ui-muted:#b8ada5;
   --ui-border:rgba(238,220,204,.12);
   --ui-accent:#c68b43;
   --ui-accent-text:#211c18;
   --ui-accent-label:#dca65f;
-  --ui-active:#39302b
+  --ui-active:#403630
 }
 :root[data-theme="classic"][data-mode="light"] {
   --ui-bg:#e9e6df;

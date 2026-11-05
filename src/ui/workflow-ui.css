@@ -16,7 +16,7 @@
 .hist-r{color:#ff7373}.hist-g{color:#62db95}.hist-b{color:#80adff}.hist-y{color:#f4f1e9}
 #histogramClipping{font-size:10px;line-height:1.5;margin:4px 0 0;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
 #histogramClipping:empty{display:none}
-.adjustment-group3 h3{font-size:12px;color:var(--ui-muted);margin:8px 0 3px}
+.adjustment-group3 h3{font-size:12px;color:var(--ui-muted);margin:6px 0 2px}
 .bw-active .adjustment-group3:has(#temperature){display:none}
 #calibration3 > .tool-card-body > #frameSettingsGroup{margin:8px 0 0;padding:4px 0 0;border:0;border-top:1px solid var(--ui-border)}
 #advancedSettings > .tool-card-body > #geometryTools{margin:6px 0 0 12px;padding:0;border:0}

@@ -20,6 +20,13 @@ try{
  await p.waitForTimeout(600);
  const frozen=()=>p.evaluate(()=>({state:JSON.stringify({state,rollShared,calibration,cropRegion}),source:sourceVersion38,analysis:analysisCount38,v2:FILMLABB_V2.snapshot().analysisCount,uploads:FILMLABB_GPU.snapshot().sourceUploads,reconstructions:FILMLABB_GPU.snapshot().positiveReconstructions}));
  const before=await frozen();
+ const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').gridRowStart,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
+ assert.equal(structure.workspace,structure.editor);assert.equal(structure.workspace,structure.image);
+ assert.notEqual(structure.gear,'none');assert.equal(structure.gap,'8px');assert.equal(structure.chevron,'1');assert.equal(structure.bodyPadding,'8px');
+ await p.evaluate(()=>$('workspace').style.setProperty('--adjust-width','500px'));
+ assert.equal(await p.locator('#creativeProfilesSummary').evaluate(e=>getComputedStyle(e).gridRowStart),'1','wide card status shares title row');
+ await p.evaluate(()=>$('workspace').style.removeProperty('--adjust-width'));
+
  for(const id of cards){await p.locator('#'+id+' > summary').click();await p.locator('#'+id+' > summary').click();}
  assert.deepEqual(await open(),[true,false,false,false,false]);
  // Native summary keyboard semantics, plus a visible focus outline.

@@ -1,0 +1,249 @@
+{
+  "method": "GitHub REST workflow/job timestamps (1-second resolution). Queue includes provisioning; deployment completion is a proxy, not a historical HTTP probe. Build step is included in full suite; standalone build measured only in Pages.",
+  "runs": [
+    {
+      "workflow": "Build FILMLABB",
+      "runId": 42048562647,
+      "url": "https://github.com/AxelTidehorn/negative-studio/actions/runs/42048562647",
+      "commit": "1e6bc28da91e8b491f41f1e650c69a5ce0a1fead",
+      "event": "push",
+      "runner": "GitHub Actions 1000000343",
+      "queuedAndProvisioningSeconds": 3.0,
+      "jobExecutionSeconds": 597.0,
+      "eventToCompletionSeconds": 600.0,
+      "steps": [
+        {
+          "name": "Set up job",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "seconds": 2.0
+        },
+        {
+          "name": "Prepare browser",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run npm run test:full",
+          "seconds": 582.0
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "seconds": 1.0
+        },
+        {
+          "name": "Complete job",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "workflow": "Publish FILMLABB (optional GitHub Pages)",
+      "runId": 42048562609,
+      "url": "https://github.com/AxelTidehorn/negative-studio/actions/runs/42048562609",
+      "commit": "1e6bc28da91e8b491f41f1e650c69a5ce0a1fead",
+      "event": "push",
+      "runner": "GitHub Actions 1000000344",
+      "queuedAndProvisioningSeconds": 6.0,
+      "jobExecutionSeconds": 382.0,
+      "eventToCompletionSeconds": 389.0,
+      "steps": [
+        {
+          "name": "Set up job",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "seconds": 2.0
+        },
+        {
+          "name": "Prepare browser",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run npm run test:full",
+          "seconds": 337.0
+        },
+        {
+          "name": "Run npm run build",
+          "seconds": 1.0
+        },
+        {
+          "name": "Check that this is still current main",
+          "seconds": 0.0
+        },
+        {
+          "name": "Run actions/configure-pages@v5",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run actions/upload-pages-artifact@v3",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run actions/deploy-pages@v4",
+          "seconds": 33.0
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "seconds": 1.0
+        },
+        {
+          "name": "Complete job",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "workflow": "Build FILMLABB",
+      "runId": 42054796823,
+      "url": "https://github.com/AxelTidehorn/negative-studio/actions/runs/42054796823",
+      "commit": "f35a0df949c7e03b70a8744e4f2c954190635f20",
+      "event": "push",
+      "runner": "GitHub Actions 1000000347",
+      "queuedAndProvisioningSeconds": 4.0,
+      "jobExecutionSeconds": 627.0,
+      "eventToCompletionSeconds": 632.0,
+      "steps": [
+        {
+          "name": "Set up job",
+          "seconds": 0.0
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "seconds": 1.0
+        },
+        {
+          "name": "Prepare browser",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run npm run test:full",
+          "seconds": 616.0
+        },
+        {
+          "name": "Run actions/upload-artifact@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Complete job",
+          "seconds": 0.0
+        }
+      ]
+    },
+    {
+      "workflow": "Publish FILMLABB (optional GitHub Pages)",
+      "runId": 42054796624,
+      "url": "https://github.com/AxelTidehorn/negative-studio/actions/runs/42054796624",
+      "commit": "f35a0df949c7e03b70a8744e4f2c954190635f20",
+      "event": "push",
+      "runner": "GitHub Actions 1000000348",
+      "queuedAndProvisioningSeconds": 6.0,
+      "jobExecutionSeconds": 653.0,
+      "eventToCompletionSeconds": 660.0,
+      "steps": [
+        {
+          "name": "Set up job",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/checkout@v4",
+          "seconds": 2.0
+        },
+        {
+          "name": "Run actions/setup-node@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Run npm ci --no-audit --no-fund",
+          "seconds": 1.0
+        },
+        {
+          "name": "Prepare browser",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run npm run test:full",
+          "seconds": 595.0
+        },
+        {
+          "name": "Run npm run build",
+          "seconds": 0.0
+        },
+        {
+          "name": "Check that this is still current main",
+          "seconds": 1.0
+        },
+        {
+          "name": "Run actions/configure-pages@v5",
+          "seconds": 0.0
+        },
+        {
+          "name": "Run actions/upload-pages-artifact@v3",
+          "seconds": 3.0
+        },
+        {
+          "name": "Run actions/deploy-pages@v4",
+          "seconds": 44.0
+        },
+        {
+          "name": "Post Run actions/setup-node@v4",
+          "seconds": 1.0
+        },
+        {
+          "name": "Post Run actions/checkout@v4",
+          "seconds": 0.0
+        },
+        {
+          "name": "Complete job",
+          "seconds": 0.0
+        }
+      ]
+    }
+  ]
+}
