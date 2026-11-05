@@ -21,19 +21,22 @@ t(source.querySelector('legend'),'Ojämn belysning');t($('clearReference'),'Ta b
 const tiff=$('tiffEncoding').closest('label');
 const calibrationSection=document.createElement('section');calibrationSection.id='calibration3';calibrationSection.className='tool-section';const heading=document.createElement('h2');t(heading,'Filmbas och kalibrering');calibrationSection.append(heading);
 $('imageAdjustments').after(calibrationSection);move('base2Panel',calibrationSection);$('base2Panel').removeAttribute('data-i18n-ignore');$('base2Panel').querySelector('h3').hidden=true;$('base2Panel').querySelector('p').hidden=true;
-// Reparent the existing controls; geometry and calibration owners stay unchanged.
-const geometrySection=document.createElement('section');geometrySection.id='imageGeometry3';geometrySection.className='tool-section';
-const geometryHeading=document.createElement('h2');t(geometryHeading,'Filmruta, rotation och beskärning');geometrySection.append(geometryHeading);calibrationSection.after(geometrySection);
-move('frameSettingsGroup',geometrySection);move('geometryTools',geometrySection);
+// The technical analysis frame belongs to calibration. Rotation/crop tools are
+// already in the floating image toolbar; keep the numeric fine controls in Advanced.
+move('frameSettingsGroup',calibrationSection);
+move('geometryTools',advanced);
+// Retain the existing summary output (#rotationSummary): it is updated by geometry-ui.js.
+// Replacing summary.textContent here would detach that live angle indicator.
+// Creative profiles belong to the everyday photographic workflow, ahead of calibration and geometry.
+$('imageAdjustments').after($('creativeProfiles'));
 const adjustments=$('imageAdjustments');adjustments.querySelector('h2').after(adjustments.querySelector('.histogram-panel'));
 for(const [title,ids]of [['Exponering och ton',['exposure','contrast','highlights','shadows']],['Färg',['temperature','tint','saturation']]]){
  const group=document.createElement('section');group.className='adjustment-group3';const h=document.createElement('h3');t(h,title);group.append(h);$('simpleControls').append(group);for(const id of ids)group.append($(id).closest('.control'));
 }
 const resetHint=document.createElement('p');resetHint.className='hint';t(resetHint,'Dubbeltryck på ett reglage för att återställa det.');$('reset').after(resetHint);
-move('base2Status',$('base2Panel')).before($('base2Panel').querySelector('.toolrow'));
 const sampleDetails=details('sampleDetails3','Prov och godkännande',$('base2Panel'));move('base2Status',sampleDetails);
 const baseSummary=document.createElement('p');baseSummary.id='baseSummary3';baseSummary.className='status';baseSummary.setAttribute('role','status');$('base2Panel').prepend(baseSummary);
-for(const id of ['base2Stats','base2Compare','base2Preview','base2Accept','base2Cancel','base2Undo','base2Auto','base2Lock'])move(id,sampleDetails);
+for(const id of ['base2Stats','base2Compare','base2Preview','base2Accept','base2Cancel','base2Undo','base2Auto'])move(id,sampleDetails);
 const rollDetails=details('rollCalibration3','Filmrullens referens',$('base2Panel'));
 field('base2Session',rollDetails);for(const id of ['shareBase','clearRollBase','rollBaseStatus'])move(id,rollDetails);rollDetails.append($('useRollBase').closest('label'));
 oldTechnical.hidden=true;move('base2ResponseLock',technical);move('base2Lock',$('base2Panel'));
@@ -75,7 +78,7 @@ for(const [selector,name]of [['label[for="imageFile"]','import'],['#export','exp
 function localizeBase(){for(const id of ['base2Status','base2Preview','base2Lock','base2ResponseLock','base2Cancel','base2Accept','base2Undo','base2Auto']){const el=$(id);if(el.textContent!==FILMLABB_I18N.fromSource(el.textContent))t(el,el.textContent);}}
 function baseState(){
  localizeBase();const snap=globalThis.FILMLABB_BASE2?.snapshot(),a=snap?.accepted;
- let label='Filmbas saknas';
+ let label=working?'Ingen separat filmbasreferens godkänd':'Importera en bild för att analysera filmbasen';
  if(a)label=state.useRollBase2?'Rullreferens':a.measurement.kind.startsWith('manual')?'Manuellt godkänd':'Automatisk referens';
  else if(snap?.proposal)label=snap.proposal.measurement.status==='missing'?'Filmbas saknas':'Kontrollera kandidaten';
  else if(state.filmBaseVersion===2&&(state.acceptedCalibration2||state.useRollBase2))label='Referens pausad';
@@ -93,13 +96,23 @@ function refresh(){
  if(active!==lastTool3){if(active==='straighten'||active==='composition'){
   $('geometryTools').open=true;
   // Scroll only the editor on tablets/desktops; keep direct manipulation in view.
-  if(matchMedia('(min-width:761px)').matches){const b=$('geometryTools').getBoundingClientRect(),p=panel.getBoundingClientRect();if(b.bottom>p.bottom||b.top<p.top)panel.scrollTop+=b.top-p.top;}
+  if(advanced.open&&matchMedia('(min-width:761px)').matches){const b=$('geometryTools').getBoundingClientRect(),p=panel.getBoundingClientRect();if(b.bottom>p.bottom||b.top<p.top)panel.scrollTop+=b.top-p.top;}
  }lastTool3=active;}
  $('geometryTools').hidden=active==='base';
  $('base2Lock').hidden=!snap?.accepted;
  const v2=state.filmBaseVersion===2;legacy.hidden=v2;
  t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');
- const proposal=snap?.proposal;sampleDetails.open=!!proposal||!!snap?.tool;
+ // A review panel is useful only for an actual proposal, active sample tool or undo.
+ // Keep all original controls/bindings intact; this is presentation only.
+ const proposal=snap?.proposal,reviewActive=!!proposal||!!snap?.tool;
+ const canUndo=!$('base2Undo').disabled;
+ sampleDetails.hidden=!reviewActive&&!canUndo;
+ if(reviewActive||canUndo)sampleDetails.open=true;
+ $('base2Status').hidden=!reviewActive;
+ $('base2Stats').hidden=!reviewActive||!$('base2Stats').textContent;
+ $('base2Compare').hidden=!reviewActive||!$('base2Compare').textContent;
+ for(const id of ['base2Preview','base2Accept','base2Cancel','base2Auto'])$(id).hidden=!reviewActive;
+ $('base2Undo').hidden=!canUndo;
  const isRaw=!!working&&NSFileFormats.isRaw(roll[activeFrame]?.file?.name||'');raw.hidden=!isRaw;
  tiff.hidden=!working||!(/\.tiff?$/i.test(roll[activeFrame]?.file?.name||''))||!!hires?.icc;
 }
@@ -107,7 +120,7 @@ const ui=updateCalibrationUI;updateCalibrationUI=function(...a){const r=ui(...a)
 $('engineMode').addEventListener('change',refresh);
 new MutationObserver(refresh).observe($('rotationSummary'),{childList:true,subtree:true});
 new MutationObserver(refresh).observe($('geometryHint'),{childList:true,subtree:true});
-new MutationObserver(()=>{const snap=baseState();t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');sampleDetails.open=!!globalThis.FILMLABB_BASE2?.snapshot().proposal||!!snap?.tool;}).observe($('base2Status'),{childList:true});
+new MutationObserver(refresh).observe($('base2Status'),{childList:true});
 $('filmProfile').setAttribute('aria-label',FILMLABB_I18N.fromSource('Kreativ profil'));
 window.addEventListener('filmlabb:language',refresh);
 refresh();

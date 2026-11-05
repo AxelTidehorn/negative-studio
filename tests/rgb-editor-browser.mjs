@@ -12,8 +12,10 @@ try{
   assert.equal(await p.locator('#'+id).evaluate(e=>!!e.closest('#diagnostics3')&&!!e.closest('#advancedSettings')),true);
  }
  assert.equal(await p.evaluate(()=>JSON.stringify({state,rollShared,calibration})),hiddenState,'UI grouping does not mutate recipes');
- assert.equal(await p.evaluate(()=>$('frameSettingsGroup').parentElement===$('geometryTools').parentElement),true);
- assert.equal(await p.evaluate(()=>!!($('imageAdjustments').compareDocumentPosition($('imageGeometry3'))&Node.DOCUMENT_POSITION_FOLLOWING)),true);
+ assert.equal(await p.evaluate(()=>$('frameSettingsGroup').parentElement===$('calibration3')&&$('geometryTools').parentElement===$('advancedSettings')),true);
+ // Active controls are moved, never cloned; no second geometry section remains.
+ assert.equal(await p.evaluate(()=>!document.getElementById('imageGeometry3')&&['rotateLeft','rotateRight','straighten','compositionEdit','geometryDone','rotationReset','compositionReset'].every(id=>document.querySelectorAll('#'+id).length===1&&!!document.querySelector('#imageTools3 #'+id))),true);
+ assert.equal(await p.evaluate(()=>!!($('imageAdjustments').compareDocumentPosition($('calibration3'))&Node.DOCUMENT_POSITION_FOLLOWING)),true);
  const validate=async backend=>{
   const result=await p.evaluate(backend=>{
    const hist=currentHistogram,expected=NSPixelKernel.render(workingPreview,configuration38(),display==='split'?'positive':display,backend==='gpu'?160:Math.max(lastPreview38.width,lastPreview38.height)),step=Math.max(1,Math.floor(expected.width*expected.height/25000)),bins=Array.from({length:4},()=>Array(256).fill(0));let count=0;
@@ -40,9 +42,10 @@ try{
  }
  // Keep the same controls, reset semantics, footer and two-column tablet layout.
  await p.evaluate(()=>{setDisplay('positive');$('reset').click();});assert.equal(await p.evaluate(()=>state.exposure),0);
+ const advancedWasOpen=await p.locator('#advancedSettings').evaluate(e=>e.open);
  await p.locator('#straighten').click();await p.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='straighten'&&$('geometryTools').open);
  assert.equal(await p.locator('#imageTools3 #geometryDone').isVisible(),true,'finish stays reachable beside the photograph');
- assert.equal(await p.locator('#geometryTools').evaluate(e=>{const b=e.getBoundingClientRect(),p=$('adjustmentPanel').getBoundingClientRect();return b.top>=p.top-1&&b.bottom<=p.bottom+1;}),true,'context controls scroll into the editor without moving the photograph');
+ assert.equal(await p.locator('#advancedSettings').evaluate(e=>e.open),advancedWasOpen,'floating image tools preserve advanced panel state');
  await p.locator('#geometryDone').click();
  for(const [width,height]of [[1440,900],[1024,768],[820,1180],[390,844]]){
   await p.setViewportSize({width,height});for(const id of ['exposure','contrast','saturation','reset']){await p.locator('#'+id).scrollIntoViewIfNeeded();assert.equal(await p.locator('#'+id).evaluate(e=>{const b=e.getBoundingClientRect(),hit=document.elementFromPoint(b.x+b.width/2,b.y+b.height/2);return hit===e||e.contains(hit);}),true,id+' touch target');}
