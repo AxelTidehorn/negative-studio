@@ -20,7 +20,7 @@ const ready=p=>p.waitForFunction(()=>working&&!rollLoading);
 const settled=p=>p.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
 try{
  const page=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE'}),errors=[];
- page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(30000);await page.goto(h.url);
+ page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(30000);await page.addInitScript(()=>localStorage.setItem('filmlabb-preview-backend','cpu'));await page.goto(h.url);
  await page.locator('#imageFile').setInputFiles(['one','two'].map(name=>({name:name+'.tif',mimeType:'image/tiff',buffer:input})));
  await ready(page);
  async function selectV2(){

@@ -347,6 +347,7 @@ const rows=[
 ["GPU-prototyp aktiv · export använder CPU", "GPU preview · CPU export", "Aperçu GPU · export CPU", "Vista previa GPU · exportación CPU", "GPU-Vorschau · CPU-Export"],
 ["CPU-förhandsvisning", "CPU preview", "Aperçu CPU", "Vista previa CPU", "CPU-Vorschau"],
 ["CPU-förhandsvisning aktiv", "CPU preview active", "Aperçu CPU actif", "Vista CPU activa", "CPU-Vorschau aktiv"],
+["Förbereder V2-positiv på CPU…", "Preparing V2 positive on CPU…", "Préparation du positif V2 sur CPU…", "Preparando positivo V2 en CPU…", "V2-Positiv wird auf der CPU vorbereitet…"],
 ["CPU vald", "CPU selected", "CPU sélectionné", "CPU seleccionada", "CPU ausgewählt"],
 ["GPU provas när en bild öppnas", "GPU checked when an image opens", "GPU testé à l’ouverture d’une image", "GPU se comprueba al abrir una imagen", "GPU-Prüfung beim Öffnen eines Bildes"],
 ["Detta färgläge använder CPU", "This color mode uses CPU", "Ce mode couleur utilise le CPU", "Este modo de color usa CPU", "Dieser Farbmodus verwendet die CPU"],

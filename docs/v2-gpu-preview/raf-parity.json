@@ -1,0 +1,161 @@
+[
+  {
+    "id": "04",
+    "dimensions": [
+      900,
+      890
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "meanAbsolute": 0.000005409904286308781,
+        "signedMean": [
+          0.0000024968789013732834,
+          0.0000012484394506866417,
+          0.0000024968789013732834
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "meanAbsolute": 0.000054099042863087806,
+        "signedMean": [
+          0.00004369538077403246,
+          0.00001373283395755306,
+          0.000012484394506866417
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "meanAbsolute": 0.000010403662089055348,
+        "signedMean": [
+          0.0000062421972534332085,
+          0.0000012484394506866417,
+          0.000003745318352059925
+        ],
+        "aboveOne": 0
+      }
+    ]
+  },
+  {
+    "id": "09",
+    "dimensions": [
+      900,
+      852
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "meanAbsolute": 0.000007390019127108329,
+        "signedMean": [
+          0.000002608242044861763,
+          -0.0000013041210224308816,
+          0.000005216484089723526
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "meanAbsolute": 0.000053468961919666144,
+        "signedMean": [
+          0.000019561815336463222,
+          0.000009128847157016171,
+          0.00001695357329160146
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "meanAbsolute": 0.000013041210224308816,
+        "signedMean": [
+          0.000006520605112154408,
+          0.000003912363067292645,
+          0.000005216484089723526
+        ],
+        "aboveOne": 0
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "dimensions": [
+      900,
+      896
+    ],
+    "basis": "existing locked linear Rec.2020 RAF point overview; frozen base/calibration/automatic exposure/color; current Photographic 2 + photographic-finish-1; identical input for CPU/GPU",
+    "cases": [
+      {
+        "opts": {},
+        "max": 1,
+        "meanAbsolute": 0.000005373677248677249,
+        "signedMean": [
+          -0.00000248015873015873,
+          0.0000037202380952380952,
+          0.00000496031746031746
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "exposure": 0.7,
+          "contrast": 1.3,
+          "vibrance": 60,
+          "saturation": 1.25
+        },
+        "max": 1,
+        "meanAbsolute": 0.00007977843915343915,
+        "signedMean": [
+          0.00004836309523809524,
+          0.00003348214285714286,
+          0.000031001984126984125
+        ],
+        "aboveOne": 0
+      },
+      {
+        "opts": {
+          "temperature": 20,
+          "tint": -8,
+          "shadows": 30,
+          "highlights": -25
+        },
+        "max": 1,
+        "meanAbsolute": 0.000007853835978835978,
+        "signedMean": [
+          0.00000496031746031746,
+          0.00000248015873015873,
+          0.000001240079365079365
+        ],
+        "aboveOne": 0
+      }
+    ]
+  }
+]

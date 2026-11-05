@@ -9,7 +9,7 @@
  const ns='http://www.w3.org/2000/svg',overlay=document.createElementNS(ns,'svg');overlay.id='geometryOverlay';overlay.setAttribute('aria-label','Bildgeometri');picture.append(overlay);
  // Keep only crop handles above floating controls; the full-size layer never catches input.
  const handles=document.createElementNS(ns,'svg');handles.id='geometryHandles';handles.setAttribute('aria-hidden','true');picture.append(handles);
- let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null;
+ let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,colorRenderId=null,colorConfigKey=null,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null;
  // New rolls start with the entire exposed frame; imported projects keep their explicit choice.
  if(!roll.length){rollShared.cropExportToFrame=true;state.cropExport=true;}
  const metrics={draws:0,colorUploads:0,cpuPasses:0,lastMs:0,lastError:null};
@@ -64,19 +64,20 @@
   try{if(presenter&&!failed){presenter.draw(p,width,height,bounds,display==='split',exact);canvas.hidden=false;fallback.hidden=true;}else{
    if(!cpuImage)return;const r=NSPreviewPresentation.cpu(cpuImage,p,width,height,bounds,negativeImage,exact);fallback.width=r.width;fallback.height=r.height;fallback.getContext('2d').putImageData(new ImageData(r.data,r.width,r.height),0,0);fallback.hidden=false;canvas.hidden=true;metrics.cpuPasses++;
   }}catch(e){const wasFailed=failed;metrics.lastError=e.message;failed=true;canvas.hidden=true;if(!wasFailed)ensureCpu();else setStatus('Förhandsvisning: '+e.message);return;}
-  metrics.draws++;metrics.lastMs=performance.now()-t;
+  metrics.draws++;metrics.lastMs=performance.now()-t;metrics.presentedAt=performance.now();metrics.renderId=colorRenderId;metrics.configKey=colorConfigKey;metrics.sourceVersion=colorVersion;
  }
  function queue(interactive=false){if(interactive){cpuLimit=240;clearTimeout(cpuIdle);cpuIdle=setTimeout(()=>{cpuLimit=480;queue();},180);}if(scheduled===null)scheduled=requestAnimationFrame(draw);}
  function ensurePresenter(){if(!presenter&&!failed)try{presenter=NSPreviewPresentation.create(canvas);}catch{failed=true;}}
- function ensureCpu(){if(!workingPreview)return;cpuImage=NSPixelKernel.render(workingPreview,configuration38(),display==='split'?'positive':display,480);negativeImage=display==='split'?NSPixelKernel.render(workingPreview,configuration38(),'negative',480):null;colorSource=workingPreview;colorSize={width:cpuImage.width,height:cpuImage.height};colorVersion=sourceVersion38;queue();}
+ function ensureCpu(){if(!workingPreview)return;const config=configuration38();colorRenderId=request38;colorConfigKey=previewConfigKey38(config);cpuImage=NSPixelKernel.render(workingPreview,config,display==='split'?'positive':display,480);negativeImage=display==='split'?NSPixelKernel.render(workingPreview,configuration38(),'negative',480):null;colorSource=workingPreview;colorSize={width:cpuImage.width,height:cpuImage.height};colorVersion=sourceVersion38;queue();}
  function colorGpu(c,r,version,negative=false){
-  ensurePresenter();colorSource=workingPreview;colorSize={width:r.width,height:r.height};colorVersion=version;cpuImage=negativeImage=null;
+  colorRenderId=r.id??null;colorConfigKey=r.configKey??null;ensurePresenter();colorSource=workingPreview;colorSize={width:r.width,height:r.height};colorVersion=version;cpuImage=negativeImage=null;
   if(!failed)try{presenter.upload(c,negative);metrics.colorUploads++;}catch{failed=true;}
   if(failed&&!negative)ensureCpu();queue();
  }
  const oldShow=showPreview38;showPreview38=function(r){
   const result=oldShow(r);
   if(FILMLABB_GPU.snapshot().backend==='gpu')return result;
+  colorRenderId=r.id??null;colorConfigKey=r.configKey??null;
   cpuImage=display==='split'?{...r,data:r.positive||NSPixelKernel.render(workingPreview,configuration38(),'positive',r.width).data}:r;negativeImage=display==='split'?{...r,data:r.negative||NSPixelKernel.render(workingPreview,configuration38(),'negative',r.width).data}:null;colorSource=workingPreview;colorSize={width:r.width,height:r.height};colorVersion=sourceVersion38;ensurePresenter();
   if(!failed){const temp=document.createElement('canvas');temp.width=r.width;temp.height=r.height;temp.getContext('2d').putImageData(new ImageData(cpuImage.data,r.width,r.height),0,0);try{presenter.upload(temp);if(negativeImage){temp.getContext('2d').putImageData(new ImageData(negativeImage.data,r.width,r.height),0,0);presenter.upload(temp,true);}metrics.colorUploads++;}catch{failed=true;}temp.width=temp.height=0;}
   queue();return result;

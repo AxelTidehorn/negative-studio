@@ -9,7 +9,7 @@ const ready=page=>page.waitForFunction(()=>working&&!rollLoading);
 const preview=page=>page.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
 const settings=page=>page.evaluate(()=>({engine:state.engine,conversionVersion:state.conversionVersion,editVersion:state.editVersion,rawMode4:state.rawMode4,exposure:state.exposure,rotation:state.rotation,v2Recipe:state.v2Recipe||null}));
 try{
- const page=await h.browser.newPage({viewport:{width:1024,height:1000},hasTouch:true,locale:'sv-SE'});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url);
+ const page=await h.browser.newPage({viewport:{width:1024,height:1000},hasTouch:true,locale:'sv-SE'});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));await page.addInitScript(()=>localStorage.setItem('filmlabb-preview-backend','cpu'));await page.goto(h.url);
  await page.locator('#imageFile').setInputFiles('tests/fixtures/tiff/rgb16-tile0-planar1-c1.tif');await ready(page);
  const sourceBefore=await page.evaluate(()=>({engine:state.engine,bytes:working.data.byteLength,source:sourceVersion38}));
  await page.locator('#engineMode').selectOption('v2');
@@ -25,7 +25,7 @@ try{
  await preview(page);assert.equal(await page.evaluate(()=>state.v2Recipe.intent.id),v2Before.v2Recipe.intent.id);
  console.log('PASS unverified TIFF rejects V2, explicit linear Rec.2020 reimport, actual CPU-worker pixel/histogram parity, Original domain rejection and all visible wide-capable engine switches');
 
- const raw=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE'});raw.setDefaultTimeout(60000);raw.on('pageerror',e=>errors.push(e.message));await raw.goto(h.url);
+ const raw=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE'});raw.setDefaultTimeout(60000);raw.on('pageerror',e=>errors.push(e.message));await raw.addInitScript(()=>localStorage.setItem('filmlabb-preview-backend','cpu'));await raw.goto(h.url);
  await raw.locator('#imageFile').setInputFiles({name:'negative.dng',mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')});await ready(raw);
  // Deliberate decoder failure at the already-validated owner's boundary.
  await raw.evaluate(()=>{window.decoderBeforeFailure=NSRawDecoder.decode;NSRawDecoder.decode=async()=>{throw Error('INTENTIONAL_TEST_FAILURE');};});
