@@ -1,5 +1,5 @@
 :root {
-  --ui-radius:4px;
+  --ui-radius:5px;
   --ui-gap:8px;
   --ui-touch:28px;
 }
@@ -500,28 +500,74 @@ main.workspace.adjust-collapsed {
   scrollbar-gutter:stable;
   padding:6px
 }
-/* Editor hierarchy: a separator belongs to the top-level section only.
-   Nested details use indentation and spacing, not additional horizontal rules. */
-#adjustmentPanel > .tool-section,
-#adjustmentPanel > .frame-settings-group {
-  margin:0;
-  padding:5px 0 8px;
+/* UI 2.1: independent disclosures. Only the small header surfaces are frosted;
+   a single opaque body owns content padding, including nested legacy controls. */
+#adjustmentPanel {
+  background:transparent;
   border:0;
-  border-bottom:1px solid var(--ui-border)
 }
-#adjustmentPanel > .tool-section > summary,
-#adjustmentPanel > .frame-settings-group > summary {
-  font-size:14px;
-  font-weight:700;
-  min-height:36px;
-  padding:5px 4px
+#adjustmentPanel > .tool-card {
+  margin:0 0 8px;
+  padding:0;
+  border:1px solid var(--ui-border);
+  border-radius:6px;
+  background:transparent;
+  box-shadow:none;
 }
-#adjustmentPanel > .tool-section > h2,
-#adjustmentPanel > .tool-section > .section-heading {
+#adjustmentPanel > .tool-card > summary {
+  display:grid;
+  grid-template-columns:6px minmax(0,1fr);
+  column-gap:10px;
+  row-gap:2px;
+  min-height:44px;
+  padding:8px 12px;
+  border-radius:5px;
+  background:var(--ui-card-header);
   font-size:14px;
-  font-weight:700;
+  font-weight:650;
+}
+#adjustmentPanel > .tool-card > summary::before {grid-row:1 / 3;align-self:center}
+.card-title {min-width:0;overflow-wrap:anywhere}
+.card-status {
+  grid-column:2;
+  min-width:0;
+  font-size:11px;
+  font-weight:400;
+  line-height:1.45;
+  color:var(--ui-muted);
+  overflow-wrap:anywhere;
+}
+.tool-card[open] > summary .card-status {display:none}
+#adjustmentPanel > .tool-card[open] > summary {border-radius:5px 5px 0 0}
+#adjustmentPanel > .tool-card > .tool-card-body {
   margin:0;
-  padding:7px 4px 5px
+  padding:10px;
+  border-top:1px solid var(--ui-border);
+  border-radius:0 0 5px 5px;
+  background:var(--ui-card);
+  opacity:1;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+}
+#adjustmentPanel .tool-card-body > :first-child {margin-top:0}
+#adjustmentPanel .tool-card-body > :last-child {margin-bottom:0}
+#adjustmentPanel .tool-card-body > .sidebar-profile {padding:0}
+#adjustmentPanel .control {margin:6px 0}
+#adjustmentPanel .adjustment-group3 + .adjustment-group3 {margin-top:12px}
+header,footer.foot {
+  background:var(--ui-chrome);
+  opacity:1;
+  -webkit-backdrop-filter:none;
+  backdrop-filter:none;
+  box-shadow:none;
+}
+@supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
+  #adjustmentPanel > .tool-card > summary {
+    background:color-mix(in srgb,var(--ui-card-header) 91%,transparent);
+    -webkit-backdrop-filter:blur(9px);
+    backdrop-filter:blur(9px);
+  }
 }
 #adjustmentPanel .tool-subsection,
 #adjustmentPanel .sidebar-details,
