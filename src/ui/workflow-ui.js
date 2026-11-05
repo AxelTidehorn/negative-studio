@@ -25,7 +25,8 @@ $('imageAdjustments').after(calibrationSection);move('base2Panel',calibrationSec
 // already in the floating image toolbar; keep the numeric fine controls in Advanced.
 move('frameSettingsGroup',calibrationSection);
 move('geometryTools',advanced);
-t($('geometryTools').querySelector('summary'),'Finrotation och komposition');
+// Retain the existing summary output (#rotationSummary): it is updated by geometry-ui.js.
+// Replacing summary.textContent here would detach that live angle indicator.
 // Creative profiles belong to the everyday photographic workflow, ahead of calibration and geometry.
 $('imageAdjustments').after($('creativeProfiles'));
 const adjustments=$('imageAdjustments');adjustments.querySelector('h2').after(adjustments.querySelector('.histogram-panel'));
