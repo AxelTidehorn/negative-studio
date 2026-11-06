@@ -123,6 +123,12 @@ header {
   text-align:center;
   text-decoration:none
 }
+/* Paint only: focus outlines stay immediate; no transform or size feedback. */
+:is(button,.btn,.frame,input[type=text],input[type=number],select) {
+  transition-property:background-color,border-color,color,box-shadow,filter;
+  transition-duration:var(--ui-motion-fast);
+  transition-timing-function:var(--ui-motion-ease);
+}
 .btn:hover:not(:disabled),button:hover:not(:disabled),summary:hover {
   background:var(--ui-hover)
 }
@@ -649,7 +655,7 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel summary::before,
 #adjustmentPanel summary::-webkit-details-marker {display:none;content:none}
 #adjustmentPanel summary::marker {content:''}
-.card-title {grid-row:1;grid-column:1;min-width:0;overflow-wrap:anywhere}
+.card-title {grid-row:1;grid-column:1;min-width:0;overflow-wrap:anywhere;transition:color var(--ui-motion-fast) var(--ui-motion-ease)}
 .card-status {
   grid-column:1;
   grid-row:2;
@@ -677,6 +683,41 @@ main.workspace.adjust-collapsed {
 #adjustmentPanel .tool-card-body > :first-child {margin-top:0}
 #adjustmentPanel .tool-card-body > :last-child {margin-bottom:0}
 #adjustmentPanel .tool-card-body > .sidebar-profile {padding:0}
+/* Native disclosure transitions, including in Safari without interpolate-size.
+   Explicit zero minima also collapse the body's padding/border continuously.
+   Unsupported browsers retain the original, immediate details behavior. */
+@supports (transition-behavior:allow-discrete) and selector(details::details-content) {
+ #adjustmentPanel > .tool-card::details-content {
+  display:grid;
+  grid-template-rows:minmax(0,0fr);
+  overflow:clip;
+  transition:grid-template-rows var(--ui-motion-panel) var(--ui-motion-ease),
+             content-visibility var(--ui-motion-panel) allow-discrete;
+ }
+ #adjustmentPanel > .tool-card[open]::details-content {
+  grid-template-rows:minmax(0,1fr);
+ }
+ #adjustmentPanel > .tool-card > .tool-card-body {
+  min-block-size:0;
+  overflow:clip;
+ }
+ #adjustmentPanel > .tool-card:not([open]) > .tool-card-body {
+  pointer-events:none;
+ }
+ #adjustmentPanel > .tool-card > summary {
+  grid-template-rows:auto minmax(0,1fr);
+  transition:grid-template-rows var(--ui-motion-panel) var(--ui-motion-ease),
+             color var(--ui-motion-fast) var(--ui-motion-ease);
+ }
+ #adjustmentPanel > .tool-card[open] > summary {
+  grid-template-rows:auto minmax(0,0fr);
+ }
+ #adjustmentPanel > .tool-card > summary .card-status {
+  display:block;
+  min-block-size:0;
+  overflow:clip;
+ }
+}
 #adjustmentPanel .control {margin:4px 0}
 #adjustmentPanel .adjustment-group3 + .adjustment-group3 {margin-top:8px}
 /* Wide user-resized editors can put status beside its title. Narrow editors
@@ -684,6 +725,10 @@ main.workspace.adjust-collapsed {
 @container (min-width:440px) {
  #adjustmentPanel > .tool-card > summary {grid-template-columns:auto minmax(0,1fr)}
  .tool-card > summary .card-status {grid-column:2;grid-row:1;text-align:right}
+ /* Wide headers have no second row to collapse. Preserve their native layout. */
+ #adjustmentPanel > .tool-card > summary,
+ #adjustmentPanel > .tool-card[open] > summary {grid-template-rows:auto}
+ #adjustmentPanel > .tool-card[open] > summary .card-status {display:none}
 }
 header,footer.foot {
   background:var(--ui-chrome);

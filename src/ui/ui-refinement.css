@@ -197,6 +197,11 @@ Light palettes retain their existing colors. */
   --ui-active:#e1d3e7
 }
 :root {
+  /* Shared, non-spring motion. Reduced motion removes timing, not feedback. */
+  --ui-motion-fast:100ms;
+  --ui-motion-normal:170ms;
+  --ui-motion-panel:220ms;
+  --ui-motion-ease:cubic-bezier(.2,0,.2,1);
   /* Material colors follow all six identities and both light modes. */
   --ui-card:var(--ui-panel);
   --ui-card-header:var(--ui-active);
@@ -285,5 +290,12 @@ Light palettes retain their existing colors. */
   --ui-text:ButtonText;
   --ui-disabled-text:GrayText;
   --ui-disabled-edge:GrayText;
+ }
+}
+@media (prefers-reduced-motion:reduce) {
+ :root {
+  --ui-motion-fast:0s;
+  --ui-motion-normal:0s;
+  --ui-motion-panel:0s;
  }
 }

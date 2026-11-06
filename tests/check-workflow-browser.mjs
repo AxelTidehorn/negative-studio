@@ -20,9 +20,10 @@ try{
 
  // UI 2.1 calibration starts collapsed; open it to inspect the nested frame order.
  await page.locator('#calibration3 > summary').click();
+ await page.waitForFunction(()=>!$('calibration3').getAnimations({subtree:true}).some(a=>a.playState==='running'));
  const layout=await page.evaluate(()=>{const ids=['histogram','simpleControls','creativeProfiles','calibration3','frameSettingsGroup','advancedSettings'];return {open:$('advancedSettings').open,order:ids.map(id=>$(id).getBoundingClientRect().top),gamma:$('gamma').closest('details')?.id||$('gamma').closest('details')?.className,engineHidden:!$('engineMode').checkVisibility(),exposureVisible:$('exposure').checkVisibility(),confirmVisible:$('cropConfirm').checkVisibility()};});
  assert.equal(layout.open,false);assert.ok(layout.order.every((v,i,a)=>i===0||v>a[i-1]));assert.equal(layout.engineHidden,true);assert.equal(layout.exposureVisible,true);await page.locator('#frameSettingsGroup').evaluate(el=>{el.open=true;});assert.equal(await page.locator('#cropConfirm').isVisible(),true);await page.locator('#frameSettingsGroup').evaluate(el=>{el.open=false;});check('Simple view starts with histogram and image controls, then calibration, creative profiles and calibration; fine geometry controls stay advanced; crop confirmation is reachable in its collapsible section');
- await page.locator('#advancedSettings > summary').click();assert.equal(await page.locator('#engineMode').isVisible(),true);await page.locator('#advancedSettings > summary').click();
+ await page.locator('#advancedSettings > summary').click();await page.locator('#engineMode').waitFor({state:'visible'});assert.equal(await page.locator('#engineMode').isVisible(),true);await page.locator('#advancedSettings > summary').click();
  await page.evaluate(()=>{state.cropConfirmed=true;state.rotation=90;state.cropExport=true;cropRegion={x:.08,y:.12,w:.84,h:.74};globalThis.NativeWorker=Worker;globalThis.downloads=[];downloadBlob=(b,n)=>downloads.push({blob:b,name:n});});
  // Exact same source and settings through native worker and yielded fallback.
  const normal=await page.evaluate(async()=>{const bytes=await jpegBytes();const bitmap=await createImageBitmap(new Blob([bytes],{type:'image/jpeg'}));const size={w:bitmap.width,h:bitmap.height};bitmap.close();return {bytes:Array.from(bytes),size,stats:FILMLABB_EXPORT.snapshot()};});

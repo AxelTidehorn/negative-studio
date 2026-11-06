@@ -40,6 +40,31 @@
  border-radius:8px;
  box-shadow:var(--ui-smoke-shadow,0 1px 3px #0002);
 }
+/* The existing hidden owner also sets inert during the short exit. Individual
+   translate preserves the viewport's translateX(-50%) anchor. */
+@supports (transition-behavior:allow-discrete) {
+ #imageTools3,#showImageTools {
+  opacity:1;
+  transition:opacity var(--ui-motion-normal) var(--ui-motion-ease),
+             translate var(--ui-motion-normal) var(--ui-motion-ease),
+             display var(--ui-motion-normal) allow-discrete,
+             background-color var(--ui-motion-fast) var(--ui-motion-ease),
+             border-color var(--ui-motion-fast) var(--ui-motion-ease),
+             color var(--ui-motion-fast) var(--ui-motion-ease),
+             box-shadow var(--ui-motion-fast) var(--ui-motion-ease);
+ }
+ #imageTools3[hidden],#showImageTools[hidden] {
+  opacity:0;
+  translate:0 4px;
+  pointer-events:none;
+ }
+ @starting-style {
+  #imageTools3:not([hidden]),#showImageTools:not([hidden]) {
+   opacity:0;
+   translate:0 4px;
+  }
+ }
+}
 :root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:hover:not(:focus-visible) {
  outline:1px solid var(--ui-control-hover-edge);
  outline-offset:-3px;
@@ -56,7 +81,10 @@
  #imageTools3,#showImageTools {background:var(--ui-smoke-overlay-solid)}
 }
 @media (prefers-reduced-motion:reduce) {
- #adjustmentPanel .tool-card,#imageTools3,#showImageTools {animation:none;transition:none}
+ #adjustmentPanel .tool-card,
+ #adjustmentPanel > .tool-card::details-content,
+ #adjustmentPanel > .tool-card > summary,
+ #imageTools3,#showImageTools {animation:none;transition:none}
 }
 @media (forced-colors:active) {
  /* Canvas strokes are data pixels, not system-colored text. Preserve only
