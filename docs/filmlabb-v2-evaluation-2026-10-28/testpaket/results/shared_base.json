@@ -1,0 +1,89 @@
+{
+  "verified_roll_identity": false,
+  "grouping": "Candidate scan session: matching camera/WB/recipe, timestamps 2018-07-29, similar measured base chromaticity; this does not establish a physical roll",
+  "method": "Freeze median base R/G,1,B/G across group; retain each image G normalization and original per-image EV",
+  "preview_method": "Same reduced technical-linear buffer for both E4 versions; exploratory only, not full-source final export",
+  "common_shape": [
+    2.1395772416924146,
+    1.0,
+    0.5091222313917276
+  ],
+  "records": [
+    {
+      "index": 1,
+      "measured": [
+        0.5698786973953247,
+        0.2672159969806671,
+        0.13597314059734344
+      ],
+      "hypothetical_shared": [
+        0.5717292657559844,
+        0.2672159969806671,
+        0.1360456046463624
+      ],
+      "positive_gain": [
+        1.005000215133514,
+        1.0,
+        1.000820008615241
+      ],
+      "max_abs_chromatic_EV": 0.007195810232085081
+    },
+    {
+      "index": 4,
+      "measured": [
+        0.8625314831733704,
+        0.40183109045028687,
+        0.20152589678764343
+      ],
+      "hypothetical_shared": [
+        0.8597486561318799,
+        0.40183109045028687,
+        0.20458114141262118
+      ],
+      "positive_gain": [
+        0.9950407008258417,
+        1.0,
+        1.0234189123565087
+      ],
+      "max_abs_chromatic_EV": 0.03339679911218437
+    },
+    {
+      "index": 6,
+      "measured": [
+        0.8487372994422913,
+        0.3919127285480499,
+        0.19972534477710724
+      ],
+      "hypothetical_shared": [
+        0.8385275547309847,
+        0.3919127285480499,
+        0.1995314828692036
+      ],
+      "positive_gain": [
+        0.9815533801877907,
+        1.0,
+        0.9985070941432884
+      ],
+      "max_abs_chromatic_EV": 0.026861366433714
+    },
+    {
+      "index": 11,
+      "measured": [
+        0.8747997283935547,
+        0.4117952287197113,
+        0.20976577699184418
+      ],
+      "hypothetical_shared": [
+        0.8810676996062169,
+        0.4117952287197113,
+        0.20965410572224627
+      ],
+      "positive_gain": [
+        1.011044372492343,
+        1.0,
+        0.9991810993689401
+      ],
+      "max_abs_chromatic_EV": 0.015846315312020708
+    }
+  ]
+}

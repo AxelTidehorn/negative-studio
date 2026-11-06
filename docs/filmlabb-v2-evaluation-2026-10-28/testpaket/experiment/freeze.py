@@ -1,0 +1,6 @@
+import numpy as np,json,datetime,pathlib
+out=pathlib.Path(__file__).resolve().parent.parent/'results'
+idx=[0,1,2,6];meds=[];spans=[];gains=[]
+for n in idx:
+ a=json.loads((out/f'{n:02d}_analysis.json').read_text());d=np.array([q['d'] for q in a['samples']]);p=np.array([q['p'] for q in a['samples']]);meds.append(np.median(d,0));spans.append(np.percentile(d,90,axis=0)-np.percentile(d,10,axis=0));m=np.median(p,0);gains.append(np.mean(np.log2(m))-np.log2(m))
+c=np.median(meds,0);span=np.median(spans,0);slopes=np.clip(np.mean(span)/span,.8,1.2);off=c-np.mean(c);gain=np.clip(np.median(gains,0),-.65,.65);gain-=gain@np.array([.2627,.678,.0593]);r={'frozen_at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'training_indices':idx,'validation_indices':[9,10],'additional_development_indices':[3,4,5,8,11],'slopes':slopes.tolist(),'density_offset':off.tolist(),'positive_gain':(2**gain).tolist(),'positive_gain_EV':gain.tolist(),'density_medians':c.tolist(),'density_spans':span.tolist(),'limits':{'slope_multiplier':[.8,1.2],'positive_chroma_EV':.65},'status':'Statistical hypotheses, not measured film calibration. No film-roll identity verified. Corrected ROI version 2; initial holder-contaminated ROIs rejected before photographic validation review.'};(out/'frozen_parameters.json').write_text(json.dumps(r,indent=2));print(json.dumps(r,indent=2))

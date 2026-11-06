@@ -1,0 +1,57 @@
+[
+  {
+    "file": "raw-input.js",
+    "sha256": "b895a6834abb32610c5aa09ab028287ac66e972ae85349c7cb2136813b60feca",
+    "equal_branch_build": true
+  },
+  {
+    "file": "raw-decoder.js",
+    "sha256": "7daa5397fb87eb6c72020de6ae13062a5413897ec0d0c7a9a6c3aa71326e7556",
+    "equal_branch_build": false
+  },
+  {
+    "file": "render-core.js",
+    "sha256": "558afe29290b8add9015da62205c634a45d89d45df65fac1e8d537f2a10b3c95",
+    "equal_branch_build": true
+  },
+  {
+    "file": "color-calibration.js",
+    "sha256": "6d3bcdbbe760271914ea8be64ee40b37f45a73de28766c6bbde034fe143f50a2",
+    "equal_branch_build": true
+  },
+  {
+    "file": "color-analysis.js",
+    "sha256": "909dce84b8a67ed9f4e173a68d6adeeae22a94e094c44cd2259b59889ca33f0c",
+    "equal_branch_build": true
+  },
+  {
+    "file": "color-configuration.js",
+    "sha256": "d60946887696b339d9474b482cfd727518c3d724bc63fe3a55d871fa35d195f1",
+    "equal_branch_build": true
+  },
+  {
+    "file": "project-settings.js",
+    "sha256": "d42a3e77c2903c81c6b63843952adbcf993b6680a02e69bc553ed51b1977b2e8",
+    "equal_branch_build": true
+  },
+  {
+    "file": "film-base-measurement.js",
+    "sha256": "a99871215c5e470920b4fd87c9e1ed761f1874e2d9af4ab42f4af8dfd609b54a",
+    "equal_branch_build": false
+  },
+  {
+    "file": "tiff-writer.js",
+    "sha256": "fd31c1c72fb1cc72372ee815e791d92dd6693d8d0b24e6de894bd5605178b099",
+    "equal_branch_build": false
+  },
+  {
+    "file": "source-import.js",
+    "sha256": "9b947bd2ea913f888ad2aa5cceb62c0f9a6b283a3f4238e38cea50dfbb10999b",
+    "equal_branch_build": true
+  },
+  {
+    "file": "source-analysis.js",
+    "sha256": "31c22b480f7bfc97a498c80a9a738ec38e9a26efc9d8fedf0ec1303cb10abbb0",
+    "equal_branch_build": true
+  }
+]
