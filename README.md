@@ -4,7 +4,7 @@
 
 Processing runs locally in your browser. Original images are not uploaded to a processing service or modified. The workflow is built around photographing and converting negatives: technical film analysis comes first, followed by photographic adjustments and composition. FILMLABB is not a general-purpose RAW editor.
 
-[Open the web app](https://axeltidehorn.github.io/negative-studio/) · [Report a problem](https://github.com/AxelTidehorn/negative-studio/issues) · [Architecture](docs/ARCHITECTURE.md)
+[Open the web app](https://axeltidehorn.github.io/negative-studio/) · [Report a problem](https://github.com/AxelTidehorn/negative-studio/issues) · [Architecture](docs/ARCHITECTURE.md) · [Feature backlog](docs/FEATURE_BACKLOG.md)
 
 ## Status
 
