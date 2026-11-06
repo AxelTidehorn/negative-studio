@@ -65,6 +65,7 @@ small,.muted,.hint,.status,.eyebrow {
   clip:rect(0,0,0,0)
 }
 header {
+  color:var(--ui-chrome-ink,var(--ui-text));
   height:52px;
   min-height:calc(var(--ui-touch) + 9px);
   padding:4px 12px;
@@ -83,9 +84,6 @@ header {
   max-height:40px;
   object-fit:contain;
   filter:brightness(0) invert(1)
-}
-.light-theme .brand-logo {
-  filter:none
 }
 .header-tools {
   display:flex;
@@ -758,6 +756,7 @@ main.workspace.adjust-collapsed {
  #adjustmentPanel > .tool-card[open] > summary .card-status {display:none}
 }
 header,footer.foot {
+  --ui-focus:var(--ui-chrome-ink,var(--ui-accent-label));
   background:var(--ui-chrome);
   opacity:1;
   -webkit-backdrop-filter:none;
@@ -1090,7 +1089,7 @@ input[type=range]:disabled::-moz-range-thumb {
   margin-top:0;
   padding:10px 12px;
   border-top:1px solid var(--ui-border);
-  color:var(--ui-muted);
+  color:var(--ui-chrome-ink,var(--ui-muted));
   font-size:12px;
   background:var(--ui-panel)
 }
@@ -1106,6 +1105,7 @@ input[type=range]:disabled::-moz-range-thumb {
   gap:14px
 }
 .footer-links a {
+  color:var(--ui-chrome-ink,var(--ui-accent-label));
   text-decoration:none
 }
 .foot-tech {
