@@ -85,3 +85,7 @@ by the layout owner; all coordinate and project assertions are retained. UI3's
 numeric field check and UI 2.0.2's static sidebar checks wait for actual visibility
 or transition completion. The normal-motion regression separately tests the
 intermediate states, inert exits and bounded photographic viewport changes.
+The V2-default browser fixture clears its completion status before selecting the
+next project file: otherwise its wait could accept the previous project's same
+message before the new load began. All historical engine/pixel assertions remain;
+the production project controller is unchanged.
