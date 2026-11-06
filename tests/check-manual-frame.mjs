@@ -8,6 +8,7 @@ const picture=elements.get('picture');
 for(const el of elements.values()){
  el.style.setProperty=function(k,v){this[k]=v;};
  el.style.removeProperty=function(k){delete this[k];};
+ el.style.getPropertyValue=function(k){return this[k]||'';};
  el.querySelector=()=>null;
  el.classList.contains=()=>false;
 }
@@ -48,7 +49,7 @@ run('cropRegion={x:.999,y:.999,w:.001,h:.001};state.cropExport=true;saveCurrentF
 const g=run('CE.exportGeometry(working,cropRegion,true,0)');assert.equal(g.width,1);assert.equal(g.height,1);
 console.log('PASS offset, secondary pointers, pointercancel/lost capture, image boundaries and one-pixel export');
 // Execute the actual workspace layout script: it must not rewrite overlay geometry.
-context.document.documentElement=context.document.createElement('html');context.document.querySelectorAll=()=>[];context.window=context;context.innerHeight=900;context.matchMedia=()=>({matches:false});context.requestAnimationFrame=fn=>fn();const windowListeners={};context.addEventListener=(k,fn)=>(windowListeners[k]||=[]).push(fn);context.Event=class{constructor(type){this.type=type;}};context.dispatchEvent=e=>{for(const fn of windowListeners[e.type]||[])fn(e);};
+context.document.documentElement=context.document.createElement('html');context.document.querySelectorAll=()=>[];context.window=context;context.innerHeight=900;context.matchMedia=()=>({matches:false,addEventListener(){}});context.getComputedStyle=el=>({getPropertyValue:k=>el.style.getPropertyValue(k)});context.requestAnimationFrame=fn=>fn();const windowListeners={};context.addEventListener=(k,fn)=>(windowListeners[k]||=[]).push(fn);context.Event=class{constructor(type){this.type=type;}};context.dispatchEvent=e=>{for(const fn of windowListeners[e.type]||[])fn(e);};
 run('drawCrop();');const overlay=elements.get('cropOverlay'),canvas=elements.get('preview'),beforeStyle={...overlay.style};vm.runInContext(readSource('workspace-layout.js','utf8'),context);for(const k of ['width','height','left','top','transform'])assert.equal(overlay.style[k],beforeStyle[k]);run('applyView();');assert.equal(canvas.style.width,overlay.style.width);assert.equal(canvas.style.height,overlay.style.height);assert.equal(canvas.style.transform,overlay.style.transform);
 console.log('PASS actual workspace layout and editor use the same canvas/overlay transform');
 // Real chooseFrame and finishImport, with only the file decoder substituted.

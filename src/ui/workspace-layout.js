@@ -50,7 +50,7 @@
     if(enabled&&(visible||opening))changes.push({key,panel,opening,direction,visible,from});
    }
    if(!opening&&panel.contains(document.activeElement))get(toggle).focus({preventScroll:true});
-   panel.inert=!opening;root.querySelector(grip).inert=!opening;
+   panel.inert=!opening;const divider=root.querySelector(grip);if(divider)divider.inert=!opening;
   }
   root.classList.toggle('queue-collapsed',!settings.queue);root.classList.toggle('adjust-collapsed',!settings.adjust);
   if(root.style.getPropertyValue('--queue-width')!==settings.widthQueue+'px'||root.style.getPropertyValue('--adjust-width')!==settings.widthAdjust+'px')layoutChanged=true;
