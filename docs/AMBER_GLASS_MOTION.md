@@ -49,3 +49,10 @@ Run `node tests/ui-motion-browser.mjs`, `node tests/ui-21-browser.mjs`, then
 are needed. Physical iPad Safari/Windows Edge review remains necessary; emulated
 viewports and Linux WebKit are not those devices. The pre-existing toolbar pointer
 capture issue at zoom above 1 is outside this motion change.
+
+The online build-identity test explicitly blocks service workers. Its prior
+main-to-lab navigation could race activation: the unchanged offline worker maps
+navigations to the main index shell, so v2.html received the main app and NSV2Lab
+was absent. This was independently reproduced. The cache/publishing/version
+implementation is not modified; offline-lab navigation remains a separate issue.
+Existing offline-cache suites and all build-identity assertions remain intact.
