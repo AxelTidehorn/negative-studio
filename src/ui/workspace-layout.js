@@ -9,17 +9,16 @@
  function clamp(n,min,max,fallback){return Number.isFinite(+n)?Math.max(min,Math.min(max,+n)):fallback}
  settings.widthQueue=clamp(settings.widthQueue,125,320,170);settings.widthAdjust=clamp(settings.widthAdjust,260,520,320);
  settings.queue=settings.queue!==false;settings.adjust=settings.adjust!==false;
- const motionQuery=matchMedia('(prefers-reduced-motion:reduce)'),running=new Map(),scrolls=new Map();
- const sides=[['queue','queuePanel','toggleQueue','.divider-left',-1],['adjust','adjustmentPanel','toggleAdjustments','.divider-right',1]];
- let shown={queue:settings.queue,adjust:settings.adjust},layoutFrame=0;
+ const motionQuery=matchMedia('(prefers-reduced-motion:reduce)'),scrolls=new Map();
+ const sides=[['queue','queuePanel','toggleQueue','.divider-left'],['adjust','adjustmentPanel','toggleAdjustments','.divider-right']];
+ let shown={queue:settings.queue,adjust:settings.adjust},layoutFrame=0,motionId=0;
  function requestLayout(){if(!layoutFrame)layoutFrame=requestAnimationFrame(()=>{layoutFrame=0;measureWorkspace();fitPicture()});}
  function finishMotion(){
-  for(const animation of running.values())animation.cancel();running.clear();
-  root.classList.remove('queue-exiting','adjust-exiting');requestLayout();
+  ++motionId;
+  root.classList.remove('sidebar-sliding','queue-sliding','adjust-sliding');globalThis.FILMLABB_GEOMETRY?.endViewportMotion?.();requestLayout();
  }
- function timing(){const s=getComputedStyle(root),v=s.getPropertyValue('--ui-motion-panel').trim();return {duration:parseFloat(v)*(v.endsWith('ms')?1:1000)||0,easing:s.getPropertyValue('--ui-motion-ease').trim()||'ease'};}
  // The editor owns image geometry; sidebars only request a redraw.
- function fitPicture(){if(typeof drawCrop==='function')drawCrop();}
+ function fitPicture(){if(globalThis.FILMLABB_GEOMETRY?.resizeView)FILMLABB_GEOMETRY.resizeView();else if(typeof drawCrop==='function')drawCrop();}
  function measureWorkspace(){
   const header=document.querySelector('header'),toolbar=document.querySelector('.workspace-toolbar');
   // Only the visible header consumes space. The footer stays in document flow.
@@ -32,28 +31,24 @@
   requestAnimationFrame(fitPicture);
  }
  function render(animate=false){
-  const time=timing(),moving=animate&&!motionQuery.matches&&time.duration>0;
-  const changes=[],restoring=new Set();let layoutChanged=!animate||!moving;
-  for(const [key,id,toggle,grip,direction] of sides){
+  const moving=animate&&!motionQuery.matches&&!matchMedia('(max-width:760px)').matches&&typeof root.getAnimations==='function';
+  const restoring=new Set();
+  if(!moving)finishMotion();
+  for(const [key,id,toggle,grip] of sides){
    const panel=get(id),opening=settings[key];
-   if(!animate){running.get(key)?.cancel();running.delete(key);root.classList.remove(key+'-exiting');}
    if(shown[key]!==opening){
-    const visible=getComputedStyle(panel).display!=='none',style=getComputedStyle(panel);
     const scroller=key==='queue'?get('filmstrip'):panel;
-    if(!opening&&visible)scrolls.set(key,{top:scroller.scrollTop,left:scroller.scrollLeft});
+    if(!opening)scrolls.set(key,{top:scroller.scrollTop,left:scroller.scrollLeft});
     if(opening&&scrolls.has(key))restoring.add(key);
-    const from={opacity:style.opacity,translate:style.translate};
-    running.get(key)?.cancel();running.delete(key);
-    const enabled=moving&&typeof panel.animate==='function';
-    if(!visible||!enabled)layoutChanged=true;
-    root.classList.toggle(key+'-exiting',enabled&&visible&&!opening);
-    if(enabled&&(visible||opening))changes.push({key,panel,opening,direction,visible,from});
+    if(moving)root.classList.add('sidebar-sliding',key+'-sliding');
    }
    if(!opening&&panel.contains(document.activeElement))get(toggle).focus({preventScroll:true});
    panel.inert=!opening;const divider=root.querySelector(grip);if(divider)divider.inert=!opening;
   }
+  // Flush the current interpolated tracks before retargeting. Native CSS
+  // transitions reverse from this position; no fade or timer-driven movement.
+  if(moving)getComputedStyle(root).gridTemplateColumns;
   root.classList.toggle('queue-collapsed',!settings.queue);root.classList.toggle('adjust-collapsed',!settings.adjust);
-  if(root.style.getPropertyValue('--queue-width')!==settings.widthQueue+'px'||root.style.getPropertyValue('--adjust-width')!==settings.widthAdjust+'px')layoutChanged=true;
   root.style.setProperty('--queue-width',settings.widthQueue+'px');root.style.setProperty('--adjust-width',settings.widthAdjust+'px');
   get('toggleQueue').setAttribute('aria-pressed',String(settings.queue));
   get('toggleAdjustments').setAttribute('aria-pressed',String(settings.adjust));
@@ -66,17 +61,14 @@
    const scroller=key==='queue'?get('filmstrip'):get(id),position=scrolls.get(key);
    scroller.scrollTop=position.top;scroller.scrollLeft=position.left;
   }
-  for(const {key,panel,opening,direction,visible,from} of changes){
-   if(getComputedStyle(panel).display==='none')continue;
-   const edge=matchMedia('(max-width:760px)').matches?'0px -6px':(direction*4)+'px 0px';
-   const animation=panel.animate([visible?from:{opacity:0,translate:edge},opening?{opacity:1,translate:'0px 0px'}:{opacity:0,translate:edge}],{...time,fill:'both'});
-   running.set(key,animation);
-   animation.finished.then(()=>{
-    if(running.get(key)!==animation)return;
-    running.delete(key);root.classList.remove(key+'-exiting');animation.cancel();if(!opening)requestLayout();
-   },()=>{});
-  }
-  if(layoutChanged)requestLayout();
+  if(moving){
+   const id=++motionId,animations=root.getAnimations().filter(a=>a.transitionProperty==='grid-template-columns');
+   if(animations.length){
+    const css=getComputedStyle(root),used=['--effective-queue','--left-grip','--right-grip','--effective-adjust'].reduce((sum,k)=>sum+parseFloat(css.getPropertyValue(k)),0);
+    globalThis.FILMLABB_GEOMETRY?.beginViewportMotion?.(root.clientWidth-parseFloat(css.paddingLeft)-parseFloat(css.paddingRight)-used);
+    Promise.all(animations.map(a=>a.finished)).then(()=>{if(id===motionId)finishMotion();},()=>{});
+   }else finishMotion();
+  }else requestLayout();
  }
  get('toggleQueue').addEventListener('click',()=>{settings.queue=!settings.queue;render(true)});
  get('toggleAdjustments').addEventListener('click',()=>{settings.adjust=!settings.adjust;render(true)});

@@ -9,7 +9,7 @@
  const ns='http://www.w3.org/2000/svg',overlay=document.createElementNS(ns,'svg');overlay.id='geometryOverlay';overlay.setAttribute('aria-label','Bildgeometri');picture.append(overlay);
  // Keep only crop handles above floating controls; the full-size layer never catches input.
  const handles=document.createElementNS(ns,'svg');handles.id='geometryHandles';handles.setAttribute('aria-hidden','true');picture.append(handles);
- let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,colorRenderId=null,colorConfigKey=null,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null;
+ let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,colorRenderId=null,colorConfigKey=null,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null,viewportMotion=null;
  // New rolls start with the entire exposed frame; imported projects keep their explicit choice.
  if(!roll.length){rollShared.cropExportToFrame=true;state.cropExport=true;}
  const metrics={draws:0,colorUploads:0,cpuPasses:0,lastMs:0,lastError:null};
@@ -22,8 +22,11 @@
   return {...p,sourceWidth:W,sourceHeight:H,model:g};
  }
  function layout(p){
-  const width=picture.clientWidth,height=picture.clientHeight,fit=Math.min(width/p.area.width,height/p.area.height),scale=fit*zoom;
-  return {width,height,fit,scale,ox:width/2+panX,oy:height/2+panY,
+  const width=picture.clientWidth,height=picture.clientHeight;
+  const m=viewportMotion,t=m?Math.max(0,Math.min(1,(width-m.fromWidth)/(m.toWidth-m.fromWidth))):0;
+  const viewHeight=m?m.fromHeight+(m.toHeight-m.fromHeight)*t:height;
+  const fit=Math.min(width/p.area.width,viewHeight/p.area.height),scale=fit*zoom;
+  return {width,height,fit,scale,ox:width/2+panX,oy:viewHeight/2+panY,
    toView(s){const q=p.forward(s);return {x:this.ox+(q.x-.5)*p.area.width*scale,y:this.oy+(q.y-.5)*p.area.height*scale};},
    fromView(v){return p.inverse({x:.5+(v.x-this.ox)/(p.area.width*scale),y:.5+(v.y-this.oy)/(p.area.height*scale)});}};
  }
@@ -31,7 +34,7 @@
  const oldPoint=imagePoint;imagePoint=function(e){if(!working)return oldPoint(e);const p=viewPoint(e);return {x:p.x/working.width,y:p.y/working.height};};
  function styleView(p){
   const v=layout(p),css=`translate(-50%, -50%) translate(${panX}px,${panY}px) scale(${zoom})`;
-  for(const c of [baseCanvas,gpuCanvas,canvas,fallback]){c.style.setProperty('width',p.area.width*v.fit+'px','important');c.style.setProperty('height',p.area.height*v.fit+'px','important');c.style.transform=css;}
+  for(const c of [baseCanvas,gpuCanvas,canvas,fallback]){c.style.setProperty('width',p.area.width*v.fit+'px','important');c.style.setProperty('height',p.area.height*v.fit+'px','important');c.style.transform=css;c.style.top=viewportMotion?(v.oy-panY)+'px':'';}
   $('cropOverlay').classList.add('hidden');return v;
  }
  function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);(klass==='composition-touch'||klass==='composition-handle'?handles:overlay).append(e);return e;}
@@ -84,6 +87,18 @@
  };
  const oldComposition=setCompositionCrop;setCompositionCrop=function(...args){const r=oldComposition(...args);queue();return r;};
  const oldQueue=setQueueCropExportToFrame;setQueueCropExportToFrame=function(...args){const r=oldQueue(...args);queue();return r;};
+ // A viewport resize changes only CSS Fit and vector hit targets. The bounded
+ // presentation bitmap depends on source/composition, never on viewport size.
+ // Predict only the final available viewport height. Controls/status can wrap
+ // mid-slide; interpolate their effect with grid width instead of jumping Fit.
+ function beginViewportMotion(targetWidth){
+  if(!working||!src)return;
+  const v=layout(plan()),panel=picture.closest('.image-panel'),old=panel.style.width;
+  panel.style.width=targetWidth+'px';const toWidth=picture.clientWidth,toHeight=picture.clientHeight;panel.style.width=old;
+  viewportMotion=toWidth===v.width?null:{fromWidth:v.width,fromHeight:2*(v.oy-panY),toWidth,toHeight};
+ }
+ function endViewportMotion(){viewportMotion=null;resizeView();}
+ function resizeView(){if(working&&src){const p=plan();drawOverlay(p,styleView(p));}}
  const oldDraw=drawCrop;drawCrop=function(){oldDraw();if(working){const p=plan();styleView(p);drawOverlay(p,layout(p));queue();}else draw();};
  function controls(){
   const g=working?current():NSGeometry.create(),fine=g.rotation.fineDegrees,total=g.rotation.quarterTurns*90+fine;
@@ -160,7 +175,7 @@
  const oldNextControls=nextControls;nextControls=function(...args){const r=oldNextControls(...args);controls();return r;};
  const oldUI=updateCalibrationUI;updateCalibrationUI=function(...args){const r=oldUI(...args);controls();return r;};
  canvas.addEventListener('webglcontextlost',e=>{e.preventDefault();failed=true;ensureCpu();});canvas.addEventListener('webglcontextrestored',()=>{if(presenter)presenter.destroy();presenter=null;failed=false;colorSource=null;if(working)render();});
- new ResizeObserver(()=>{if(working)queue();}).observe(picture);
- globalThis.FILMLABB_GEOMETRY={colorGpu,refresh:queue,setTool:setMode,sourceToView:s=>layout(plan()).toView(s),plan:()=>plan(false),view:()=>plan(),mode:()=>mode,snapshot:()=>({...metrics,mode,grid,colorSize:colorSize?{...colorSize}:null,backend:failed?'cpu':'gpu',sourceVersion:colorVersion})};
+ new ResizeObserver(resizeView).observe(picture);
+ globalThis.FILMLABB_GEOMETRY={colorGpu,resizeView,beginViewportMotion,endViewportMotion,refresh:queue,setTool:setMode,sourceToView:s=>layout(plan()).toView(s),plan:()=>plan(false),view:()=>plan(),mode:()=>mode,snapshot:()=>({...metrics,mode,grid,colorSize:colorSize?{...colorSize}:null,backend:failed?'cpu':'gpu',sourceVersion:colorVersion})};
  controls();
 })();
