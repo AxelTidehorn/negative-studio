@@ -16,9 +16,10 @@ Light palettes retain their existing colors. */
 :root[data-theme="classic"]:not([data-mode="light"]) {
   /* Solid controls and interaction roles, independent of the glass materials. */
   --ui-control-surface:#24211f;
-  --ui-control-edge:#7b6c5f;
-  --ui-control-hover-edge:#c79d66;
-  --ui-control-shadow:inset 0 1px rgba(255,244,224,.06);
+  --ui-bg:var(--ui-control-surface);
+  --ui-control-edge:#726d66;
+  --ui-control-hover-edge:#bd9e73;
+  --ui-control-shadow:inset 0 1px rgba(255,244,224,.04);
   --ui-pressed:#171412;
   --ui-pressed-shadow:inset 0 1px 3px #0006;
   --ui-hover:#342d27;
@@ -28,27 +29,34 @@ Light palettes retain their existing colors. */
   --ui-disabled-text:#9d9187;
   --ui-disabled-edge:#554c44;
   --ui-disabled-opacity:1;
-  --ui-slider-track:var(--ui-control-edge);
+  --ui-slider-track:#6c6760;
   --ui-raised:var(--ui-control-surface);
-  --ui-raised-shadow:inset 0 1px rgba(255,244,224,.06),0 4px 12px #0004;
+  --ui-raised-shadow:var(--ui-control-shadow),0 3px 8px #0003;
   --ui-plot-surface:#191919;
   --ui-batch-shadow:inset 0 -2px var(--ui-muted);
   --line:var(--ui-border);
+  /* The outer housing shares Solid Control. The photographic aperture stays
+     opaque neutral gray, with only neutral border lighting around its edge. */
+  --ui-image-panel-edge:#4a423b;
+  --ui-image-panel-shadow:inset 0 1px rgba(245,234,222,.04),inset 0 -1px #0003;
+  --ui-viewer-edge:#444444 #353535 #252525;
   --ui-card-header:#493126;
   --ui-card:#171210;
-  --ui-card-glass:linear-gradient(125deg,rgba(235,182,84,.18) 0%,rgba(215,151,57,.15) 42%,rgba(175,112,34,.20) 100%);
+  --ui-card-glass:linear-gradient(125deg,rgba(255,211,119,.15) 0%,rgba(238,179,75,.12) 42%,rgba(210,147,52,.16) 100%);
   --ui-card-backdrop:none;
-  --ui-card-edge:rgba(238,192,112,.24);
-  --ui-card-shadow:0 2px 5px #0002,0 0 3px rgba(240,188,94,.06);
-  --ui-glass-edge:rgba(255,226,172,.30);
-  --ui-glass-shade:rgba(0,0,0,.18);
-  --ui-queue-surface:rgba(24,24,25,.20);
-  --ui-smoke-overlay:rgba(24,24,25,.85);
-  --ui-smoke-overlay-solid:#181819;
+  --ui-card-edge:rgba(238,192,112,.22);
+  --ui-card-shadow:0 2px 5px #0002,0 0 3px rgba(240,188,94,.05);
+  --ui-glass-edge:rgba(255,230,177,.34);
+  --ui-glass-shade:rgba(0,0,0,.15);
+  /* A brighter neutral tint damps the warm substrate without a filter around
+     opaque thumbnails. The photographic overlay stays denser. */
+  --ui-queue-surface:rgba(48,52,58,.44);
+  --ui-smoke-overlay:rgba(32,35,39,.85);
+  --ui-smoke-overlay-solid:#202327;
   --ui-smoke-overlay-backdrop:none;
-  --ui-card-header-shadow:inset 0 1px var(--ui-glass-edge),inset 0 3px 6px -4px rgba(255,226,172,.12),inset 0 -1px var(--ui-glass-shade);
-  --ui-smoke-edge:rgba(220,224,228,.20);
-  --ui-smoke-shadow:inset 0 1px rgba(245,247,250,.14),inset 0 3px 6px -4px rgba(245,247,250,.08),0 1px 3px #0002;
+  --ui-card-header-shadow:inset 0 1px var(--ui-glass-edge),inset 0 3px 6px -4px rgba(255,230,177,.10),inset 0 -1px var(--ui-glass-shade);
+  --ui-smoke-edge:rgba(220,224,228,.18);
+  --ui-smoke-shadow:inset 0 1px rgba(245,247,250,.12),inset 0 3px 6px -4px rgba(245,247,250,.06),0 1px 3px #0002;
   /* Six original 340x220 curves, no path scaling. Mid-brown side forms
      cross the panels; the right fill fades toward the outer edge instead
      of forming a uniform sheet. Darkest cores stay translated outside.
