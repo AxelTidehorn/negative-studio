@@ -699,6 +699,9 @@ main.workspace.adjust-collapsed {
  }
  #adjustmentPanel > .tool-card > .tool-card-body {
   min-block-size:0;
+  /* Keep the opaque body full-height while its native wrapper clips it.
+     Stretching it into a fractional track leaves a transparent closing gap. */
+  align-self:start;
   overflow:clip;
  }
  #adjustmentPanel > .tool-card:not([open]) > .tool-card-body {

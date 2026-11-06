@@ -19,7 +19,7 @@ try{
   // Sample actual frames; no interception of summary clicks/native open state.
   const sample=async open=>p.evaluate(async open=>{
    const card=$('imageAdjustments'),summary=card.querySelector('summary'),rows=[];card.open=open;
-   const start=performance.now();do{await new Promise(requestAnimationFrame);const b=card.getBoundingClientRect();rows.push({t:performance.now()-start,height:b.height,top:summary.getBoundingClientRect().top});}while(performance.now()-start<320);
+   const start=performance.now();do{await new Promise(requestAnimationFrame);const b=card.getBoundingClientRect(),header=summary.getBoundingClientRect();rows.push({t:performance.now()-start,height:b.height,top:header.top,content:b.height-header.height-2,body:card.querySelector('.tool-card-body').getBoundingClientRect().height});}while(performance.now()-start<320);
    return {rows,open:card.open,inert:card.querySelector('.tool-card-body').inert,scroll:$('adjustmentPanel').scrollTop};
   },open);
   const closed=await sample(false);assert.equal(closed.inert,true);assert.equal(closed.open,false);
@@ -30,6 +30,7 @@ try{
   assert.equal(await p.evaluate(()=>{$('exposure').focus();return document.activeElement===$('exposure')}),false);
   await p.evaluate(()=>$('adjustmentPanel').scrollTop=0);
   const opened=await sample(true),ceiling=opened.rows.at(-1).height;assert.ok(ceiling>floor+50);assert.equal(opened.inert,false);
+  for(const s of [closed,opened])assert.ok(s.rows.every(x=>x.body>=x.content-.1),'opaque body covers the entire animated opening without transparent gaps');
   if(reduced){assert.ok(opened.rows.every(x=>Math.abs(x.height-ceiling)<.1),'reduced opening is immediate');assert.ok(closed.rows.every(x=>Math.abs(x.height-floor)<.1),'reduced closing is immediate');}
   else for(const s of [closed,opened])assert.ok(s.rows.some(x=>x.height>floor+1&&x.height<ceiling-1),'normal motion has intermediate geometry');
   // Reversals also work for API/session-driven changes, without delayed jobs.

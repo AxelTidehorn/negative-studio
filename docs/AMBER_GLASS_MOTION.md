@@ -11,7 +11,9 @@ all durations to zero. Focus outlines remain immediate.
 
 `application.css` owns paint-only button/field transitions and the five native
 `details` cards. `::details-content` animates a grid track with an explicit zero
-minimum, so body padding/borders do not jump at the end of closing. The narrow
+minimum, so body padding/borders do not jump at the end of closing. The
+body keeps its intrinsic height while the wrapper clips it, avoiding a transparent
+gap under a stretched fractional grid item. The narrow
 summary's status row also collapses continuously. Wide summaries retain their
 existing single-row endpoint. No fixed content-height guesses, click interception,
 height measurement loop, timers or animation library are used in the app.
