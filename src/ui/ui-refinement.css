@@ -117,7 +117,7 @@
   --ui-card-title:#211509;
   --ui-card-muted:#211b12;
   --ui-card:#c5cbd0;
-  --ui-card-glass:linear-gradient(125deg,rgba(255,225,160,.68) 0%,rgba(245,183,76,.74) 32%,rgba(215,121,29,.68) 68%,rgba(163,74,25,.60) 100%);
+  --ui-card-glass:rgba(235,160,55,.68);
   --ui-card-edge:rgba(163,74,25,.46);
   --ui-card-shadow:0 2px 5px #20252b20,0 0 3px rgba(255,199,94,.16);
   --ui-glass-edge:rgba(255,244,210,.92);
