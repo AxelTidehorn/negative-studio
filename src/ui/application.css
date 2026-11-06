@@ -152,38 +152,38 @@ header {
   box-shadow:inset 0 -2px var(--ui-accent);
   font-weight:750
 }
-/* Paint-only state contract for dark Classic. Native controls and all existing
-   geometry stay intact; the other identities retain their previous states. */
-:root[data-theme="classic"]:not([data-mode="light"]) :is(button,.btn):hover:not(:disabled),
-:root[data-theme="classic"]:not([data-mode="light"]) :is(input[type=text],input[type=number],select):hover:not(:disabled) {
+/* Shared paint-only states. The two palettes provide colors; native controls
+   and all existing geometry/motion stay intact. */
+:is(button,.btn):hover:not(:disabled),
+:is(input[type=text],input[type=number],select):hover:not(:disabled) {
   border-color:var(--ui-control-hover-edge)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .btn.primary:hover:not(:disabled):where(:not(:has(+ input[type=file]:disabled))) {
+.btn.primary:hover:not(:disabled):where(:not(:has(+ input[type=file]:disabled))) {
   background:var(--ui-accent);
   border-color:var(--ui-accent)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) :is(.btn[aria-pressed=true],.seg button.active,.workspace-toggle[aria-pressed=true]):not(:disabled) {
+:is(.btn[aria-pressed=true],.seg button.active,.workspace-toggle[aria-pressed=true]):not(:disabled) {
   background:var(--ui-active);
   color:var(--ui-text);
   border-color:var(--ui-accent);
   box-shadow:inset 0 -2px var(--ui-accent)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) :is(button,.btn,summary):active:not(:disabled) {
+:is(button,.btn,summary):active:not(:disabled) {
   background:var(--ui-pressed);
   box-shadow:var(--ui-pressed-shadow)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) :is(.btn[aria-pressed=true],.seg button.active,.workspace-toggle[aria-pressed=true]):active:not(:disabled) {
+:is(.btn[aria-pressed=true],.seg button.active,.workspace-toggle[aria-pressed=true]):active:not(:disabled) {
   background:var(--ui-pressed);
   box-shadow:inset 0 -2px var(--ui-accent),var(--ui-pressed-shadow)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .btn.primary:active:not(:disabled):where(:not(:has(+ input[type=file]:disabled))) {
+.btn.primary:active:not(:disabled):where(:not(:has(+ input[type=file]:disabled))) {
   background:var(--ui-accent);
   border-color:var(--ui-accent);
   filter:brightness(.94)
 }
 /* File labels mirror their adjacent native input without changing its state. */
-:root[data-theme="classic"]:not([data-mode="light"]) :is(button,.btn,input,select):disabled,
-:root[data-theme="classic"]:not([data-mode="light"]) label.btn:has(+ input[type=file]:disabled) {
+:is(button,.btn,input,select):disabled,
+label.btn:has(+ input[type=file]:disabled) {
   color:var(--ui-disabled-text);
   background:var(--ui-disabled);
   border-color:var(--ui-disabled-edge);
@@ -191,17 +191,17 @@ header {
   cursor:default;
   opacity:var(--ui-disabled-opacity)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:disabled {
+input[type=range]:disabled {
   background:transparent
 }
 @media (forced-colors:active) {
   /* Import is a keyboard-enabled file label, not a native button. Keep its
      system Highlight/HighlightText pair without Chromium's text backplate. */
-  :root[data-theme="classic"]:not([data-mode="light"]) label.btn.primary:where(:not(:has(+ input[type=file]:disabled))) {
+  label.btn.primary:where(:not(:has(+ input[type=file]:disabled))) {
     forced-color-adjust:none
   }
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .control:has(input:disabled) output {
+.control:has(input:disabled) output {
   color:var(--ui-disabled-text)
 }
 input[type=file] {
@@ -399,9 +399,6 @@ main.workspace {
 .workspace>.divider-left {grid-column:2;grid-row:1}
 .workspace>.image-panel {
   grid-column:3;grid-row:1;
-  background:var(--ui-bg);
-  border-color:var(--ui-image-panel-edge,transparent);
-  box-shadow:var(--ui-image-panel-shadow,none)
 }
 .workspace>.divider-right {grid-column:4;grid-row:1}
 .workspace>.editor-panel {grid-column:5;grid-row:1}
@@ -439,10 +436,12 @@ main.workspace.adjust-collapsed {
 .workspace-divider:hover,.workspace-divider:focus-visible {
   background:var(--ui-active)
 }
-.queue-panel {
-  background:var(--ui-queue-surface,var(--ui-panel));
+.queue-panel,.workspace>.image-panel {
+  background:var(--ui-smoke-workspace,var(--ui-panel));
   border-color:var(--ui-smoke-edge,var(--ui-border));
-  box-shadow:var(--ui-smoke-shadow,none);
+  box-shadow:var(--ui-smoke-shadow,none)
+}
+.queue-panel {
   display:flex;
   flex-direction:column;
   gap:8px;
@@ -478,11 +477,11 @@ main.workspace.adjust-collapsed {
   cursor:pointer;
   font-size:12px
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .frame:not(.active):hover:not(:active) {
+.frame:not(.active):hover:not(:active) {
   border-color:var(--ui-control-hover-edge);
   background:var(--ui-hover)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .frame:active {
+.frame:active {
   background:var(--ui-pressed)
 }
 .frame:has(input:checked) {
@@ -497,7 +496,7 @@ main.workspace.adjust-collapsed {
 .frame.active span {
   font-weight:750
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .frame:focus-visible {
+.frame:focus-visible {
   outline:2px solid var(--ui-focus);
   outline-offset:-5px
 }
@@ -632,7 +631,7 @@ main.workspace.adjust-collapsed {
 /* UI 2.1: independent disclosures. Only the small header surfaces are frosted;
    a single opaque body owns content padding, including nested legacy controls. */
 #adjustmentPanel {
-  background:var(--ui-bg);
+  background:transparent;
   border:0;
   container-type:inline-size;
 }
@@ -659,15 +658,15 @@ main.workspace.adjust-collapsed {
 }
 /* A header remains the same transparent material in every state. Use an inset
    outline/text cue rather than replacing its background or glass lighting. */
-:root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel > .tool-card > summary:hover:not(:focus-visible) {
+#adjustmentPanel > .tool-card > summary:hover:not(:focus-visible) {
   outline:1px solid var(--ui-control-hover-edge);
   outline-offset:-2px
 }
-:root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel > .tool-card > summary:active {
-  color:var(--ui-accent-label)
+#adjustmentPanel > .tool-card > summary:active {
+  color:var(--ui-card-title)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel > .tool-card[open] > summary .card-title {
-  color:var(--ui-accent-label)
+#adjustmentPanel > .tool-card[open] > summary .card-title {
+  color:var(--ui-card-title)
 }
 #adjustmentPanel summary::before,
 #adjustmentPanel summary::-webkit-details-marker {display:none;content:none}
@@ -680,7 +679,7 @@ main.workspace.adjust-collapsed {
   font-size:11px;
   font-weight:400;
   line-height:1.45;
-  color:var(--ui-muted);
+  color:var(--ui-card-muted);
   overflow-wrap:anywhere;
 }
 .tool-card[open] > summary .card-status {display:none}
@@ -882,23 +881,23 @@ input[type=range]::-moz-range-thumb {
   background:var(--ui-slider-thumb);
   box-shadow:var(--ui-control-shadow,none)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:hover:not(:disabled)::-webkit-slider-thumb {
+input[type=range]:hover:not(:disabled)::-webkit-slider-thumb {
   background:var(--ui-accent-label)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:hover:not(:disabled)::-moz-range-thumb {
+input[type=range]:hover:not(:disabled)::-moz-range-thumb {
   background:var(--ui-accent-label)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:active:not(:disabled)::-webkit-slider-thumb {
+input[type=range]:active:not(:disabled)::-webkit-slider-thumb {
   box-shadow:var(--ui-pressed-shadow)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:active:not(:disabled)::-moz-range-thumb {
+input[type=range]:active:not(:disabled)::-moz-range-thumb {
   box-shadow:var(--ui-pressed-shadow)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:disabled::-webkit-slider-thumb {
+input[type=range]:disabled::-webkit-slider-thumb {
   background:var(--ui-disabled-text);
   box-shadow:none
 }
-:root[data-theme="classic"]:not([data-mode="light"]) input[type=range]:disabled::-moz-range-thumb {
+input[type=range]:disabled::-moz-range-thumb {
   background:var(--ui-disabled-text);
   box-shadow:none
 }
@@ -908,10 +907,10 @@ input[type=range]::-moz-range-thumb {
 .control input[type=range]::-moz-range-track {
   background:linear-gradient(to right,var(--ui-slider-track) calc(50% - 1px),var(--ui-accent-label) calc(50% - 1px),var(--ui-accent-label) calc(50% + 1px),var(--ui-slider-track) calc(50% + 1px))
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .control input[type=range]:disabled::-webkit-slider-runnable-track {
+.control input[type=range]:disabled::-webkit-slider-runnable-track {
   background:var(--ui-disabled-edge)
 }
-:root[data-theme="classic"]:not([data-mode="light"]) .control input[type=range]:disabled::-moz-range-track {
+.control input[type=range]:disabled::-moz-range-track {
   background:var(--ui-disabled-edge)
 }
 @media (forced-colors:active) {

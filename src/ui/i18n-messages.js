@@ -305,16 +305,11 @@ const rows=[
 ["Filmruta · analysområde", "Film frame · analysis area", "Vue · zone d’analyse", "Fotograma · área de análisis", "Filmrahmen · Analysebereich"],
 ["Av: behåll synliga filmkanter. Analysen använder fortfarande filmrutan.", "Off: keep visible film borders. Analysis still uses the film frame.", "Désactivé : conserver les bords visibles. L’analyse utilise toujours la vue.", "Desactivado: conservar bordes visibles. El análisis sigue usando el fotograma.", "Aus: sichtbare Filmränder behalten. Die Analyse nutzt weiterhin den Filmrahmen."],
 ["Gränssnitt", "Interface", "Interface", "Interfaz", "Oberfläche"],
-["Färgtema", "Color theme", "Thème de couleur", "Tema de color", "Farbthema"],
+["Amber Dark", "Amber Dark", "Amber Dark", "Amber Dark", "Amber Dark"],
+["Amber Light", "Amber Light", "Amber Light", "Amber Light", "Amber Light"],
 ["Ljusläge", "Appearance", "Apparence", "Apariencia", "Darstellung"],
 ["Mörkt", "Dark", "Sombre", "Oscuro", "Dunkel"],
 ["Ljust", "Light", "Clair", "Claro", "Hell"],
-["Classic", "Classic", "Classique", "Clásico", "Klassisch"],
-["Oliv", "Olive", "Olive", "Oliva", "Oliv"],
-["Burgundy", "Burgundy", "Bordeaux", "Borgoña", "Burgund"],
-["Industri", "Industrial", "Industriel", "Industrial", "Industrie"],
-["Papper", "Paper", "Papier", "Papel", "Papier"],
-["Aubergine", "Aubergine", "Aubergine", "Berenjena", "Aubergine"],
 ["Hjälp och dokumentation ↗", "Help and documentation ↗", "Aide et documentation ↗", "Ayuda y documentación ↗", "Hilfe und Dokumentation ↗"],
 ["Importera ett negativ", "Import a negative", "Importer un négatif", "Importar un negativo", "Ein Negativ importieren"],
 ["RAW, TIFF, JPEG, PNG eller WebP · högst fem bilder", "RAW, TIFF, JPEG, PNG or WebP · up to five images", "RAW, TIFF, JPEG, PNG ou WebP · cinq images maximum", "RAW, TIFF, JPEG, PNG o WebP · máximo cinco imágenes", "RAW, TIFF, JPEG, PNG oder WebP · bis zu fünf Bilder"],
@@ -696,7 +691,7 @@ rows.push(
 );
 const languages=['sv','en','fr','es','de'],dictionary=new Map(),reverse=new Map(),missing=new Set();
 for(const row of rows){dictionary.set(row[0],row);for(const value of row)if(!reverse.has(value))reverse.set(value,row[0]);}
-const named={'appearance.theme':'Färgtema','appearance.mode':'Ljusläge','editing.version':'Redigering','queue.status':'{count} bilder · Bild {index} · {profile} · snabb förhandsvisning','frame.loading':'Laddar {name}…','export.error':'Exportfel: {error}','project.error':'Projektimport: {error}'};
+const named={'appearance.mode':'Ljusläge','editing.version':'Redigering','queue.status':'{count} bilder · Bild {index} · {profile} · snabb förhandsvisning','frame.loading':'Laddar {name}…','export.error':'Exportfel: {error}','project.error':'Projektimport: {error}'};
 let selected='sv';
 const recursive=new Set(['details','error','status','mode','encoding','version','profile','camera']);
 const numberFields=new Set(['count','index','total','ok','failed','zoom','w','h','pw','ph','width','height','x','y','bits','scale']);

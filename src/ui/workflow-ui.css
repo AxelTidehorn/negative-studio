@@ -91,11 +91,11 @@
    export never leaves its cancel action interactive; value updates don't replay. */
 #exportProgressPanel:not([hidden]) {animation:ui-surface-enter var(--ui-motion-normal) var(--ui-motion-ease)}
 @keyframes ui-surface-enter {from{opacity:0;translate:0 -3px}to{opacity:1;translate:none}}
-:root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:hover:not(:focus-visible) {
+#showImageTools:hover:not(:focus-visible) {
  outline:1px solid var(--ui-control-hover-edge);
  outline-offset:-3px;
 }
-:root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:active {
+#showImageTools:active {
  color:var(--ui-accent-label);
 }
 @media (prefers-reduced-transparency:reduce) {

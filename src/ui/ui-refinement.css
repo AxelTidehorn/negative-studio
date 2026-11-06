@@ -1,234 +1,76 @@
-/* Semantic palette data. Components/layout are defined once in application.css.
-Dark identities use near-neutral surfaces; color is reserved for active details.
-Light palettes retain their existing colors. */
-:root,:root[data-theme="classic"] {
-  --ui-bg:#211d1b;
+/* Amber Glass: one component system, two device-local light modes.
+   Component geometry and motion live in their existing owner files. */
+:root {
+  --ui-control-surface:#24211f;
+  --ui-bg:var(--ui-control-surface);
   --ui-panel:#1b1817;
   --ui-surface:#191615;
   --ui-text:#f0ece8;
-  --ui-muted:#b8ada5;
+  --ui-muted:#c6bbb0;
   --ui-border:rgba(238,220,204,.12);
   --ui-accent:#c68b43;
   --ui-accent-text:#211c18;
   --ui-accent-label:#dca65f;
-  --ui-active:#403630
-}
-:root[data-theme="classic"]:not([data-mode="light"]) {
-  /* Solid controls and interaction roles, independent of the glass materials. */
-  --ui-control-surface:#24211f;
-  --ui-bg:var(--ui-control-surface);
+  --ui-active:#403630;
   --ui-control-edge:#726d66;
   --ui-control-hover-edge:#bd9e73;
   --ui-control-shadow:inset 0 1px rgba(255,244,224,.04);
   --ui-pressed:#171412;
   --ui-pressed-shadow:inset 0 1px 3px #0006;
   --ui-hover:#342d27;
-  --ui-muted:#c6bbb0;
   --ui-field:#211e1c;
   --ui-disabled:#211e1c;
   --ui-disabled-text:#9d9187;
   --ui-disabled-edge:#554c44;
   --ui-disabled-opacity:1;
   --ui-slider-track:#6c6760;
+  --ui-slider-thumb:var(--ui-accent);
   --ui-raised:var(--ui-control-surface);
   --ui-raised-shadow:var(--ui-control-shadow),0 3px 8px #0003;
   --ui-plot-surface:#191919;
   --ui-batch-shadow:inset 0 -2px var(--ui-muted);
-  --line:var(--ui-border);
-  /* The outer housing shares Solid Control. The photographic aperture stays
-     opaque neutral gray, with only neutral border lighting around its edge. */
-  --ui-image-panel-edge:#4a423b;
-  --ui-image-panel-shadow:inset 0 1px rgba(245,234,222,.04),inset 0 -1px #0003;
+  --ui-viewer:#191919;
   --ui-viewer-edge:#444444 #353535 #252525;
   --ui-card-header:#493126;
+  --ui-card-title:var(--ui-accent-label);
+  --ui-card-muted:var(--ui-muted);
   --ui-card:#171210;
   --ui-card-glass:linear-gradient(125deg,rgba(255,211,119,.15) 0%,rgba(238,179,75,.12) 42%,rgba(210,147,52,.16) 100%);
-  --ui-card-backdrop:none;
   --ui-card-edge:rgba(238,192,112,.22);
   --ui-card-shadow:0 2px 5px #0002,0 0 3px rgba(240,188,94,.05);
   --ui-glass-edge:rgba(255,230,177,.34);
   --ui-glass-shade:rgba(0,0,0,.15);
-  /* A brighter neutral tint damps the warm substrate without a filter around
-     opaque thumbnails. The photographic overlay stays denser. */
-  --ui-queue-surface:rgba(48,52,58,.44);
+  --ui-glass-inner:rgba(255,230,177,.10);
+  --ui-card-header-shadow:inset 0 1px var(--ui-glass-edge),inset 0 3px 6px -4px var(--ui-glass-inner),inset 0 -1px var(--ui-glass-shade);
+  /* Workspace glass is shared by the queue and outer image housing.
+     The photographic overlay stays denser for contrast over any image. */
+  --ui-smoke-workspace:rgba(48,52,58,.44);
+  --ui-smoke-workspace-solid:#1b1b1c;
   --ui-smoke-overlay:rgba(32,35,39,.85);
   --ui-smoke-overlay-solid:#202327;
   --ui-smoke-overlay-backdrop:none;
-  --ui-card-header-shadow:inset 0 1px var(--ui-glass-edge),inset 0 3px 6px -4px rgba(255,230,177,.10),inset 0 -1px var(--ui-glass-shade);
   --ui-smoke-edge:rgba(220,224,228,.18);
   --ui-smoke-shadow:inset 0 1px rgba(245,247,250,.12),inset 0 3px 6px -4px rgba(245,247,250,.06),0 1px 3px #0002;
-  /* Six original 340x220 curves, no path scaling. Mid-brown side forms
-     cross the panels; the right fill fades toward the outer edge instead
-     of forming a uniform sheet. Darkest cores stay translated outside.
-     An 18-unit blur preserves broad curves; keep the workspace mapping
-     and sRGB interpolation. Glass materials are independent of this SVG. */
-  --ui-workspace-material:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20340%20220%22%20preserveAspectRatio%3D%22none%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22vignette-base%22%20cx%3D%2248%25%22%20cy%3D%2243%25%22%20r%3D%2275%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2338251D%22%2F%3E%0A%3Cstop%20offset%3D%2248%25%22%20stop-color%3D%22%232B1B15%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23100805%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3ClinearGradient%20id%3D%22organic-warm-side%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22215%22%20y1%3D%220%22%20x2%3D%22285%22%20y2%3D%220%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23593B29%22%2F%3E%0A%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23513525%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23513525%22%20stop-opacity%3D%220%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cfilter%20color-interpolation-filters%3D%22sRGB%22%20id%3D%22organic-blur%22%20x%3D%22-65%25%22%20y%3D%22-65%25%22%20width%3D%22230%25%22%20height%3D%22230%25%22%3E%0A%3CfeGaussianBlur%20stdDeviation%3D%2218%22%2F%3E%0A%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22340%22%20height%3D%22220%22%20fill%3D%22url(%23vignette-base)%22%2F%3E%0A%3Cg%20filter%3D%22url(%23organic-blur)%22%3E%0A%3Cpath%20transform%3D%22translate(-95%200)%22%20d%3D%22M-60%20-40%20C88%20-35%20111%2023%20109%2065%20C124%2099%2065%20121%20117%20174%20C161%20219%20168%20251%20-60%20260%20Z%22%20fill%3D%22%23543725%22%20opacity%3D%22.95%22%2F%3E%0A%3Cpath%20transform%3D%22translate(-100%200)%22%20d%3D%22M-65%20-20%20C43%20-12%2065%2033%2070%2076%20C89%20118%2023%20140%2078%20180%20C111%20215%20104%20250%20-65%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(20%20-110)%22%20d%3D%22M405%20-45%20C289%20-21%20258%2022%20271%2068%20C291%20111%20229%20141%20236%20181%20C256%20229%20326%20251%20405%20260%20Z%22%20fill%3D%22url(%23organic-warm-side)%22%20opacity%3D%22.96%22%2F%3E%0A%3Cpath%20transform%3D%22translate(100%200)%22%20d%3D%22M406%20-25%20C326%20-15%20300%2038%20317%2082%20C334%20122%20275%20153%20300%20194%20C319%20228%20363%20251%20406%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%2055)%22%20d%3D%22M-35%20265%20C25%20174%2094%20180%20131%20204%20C183%20245%20240%20185%20286%20192%20C318%20200%20352%20230%20380%20265%20Z%22%20fill%3D%22%23140A07%22%20opacity%3D%22.9%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%20-45)%22%20d%3D%22M-30%20-35%20C60%2016%20137%20-2%20176%2015%20C243%2039%20294%20-9%20378%20-35%20Z%22%20fill%3D%22%23160B08%22%20opacity%3D%22.83%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A');
-}
-:root[data-theme="classic"][data-mode="light"] {
-  --ui-bg:#e9e6df;
-  --ui-panel:#f4f1eb;
-  --ui-surface:#e4dfd6;
-  --ui-text:#282521;
-  --ui-muted:#655f57;
-  --ui-border:#aaa093;
-  --ui-accent:#a45b34;
-  --ui-accent-text:#fff8ed;
-  --ui-accent-label:#914920;
-  --ui-active:#e4cdbb
-}
-:root[data-theme="olive"] {
-  --ui-bg:#1f201f;
-  --ui-panel:#292a29;
-  --ui-surface:#232423;
-  --ui-text:#e9ebe5;
-  --ui-muted:#b9bcb3;
-  --ui-border:#50534e;
-  --ui-accent:#a8b18f;
-  --ui-accent-text:#1d2118;
-  --ui-accent-label:#c0c9a8;
-  --ui-active:#33372f
-}
-:root[data-theme="olive"][data-mode="light"] {
-  --ui-bg:#e8eadf;
-  --ui-panel:#f6f7ee;
-  --ui-surface:#e9eddf;
-  --ui-text:#252e21;
-  --ui-muted:#626c57;
-  --ui-border:#9da98f;
-  --ui-accent:#4e613b;
-  --ui-accent-text:#f8f9f0;
-  --ui-accent-label:#465834;
-  --ui-active:#d6dfc7
-}
-:root[data-theme="burgundy"] {
-  --ui-bg:#211f20;
-  --ui-panel:#2b292a;
-  --ui-surface:#252324;
-  --ui-text:#eee8e8;
-  --ui-muted:#c1b6b9;
-  --ui-border:#585053;
-  --ui-accent:#bf939d;
-  --ui-accent-text:#261b20;
-  --ui-accent-label:#d6abb5;
-  --ui-active:#3a3034
-}
-:root[data-theme="burgundy"][data-mode="light"] {
-  --ui-bg:#eee5df;
-  --ui-panel:#faf3ed;
-  --ui-surface:#f0e5df;
-  --ui-text:#342229;
-  --ui-muted:#785b61;
-  --ui-border:#b49a96;
-  --ui-accent:#8e3e50;
-  --ui-accent-text:#fff7f2;
-  --ui-accent-label:#853447;
-  --ui-active:#ead0d3
-}
-:root[data-theme="industrial"] {
-  --ui-bg:#1e1f20;
-  --ui-panel:#292a2b;
-  --ui-surface:#232425;
-  --ui-text:#eaebec;
-  --ui-muted:#b6babe;
-  --ui-border:#505458;
-  --ui-accent:#a1afbe;
-  --ui-accent-text:#192027;
-  --ui-accent-label:#becbd8;
-  --ui-active:#30363c
-}
-:root[data-theme="industrial"][data-mode="light"] {
-  --ui-bg:#e4e4df;
-  --ui-panel:#f7f7f1;
-  --ui-surface:#ebebe4;
-  --ui-text:#20201d;
-  --ui-muted:#64645a;
-  --ui-border:#a2a292;
-  --ui-accent:#64602c;
-  --ui-accent-text:#fffef2;
-  --ui-accent-label:#5f5a25;
-  --ui-active:#dfddbd
-}
-:root[data-theme="paper"] {
-  --ui-bg:#222120;
-  --ui-panel:#2d2c2a;
-  --ui-surface:#262524;
-  --ui-text:#f0ece4;
-  --ui-muted:#c1bcb1;
-  --ui-border:#585650;
-  --ui-accent:#baa98b;
-  --ui-accent-text:#242017;
-  --ui-accent-label:#d0c2a8;
-  --ui-active:#3b362e
-}
-:root[data-theme="paper"][data-mode="light"] {
-  --ui-bg:#eee9dd;
-  --ui-panel:#fffaf0;
-  --ui-surface:#f4eedf;
-  --ui-text:#2a2823;
-  --ui-muted:#716954;
-  --ui-border:#a99c81;
-  --ui-accent:#736234;
-  --ui-accent-text:#fffaf0;
-  --ui-accent-label:#6c5a2c;
-  --ui-active:#e6dabd
-}
-:root[data-theme="aubergine"] {
-  --ui-bg:#201f21;
-  --ui-panel:#2b292c;
-  --ui-surface:#252426;
-  --ui-text:#ece9ef;
-  --ui-muted:#beb7c3;
-  --ui-border:#565159;
-  --ui-accent:#af9db9;
-  --ui-accent-text:#211c26;
-  --ui-accent-label:#cbb8d4;
-  --ui-active:#37313c
-}
-:root[data-theme="aubergine"][data-mode="light"] {
-  --ui-bg:#ece7ed;
-  --ui-panel:#f8f4f8;
-  --ui-surface:#eee8f0;
-  --ui-text:#302934;
-  --ui-muted:#706174;
-  --ui-border:#ac9cb3;
-  --ui-accent:#785885;
-  --ui-accent-text:#fff9ff;
-  --ui-accent-label:#704d7d;
-  --ui-active:#e1d3e7
-}
-:root {
-  /* Shared, non-spring motion. Reduced motion removes timing, not feedback. */
-  --ui-motion-fast:100ms;
-  --ui-motion-normal:170ms;
-  --ui-motion-panel:300ms;
-  --ui-motion-ease:cubic-bezier(.25,.1,.25,1);
-  /* Material colors follow all six identities and both light modes. */
-  --ui-card:var(--ui-panel);
-  --ui-card-header:var(--ui-active);
-  --ui-smoke-overlay:var(--ui-card-header);
-  --ui-smoke-overlay-solid:var(--ui-card-header);
-  --ui-smoke-overlay-backdrop:none;
-  --ui-glass-edge:rgba(255,255,255,.13);
-  --ui-glass-shade:rgba(0,0,0,.12);
   --ui-chrome:var(--ui-surface);
-  --ui-field:var(--ui-surface);
-  --ui-hover:var(--ui-active);
   --ui-focus:var(--ui-accent-label);
-  --ui-disabled:var(--ui-surface);
-  --ui-disabled-text:var(--ui-muted);
   --ui-error:#f0a7a0;
   --ui-warning:#e0c08c;
-  --ui-slider-track:var(--ui-border);
-  --ui-slider-thumb:var(--ui-accent);
   --ui-scroll-track:var(--ui-surface);
   --ui-scroll-thumb:var(--ui-border);
-  --ui-viewer:#191919;
   --ui-overlay:#191919e8;
   --ui-overlay-text:#f4f1e9;
   --ui-frame:#e9b86b;
   --ui-guide:#f5f5f5;
   --ui-guide-edge:#202020;
   --ui-grid:#ffffffaa;
+  --line:var(--ui-border);
+  /* Shared, non-spring motion. Reduced motion removes timing, not feedback. */
+  --ui-motion-fast:100ms;
+  --ui-motion-normal:170ms;
+  --ui-motion-panel:300ms;
+  --ui-motion-ease:cubic-bezier(.25,.1,.25,1);
+  /* Original organic geometry, colors and container mapping are retained. */
+  --ui-workspace-material:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20340%20220%22%20preserveAspectRatio%3D%22none%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22vignette-base%22%20cx%3D%2248%25%22%20cy%3D%2243%25%22%20r%3D%2275%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2338251D%22%2F%3E%0A%3Cstop%20offset%3D%2248%25%22%20stop-color%3D%22%232B1B15%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23100805%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3ClinearGradient%20id%3D%22organic-warm-side%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22215%22%20y1%3D%220%22%20x2%3D%22285%22%20y2%3D%220%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23593B29%22%2F%3E%0A%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23513525%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23513525%22%20stop-opacity%3D%220%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cfilter%20color-interpolation-filters%3D%22sRGB%22%20id%3D%22organic-blur%22%20x%3D%22-65%25%22%20y%3D%22-65%25%22%20width%3D%22230%25%22%20height%3D%22230%25%22%3E%0A%3CfeGaussianBlur%20stdDeviation%3D%2218%22%2F%3E%0A%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22340%22%20height%3D%22220%22%20fill%3D%22url(%23vignette-base)%22%2F%3E%0A%3Cg%20filter%3D%22url(%23organic-blur)%22%3E%0A%3Cpath%20transform%3D%22translate(-95%200)%22%20d%3D%22M-60%20-40%20C88%20-35%20111%2023%20109%2065%20C124%2099%2065%20121%20117%20174%20C161%20219%20168%20251%20-60%20260%20Z%22%20fill%3D%22%23543725%22%20opacity%3D%22.95%22%2F%3E%0A%3Cpath%20transform%3D%22translate(-100%200)%22%20d%3D%22M-65%20-20%20C43%20-12%2065%2033%2070%2076%20C89%20118%2023%20140%2078%20180%20C111%20215%20104%20250%20-65%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(20%20-110)%22%20d%3D%22M405%20-45%20C289%20-21%20258%2022%20271%2068%20C291%20111%20229%20141%20236%20181%20C256%20229%20326%20251%20405%20260%20Z%22%20fill%3D%22url(%23organic-warm-side)%22%20opacity%3D%22.96%22%2F%3E%0A%3Cpath%20transform%3D%22translate(100%200)%22%20d%3D%22M406%20-25%20C326%20-15%20300%2038%20317%2082%20C334%20122%20275%20153%20300%20194%20C319%20228%20363%20251%20406%20260%20Z%22%20fill%3D%22%23100805%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%2055)%22%20d%3D%22M-35%20265%20C25%20174%2094%20180%20131%20204%20C183%20245%20240%20185%20286%20192%20C318%20200%20352%20230%20380%20265%20Z%22%20fill%3D%22%23140A07%22%20opacity%3D%22.9%22%2F%3E%0A%3Cpath%20transform%3D%22translate(0%20-45)%22%20d%3D%22M-30%20-35%20C60%2016%20137%20-2%20176%2015%20C243%2039%20294%20-9%20378%20-35%20Z%22%20fill%3D%22%23160B08%22%20opacity%3D%22.83%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A');
   /* Compatibility aliases for histogram drawing and existing geometry hooks. */
   --ns-bg:var(--ui-bg);
   --ns-panel:var(--ui-panel);
@@ -244,40 +86,82 @@ Light palettes retain their existing colors. */
   --ns-accent-soft:var(--ui-active);
   --ns-accent-line:var(--ui-accent-label)
 }
-/* Keep existing materials in the other identities. Dark Classic overrides these
-   tokens independently of blur support. */
-@supports ((backdrop-filter:blur(9px)) or (-webkit-backdrop-filter:blur(9px))) {
- :root {
-  --ui-card-glass:color-mix(in srgb,var(--ui-card-header) 76%,transparent);
-  --ui-smoke-overlay:color-mix(in srgb,var(--ui-card-header) 83%,transparent);
-  --ui-smoke-overlay-backdrop:blur(10px);
- }
-}
 :root[data-mode="light"] {
+  --ui-bg:#ded3bf;
+  --ui-panel:#f6f0e6;
+  --ui-surface:#eee6d8;
+  --ui-text:#2e2822;
+  --ui-muted:#554b3f;
+  --ui-border:#aa9c87;
+  --ui-accent:#99621f;
+  --ui-accent-text:#fff9f0;
+  --ui-accent-label:#775016;
+  --ui-active:#e5d2ae;
+  --ui-control-surface:#f1e9dc;
+  --ui-control-edge:#8f806a;
+  --ui-control-hover-edge:#936824;
+  --ui-control-shadow:inset 0 1px rgba(255,255,255,.70);
+  --ui-pressed:#dfd1b9;
+  --ui-pressed-shadow:inset 0 1px 3px #6a502520;
+  --ui-hover:#e8dcc7;
+  --ui-field:#faf7f0;
+  --ui-disabled:#e7ded0;
+  --ui-disabled-text:#857969;
+  --ui-disabled-edge:#b5a995;
+  --ui-slider-track:#a89981;
+  --ui-raised:#faf6ee;
+  --ui-raised-shadow:var(--ui-control-shadow),0 3px 8px #58472c20;
+  --ui-viewer:#d9d9d9;
+  --ui-viewer-edge:#b3b3b3 #bfbfbf #a2a2a2;
+  --ui-card-header:#e6d3af;
+  --ui-card-title:#422506;
+  --ui-card-muted:#3c342b;
+  --ui-card:#f6f0e6;
+  --ui-card-glass:linear-gradient(125deg,rgba(255,221,153,.29) 0%,rgba(238,184,89,.23) 42%,rgba(220,163,66,.27) 100%);
+  --ui-card-edge:rgba(151,113,53,.35);
+  --ui-card-shadow:0 2px 5px #58472c12,0 0 3px rgba(255,232,179,.18);
+  --ui-glass-edge:rgba(255,252,230,.78);
+  --ui-glass-shade:rgba(103,72,25,.17);
+  --ui-glass-inner:rgba(255,252,230,.35);
+  --ui-smoke-workspace:rgba(238,240,241,.62);
+  --ui-smoke-workspace-solid:#e6e5df;
+  --ui-smoke-overlay:rgba(243,244,242,.94);
+  --ui-smoke-overlay-solid:#f3f4f2;
+  --ui-smoke-edge:rgba(102,112,118,.34);
+  --ui-smoke-shadow:inset 0 1px rgba(255,255,255,.72),inset 0 3px 6px -4px rgba(255,255,255,.36),0 1px 3px #58472c17;
+  --ui-chrome:#ece4d7;
+  --ui-focus:#70400e;
   --ui-error:#a12d2a;
-  --ui-warning:#805b13;
-  --ui-viewer:#dedbd5
+  --ui-warning:#76531d;
+  --ui-overlay:var(--ui-smoke-overlay);
+  --ui-overlay-text:var(--ui-text);
+  /* The same six paths, transforms, opacity, blur and asymmetry as Dark.
+     Only SVG fill/gradient colors change to ivory, sand and muted amber. */
+  --ui-workspace-material:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20340%20220%22%20preserveAspectRatio%3D%22none%22%3E%0A%3Cdefs%3E%0A%3CradialGradient%20id%3D%22vignette-base%22%20cx%3D%2248%25%22%20cy%3D%2243%25%22%20r%3D%2275%25%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23EEE6D8%22%2F%3E%0A%3Cstop%20offset%3D%2248%25%22%20stop-color%3D%22%23DED0B8%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23A18D70%22%2F%3E%0A%3C%2FradialGradient%3E%0A%3ClinearGradient%20id%3D%22organic-warm-side%22%20gradientUnits%3D%22userSpaceOnUse%22%20x1%3D%22215%22%20y1%3D%220%22%20x2%3D%22285%22%20y2%3D%220%22%3E%0A%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23D1BB91%22%2F%3E%0A%3Cstop%20offset%3D%2245%25%22%20stop-color%3D%22%23CAB696%22%2F%3E%0A%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23CAB696%22%20stop-opacity%3D%220%22%2F%3E%0A%3C%2FlinearGradient%3E%0A%3Cfilter%20color-interpolation-filters%3D%22sRGB%22%20id%3D%22organic-blur%22%20x%3D%22-65%25%22%20y%3D%22-65%25%22%20width%3D%22230%25%22%20height%3D%22230%25%22%3E%0A%3CfeGaussianBlur%20stdDeviation%3D%2218%22%2F%3E%0A%3C%2Ffilter%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22340%22%20height%3D%22220%22%20fill%3D%22url%28%23vignette-base%29%22%2F%3E%0A%3Cg%20filter%3D%22url%28%23organic-blur%29%22%3E%0A%3Cpath%20transform%3D%22translate%28-95%200%29%22%20d%3D%22M-60%20-40%20C88%20-35%20111%2023%20109%2065%20C124%2099%2065%20121%20117%20174%20C161%20219%20168%20251%20-60%20260%20Z%22%20fill%3D%22%23C3AE8D%22%20opacity%3D%22.95%22%2F%3E%0A%3Cpath%20transform%3D%22translate%28-100%200%29%22%20d%3D%22M-65%20-20%20C43%20-12%2065%2033%2070%2076%20C89%20118%2023%20140%2078%20180%20C111%20215%20104%20250%20-65%20260%20Z%22%20fill%3D%22%23A18D70%22%2F%3E%0A%3Cpath%20transform%3D%22translate%2820%20-110%29%22%20d%3D%22M405%20-45%20C289%20-21%20258%2022%20271%2068%20C291%20111%20229%20141%20236%20181%20C256%20229%20326%20251%20405%20260%20Z%22%20fill%3D%22url%28%23organic-warm-side%29%22%20opacity%3D%22.96%22%2F%3E%0A%3Cpath%20transform%3D%22translate%28100%200%29%22%20d%3D%22M406%20-25%20C326%20-15%20300%2038%20317%2082%20C334%20122%20275%20153%20300%20194%20C319%20228%20363%20251%20406%20260%20Z%22%20fill%3D%22%23A18D70%22%2F%3E%0A%3Cpath%20transform%3D%22translate%280%2055%29%22%20d%3D%22M-35%20265%20C25%20174%2094%20180%20131%20204%20C183%20245%20240%20185%20286%20192%20C318%20200%20352%20230%20380%20265%20Z%22%20fill%3D%22%23B6A080%22%20opacity%3D%22.9%22%2F%3E%0A%3Cpath%20transform%3D%22translate%280%20-45%29%22%20d%3D%22M-30%20-35%20C60%2016%20137%20-2%20176%2015%20C243%2039%20294%20-9%20378%20-35%20Z%22%20fill%3D%22%23BBA98D%22%20opacity%3D%22.83%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E%0A');
 }
-
-/* Amber Glass is the dark Classic material only. The gradient belongs to the
-   workspace, so editor scrolling does not move or restart the background.
-   The photo stays opaque; only the neutral queue surface transmits the backdrop. */
-:root[data-theme="classic"]:not([data-mode="light"]) main.workspace {
- background-image:var(--ui-workspace-material);
- background-size:100% 100%;
- background-repeat:no-repeat;
+/* A single background resource follows the actual workspace container in both
+   modes. Editor scrolling neither moves nor restarts its organic composition. */
+main.workspace {
+  background-image:var(--ui-workspace-material);
+  background-size:100% 100%;
+  background-repeat:no-repeat;
 }
-:root[data-theme="classic"]:not([data-mode="light"]) #adjustmentPanel {
- background:transparent;
-}
-
 @media (prefers-reduced-transparency:reduce) {
- :root[data-theme="classic"]:not([data-mode="light"]) {
-  --ui-queue-surface:#1b1b1c;
- }
+ :root[data-mode] {--ui-smoke-workspace:var(--ui-smoke-workspace-solid)}
 }
 @media (forced-colors:active) {
- :root[data-theme="classic"]:not([data-mode="light"]) {
+ :root[data-mode] {
+  --ui-bg:Canvas;
+  --ui-panel:Canvas;
+  --ui-surface:Canvas;
+  --ui-field:Field;
+  --ui-card:Canvas;
+  --ui-raised:Canvas;
+  --ui-focus:Highlight;
+  --ui-border:ButtonBorder;
+  --ui-control-shadow:none;
+  --ui-raised-shadow:none;
+  --ui-card-header-shadow:none;
   --ui-control-surface:ButtonFace;
   --ui-control-edge:ButtonBorder;
   --ui-control-hover-edge:Highlight;
@@ -288,8 +172,14 @@ Light palettes retain their existing colors. */
   --ui-accent-text:HighlightText;
   --ui-accent-label:Highlight;
   --ui-text:ButtonText;
+  --ui-muted:CanvasText;
   --ui-disabled-text:GrayText;
   --ui-disabled-edge:GrayText;
+  --ui-workspace-material:none;
+  --ui-smoke-workspace:Canvas;
+  --ui-smoke-edge:CanvasText;
+  --ui-smoke-shadow:none;
+  --ui-card-shadow:none;
  }
 }
 @media (prefers-reduced-motion:reduce) {

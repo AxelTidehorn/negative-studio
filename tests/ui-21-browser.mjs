@@ -20,8 +20,8 @@ try{
  await p.waitForTimeout(600);
  const frozen=()=>p.evaluate(()=>({state:JSON.stringify({state,rollShared,calibration,cropRegion}),source:sourceVersion38,analysis:analysisCount38,v2:FILMLABB_V2.snapshot().analysisCount,uploads:FILMLABB_GPU.snapshot().sourceUploads,reconstructions:FILMLABB_GPU.snapshot().positiveReconstructions}));
  const before=await frozen();
- const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').display,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
- assert.equal(structure.editor,'rgba(0, 0, 0, 0)');assert.equal(structure.workspace,structure.image);
+ const structure=await p.evaluate(()=>({workspace:getComputedStyle($('workspace')).backgroundColor,editor:getComputedStyle($('adjustmentPanel')).backgroundColor,image:getComputedStyle(document.querySelector('.image-panel')).backgroundColor,queue:getComputedStyle($('queuePanel')).backgroundColor,gear:getComputedStyle($('flInfoMenu').querySelector('summary'),'::after').maskImage,gap:getComputedStyle($('imageAdjustments').querySelector('summary')).columnGap,chevron:getComputedStyle($('imageAdjustments').querySelector('summary'),'::before').display,bodyPadding:getComputedStyle($('imageAdjustments').querySelector('.tool-card-body')).padding}));
+ assert.equal(structure.editor,'rgba(0, 0, 0, 0)');assert.equal(structure.queue,structure.image,'image housing shares the queue glass');
  assert.notEqual(structure.gear,'none');assert.equal(structure.chevron,'none');
  await p.evaluate(()=>$('workspace').style.setProperty('--adjust-width','500px'));
  assert.equal(await p.locator('#creativeProfilesSummary').evaluate(e=>getComputedStyle(e).gridRowStart),'1','wide card status shares title row');
@@ -84,7 +84,7 @@ try{
  await backend.selectOption('auto');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  assert.equal(await p.evaluate(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.length===new Set(ids).size;}),true);
  for(const [width,height]of [[1440,900],[1024,768],[768,1024],[390,844]])for(const mode of ['dark','light']){
-  await p.setViewportSize({width,height});await p.evaluate(mode=>{FILMLABB_APPEARANCE.set('classic',mode);document.querySelectorAll('.tool-card').forEach(e=>e.open=true);},mode);
+  await p.setViewportSize({width,height});await p.evaluate(mode=>{FILMLABB_APPEARANCE.set(mode);document.querySelectorAll('.tool-card').forEach(e=>e.open=true);},mode);
   assert.equal(await p.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,`${width}/${mode}`);
   const material=await p.evaluate(()=>{
    const style=selector=>{const s=getComputedStyle(document.querySelector(selector));return {background:s.backgroundColor,filter:s.backdropFilter,opacity:s.opacity,image:s.backgroundImage};};
@@ -108,7 +108,7 @@ try{
  for(const [width,height]of [[1024,768],[768,1024],[390,844]]){
   await tablet.setViewportSize({width,height});
   for(const mode of ['dark','light']){
-   await tablet.evaluate(mode=>FILMLABB_APPEARANCE.set('classic',mode),mode);
+   await tablet.evaluate(mode=>FILMLABB_APPEARANCE.set(mode),mode);
    for(const id of cards){await tablet.locator('#'+id+' > summary').tap();await tablet.locator('#'+id+' > summary').tap();}
    assert.deepEqual(await tablet.evaluate(ids=>ids.map(id=>document.getElementById(id).open),cards),[true,false,false,false,false]);
    assert.equal(await tablet.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
