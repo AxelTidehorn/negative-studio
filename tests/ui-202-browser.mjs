@@ -5,6 +5,7 @@ const h=await browserHarness();
 try {
  const p=await h.browser.newPage({viewport:{width:1440,height:900},locale:'sv-SE',serviceWorkers:'block'}),errors=[];
  p.setDefaultTimeout(45000);
+ const settled=()=>p.waitForFunction(()=>!document.querySelector('.queue-exiting,.adjust-exiting')&&!document.getAnimations().some(a=>a.playState==='running'&&a.effect?.getTiming().iterations!==Infinity));
  p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
  const buffer=fs.readFileSync('demo-negative.png');
  await p.locator('#imageFile').setInputFiles(['a.png','b.png'].map(name=>({name,mimeType:'image/png',buffer})));
@@ -13,7 +14,7 @@ try {
   await p.setViewportSize({width,height});
   for(const [queue,adjust] of [[true,true],[false,true],[true,false],[false,false]]) {
    for(const [id,on] of [['toggleQueue',queue],['toggleAdjustments',adjust]]) if(await p.locator('#'+id).getAttribute('aria-pressed')!==String(on))await p.locator('#'+id).click();
-   await p.waitForTimeout(80);
+   await settled();
    assert.equal(await p.locator('#queuePanel').isVisible(),queue);
    assert.equal(await p.locator('#adjustmentPanel').isVisible(),adjust);
    assert.equal(await p.locator('#picture').isVisible(),true);
@@ -33,7 +34,7 @@ try {
  const protectedGeometry=await p.evaluate(()=>JSON.stringify({calibration,cropRegion,geometry:roll[activeFrame].geometry,rollShared}));
  const protectedState=await p.evaluate(()=>JSON.stringify(Object.fromEntries(Object.entries(state).filter(([key])=>!controls.some(c=>c[0]===key)))));
  // Exercise native keyboard input at each endpoint, reset, switch and save/reload a project.
- await p.evaluate(()=>document.querySelectorAll('#adjustmentPanel details').forEach(e=>e.open=true));
+ await p.evaluate(()=>document.querySelectorAll('#adjustmentPanel details').forEach(e=>e.open=true));await settled();
  for(const [id,,min,max,,neutral] of await p.evaluate(()=>controls)) {
   const interactive=await p.locator('#'+id).isEnabled()&&await p.locator('#'+id).isVisible();
   for(const [key,value,position] of [['Home',min,0],['End',max,1000]]) {

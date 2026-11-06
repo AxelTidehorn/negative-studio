@@ -79,3 +79,9 @@ The historical toolbar pointer-capture behavior above zoom 1 is outside this wor
 The online build-identity spec continues to block service workers: the unchanged
 main offline navigation shell can replace `v2.html` after activation. That separate
 lab navigation issue, versioning, CI and publishing are not changed by D2.
+
+The manual-frame VM fixture supplies the native media/style API methods now used
+by the layout owner; all coordinate and project assertions are retained. UI3's
+numeric field check and UI 2.0.2's static sidebar checks wait for actual visibility
+or transition completion. The normal-motion regression separately tests the
+intermediate states, inert exits and bounded photographic viewport changes.
