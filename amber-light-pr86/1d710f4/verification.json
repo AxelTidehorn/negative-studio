@@ -1,0 +1,55 @@
+{
+  "repository": "AxelTidehorn/negative-studio",
+  "pullRequest": 86,
+  "productCommit": "1d710f40b190e431039504394d5216f93c9c5df9",
+  "sourceCssSha256": "6a3bd5ce452fad98af562de6eb871a265408dd3b86ded99c5ae6af416fd9bdef",
+  "styleTestGroups": 6,
+  "styleFailures": 0,
+  "styleSeconds": 36.175537072,
+  "browser": "Chromium",
+  "viewports": {
+    "desktop": [
+      1440,
+      900
+    ],
+    "ipad": [
+      1024,
+      768
+    ]
+  },
+  "fullPageScreenshots": true,
+  "samePhotoAndUiState": true,
+  "image": "Public NASA portrait of Eileen Collins, scikit-image data.astronaut, source/negative view; no private photographs or RAW files.",
+  "darkFullScreenshotsByteIdentical": 4,
+  "photoCropsByteIdentical": 8,
+  "layoutDimensionsUnchanged": true,
+  "javascriptErrors": [],
+  "svgGeometryIdentical": true,
+  "darkCssUnchanged": true,
+  "images": {
+    "amber-light-pr86/1d710f4/desktop-light-open.png": {
+      "sha256": "d8a7684552b835e34fcf7978e3c975e3b6ea78d3a409eb9264fd9e3303b96ed4",
+      "bytes": 698674
+    },
+    "amber-light-pr86/1d710f4/desktop-light-closed.png": {
+      "sha256": "f151736e8f5ba12771ce274af0ae6c17946e614286aea2b151eb80e09b170537",
+      "bytes": 795749
+    },
+    "amber-light-pr86/1d710f4/desktop-dark-open.png": {
+      "sha256": "f39a4d91c651fe5b29d7021f13192784665914c375c54341fa6f5355f47b87ef",
+      "bytes": 662424
+    },
+    "amber-light-pr86/1d710f4/ipad-light-open.png": {
+      "sha256": "d04519015a97ed0108c211df4ce735cadaa57bfac7b501a56176e45d3d34ed28",
+      "bytes": 497843
+    },
+    "amber-light-pr86/1d710f4/ipad-light-closed.png": {
+      "sha256": "bd886d6cc4140729641d9c7d3c6caa1e5d01ae896fe1100f76409ed9675607e4",
+      "bytes": 575415
+    },
+    "amber-light-pr86/1d710f4/ipad-dark-open.png": {
+      "sha256": "930c9a742da0bfa6bbf6762495a0413d642e9ad70915359871036075c4194f48",
+      "bytes": 478679
+    }
+  }
+}
