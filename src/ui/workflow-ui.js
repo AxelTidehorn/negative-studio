@@ -52,7 +52,7 @@ const grid=$('thirdsGrid').closest('label');toolbar.append(grid);const gridText=
 let toolsHidden3=false;
 const hideTools=document.createElement('button');hideTools.id='hideImageTools';hideTools.className='btn';hideTools.type='button';
 const showTools=document.createElement('button');showTools.id='showImageTools';showTools.className='btn';showTools.type='button';showTools.setAttribute('aria-controls','imageTools3');$('picture').append(showTools);toolbar.prepend(hideTools);
-function toolsVisibility3(){toolbar.hidden=toolsHidden3;showTools.hidden=!toolsHidden3;showTools.setAttribute('aria-expanded',String(!toolsHidden3));t(hideTools,'Dölj');hideTools.setAttribute('aria-label',FILMLABB_I18N.fromSource('Dölj bildverktyg'));hideTools.title=FILMLABB_I18N.fromSource('Dölj bildverktyg');t(showTools,'Visa bildverktyg');}
+function toolsVisibility3(){toolbar.hidden=toolbar.inert=toolsHidden3;showTools.hidden=showTools.inert=!toolsHidden3;showTools.setAttribute('aria-expanded',String(!toolsHidden3));t(hideTools,'Dölj');hideTools.setAttribute('aria-label',FILMLABB_I18N.fromSource('Dölj bildverktyg'));hideTools.title=FILMLABB_I18N.fromSource('Dölj bildverktyg');t(showTools,'Visa bildverktyg');}
 hideTools.onclick=()=>{toolsHidden3=true;toolsVisibility3();showTools.focus();};showTools.onclick=()=>{toolsHidden3=false;toolsVisibility3();hideTools.focus();};
 // Keep retired engine options only while an older project's frame uses one.
 // The render/export recipes remain untouched; regular users see three choices.
@@ -88,6 +88,10 @@ for(const id of cards){
  body.classList.add('tool-card-body');
  for(const node of [...card.childNodes])if(node!==summary&&node!==body)body.append(node);
  card.append(body);
+ // A native closing disclosure keeps painting during its CSS exit. Remove its
+ // controls from keyboard/pointer interaction immediately, including API opens.
+ body.inert=!card.open;
+ new MutationObserver(()=>{body.inert=!card.open;}).observe(card,{attributes:true,attributeFilter:['open']});
 }
 // Reuse the original selector and live explanation in one compact advanced field.
 const engineField=engineSelect.closest('.field');engineField.classList.add('engine-settings');

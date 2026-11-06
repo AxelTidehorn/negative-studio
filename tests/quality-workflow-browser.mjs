@@ -7,6 +7,7 @@ try{
  const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'quality-a.png',mimeType:'image/png',buffer},{name:'quality-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
  // UI 2.1 calibration starts collapsed; open it to inspect the nested frame order.
  await page.locator('#calibration3 > summary').click();
+ await page.waitForFunction(()=>!$('calibration3').getAnimations({subtree:true}).some(a=>a.playState==='running'));
  const defaults=await page.evaluate(()=>({model:roll[0].geometry,mode:FILMLABB_GEOMETRY.mode(),open:$('geometryTools').open,color:[$('gpuPreview').width,$('gpuPreview').height],presentation:[$('presentationPreview').width,$('presentationPreview').height],order:['histogram','simpleControls','creativeProfiles','calibration3','frameSettingsGroup','advancedSettings'].map(id=>$(id).getBoundingClientRect().top)}));
  assert.deepEqual(defaults.model.rotation,{quarterTurns:0,fineDegrees:0});assert.equal(defaults.model.compositionCrop,null);assert.equal(defaults.mode,null);assert.equal(defaults.open,false);assert.deepEqual(defaults.color,[240,160]);assert.deepEqual(defaults.presentation,defaults.color);assert.ok(defaults.order.every((v,i,a)=>!i||v>a[i-1]),JSON.stringify(defaults.order));
  console.log('PASS film analysis precedes histogram/color/tools; import is neutral and low-resolution color cache is not enlarged/resampled');

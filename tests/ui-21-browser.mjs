@@ -94,6 +94,7 @@ try{
   if(mode==='dark')assert.match(material.head.image,/linear-gradient/);
 
   await p.locator('#imageAdjustments > summary').click();
+  await p.locator('#imageAdjustments > .tool-card-body').waitFor({state:'hidden'});
   assert.equal(await p.locator('#imageAdjustments > .tool-card-body').isVisible(),false);
 
  }
