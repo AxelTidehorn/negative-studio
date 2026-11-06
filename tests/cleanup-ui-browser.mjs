@@ -29,7 +29,7 @@ try{
  await page.evaluate(()=>{const worker=previewWorker38;window.previewTerminations=0;const terminate=worker.terminate.bind(worker);worker.terminate=()=>{previewTerminations++;terminate();};scheduleRender();$('clearQueue').click();});
  await page.waitForTimeout(750);
  const cleared=await page.evaluate(()=>({empty:!working&&!roll.length,worker:previewWorker38===null,result:lastPreview38===null,busy:workerBusy38,queued:queued38===null,tick:previewTick38===null,idle:dragTimer38===null,terminated:previewTerminations,rotation:[$('rotateLeft').disabled,$('rotateRight').disabled],histogram:$('histogramInfo').textContent,histogramEmpty:!$('histogram').getContext('2d').getImageData(0,0,$('histogram').width,$('histogram').height).data.some(v=>v!==0)}));
- await page.evaluate(()=>FILMLABB_APPEARANCE.set('paper','light'));
+ await page.evaluate(()=>FILMLABB_APPEARANCE.set('light'));
  await page.waitForTimeout(30);const afterTheme=await page.locator('#histogramInfo').textContent();
  if(probe){console.log(JSON.stringify({empty,descriptions,failed,busyNoop,cleared,afterTheme,errors},null,2));}
  else{
