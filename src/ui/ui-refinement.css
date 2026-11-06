@@ -200,8 +200,8 @@ Light palettes retain their existing colors. */
   /* Shared, non-spring motion. Reduced motion removes timing, not feedback. */
   --ui-motion-fast:100ms;
   --ui-motion-normal:170ms;
-  --ui-motion-panel:220ms;
-  --ui-motion-ease:cubic-bezier(.2,0,.2,1);
+  --ui-motion-panel:300ms;
+  --ui-motion-ease:cubic-bezier(.25,.1,.25,1);
   /* Material colors follow all six identities and both light modes. */
   --ui-card:var(--ui-panel);
   --ui-card-header:var(--ui-active);

@@ -65,6 +65,32 @@
   }
  }
 }
+/* Existing secondary surfaces: no wrappers and no photographic crossfades. */
+@supports (transition-behavior:allow-discrete) and selector(details::details-content) {
+ #flInfoMenu::details-content {
+  transition:content-visibility var(--ui-motion-normal) allow-discrete;
+ }
+ #flInfoMenu > .fl-info-content {
+  opacity:0;
+  translate:0 -3px;
+  transition:opacity var(--ui-motion-normal) var(--ui-motion-ease),translate var(--ui-motion-normal) var(--ui-motion-ease);
+ }
+ #flInfoMenu[open] > .fl-info-content {opacity:1;translate:none}
+ #flInfoMenu:not([open]) > .fl-info-content {pointer-events:none}
+ #geometryTools::details-content {
+  display:grid;
+  grid-template-rows:minmax(0,0fr);
+  overflow:clip;
+  transition:grid-template-rows var(--ui-motion-normal) var(--ui-motion-ease),content-visibility var(--ui-motion-normal) allow-discrete;
+ }
+ #geometryTools[open]::details-content {grid-template-rows:minmax(0,1fr)}
+ #geometryTools > .geometry-body {min-block-size:0;align-self:start}
+ #geometryTools:not([open]) > .geometry-body {pointer-events:none}
+}
+/* Progress enters once. Native hide stays immediate so a finished/cancelled
+   export never leaves its cancel action interactive; value updates don't replay. */
+#exportProgressPanel:not([hidden]) {animation:ui-surface-enter var(--ui-motion-normal) var(--ui-motion-ease)}
+@keyframes ui-surface-enter {from{opacity:0;translate:0 -3px}to{opacity:1;translate:none}}
 :root[data-theme="classic"]:not([data-mode="light"]) #showImageTools:hover:not(:focus-visible) {
  outline:1px solid var(--ui-control-hover-edge);
  outline-offset:-3px;
@@ -84,6 +110,8 @@
  #adjustmentPanel .tool-card,
  #adjustmentPanel > .tool-card::details-content,
  #adjustmentPanel > .tool-card > summary,
+ #flInfoMenu::details-content,#flInfoMenu > .fl-info-content,
+ #geometryTools::details-content,#exportProgressPanel,
  #imageTools3,#showImageTools {animation:none;transition:none}
 }
 @media (forced-colors:active) {

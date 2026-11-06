@@ -1,58 +1,93 @@
-# Amber Glass 2.0 – motion
+# Amber Glass 2.0 – motion (D / D2)
 
-Step D follows merged A1/A2/B/C (#77–80). It changes motion, not material colors,
-background SVG, photography, layout endpoints or image-processing recipes.
+D2 follows merged #81. Materials, background SVG, photographic algorithms,
+layout endpoints, sidebar width preferences and project recipes are unchanged.
 
-## Ownership and behavior
+## Motion roles and native cards
 
-`ui-refinement.css` defines three durations (100 ms interaction, 170 ms overlay,
-220 ms disclosure) and one restrained cubic-bezier easing. Reduced motion sets
-all durations to zero. Focus outlines remain immediate.
+`ui-refinement.css` defines 100 ms interaction, 170 ms overlay and 300 ms panel
+roles, with `cubic-bezier(.25,.1,.25,1)`. D2 compared D's 220 ms curve with 280 ms
+and 300 ms profiles. The 300 ms variant gives a less abrupt large expansion.
+Reduced motion sets durations to zero; focus outlines stay immediate.
 
-`application.css` owns paint-only button/field transitions and the five native
-`details` cards. `::details-content` animates a grid track with an explicit zero
-minimum, so body padding/borders do not jump at the end of closing. The
-body keeps its intrinsic height while the wrapper clips it, avoiding a transparent
-gap under a stretched fractional grid item. The narrow
-summary's status row also collapses continuously. Wide summaries retain their
-existing single-row endpoint. No fixed content-height guesses, click interception,
-height measurement loop, timers or animation library are used in the app.
+`application.css` owns the five native cards. `::details-content` transitions
+`minmax(0,0fr)` to `minmax(0,1fr)`. The opaque body keeps its intrinsic height;
+the wrapper clips it, avoiding a transparent gap during closing. No fixed maximum
+content height, app height loop, native-click interception or extra wrapper exists.
 
-This is progressive enhancement: `::details-content` and discrete transitions
-are required (including Safari 18.4+). Older browsers retain immediate native
-open/close behavior. The implementation does not require `interpolate-size`,
-which WebKit does not currently support.
+D's more-specific animation rule restored `.card-status {display:block}`, overriding
+the older open-state `display:none`. A zero-height grid row alone did not establish
+an actually hidden caption. D2 explicitly hides it immediately on opening and
+reveals it after closing's row transition. Closed headers keep their original
+geometry; open headers have no painted caption fragments. Wide headers keep the
+existing side-by-side layout. The caption regression covers all five cards and
+languages, including Export and projects.
 
-`workflow-ui.css` owns the floating panel/show button's opacity and 4 px vertical
-entry/exit. Individual `translate` preserves the existing horizontal anchor.
-`workflow-ui.js` keeps outgoing controls inert while CSS still paints them.
-Five small open-attribute observers keep card bodies inert whenever closed,
-including programmatic/session restoration. Native keyboard activation, open
-attributes, ARIA and existing focus transfer remain the owners of interaction.
+Native disclosure enhancement requires `::details-content` and discrete
+transitions (Safari 18.4+); no `interpolate-size` is required. Older engines retain
+immediate native behavior. `workflow-ui.js` keeps outgoing disclosure bodies inert,
+including API/session changes, without delaying the native open state.
 
-Main panel toggles remain immediate: animating workspace columns would repeatedly
-resize the photo/canvas. Content is not faded to preserve opaque editing surfaces.
+## Main panels: animate the panel, commit the viewport once
 
-## Regression checks
+`workspace-layout.js` remains the owner of visibility/preferences. An outgoing
+panel is inert immediately, with its old grid/flex slot retained by a temporary
+`*-exiting` marker. Opacity and a small translate animate independently. Completion
+removes that marker and commits the final layout once. Entry applies the final
+layout once and animates the arriving panel. The photograph is never transformed,
+crossfaded or copied for the animation. A legitimate final fit can change its
+screen size once, as with the original direct toggle; no intermediate stretched
+photographs or continuously resized canvases are introduced.
 
-`tests/ui-motion-browser.mjs` is included in the existing full browser suite.
-It samples real intermediate and final heights in five desktop/tablet/mobile
-formats, normal/reduced motion, anchored headers, rapid reversals, native touch,
-keyboard editing during opening, hidden-control focus/hit exclusion and unchanged
-source/pixels/histogram/recipe/analysis/geometry. The existing UI 2.1 check now
-waits for the visible exit to finish before retaining its hidden-body assertion.
-Three workflow/order checks similarly wait for settled opening geometry and
-visible fields; their ordering, pixel, project and export assertions are retained.
+The bounded animation map cancels superseded finishes on rapid reversals. Viewport
+resize, divider drag and reduced-motion changes finish/cancel pending presentation
+and retain the latest desired flags. Focus leaves an exiting panel without forcing
+scroll. Sidebar/filmstrip offsets are captured and restored explicitly because
+WebKit can discard them when display becomes none. Both panels, focus mode and layout reset share this path. Responsive
+expanded-width roles reuse exactly the previous desktop/tablet values. No breakpoint
+or permanent width changes. The rendering/geometry owners remain unchanged.
 
-Run `node tests/ui-motion-browser.mjs`, `node tests/ui-21-browser.mjs`, then
-`npm run test:full`. No CI, release/version or publishing configuration changes
-are needed. Physical iPad Safari/Windows Edge review remains necessary; emulated
-viewports and Linux WebKit are not those devices. The pre-existing toolbar pointer
-capture issue at zoom above 1 is outside this motion change.
+A direct grid-transition probe caused nine intermediate viewport widths and seven
+presentation draws on the recorded local fixture; it was rejected. Chosen-path
+regressions bound viewport changes to initial/final sizes and verify unchanged
+zoom, crop, source, pixel results, analysis and preferences. Counts are fixture
+measurements, not physical-device performance guarantees.
 
-The online build-identity test explicitly blocks service workers. Its prior
-main-to-lab navigation could race activation: the unchanged offline worker maps
-navigations to the main index shell, so v2.html received the main app and NSV2Lab
-was absent. This was independently reproduced. The cache/publishing/version
-implementation is not modified; offline-lab navigation remains a separate issue.
-Existing offline-cache suites and all build-identity assertions remain intact.
+## Other surfaces
+
+`workflow-ui.css` owns the existing image toolbar/show button, a short settings-menu
+entry/exit, and the internal geometry disclosure. Their hidden controls are inert.
+The export progress panel has entry-only motion: native hide is immediate so a
+finished export never leaves its cancel control interactive. Progress value/text
+updates do not restart the entry. The original-detail photograph is not animated.
+Existing frame/selected/segmented paint transitions are reused, without thumbnail
+or photograph crossfades. No `transition:all`, permanent `will-change`, library,
+new editing controls or material layer is introduced.
+
+## Verification
+
+Run `node tests/ui-motion-browser.mjs`, `node tests/ui-motion-d2-browser.mjs`,
+`node tests/ui-21-browser.mjs` and `npm run test:full`. The new D2 browser suite is
+registered in Full. It covers captions, languages, native focus/touch, opaque
+coverage, panel reversals/interruption, viewport commits, zoom/crop/pixel invariance
+and width/scroll retention. Static layout checks wait for their real transition
+endpoints rather than asserting a mid-animation order.
+
+Physical iPad Safari/Windows Edge review remains necessary. Linux WebKit and
+Chromium touch viewports are useful compatibility checks, not those devices.
+The historical toolbar pointer-capture behavior above zoom 1 is outside this work.
+The online build-identity spec continues to block service workers: the unchanged
+main offline navigation shell can replace `v2.html` after activation. That separate
+lab navigation issue, versioning, CI and publishing are not changed by D2.
+
+The manual-frame VM fixture supplies the native media/style API methods now used
+by the layout owner; all coordinate and project assertions are retained. UI3's
+numeric field check and UI 2.0.2's static sidebar checks wait for actual visibility
+or transition completion. The normal-motion regression separately tests the
+intermediate states, inert exits and bounded photographic viewport changes.
+The V2-default browser fixture clears its completion status before selecting the
+next project file: otherwise its wait could accept the previous project's same
+message before the new load began. All historical engine/pixel assertions remain;
+the production project controller is unchanged.
+The V2-platform project round-trip fixture uses the same fresh-status wait,
+including its reload of two consecutive algorithm-3 projects before a frame click.

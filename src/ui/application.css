@@ -379,8 +379,10 @@ input[type=checkbox] {
   margin-top:12px
 }
 main.workspace {
-  --effective-queue:var(--queue-width,170px);
-  --effective-adjust:var(--adjust-width,320px);
+  --expanded-queue:var(--queue-width,170px);
+  --expanded-adjust:var(--adjust-width,320px);
+  --effective-queue:var(--expanded-queue);
+  --effective-adjust:var(--expanded-adjust);
   --left-grip:6px;
   --right-grip:6px;
   display:grid;
@@ -414,6 +416,14 @@ main.workspace.adjust-collapsed {
 .queue-collapsed>.queue-panel,.queue-collapsed>.divider-left,.adjust-collapsed>.editor-panel,.adjust-collapsed>.divider-right {
   display:none
 }
+/* Retain the old slot only during its inert, compositor-only exit. Remove the
+   marker once at completion; never interpolate the photographic viewport. */
+main.workspace.queue-exiting {--effective-queue:var(--expanded-queue);--left-grip:6px}
+main.workspace.adjust-exiting {--effective-adjust:var(--expanded-adjust);--right-grip:6px}
+.queue-collapsed.queue-exiting>.queue-panel {display:flex}
+.adjust-collapsed.adjust-exiting>.editor-panel,
+.queue-collapsed.queue-exiting>.divider-left,
+.adjust-collapsed.adjust-exiting>.divider-right {display:block}
 .workspace-divider {
   cursor:col-resize;
   touch-action:none;
@@ -719,6 +729,14 @@ main.workspace.adjust-collapsed {
   display:block;
   min-block-size:0;
   overflow:clip;
+  /* Reserve/animate its row, not its glyphs. Reveal only after closing has
+     settled; hide immediately on opening, including interrupted reversals. */
+  visibility:visible;
+  transition:visibility 0s linear var(--ui-motion-panel);
+ }
+ #adjustmentPanel > .tool-card[open] > summary .card-status {
+  visibility:hidden;
+  transition-delay:0s;
  }
 }
 #adjustmentPanel .control {margin:4px 0}
