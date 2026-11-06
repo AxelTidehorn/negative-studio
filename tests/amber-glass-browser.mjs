@@ -22,7 +22,7 @@ try{
  let darkSvg;
  for(const mode of ['dark','light']){
   await p.evaluate(mode=>FILMLABB_APPEARANCE.set(mode),mode);const m=await styles();
-  assert.match(m.workspace.image,/data:image\/svg\+xml/);assert.match(m.header.image,/linear-gradient/);assert.equal(m.header.opacity,'1');assert.equal(m.editor.color,'rgba(0, 0, 0, 0)');assert.equal(m.body.blur,'none');
+  assert.match(m.workspace.image,/data:image\/svg\+xml/);if(mode==='dark'){assert.match(m.header.image,/linear-gradient/);}else{assert.equal(m.header.image,'none','Light card header has no independent gradient');assert.equal(m.header.color,'rgba(235, 160, 55, 0.68)','Light card header uses the intended uniform amber tint');}assert.equal(m.header.opacity,'1');assert.equal(m.editor.color,'rgba(0, 0, 0, 0)');assert.equal(m.body.blur,'none');
   assert.equal(m.housing.color,m.queue.color,'outer image housing and queue share Smoke Workspace');assert.equal(m.housing.shadow,m.queue.shadow);assert.match(m.queue.color,/rgba\(/,'actual translucent fill, not parent opacity');
   assert.equal(m.queue.opacity,'1');assert.equal(m.queue.blur,'none');assert.equal(m.thumbnail.opacity,'1');assert.equal(m.thumbnail.filter,'none');assert.equal(m.thumbnail.blur,'none');
   const channels=m.photo.color.match(/[\d.]+/g).map(Number);assert.equal(channels[0],channels[1]);assert.equal(channels[1],channels[2]);assert.equal(channels[3]??1,1,'photographic aperture remains opaque neutral');assert.equal(m.photo.image,'none');assert.equal(m.photo.filter,'none');
