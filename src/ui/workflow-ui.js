@@ -5,6 +5,12 @@ const oldTechnical=$('rawMode4').closest('details');let lastTool3=null;
 const panel=$('adjustmentPanel'),t=(el,s)=>FILMLABB_I18N.source(el,s);
 function details(id,title,parent){const d=document.createElement('details');d.id=id;const s=document.createElement('summary');t(s,title);d.append(s);parent.append(d);return d;}
 function move(id,parent){const el=$(id);if(el)parent.append(el);return el;}
+// Native disclosures may keep painting during CSS exits. Keep hidden controls
+// out of focus/hit testing, including API/session changes, without delaying open.
+function guardDisclosure(card,body){
+ const sync=()=>{if(!card.open&&body.contains(document.activeElement))card.querySelector('summary').focus({preventScroll:true});body.inert=!card.open;};
+ sync();new MutationObserver(sync).observe(card,{attributes:true,attributeFilter:['open']});
+}
 function field(id,parent){const el=$(id);if(!el)return;const label=document.querySelector(`label[for="${id}"]`)||el.closest('label');if(label)parent.append(label);if(!label?.contains(el))parent.append(el);}
 const advanced=$('advancedSettings');t(advanced.querySelector('summary'),'Avancerad bildbehandling');
 const diagnostic=details('diagnostics3','Experiment och diagnostik',advanced);diagnostic.className='sidebar-details';
@@ -88,11 +94,10 @@ for(const id of cards){
  body.classList.add('tool-card-body');
  for(const node of [...card.childNodes])if(node!==summary&&node!==body)body.append(node);
  card.append(body);
- // A native closing disclosure keeps painting during its CSS exit. Remove its
- // controls from keyboard/pointer interaction immediately, including API opens.
- body.inert=!card.open;
- new MutationObserver(()=>{body.inert=!card.open;}).observe(card,{attributes:true,attributeFilter:['open']});
+ guardDisclosure(card,body);
 }
+guardDisclosure($('flInfoMenu'),$('flInfoMenu').querySelector('.fl-info-content'));
+guardDisclosure($('geometryTools'),$('geometryTools').querySelector('.geometry-body'));
 // Reuse the original selector and live explanation in one compact advanced field.
 const engineField=engineSelect.closest('.field');engineField.classList.add('engine-settings');
 $('advancedSettings').querySelector(':scope > .tool-card-body').prepend(engineField,description);

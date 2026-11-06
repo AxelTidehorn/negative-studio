@@ -1,8 +1,8 @@
 /* Responsive layout only. Coarse pointers keep native scrollbars and larger targets. */
 @media(max-width:1100px) and (min-width:761px) {
   main.workspace {
-    --effective-queue:96px;
-    --effective-adjust:270px
+    --expanded-queue:96px;
+    --expanded-adjust:270px
   }
   .workspace-toolbar .fl-roll-indicator {
     display:none
@@ -183,7 +183,7 @@
     padding:6px;
     scrollbar-gutter:auto
   }
-  .adjust-collapsed .image-panel {
+  .adjust-collapsed:not(.adjust-exiting) .image-panel {
     height:75dvh
   }
   .queue-collapsed>.queue-panel,.adjust-collapsed>.editor-panel {
