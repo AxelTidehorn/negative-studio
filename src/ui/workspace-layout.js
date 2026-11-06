@@ -68,7 +68,7 @@
   }
   for(const {key,panel,opening,direction,visible,from} of changes){
    if(getComputedStyle(panel).display==='none')continue;
-   const edge=matchMedia('(max-width:760px)').matches?'0px -6px':(direction*8)+'px 0px';
+   const edge=matchMedia('(max-width:760px)').matches?'0px -6px':(direction*4)+'px 0px';
    const animation=panel.animate([visible?from:{opacity:0,translate:edge},opening?{opacity:1,translate:'0px 0px'}:{opacity:0,translate:edge}],{...time,fill:'both'});
    running.set(key,animation);
    animation.finished.then(()=>{

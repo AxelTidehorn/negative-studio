@@ -31,7 +31,8 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
  const traces=[];
  for(const [button,key,panel]of [['toggleQueue','queue','queuePanel'],['toggleAdjustments','adjust','adjustmentPanel'],['toggleFocus','both',null]]){
   for(const open of [false,true]){
-   const trace=await p.evaluate(async({button,panel})=>{const samples=[],start=performance.now(),before=FILMLABB_GEOMETRY.snapshot();$(button).click();do{await new Promise(requestAnimationFrame);const s=panel?getComputedStyle($(panel)):null;samples.push({t:performance.now()-start,w:$('picture').clientWidth,h:$('picture').clientHeight,bitmap:[$('presentationPreview').width,$('presentationPreview').height],opacity:s?.opacity,translate:s?.translate});}while(performance.now()-start<400);return {samples,draws:FILMLABB_GEOMETRY.snapshot().draws-before.draws};},{button,panel});
+   const trace=await p.evaluate(async({button,panel})=>{const samples=[],start=performance.now(),before=FILMLABB_GEOMETRY.snapshot();$(button).click();do{await new Promise(requestAnimationFrame);const s=panel?getComputedStyle($(panel)):null;samples.push({t:performance.now()-start,w:$('picture').clientWidth,h:$('picture').clientHeight,overflow:document.documentElement.scrollWidth>innerWidth+1,bitmap:[$('presentationPreview').width,$('presentationPreview').height],opacity:s?.opacity,translate:s?.translate});}while(performance.now()-start<400);return {samples,draws:FILMLABB_GEOMETRY.snapshot().draws-before.draws};},{button,panel});
+   assert.ok(trace.samples.every(x=>!x.overflow),'no horizontal overflow during panel motion');
    assert.ok(new Set(trace.samples.map(x=>x.w+','+x.h)).size<=2,'one viewport layout commit; no interpolated canvas sizes');
    if(reduced)assert.equal(new Set(trace.samples.map(x=>x.w+','+x.h)).size,1,'reduced layout is immediate');
    assert.deepEqual(await frozen(),before,'panel motion preserves zoom, crop, recipe, source, analysis and pixels');
