@@ -89,3 +89,5 @@ The V2-default browser fixture clears its completion status before selecting the
 next project file: otherwise its wait could accept the previous project's same
 message before the new load began. All historical engine/pixel assertions remain;
 the production project controller is unchanged.
+The V2-platform project round-trip fixture uses the same fresh-status wait,
+including its reload of two consecutive algorithm-3 projects before a frame click.
