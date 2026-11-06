@@ -28,30 +28,50 @@ transitions (Safari 18.4+); no `interpolate-size` is required. Older engines ret
 immediate native behavior. `workflow-ui.js` keeps outgoing disclosure bodies inert,
 including API/session changes, without delaying the native open state.
 
-## Main panels: animate the panel, commit the viewport once
+## Main panels: one continuous grid transition
 
-`workspace-layout.js` remains the owner of visibility/preferences. An outgoing
-panel is inert immediately, with its old grid/flex slot retained by a temporary
-`*-exiting` marker. Opacity and a small translate animate independently. Completion
-removes that marker and commits the final layout once. Entry applies the final
-layout once and animates the arriving panel. The photograph is never transformed,
-crossfaded or copied for the animation. A legitimate final fit can change its
-screen size once, as with the original direct toggle; no intermediate stretched
-photographs or continuously resized canvases are introduced.
+`workspace-layout.js` still owns visibility/preferences. A single native CSS
+transition interpolates the existing five grid tracks, using the shared 300 ms
+panel duration/easing. The left panel is full-width and aligned to its track's
+right edge; the right panel is full-width and aligned to its track's left edge.
+Their contents ride out through the workspace edges without squeezing or fading.
+The photographic viewport's edges follow those same tracks continuously.
 
-The bounded animation map cancels superseded finishes on rapid reversals. Viewport
-resize, divider drag and reduced-motion changes finish/cancel pending presentation
-and retain the latest desired flags. Focus leaves an exiting panel without forcing
-scroll. Sidebar/filmstrip offsets are captured and restored explicitly because
-WebKit can discard them when display becomes none. Both panels, focus mode and layout reset share this path. Responsive
-expanded-width roles reuse exactly the previous desktop/tablet values. No breakpoint
-or permanent width changes. The rendering/geometry owners remain unchanged.
+The D2 opacity/translate animations, retained exit slots and animation map are
+removed. Native CSS transitions reverse from their interpolated position. A
+completion generation prevents superseded finishes from hiding a reopened panel.
+Resize, divider drag and reduced-motion changes settle to the latest requested
+state. Outgoing panels become inert immediately; focus returns without scrolling.
+Existing saved widths and panel/filmstrip scroll restoration are retained.
 
-A direct grid-transition probe caused nine intermediate viewport widths and seven
-presentation draws on the recorded local fixture; it was rejected. Chosen-path
-regressions bound viewport changes to initial/final sizes and verify unchanged
-zoom, crop, source, pixel results, analysis and preferences. Counts are fixture
-measurements, not physical-device performance guarantees.
+During motion the workspace clips outgoing panels to its existing side gutters;
+no document overflow or new wrapper is needed. End-state geometry, breakpoints,
+materials and card/button animations are unchanged. Below 761 px the existing
+stacked phone layout switches immediately, as does reduced motion everywhere.
+It has no shared horizontal grid and is not replaced with a different layout.
+
+`FILMLABB_GEOMETRY.resizeView()` updates CSS Fit and vector hit targets only.
+The existing bounded presentation bitmap depends on source/composition, **not**
+on viewport dimensions. Its ResizeObserver and the layout owner reuse that bitmap
+rather than calling the pixel/presentation renderer for each grid frame. Zoom,
+pan, source coordinates and composition retain their existing definitions; the
+browser composites the same pixels at the continuously updated display size.
+The final available height is measured once per toggle (without painting), so
+responsive status/control wrapping cannot jump the photograph vertically. That
+height follows the same eased grid progress; it is discarded on completion or
+interruption. Actual source/edit/geometry changes still use the unchanged
+draw/render path.
+No photograph copy, extra GPU pass or alternative rendering pipeline is added.
+
+The browser regression verifies intermediate edge synchronization, fixed panel
+content widths, no separate opacity/translate animation, no overflow, unchanged
+bitmap sizes and zero presentation draws/color uploads/conversion frames during
+panel motion. Portrait iPad also exercises CPU presentation fallback. Rapid
+reversals must preserve the immediately visible position. These are functional
+checks on Chromium/Linux-WebKit, not physical-device frame-rate guarantees.
+Native transition positions are also sampled at controlled times, then replayed
+in real time: interpolation correctness must not depend on a shared CI host
+presenting three frames within 300 ms.
 
 ## Other surfaces
 
@@ -69,7 +89,7 @@ new editing controls or material layer is introduced.
 Run `node tests/ui-motion-browser.mjs`, `node tests/ui-motion-d2-browser.mjs`,
 `node tests/ui-21-browser.mjs` and `npm run test:full`. The new D2 browser suite is
 registered in Full. It covers captions, languages, native focus/touch, opaque
-coverage, panel reversals/interruption, viewport commits, zoom/crop/pixel invariance
+coverage, panel reversals/interruption, synchronized viewport edges, zoom/crop/pixel invariance
 and width/scroll retention. Static layout checks wait for their real transition
 endpoints rather than asserting a mid-animation order.
 
@@ -84,7 +104,7 @@ The manual-frame VM fixture supplies the native media/style API methods now used
 by the layout owner; all coordinate and project assertions are retained. UI3's
 numeric field check and UI 2.0.2's static sidebar checks wait for actual visibility
 or transition completion. The normal-motion regression separately tests the
-intermediate states, inert exits and bounded photographic viewport changes.
+intermediate states, inert exits and continuous photographic viewport changes without pixel redraws.
 The V2-default browser fixture clears its completion status before selecting the
 next project file: otherwise its wait could accept the previous project's same
 message before the new load began. All historical engine/pixel assertions remain;

@@ -416,14 +416,21 @@ main.workspace.adjust-collapsed {
 .queue-collapsed>.queue-panel,.queue-collapsed>.divider-left,.adjust-collapsed>.editor-panel,.adjust-collapsed>.divider-right {
   display:none
 }
-/* Retain the old slot only during its inert, compositor-only exit. Remove the
-   marker once at completion; never interpolate the photographic viewport. */
-main.workspace.queue-exiting {--effective-queue:var(--expanded-queue);--left-grip:6px}
-main.workspace.adjust-exiting {--effective-adjust:var(--expanded-adjust);--right-grip:6px}
-.queue-collapsed.queue-exiting>.queue-panel {display:flex}
-.adjust-collapsed.adjust-exiting>.editor-panel,
-.queue-collapsed.queue-exiting>.divider-left,
-.adjust-collapsed.adjust-exiting>.divider-right {display:block}
+/* Fixed-width panel contents ride the edges of the interpolated grid tracks.
+   Clip only the moving workspace, including its existing 6px side gutters. */
+@media(min-width:761px) {
+  .workspace>.queue-panel {width:var(--expanded-queue);justify-self:end}
+  .workspace>.editor-panel {width:var(--expanded-adjust);justify-self:start}
+  main.workspace.sidebar-sliding {
+    transition:grid-template-columns var(--ui-motion-panel) var(--ui-motion-ease);
+    overflow:clip;
+    clip-path:inset(0 6px)
+  }
+  .queue-collapsed.queue-sliding>.queue-panel {display:flex}
+  .adjust-collapsed.adjust-sliding>.editor-panel,
+  .queue-collapsed.queue-sliding>.divider-left,
+  .adjust-collapsed.adjust-sliding>.divider-right {display:block}
+}
 .workspace-divider {
   cursor:col-resize;
   touch-action:none;

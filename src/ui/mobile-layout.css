@@ -183,7 +183,7 @@
     padding:6px;
     scrollbar-gutter:auto
   }
-  .adjust-collapsed:not(.adjust-exiting) .image-panel {
+  .adjust-collapsed .image-panel {
     height:75dvh
   }
   .queue-collapsed>.queue-panel,.adjust-collapsed>.editor-panel {
