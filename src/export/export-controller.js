@@ -1,9 +1,9 @@
-/* Cancellable JPEG export. Source is never detached, copied wholesale or mutated. */
+/* Shared cancellable JPEG/PNG export. Source is never detached, copied wholesale or mutated. */
 (function(){
 'use strict';
 let active=null,sequence=0,batch=null;
 const stats={workerJobs:0,fallbackJobs:0,cancelled:0,maxStripeBytes:0,transferredBytes:0,lastBackend:null,lastSize:null};
-const locked=new Map(),lockIds=['editVersion','imageFile','settingsFile','referenceFile','flatFieldFile','rawMode4','colorMode4','tiffEncoding','export','exportTiff','batchJpeg','batchTiff','clearQueue','loadFullRaw','clearFlatField','useFlatField','clearReference','reset','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport','rotateLeft','rotateRight'];
+const locked=new Map(),lockIds=['editVersion','imageFile','settingsFile','referenceFile','flatFieldFile','rawMode4','colorMode4','tiffEncoding','export','exportFormat','batchJpeg','batchTiff','clearQueue','loadFullRaw','clearFlatField','useFlatField','clearReference','reset','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport','rotateLeft','rotateRight'];
 const panel=document.createElement('section');panel.id='exportProgressPanel';panel.hidden=true;panel.setAttribute('role','region');panel.setAttribute('aria-labelledby','exportProgressTitle');
 panel.innerHTML='<div class="export-top"><strong id="exportProgressTitle">JPEG-export</strong><button class="btn" id="cancelExport">Avbryt</button><button class="btn" id="closeExportProgress" hidden>Stäng</button></div><progress id="exportProgress" max="100" value="0" aria-label="Exportförlopp"></progress><p id="exportProgressText" role="status" aria-live="polite"></p><p class="hint" id="exportSnapshotNote">Exporterar inställningarna som gällde vid start.</p>';
 document.body.appendChild(panel);
@@ -15,7 +15,7 @@ function check(job){if(job.cancelled||active!==job||batch?.cancelled)throw cance
 function cancel(){if(batch)batch.cancelled=true;if(active){active.cancelled=true;active.worker?.terminate();active.rejectCancel(cancelled());}if(batch&&!active)show('Avbryter efter pågående inläsning…');}
 ui('cancelExport').onclick=cancel;ui('closeExportProgress').onclick=()=>{panel.hidden=true;};
 function doneUI(message,ok=false){show(message,ok?100:undefined);ui('cancelExport').hidden=true;ui('closeExportProgress').hidden=false;}
-function beginUI(){ui('exportProgressTitle').textContent='JPEG-export';panel.hidden=false;ui('cancelExport').hidden=false;ui('closeExportProgress').hidden=true;ui('exportSnapshotNote').textContent='Exporterar inställningarna som gällde vid start.';}
+function beginUI(label='JPEG'){ui('exportProgressTitle').textContent=label+'-export';panel.hidden=false;ui('cancelExport').hidden=false;ui('closeExportProgress').hidden=true;ui('exportSnapshotNote').textContent='Exporterar inställningarna som gällde vid start.';}
 function description(job){return (batch?`Bild ${batch.index+1}/${batch.total} · `:'')+job.target.width+'×'+job.target.height;}
 function progress(job,done,total){check(job);const value=Math.min(95,Math.floor(95*done/total));show(description(job)+' · '+value+' %',value);}
 function workerAttempt(job){return new Promise((resolve,reject)=>{
@@ -37,12 +37,12 @@ function workerAttempt(job){return new Promise((resolve,reject)=>{
     stats.maxStripeBytes=Math.max(stats.maxStripeBytes,data.byteLength);stats.transferredBytes+=data.byteLength;
     worker.postMessage({type:'stripe',id:job.id,y:m.y,rows:m.rows,data},[data.buffer]);
    }else if(m.type==='progress')progress(job,m.done,m.total);
-   else if(m.type==='encoding')show(description(job)+' · JPEG-kodning…',97);
+   else if(m.type==='encoding')show(description(job)+' · '+job.label+'-kodning…',97);
    else if(m.type==='error'){const e=Error(m.error);e.stage=m.stage;e.code=m.code;fail(e);}
    else if(m.type==='done'){settled=true;clearTimeout(timer);resolve(m.blob);}
   }catch(e){fail(e);}
  };
- try{worker.postMessage({type:'start',id:job.id,source:NSExportPlan.metadata(job.im),config:job.config,region:job.region,crop:job.opts.cropExport,rotation:job.opts.rotation,target:job.target,presentation:job.g.spec||null});}catch(e){e.stage='init';fail(e);}
+ try{worker.postMessage({type:'start',id:job.id,source:NSExportPlan.metadata(job.im),config:job.config,region:job.region,crop:job.opts.cropExport,rotation:job.opts.rotation,target:job.target,presentation:job.g.spec||null,format:job.format});}catch(e){e.stage='init';fail(e);}
  // Cancel rejects immediately even when the native JPEG encoder is busy.
  job.cancelPromise.catch(fail);
  }).finally(()=>{job.worker?.terminate();job.worker=null;});}
@@ -58,43 +58,60 @@ async function mainAttempt(job){
    NSPresentation.rgba(job.im,job.prepared,job.g,job.target,y,rows,false,out.data);
    ctx.putImageData(out,0,y);y+=rows;progress(job,y,c.height);await tick();
   }
-  check(job);show(description(job)+' · JPEG-kodning i reservläge…',97);
-  return await Promise.race([new Promise((resolve,reject)=>{try{c.toBlob(resolve,'image/jpeg',.94);}catch(e){reject(e);}}),job.cancelPromise]);
+  check(job);show(description(job)+' · '+job.label+'-kodning i reservläge…',97);
+  return await Promise.race([new Promise((resolve,reject)=>{try{c.toBlob(resolve,job.mime,.94);}catch(e){reject(e);}}),job.cancelPromise]);
  }finally{c.width=c.height=0;}
 }
-jpegBytes=async function(skipBusyCheck=false){
+async function canvasBytes(format,skipBusyCheck=false){
  if(active)throw Error('En export pågår redan.');
  if(!(skipBusyCheck?(!rollLoading&&working):exportReady()))throw Error('Ingen exportklar bild finns.');
+ if(typeof finishProposalPreviewForExport2==='function')finishProposalPreviewForExport2();
  const selection=exportGeometrySnapshot(working);
- const job={id:++sequence,im:working,opts:{...state,cropExport:selection.crop},region:selection.region,config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
+ const job={id:++sequence,format,label:format==='png8'?'PNG':'JPEG',mime:format==='png8'?'image/png':'image/jpeg',im:working,opts:{...state,cropExport:selection.crop},region:selection.region,config:JSON.parse(JSON.stringify(configuration38())),cancelled:false,worker:null,prepared:null};
  job.g=selection.g;job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});
- active=job;exportBusy=true;lock();beginUI();let workerUsable=typeof Worker!=='undefined'&&job.im.encoding!=='icc';
+ active=job;exportBusy=true;lock();beginUI(job.label);let workerUsable=typeof Worker!=='undefined'&&job.im.encoding!=='icc';
  try{
   let error;
-  for(const budget of NSExportPlan.budgets(job.opts.jpegSize,navigator.deviceMemory)){
-   check(job);job.target=NSExportPlan.size(job.g,budget);job.nextY=0;show(description(job)+' · Förbereder export…',0);
+  for(const budget of (format==='png8'?[null]:NSExportPlan.budgets(job.opts.jpegSize,navigator.deviceMemory))){
+   check(job);job.target=format==='png8'?{width:job.g.width,height:job.g.height}:NSExportPlan.size(job.g,budget);job.nextY=0;show(description(job)+' · Förbereder export…',0);
    try{
     let blob;
     if(workerUsable){
      try{blob=await workerAttempt(job);}
      catch(e){check(job);if(e.stage==='encode'&&e.code!=='mime')throw e;workerUsable=false;show('Reservläge · '+description(job),0);blob=await mainAttempt(job);}
     }else blob=await mainAttempt(job);
-    check(job);if(!blob||blob.type!=='image/jpeg'||!blob.size)throw Error('Webbläsaren returnerade ingen JPEG.');
-    const bytes=new Uint8Array(await blob.arrayBuffer());check(job);
-    if(bytes[0]!==255||bytes[1]!==216||bytes[bytes.length-2]!==255||bytes[bytes.length-1]!==217)throw Error('Ogiltig JPEG-kodning.');
+    check(job);if(!blob||blob.type!==job.mime||!blob.size)throw Error('Webbläsaren returnerade ingen '+job.label+'.');
+    let bytes=new Uint8Array(await blob.arrayBuffer());check(job);
+    if(format==='png8')bytes=NSPng.withSrgb(bytes);
+    else if(bytes[0]!==255||bytes[1]!==216||bytes[bytes.length-2]!==255||bytes[bytes.length-1]!==217)throw Error('Ogiltig JPEG-kodning.');
     jpegExportInfo={...job.target,originalWidth:job.g.width,originalHeight:job.g.height};stats.lastSize={...jpegExportInfo};
-    if(!batch)doneUI('JPEG klar · '+description(job)+(job.target.width!==job.g.width||job.target.height!==job.g.height?' · anpassad storlek':''),true);
+    if(!batch)doneUI(job.label+' klar · '+description(job)+(job.target.width!==job.g.width||job.target.height!==job.g.height?' · anpassad storlek':''),true);
     return bytes;
    }catch(e){check(job);error=e;}
   }
-  throw Error('JPEG-kodning misslyckades även vid reducerad storlek: '+(error?.message||'okänt fel'));
+  throw Error((format==='png8'?'PNG-kodning i originalstorlek misslyckades: ':'JPEG-kodning misslyckades även vid reducerad storlek: ')+(error?.message||'okänt fel'));
  }catch(e){if(e.name==='AbortError'){stats.cancelled++;if(!batch)doneUI('Export avbruten. Ingen fil har hämtats.');}else if(!batch)doneUI('Exportfel: '+e.message);throw e;}
  finally{job.worker?.terminate();job.prepared=null;active=null;exportBusy=false;lock();}
 };
+jpegBytes=skipBusyCheck=>canvasBytes('jpeg',skipBusyCheck);
+const formats=['jpeg','png8','png16','tiff'],formatKey='filmlabb-export-format-v1';
+try{const prior=localStorage.getItem(formatKey);ui('exportFormat').value=formats.includes(prior)?prior:'jpeg';}catch{ui('exportFormat').value='jpeg';}
+syncExportNaming();
+ui('exportFormat').addEventListener('change',()=>{if(!formats.includes(ui('exportFormat').value))ui('exportFormat').value='jpeg';try{localStorage.setItem(formatKey,ui('exportFormat').value);}catch{}syncExportNaming();});
 ui('export').onclick=async()=>{
- if(batch||!exportReady())return;
- try{const bytes=await jpegBytes();downloadBlob(new Blob([bytes],{type:'image/jpeg'}),exportName(null,'jpg','filmlabb-positive.jpg'));const i=jpegExportInfo;setStatus('JPEG exporterad · sRGB · '+i.width+'×'+i.height+(i.width!==i.originalWidth||i.height!==i.originalHeight?' · anpassad storlek för webbläsaren':''));}
- catch(e){setStatus(e.name==='AbortError'?'JPEG-export avbruten.':'Exportfel: '+e.message);}
+ if(batch||active||!exportReady())return;
+ const format=formats.includes(ui('exportFormat').value)?ui('exportFormat').value:'jpeg';
+ try{
+  if(format==='tiff'){await exportTiff();return;}
+  if(format==='png16'){
+   if(typeof finishProposalPreviewForExport2==='function')finishProposalPreviewForExport2();
+   await export16('PNG 16-bit',exportPng16);return;
+  }
+  const bytes=await (format==='jpeg'?jpegBytes():canvasBytes('png8'));
+  const png=format==='png8',label=png?'PNG':'JPEG',info=jpegExportInfo;
+  downloadBlob(new Blob([bytes],{type:png?'image/png':'image/jpeg'}),exportName(null,png?'png':'jpg',png?'filmlabb-positive.png':'filmlabb-positive.jpg'));
+  setStatus(label+' exporterad · sRGB · '+info.width+'×'+info.height+(info.width!==info.originalWidth||info.height!==info.originalHeight?' · anpassad storlek för webbläsaren':''));
+ }catch(e){setStatus(e.name==='AbortError'?'Export avbruten.':'Exportfel: '+e.message);}
 };
 async function restoreSelection(index){
  await chooseFrame(index,{force:true});
@@ -114,21 +131,21 @@ ui('batchJpeg').onclick=async()=>{
  }catch(e){resultMessage=e.name==='AbortError'?'Batch-export avbruten. Ingen ZIP har hämtats.':'Batchfel: '+e.message;doneUI(resultMessage);setStatus(e.name==='AbortError'?'Batch-export avbruten.':'Batchfel: '+e.message);}
  finally{files.length=0;rollingExport=false;try{await restoreSelection(original);}catch(e){const message=resultMessage+' · Återställningsfel: '+e.message;doneUI(message);setStatus(message);}finally{batch=null;lock();}}
 };
-// Keep the existing TIFF pixel writer; share only locking, progress and cancellation.
+// RGB16 formats share the existing sampler, locking, progress and cancellation.
 const writeTiff=exportTiff;
-exportTiff=async function(){
+async function export16(label,write){
  if(active||!exportReady())throw Error('Ingen exportklar bild finns.');
  const job={id:++sequence,im:working,cancelled:false,worker:null,rejectCancel:()=>{}};
- active=job;lock();beginUI();ui('exportProgressTitle').textContent='TIFF-export';
+ active=job;lock();beginUI(label);
  try{
-  await writeTiff({check:()=>check(job),progress:(done,total)=>{
-   check(job);show((batch?`Bild ${batch.index+1}/${batch.total} · `:'')+'TIFF '+Math.floor(100*done/total)+' %',100*done/total);
+  await write({check:()=>check(job),progress:(done,total)=>{
+   check(job);show((batch?`Bild ${batch.index+1}/${batch.total} · `:'')+label+' '+Math.floor(100*done/total)+' %',100*done/total);
   }});
-  if(!batch)doneUI('TIFF klar',true);
- }catch(e){if(!batch)doneUI(e.name==='AbortError'?'TIFF-export avbruten.':'Exportfel: '+e.message);throw e;}
+  if(!batch)doneUI(label+' klar',true);
+ }catch(e){if(!batch)doneUI(e.name==='AbortError'?label+'-export avbruten.':'Exportfel: '+e.message);throw e;}
  finally{active=null;exportBusy=false;lock();}
-};
-ui('exportTiff').onclick=async()=>{if(batch||active||!exportReady())return;try{await exportTiff();}catch(e){setStatus(e.name==='AbortError'?'TIFF-export avbruten.':'Exportfel: '+e.message);}};
+}
+exportTiff=()=>export16('TIFF',writeTiff);
 ui('batchTiff').onclick=async()=>{
  if(batch||active||rollingExport||exportBusy||rollLoading)return;
  const ids=roll.map((f,i)=>f.selected?i:-1).filter(i=>i>=0);

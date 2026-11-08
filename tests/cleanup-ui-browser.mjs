@@ -1,3 +1,5 @@
+import {selectBackend} from './helpers/browser.mjs';
+import {selectLanguage} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';
 import {browserHarness,selectEngine} from './helpers/browser.mjs';
 
@@ -6,13 +8,13 @@ const probe=process.argv.includes('--probe'),h=await browserHarness(),errors=[];
 try{
  const page=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE',hasTouch:true});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url);
  const empty=await page.evaluate(()=>({left:$('rotateLeft').disabled,right:$('rotateRight').disabled}));
- await page.locator('#previewBackend').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#previewBackend').selectOption('cpu');
+ await selectBackend(page,'cpu');
  await page.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await page.waitForFunction(()=>working&&!rollLoading);
  await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&!!state.v2Recipe&&!rollLoading);
  await page.waitForFunction(()=>!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
  const descriptions={sv:await page.locator('#methodDescription3').textContent()};
  for(const language of ['en','fr','es','de']){
-  await page.locator('#languageSelect').selectOption(language);descriptions[language]=await page.locator('#methodDescription3').textContent();
+  await selectLanguage(page,language);descriptions[language]=await page.locator('#methodDescription3').textContent();
   const label=await page.evaluate(()=>{updateCalibrationUI();return {actual:$('engineMode').querySelector('[value="v2"]').textContent,expected:FILMLABB_I18N.fromSource('V2 · standard')};});
   if(!probe)assert.equal(label.actual,label.expected,'V2 option remains localized after controller refresh in '+language);
  }
@@ -22,7 +24,7 @@ try{
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false,'no horizontal overflow at '+viewport.width);
  }
  await page.setViewportSize({width:1024,height:1000});
- await page.locator('#languageSelect').selectOption('en');
+ await selectLanguage(page,'en');
  const failed=await page.evaluate(async()=>{const read=readFile;readFile=async()=>{throw Error('INTENTIONAL_UI_IMPORT_FAILURE');};try{await chooseFrame(activeFrame,{force:true});return {empty:!working,histogram:$('histogramInfo').textContent};}finally{readFile=read;}});
  await page.evaluate(()=>chooseFrame(activeFrame,{force:true}));await page.waitForFunction(()=>working&&!rollLoading&&!workerBusy38&&!queued38&&previewCompletedKey===JSON.stringify([sourceVersion38,display,1400,configuration38()]));
  const busyNoop=await page.evaluate(()=>{const worker=previewWorker38,result=lastPreview38;rollLoading=true;try{$('clearQueue').onclick();return {source:!!working,worker:worker===previewWorker38,result:result===lastPreview38};}finally{rollLoading=false;nextControls();}});

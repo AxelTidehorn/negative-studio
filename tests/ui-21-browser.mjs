@@ -1,3 +1,5 @@
+import {closeSettings} from './helpers/browser.mjs';
+import {selectLanguage} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';
@@ -43,7 +45,7 @@ try{
  await p.locator('#creativeProfiles > summary').focus();await p.keyboard.press('Enter');assert.equal((await open())[1],true);
  assert.notEqual(await p.locator('#creativeProfiles > summary').evaluate(e=>getComputedStyle(e).outlineStyle),'none');
  await p.keyboard.press('Space');assert.equal((await open())[1],false);
- for(const lang of ['en','fr','es','de','sv'])await p.locator('#languageSelect').selectOption(lang);
+ for(const lang of ['en','fr','es','de','sv'])await selectLanguage(p,lang);
  assert.deepEqual(await frozen(),before,'disclosures and localization must not render, analyse or change a recipe');
  // Sliders use their actual physical units, not 0..1000 thumb positions.
  await p.locator('#exposure').fill('600');await p.locator('#exposure').dispatchEvent('input');
@@ -81,7 +83,7 @@ try{
  for(const engine of ['calibrated4','log39','v2']){await selectEngine(p,engine);await p.waitForFunction(e=>state.engine===e&&!rollLoading,engine);assert.deepEqual(await open(),beforeEngine);}
  const backend=p.locator('#previewBackend');await backend.evaluate(el=>{for(let a=el.parentElement;a;a=a.parentElement)if(a.tagName==='DETAILS')a.open=true;});
  await backend.selectOption('cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38);
- await backend.selectOption('auto');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ await backend.selectOption('auto');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');await closeSettings(p);
  assert.equal(await p.evaluate(()=>{const ids=[...document.querySelectorAll('[id]')].map(e=>e.id);return ids.length===new Set(ids).size;}),true);
  for(const [width,height]of [[1440,900],[1024,768],[768,1024],[390,844]])for(const mode of ['dark','light']){
   await p.setViewportSize({width,height});await p.evaluate(mode=>{FILMLABB_APPEARANCE.set(mode);document.querySelectorAll('.tool-card').forEach(e=>e.open=true);},mode);

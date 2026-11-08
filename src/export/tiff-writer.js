@@ -1,34 +1,39 @@
-/* TIFF and synchronous canvas export share prepared color and presentation sampling. */
+/* TIFF, PNG16 and synchronous canvas export share prepared presentation sampling. */
 'use strict';
 // TIFF chunking keeps the UI responsive. The table is technical-only: profiles,
 // saturation, shadows and highlights all retain the exact shared final pixel path.
-exportTiff=async function(control={}){
+async function exportRgb16(format,control={}){
  if(!exportReady())throw Error('Ingen exportklar bild finns.');
- exportBusy=true;$('exportTiff').disabled=true;
+ exportBusy=true;$('export').disabled=true;
+ let png;
  try{
   const im=working,opts={...state},c=configuration38(opts),g=exportGeometrySnapshot(im,opts).g;
   control.check?.();
-  if(g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');
-  const parts=[tiffHeader(g.width,g.height)],prepared=NSPixelKernel.prepare(im,c);
+  if(format==='tiff'&&g.width*g.height*6>=4294960000)throw Error('Bilden är för stor för klassisk TIFF.');
+  if(format==='png16')png=NSPng.create(g.width,g.height,16);
+  const parts=png?[]:[tiffHeader(g.width,g.height)],prepared=NSPixelKernel.prepare(im,c),label=png?'PNG 16-bit':'TIFF';
   for(let y=0;y<g.height;){
    control.check?.();
    const rows=g.presentation?NSPresentation.rows(im,g,g,g.height-y):Math.min(16,g.height-y),out=NSPresentation.tiff(im,c,g,y,rows,prepared);
-   if(new Uint8Array(new Uint16Array([1]).buffer)[0]===1)parts.push(out);
+   if(png)await png.write(out,rows);
+   else if(new Uint8Array(new Uint16Array([1]).buffer)[0]===1)parts.push(out);
    else{
     const bytes=new Uint8Array(out.length*2),dv=new DataView(bytes.buffer);
     for(let i=0;i<out.length;i++)dv.setUint16(i*2,out[i],true);
     parts.push(bytes);
    }
-   if(g.presentation||y%64===0){setStatus(`TIFF ${Math.round(100*(y+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}
+   if(g.presentation||y%64===0){setStatus(`${label} ${Math.round(100*(y+rows)/g.height)} %`);await new Promise(r=>setTimeout(r,0));}
    control.progress?.(y+rows,g.height);y+=rows;
   }
   control.check?.();
-  downloadBlob(new Blob(parts,{type:'image/tiff'}),exportName(rollingExport?activeFrame:null,'tif','filmlabb-positive-16bit.tif'));
-  setStatus(`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);
+  const blob=png?await png.finish():new Blob(parts,{type:'image/tiff'});control.check?.();
+  downloadBlob(blob,exportName(rollingExport?activeFrame:null,png?'png':'tif',png?'filmlabb-positive-16bit.png':'filmlabb-positive-16bit.tif'));
+  setStatus(png?`PNG 16 bit · ${g.width}×${g.height} · sRGB`:`TIFF 16 bit · ${g.width}×${g.height} · inbäddad sRGB-profil`);
  }catch(e){setStatus('Exportfel: '+e.message);throw e;}
- finally{exportBusy=false;$('exportTiff').disabled=false;}
-};
-$('exportTiff').onclick=async()=>{try{await exportTiff();}catch(e){setStatus('Exportfel: '+e.message);}};
+ finally{await png?.abort();exportBusy=false;$('export').disabled=false;}
+}
+exportTiff=control=>exportRgb16('tiff',control);
+function exportPng16(control){return exportRgb16('png16',control);}
 function makeExportCanvas(){
  const im=working,c=configuration38(),g=exportGeometrySnapshot(im).g,canvas=document.createElement('canvas');canvas.width=g.width;canvas.height=g.height;
  const cx=canvas.getContext('2d',{colorSpace:'srgb'}),prepared=NSPixelKernel.prepare(im,c);

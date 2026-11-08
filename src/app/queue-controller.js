@@ -41,7 +41,7 @@ async function importRoll(files,{engine}={}){
  if(rejected.length)setStatus(rejected.map(NSFileFormats.error).join(' '));
 }
 $('loadFullRaw').onclick=async()=>{if(activeFrame<0)return;await chooseFrame(activeFrame,{full:true,force:true})};
-$('clearQueue').onclick=()=>{roll=[];activeFrame=-1;src=null;hires=null;previewSrc=null;working=null;workingPreview=null;cropRegion=null;$('preview').classList.add('hidden');$('empty').classList.remove('hidden');refreshRollUI();$('export').disabled=true;$('exportTiff').disabled=true;setStatus('Arbetskön tömd.');};
+$('clearQueue').onclick=()=>{roll=[];activeFrame=-1;src=null;hires=null;previewSrc=null;working=null;workingPreview=null;cropRegion=null;$('preview').classList.add('hidden');$('empty').classList.remove('hidden');refreshRollUI();$('export').disabled=true;setStatus('Arbetskön tömd.');};
 $('imageFile').addEventListener('change',async e=>{const files=Array.from(e.target.files);try{await importRoll(files)}catch(err){setStatus(err.message)}finally{e.target.value=''}});
 $('filmProfile').onchange=e=>{rollShared.profile=e.target.value;rollShared.profileVersion=2;refreshProfileInfo();scheduleRender(true);refreshRollUI()};
 $('profileStrength').oninput=e=>{rollShared.strength=Number(e.target.value)/100;$('profileStrengthValue').textContent=e.target.value+' %';scheduleRender()};$('profileStrength').onchange=()=>scheduleRender(true);

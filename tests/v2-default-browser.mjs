@@ -1,3 +1,4 @@
+import {selectBackend} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';import {browserHarness,selectEngine} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness();
@@ -19,7 +20,7 @@ try{
  const original=await save();assert.equal(original.format,'negative-studio-roll-v2');assert.equal(original.frames[0].settings.engine,'v2');
  const exported=await p.evaluate(async()=>{state.cropConfirmed=true;saveCurrentFrame();const c=configuration38(),g=exportGeometrySnapshot(working).g;const recipe=JSON.stringify(c.v2);let blob;const download=downloadBlob;downloadBlob=b=>blob=b;try{const expected=NSPresentation.tiff(working,c,g,0,g.height,NSPixelKernel.prepare(working,c));await exportTiff();const tiff=await NSTiff.decode(await blob.arrayBuffer()),bytes=await jpegBytes(),bitmap=await createImageBitmap(new Blob([bytes],{type:'image/jpeg'}));const result={bits:tiff.bits,icc:tiff.icc.length,pixels:tiff.data.every((v,i)=>v===expected[i]),size:[bitmap.width,bitmap.height],expectedSize:[g.width,g.height],jpeg:[bytes[0],bytes[1]],recipe:recipe===JSON.stringify(configuration38().v2)};bitmap.close();return result;}finally{downloadBlob=download;}});
  assert.equal(exported.bits,16);assert.equal(exported.icc,588);assert.equal(exported.pixels,true);assert.equal(exported.recipe,true);assert.deepEqual(exported.jpeg,[255,216]);assert.deepEqual(exported.size,exported.expectedSize);
- await p.locator('#previewBackend').evaluate(el=>{for(let a=el.parentElement;a;a=a.parentElement)if(a.tagName==='DETAILS')a.open=true;});await p.locator('#previewBackend').selectOption('cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38&&lastPreview38);
+ await selectBackend(p,'cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38&&lastPreview38);
  assert.equal(await p.evaluate(()=>{const e=NSPixelKernel.render(workingPreview,configuration38(),display,1400);return e.data.every((v,i)=>v===lastPreview38.data[i]);}),true);
  await selectEngine(p,'calibrated4');await p.locator('#exposure').fill('650');await p.locator('#exposure').dispatchEvent('input');await p.locator('#reset').click();assert.equal(await p.evaluate(()=>state.engine),'calibrated4');
  assert.match(await p.locator('#advancedSettingsSummary').textContent(),/Konverteringsmotor: Standard/);
