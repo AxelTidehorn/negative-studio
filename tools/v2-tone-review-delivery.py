@@ -12,12 +12,12 @@ def sha(file):
   for b in iter(lambda:f.read(1048576),b''):h.update(b)
  return h.hexdigest()
 if sys.argv[2]=='volumes':
- c=sys.argv[3];archive=p/('FILMLABB_V2_TONE_REVIEW_image'+c+'.zip');stage=p/'transport'/c;stage.mkdir(parents=True,exist_ok=True)
- parts=[];length=90*1024*1024;fullhash=sha(archive)
+ c=sys.argv[3];presentation='--presentation' in sys.argv[4:];prefix='FILMLABB_V2_PRESENTATION_REVIEW' if presentation else 'FILMLABB_V2_TONE_REVIEW';archive=p/(prefix+'_image'+c+'.zip');stage=p/'transport'/c;stage.mkdir(parents=True,exist_ok=True)
+ parts=[];length=(60 if presentation else 90)*1024*1024;fullhash=sha(archive)
  join='''from pathlib import Path
 import hashlib,json,zipfile
 p=Path(__file__).resolve().parent
-for meta in sorted(p.glob('volume-image*.json')):
+for meta in sorted(p.glob('volume-*.json')):
  m=json.loads(meta.read_text());target=p/m['archive'];h=hashlib.sha256()
  with target.open('wb') as out:
   for part in m['parts']:
@@ -39,7 +39,7 @@ for meta in sorted(p.glob('volume-image*.json')):
  # Repeat small metadata/script in each volume, so any volume explains itself.
  for dest in sorted(stage.glob('*.zip')):
   with zipfile.ZipFile(dest,'a',zipfile.ZIP_STORED) as z:
-   z.writestr('volume-image'+c+'.json',json.dumps(meta,indent=2)+'\n');z.writestr('restore-review.py',join)
+   z.writestr(('volume-presentation-image' if presentation else 'volume-image')+c+'.json',json.dumps(meta,indent=2)+'\n');z.writestr('restore-review.py',join)
    z.writestr('RESTORE.txt','Extract all partNN.zip files into ONE directory. Then run python3 restore-review.py. The script verifies every part and original ZIP, extracts the full review directory, and never changes image pixels. Full unsplit archives remain in the original workspace. These transport ZIPs work in Python/ChatGPT; no pip packages are needed for restoration.\n')
   assert dest.stat().st_size<100*1024*1024
  # Check the actual transport bytes reconstruct exactly, without a second file.

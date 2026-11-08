@@ -6,12 +6,14 @@
 import fs from 'node:fs';import path from 'node:path';import crypto from 'node:crypto';import {execFileSync} from 'node:child_process';
 import {browserHarness,selectEngine} from '../tests/helpers/browser.mjs';import {ensureBuild} from './build-artifact.mjs';
 import {parameters,propose} from './v2-scene-tone-model.mjs';
-const [baseline,pack,originals,caches,output,cases='04,05,09,00,06,08,11']=process.argv.slice(2);
+const [baseline,pack,originals,caches,output,cases='04,05,09,00,06,08,11',flag,previousOutput]=process.argv.slice(2);
+const presentation=flag==='--presentation';if(flag&&!presentation||presentation&&!previousOutput)throw Error('Use --presentation PREVIOUS_OUTPUT');
+const presentationModel=presentation?await import('./v2-presentation-model.mjs'):null;
 if(!/^[a-f0-9]{40}$/.test(baseline||'')||!output)throw Error('BASELINE PACKAGE ORIGINALS CACHES OUTPUT CASES required');
 const repo=fs.realpathSync('.'),out=path.resolve(output);fs.mkdirSync(out,{recursive:true});if(fs.realpathSync(out).startsWith(repo+path.sep)||fs.realpathSync(out)===repo)throw Error('Private output must remain outside repository');
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),files=execFileSync('git',['ls-tree','-r','--name-only',baseline,'src','app-manifest.mjs','index.html'],{encoding:'utf8'}).trim().split('\n'),owners={};
 for(const f of files){const bytes=execFileSync('git',['show',baseline+':'+f],{maxBuffer:10000000});if(!fs.readFileSync(f).equals(bytes))throw Error('BASELINE_OWNER_CHANGED: '+f);owners[f]=sha(bytes);}
-const freeze={schema:'filmlabb.scene-tone-review-freeze',version:1,baseline,owners,parameters,modelSHA256:sha(fs.readFileSync('tools/v2-scene-tone-model.mjs')),development:['04','05','09'],controls:['00','01','02','03','06','08','10','11'],caveat:'Historically seen RAFs, not an unseen dataset. No controlled low-key or night series.'};
+const freeze={schema:'filmlabb.scene-tone-review-freeze',version:1,baseline,owners,parameters,modelSHA256:sha(fs.readFileSync('tools/v2-scene-tone-model.mjs')),development:['04','05','09'],controls:['00','01','02','03','06','08','10','11'],...(presentation?{presentation:{parameters:presentationModel.parameters,modelSHA256:sha(fs.readFileSync('tools/v2-presentation-model.mjs')),exposureCommit:'912430a762f28c7b7e316cdc71056f35c87dbba1',development:['09','05','11'],controls:['00','01','02','03','04','06','08','10']}}:{}),caveat:'Historically seen RAFs, not an unseen dataset. No controlled low-key or night series.'};
 const frozen=path.join(out,'freeze.json');if(fs.existsSync(frozen)&&JSON.stringify(JSON.parse(fs.readFileSync(frozen)))!==JSON.stringify(freeze))throw Error('FROZEN_REVIEW_CHANGED');fs.writeFileSync(frozen,JSON.stringify(freeze,null,2));
 const inventory=JSON.parse(fs.readFileSync(path.join(pack,'results/inventory.json'))),roots=caches.split(',');
 ensureBuild();const h=await browserHarness();
@@ -21,7 +23,7 @@ try{for(const id of cases.split(',')){
  const m=JSON.parse(fs.readFileSync(path.join(dir,id+'_source.json'))),raw=path.resolve(originals,inventory[+id].id+'.RAF'),hash=sha(fs.readFileSync(raw));if(hash!==m.sourceSha256||hash!==inventory[+id].sha256)throw Error('SOURCE_HASH_MISMATCH '+id);
  const recordPath=path.join(out,id+'_record.json');if(fs.existsSync(recordPath)){console.log('SKIP COMPLETE',id);continue;}
  const context=await h.browser.newContext({viewport:{width:1440,height:900}}),page=await context.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(600000);
- console.log('DECODE',id);await page.goto(h.url);await page.locator('#imageFile').setInputFiles(raw);await page.waitForFunction(()=>working&&!rollLoading);await selectEngine(page,'v2');
+ console.log('DECODE',id);await page.goto(h.url);if(presentation)await page.addScriptTag({content:'(function(){'+fs.readFileSync('tools/v2-presentation-model.mjs','utf8').replace(/^export /gm,'')+';globalThis.PresentationReview={install,parameters};})();'});await page.locator('#imageFile').setInputFiles(raw);await page.waitForFunction(()=>working&&!rollLoading);await selectEngine(page,'v2');
  const record=await page.evaluate(({m,model})=>{
   const V=NSConversionV2,R=NSV2Render,k=V.compile(m.source,m.base,m.calibration),analyzed=R.analyzeWithMask(working,k,{analysisArea:m.area,algorithmVersion:3,photographic:2,output:R.presentationRecipe.version});
   if(working.width!==m.source.width||working.height!==m.source.height||JSON.stringify(sourceInfo.rawMetadata.options)!==JSON.stringify(m.source.recipe.options))throw Error('DECODE_RECIPE_MISMATCH');
@@ -41,10 +43,12 @@ try{for(const id of cases.split(',')){
  // approximation in Node. The model's only output consumed by pixels is EV.
  for(const f of ['core','render'])await import('../src/conversion-v2/'+f+'.js');
  const candidate=propose(NSV2Render,record.before,record.statistics);record.after=candidate.intent;record.candidateAnalysis=candidate.analysis;
- for(const [name,intent] of [['before',record.before],['after',record.after]]){
-  await page.evaluate(intent=>{toneReview.config.v2={...toneReview.before,intent};state.v2Recipe=toneReview.config.v2;config38=null;technicalCache38=null;},intent);
+ if(presentation){const saved=JSON.parse(fs.readFileSync(path.join(previousOutput,id+'_record.json')));if(saved.raw.sha256!==hash||Math.abs(saved.after.exposure-candidate.intent.exposure)>1e-12)throw Error('EXPOSURE_BASELINE_CHANGED');record.before=saved.before;record.after=saved.after;record.reusedAB={archive:path.resolve(previousOutput,'FILMLABB_V2_TONE_REVIEW_image'+id+'.zip'),variants:saved.exportMeasurements};record.presentation=presentationModel.parameters;record.variants={A:saved.before,B:saved.after,C:{...saved.after,id:saved.after.id+'-C'},D:{...saved.after,id:saved.after.id+'-D'}};}
+ for(const [name,intent] of (presentation?[['C',record.variants.C],['D',record.variants.D]]:[['before',record.before],['after',record.after]])){
+  await page.evaluate(({intent,name,presentation})=>{if(presentation){toneReview.restore?.();toneReview.restore=PresentationReview.install(NSV2Render,name);}toneReview.config.v2={...toneReview.before,intent};state.v2Recipe=toneReview.config.v2;config38=null;technicalCache38=null;},{intent,name,presentation});
   await page.locator('#exportFormat').selectOption('tiff');const pending=page.waitForEvent('download');await page.locator('#export').click();const file=await pending;await file.saveAs(path.join(out,id+'_'+name+'.tiff'));await page.waitForFunction(()=>!exportBusy);
   console.log('TIFF',id,name,fs.statSync(path.join(out,id+'_'+name+'.tiff')).size);
+  if(presentation&&process.env.FILMLABB_REVIEW_PACKAGER)execFileSync('python3',[process.env.FILMLABB_REVIEW_PACKAGER,out,id,'stage',name],{stdio:'inherit'});
  }
  record.errors=errors;if(errors.length)throw Error('BROWSER_ERRORS '+errors.join(';'));
  record.raw={id:inventory[+id].id,sha256:hash,bytes:fs.statSync(raw).size};record.baseline=baseline;record.candidate=parameters.version;record.productionChanged=false;record.freezeSHA256=sha(fs.readFileSync(frozen));
