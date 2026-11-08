@@ -82,8 +82,8 @@
    // Engine switches can replace the bounded source without a new import. Do
    // not retain the previous negative texture beside the new V2 positive.
    if((lastSource&&lastSource!==workingPreview)||(lastVersion>=0&&lastVersion!==sourceVersion38)){stopHistogram();renderer.releaseSource();metrics.positiveCacheBytes=0;NSPixelKernel.clearV2Positive();lastSource=null;lastVersion=-1;}
-   const key=config.kind==='v2'?JSON.stringify([NSV2GpuMath.version,sourceVersion38,NSPixelKernel.v2PreviewKey(workingPreview,config),NSEditing2.version(config.opts.editVersion)]):JSON.stringify([config.kind,config.conversion3?.revision,config.profile,config.print,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
-   if(validationKey!==key){metrics.validationError=renderer.validate(config);if(config.kind==='v2')metrics.validationError=Math.max(metrics.validationError,renderer.validate({...config,profile:{type:'color'},neutralProfile:true,neutralPrint:true,opts:{...config.opts,exposure:1.3,contrast:1.4,saturation:1.4,vibrance:60}}));validationKey=key;}
+   const key=config.kind==='v2'?JSON.stringify([NSV2GpuMath.version,sourceVersion38,NSPixelKernel.v2PreviewKey(workingPreview,config),NSEditing2.version(config.opts.editVersion)]):JSON.stringify([config.kind,config.conversion3?.revision,config.look,config.monochrome,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
+   if(validationKey!==key){metrics.validationError=renderer.validate(config);if(config.kind==='v2')metrics.validationError=Math.max(metrics.validationError,renderer.validate({...config,look:{id:'neutral',strength:0},monochrome:false,opts:{...config.opts,exposure:1.3,contrast:1.4,saturation:1.4,vibrance:60}}));validationKey=key;}
    if(!active){stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=dragTimer38=null;}
    const ms=renderer.metrics.gpuMs;
    if(ms!==null){if(ms>25)interactiveLimit=Math.max(400,Math.round(interactiveLimit*.75));else if(ms<10)interactiveLimit=Math.min(1400,interactiveLimit+100);}

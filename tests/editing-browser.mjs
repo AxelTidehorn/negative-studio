@@ -14,8 +14,8 @@ try{
   for(let i=0;i<data.length;i++)data[i]=i<72?[0,1/65535,.0001,.001,.01,.18,.5,1][i%8]:((i*673+71)%65536)/65535;
   const im={width,height,data,channels:3,encoding:'linear',scale:1},base=configuration38(),failures=[],differences=[];let worst=0,cases=0;
   const adjustments=[{vibrance:30},{vibrance:60},{vibrance:-30},{vibrance:-100},{vibrance:100},{vibrance:60,saturation:1.4},{vibrance:-30,saturation:0},{} , {exposure:2},{exposure:-2},{contrast:1.7},{gamma:1.6,shadows:100,highlights:100},{shadow:0,highlight:1},{shadow:.12,highlight:.85,gamma:.65},{saturation:1.8},{saturation:0},{temperature:35,tint:-35,exposure:.7,contrast:1.4,shadows:40,highlights:30,saturation:1.4}];
-  for(const workingSpace of ['srgb','rec2020'])for(const colorMode4 of ['legacy','original','robust'])for(const id of ['generic','gold','hp5'])for(const adjustment of adjustments){
-   const c={...base,workingSpace,profile:NSCreativeProfiles.resolve(filmProfiles,id,2),neutralProfile:id==='generic',opts:{...base.opts,editVersion:2,colorMode4,...adjustment}};
+  for(const workingSpace of ['srgb','rec2020'])for(const colorMode4 of ['legacy','original','robust'])for(const id of ['neutral','film.kodak-gold-200','mono.neutral'])for(const adjustment of adjustments){
+   const c={...base,workingSpace,look:{id:id==='mono.neutral'?'neutral':id,strength:.7},monochrome:id==='mono.neutral',opts:{...base.opts,editVersion:2,colorMode4,...adjustment}};
    gpu.draw(im,c,'positive',width,1);const actual=gpu.read().data,k=NSPixelKernel.compile(c);let max=0;
    for(let n=0;n<width*height;n++){const expected=k.pixel(Array.from(data.subarray(n*3,n*3+3)));for(let ch=0;ch<3;ch++){const d=Math.abs(actual[n*4+ch]-Math.round(expected[ch]*255));max=Math.max(max,d);differences.push(d);}}
    if(max>2)failures.push({workingSpace,colorMode4,id,adjustment,max});worst=Math.max(worst,max);cases++;

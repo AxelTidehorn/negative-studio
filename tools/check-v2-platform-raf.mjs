@@ -14,8 +14,8 @@ try{
  const result=await page.evaluate(({region})=>{
   state.filmBaseVersion=2;setProposal2(FM2.measure(working,region));FILMLABB_BASE2.accept();
   if(state.v2Recipe.base.origin!=='measured')throw Error('MANUAL_BASE_NOT_ACCEPTED');
-  const V=NSConversionV2,R=NSV2Render,r=state.v2Recipe,k=V.compile(r.source,r.base,r.calibration),independent=R.analyze(working,k,{analysisArea:v2Area()}),config=configuration38();
-  const neutral=NSPixelKernel.compile({...config,opts:{...config.opts,...NSEditing2.neutral},profile:{type:'color'},print:{contrast:1,shoulder:0},neutralProfile:true,neutralPrint:true,strength:0});
+  const V=NSConversionV2,R=NSV2Render,r=state.v2Recipe,k=V.compile(r.source,r.base,r.calibration),independent=R.analyze(working,k,{analysisArea:v2Area(),algorithmVersion:r.algorithmVersion,photographic:NSV2Render.photographicVersion(r.intent),approvedD:r.intent.tone==='luminance-matched-D-1',output:r.intent.output}),config=configuration38();
+  const neutral=NSPixelKernel.compile({...config,opts:{...config.opts,...NSEditing2.neutral},look:{id:'neutral',strength:0},monochrome:false});
   let maxError=0,samples=0;for(let y=0;y<12;y++)for(let x=0;x<16;x++){
    const sx=Math.floor((x+.5)*working.width/16),sy=Math.floor((y+.5)*working.height/12),p=NSV2Platform.read(working,(sy*working.width+sx)*3),a=neutral.pixel(p),b=R.view(k.pixel(p).positive,r.intent).map(R.encode);
    for(let c=0;c<3;c++)maxError=Math.max(maxError,Math.abs(a[c]-b[c]));samples++;

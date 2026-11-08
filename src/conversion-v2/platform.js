@@ -44,7 +44,7 @@ function validate(r){
  return r;
 }
 function validateProject(p){
- const modern=p.format===PROJECT_FORMAT;
+ const modern=p.format===PROJECT_FORMAT||p.format===root.NSProfiles?.FORMAT;
  if(modern&&(p.v2SchemaVersion!==1||p.conversionSchemaVersion!==1))throw Error('V2_PROJECT_VERSION');
  for(const f of p.frames||[]){const s=f.settings||{};if(s.rawSourceRecipeV2!==undefined&&(s.rawSourceRecipeV2!==1||s.rawMode4!=='wide'))throw Error('V2_SOURCE_RECIPE_VERSION');if(s.engine==='v2'||s.v2Recipe||s.rawSourceRecipeV2){if(!modern)throw Error('V2_PROJECT_FORMAT');if(s.v2Recipe)validate(s.v2Recipe);if(s.engine==='v2'&&(s.conversionVersion!==2||s.editVersion!==2))throw Error('V2_PROJECT_SETTINGS');}}
 }
@@ -54,7 +54,7 @@ function diagnostic(im,config){
  for(let n=0;n<im.width*im.height;n+=step){const q=kernel.pixel(read(im,n*3)).map(decode);for(let c=0;c<3;c++)channels[c].push(q[c]);luma.push(.2126*q[0]+.7152*q[1]+.0722*q[2]);}
  const Q=[.01,.05,.5,.95,.99],percentiles=a=>{a.sort((x,y)=>x-y);return Q.map(q=>a[Math.floor((a.length-1)*q)]??null);};
  report.run.mainPlatform=true;report.run.algorithmVersion=r.algorithmVersion;
- report.creative={status:'measured',value:{kind:'Editing2',version:root.NSEditing2.version(config.opts.editVersion),options:root.NSEditing2.options(config.opts),profile:config.profile,profileStrength:config.strength,print:config.print}};
+ report.creative={status:'measured',value:{kind:'Editing2',version:root.NSEditing2.version(config.opts.editVersion),options:root.NSEditing2.options(config.opts),look:config.look,monochrome:config.monochrome}};
  report.statistics.platformOutput={status:'estimated',methodVersion:'main-v2-output-1',value:{domain:'linear-srgb',basis:'Full-source bounded point samples after V2, creative profile/print and Editing 2.0; before geometric filtering',samples:luma.length,quantiles:Q,channels:channels.map(percentiles),luminance:percentiles(luma)}};
  report.output.value.scope='V2 automatic positive before platform creative edits; platformOutput describes the final edited pixels';
  report.output.value.filter='Main-platform projection sampling; bounded source-point preview; conversion before geometric filtering';

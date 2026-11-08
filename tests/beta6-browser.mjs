@@ -39,13 +39,13 @@ try{
  await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));
  assert.equal(await page.evaluate(()=>roll[0].geometry.rotation.fineDegrees),-14.5);
  const snapshot=()=>page.evaluate(()=>JSON.stringify({state,roll:roll.map(f=>({settings:f.settings,crop:f.crop,geometry:f.geometry})),rollShared,cropRegion,name:$('exportName').value,activeFrame}));
- const before=await snapshot(),bad=structuredClone(result.project);bad.exportNaming.prefix='must-not-apply';bad.profile='gold';bad.frames[0].settings.exposure=2;bad.frames[1].geometry.compositionCrop={cx:Infinity,cy:0,w:2,h:1};
+ const before=await snapshot(),bad=structuredClone(result.project);bad.exportNaming.prefix='must-not-apply';bad.look={id:'film.kodak-gold-200',strength:.7};bad.frames[0].settings.exposure=2;bad.frames[1].geometry.compositionCrop={cx:Infinity,cy:0,w:2,h:1};
  await page.locator('#settingsFile').setInputFiles({name:'invalid.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(bad))});
  await page.waitForFunction(()=>$('status').textContent.startsWith('Projektimport:'));
  assert.equal(await snapshot(),before);
- const old=structuredClone(result.project);old.format='negative-studio-roll-v08';delete old.geometryVersion;delete old.roll;old.frames.forEach(f=>delete f.geometry);
+ const old=structuredClone(result.project);old.roll.cropExportToFrame=false;old.frames=await page.evaluate(frames=>frames.map(f=>({...f,geometry:NSGeometry.legacyFrame(f.settings,f.crop,false)})),old.frames);
  await page.locator('#settingsFile').setInputFiles({name:'mixed-old.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(old))});
- await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('beskärningar'));
+ await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));
  const frozen=await page.evaluate(async()=>{
   let blob;downloadBlob=b=>blob=b;const hash=async b=>Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',b))).join(',');
   await exportTiff();const tiff=await hash(await blob.arrayBuffer()),jpeg=await hash(await jpegBytes()),desired=JSON.stringify(roll[0].geometry.compositionCrop);
@@ -88,6 +88,6 @@ try{
  assert.equal(zipped.count,2);assert.match(zipped.name,/\.zip$/);assert.equal(zipped.activeFrame,0);assert.equal(zipped.busy,false);assert.equal(zipped.batch,false);
  console.log('PASS browser: free-rotation TIFF cancellation downloads nothing and releases locks; mixed-geometry JPEG ZIP exports both images and restores selection');
  assert.deepEqual(errors,[]);
- console.log('PASS browser: mixed legacy migration uses frozen exact TIFF/JPEG ROI after technical frame metadata changes');
+ console.log('PASS browser: current-format source-anchored ROI uses frozen exact TIFF/JPEG ROI after technical frame metadata changes');
  console.log('PASS browser: Beta 6 project import retains internal rotation; invalid later-frame geometry leaves queue, analysis, settings and export naming unchanged');
 }finally{await browser.close();server.closeAllConnections();await new Promise(r=>server.close(r));}

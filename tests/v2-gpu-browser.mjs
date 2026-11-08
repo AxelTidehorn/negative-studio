@@ -19,9 +19,9 @@ try{
    const recipe=finish?{...prepared,intent:{...prepared.intent,output:NSV2Render.presentationRecipe.version}}:prepared;
    if(photo===undefined&&recipe.intent.tone!=='luminance-matched-D-1')throw Error('APPROVED_D_DEFAULT_MISSING');
    const c0={...base,v2:recipe};lastConfig=c0;const positive=K.v2PositiveImage(im,c0,{cache:false});
-   for(const profile of ['generic','gold','portra','hp5','trix'])for(let edit=0;edit<adjustments.length;edit++){
-    const c={...c0,opts:{...base.opts,...NSEditing2.neutral,editVersion:2,...adjustments[edit]},profile:NSCreativeProfiles.resolve(filmProfiles,profile,2),neutralProfile:profile==='generic',strength:.7,print:edit%2?printStyles.soft:printStyles.neutral,neutralPrint:!(edit%2)};
-    gpu.draw(im,c,'positive',width,1);if(profile==='generic'&&edit===0){const actualFloat=gpu.readPositive().data;for(let n=0;n<width*height;n++)for(let c=0;c<3;c++){if(!Number.isFinite(actualFloat[n*4+c]))throw Error('Nonfinite GPU positive');floatErrors.push(Math.abs(actualFloat[n*4+c]-positive.data[n*3+c]));}}const actual=gpu.read().data,oracle=K.compile(c);let max=0;
+   for(const profile of ['neutral','film.kodak-gold-200','film.kodak-ektar-100','mono.neutral'])for(let edit=0;edit<adjustments.length;edit++){
+    const c={...c0,opts:{...base.opts,...NSEditing2.neutral,editVersion:2,...adjustments[edit]},look:{id:profile==='mono.neutral'?'neutral':profile,strength:.7},monochrome:profile==='mono.neutral',};
+    gpu.draw(im,c,'positive',width,1);if(profile==='neutral'&&edit===0){const actualFloat=gpu.readPositive().data;for(let n=0;n<width*height;n++)for(let c=0;c<3;c++){if(!Number.isFinite(actualFloat[n*4+c]))throw Error('Nonfinite GPU positive');floatErrors.push(Math.abs(actualFloat[n*4+c]-positive.data[n*3+c]));}}const actual=gpu.read().data,oracle=K.compile(c);let max=0;
     for(let n=0;n<width*height;n++){const q=oracle.pixel(P.read(im,n*3));let pixelMax=0;for(let c=0;c<3;c++){const d=actual[n*4+c]-Math.round(q[c]*255);pixelMax=Math.max(pixelMax,Math.abs(d));max=Math.max(max,Math.abs(d));worst=Math.max(worst,Math.abs(d));sum+=Math.abs(d);channelSum[c]+=d;absolute.push(Math.abs(d));total++;}pixelErrors.push(pixelMax);}
     cases.push({algorithm,photo,finish,custom:!!custom,profile,edit,max});
    }
@@ -49,7 +49,7 @@ try{
  await p.evaluate(()=>{for(let i=0;i<40;i++){state.exposure=i/50;state.vibrance=i;state.saturation=1+i/100;scheduleRender();}scheduleRender(true);});await settled(p);await p.waitForTimeout(400);
  const after=await p.evaluate(()=>({gpu:FILMLABB_GPU.snapshot(),recipe:JSON.stringify(state.v2Recipe),analyses:analysisCount38}));
  assert.equal(after.gpu.reconstructionBackend,'gpu');assert.equal(after.gpu.positiveUploads,0);assert.equal(after.gpu.mainPositive.bytes,0);assert.equal(after.gpu.histogramReconstructions,before.gpu.histogramReconstructions);assert.equal(after.gpu.positiveReconstructions,before.gpu.positiveReconstructions);assert.equal(after.gpu.positiveUploads,before.gpu.positiveUploads);assert.equal(after.gpu.validationUploads,before.gpu.validationUploads);assert.equal(after.recipe,before.recipe);assert.equal(after.analyses,before.analyses);
- for(const id of ['gold','hp5','generic']){await p.evaluate(id=>{rollShared.profile=id;scheduleRender(true);},id);await settled(p);}
+ for(const id of ['film.kodak-gold-200','mono.neutral','neutral']){await p.evaluate(id=>{rollShared.monochrome=id==='mono.neutral';rollShared.look={id:rollShared.monochrome?'neutral':id,strength:.7};scheduleRender(true);},id);await settled(p);}
  await p.locator('#rotateRight').evaluate(e=>e.click());await p.waitForTimeout(80);
  assert.equal(await p.evaluate(()=>FILMLABB_GPU.snapshot().positiveReconstructions),before.gpu.positiveReconstructions);assert.equal(await p.evaluate(()=>FILMLABB_GPU.snapshot().positiveUploads),before.gpu.positiveUploads);
  // Full recipe mutation invalidates, even if a metadata ID stays unchanged.

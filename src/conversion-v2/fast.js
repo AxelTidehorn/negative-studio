@@ -53,7 +53,7 @@ function compile(k,intent,{viewMode='auto'}={}){
 // silently approximated; the unchanged NSPixelKernel is used as its test oracle.
 function compileLegacy(c){
  const o=c.opts;
- if(c.kind!=='calibrated4'||c.workingSpace!=='rec2020'||!c.neutralProfile||!c.neutralPrint||c.profile.type!=='color'||o.colorMode4!=='legacy'||o.toneMode4!=='smooth'||o.editVersion!==1||!o.autoLevels||o.exposure||o.temperature||o.tint||o.gamma!==1||o.contrast!==1||o.saturation!==1||o.shadow!==0||o.highlight!==1||o.shadows||o.highlights)throw Error('UNSUPPORTED_LEGACY_FAST_PRESET');
+ if(c.kind!=='calibrated4'||c.workingSpace!=='rec2020'||!root.NSProfiles.compile(c.look,!!c.monochrome).identity||o.colorMode4!=='legacy'||o.toneMode4!=='smooth'||o.editVersion!==1||!o.autoLevels||o.exposure||o.temperature||o.tint||o.gamma!==1||o.contrast!==1||o.saturation!==1||o.shadow!==0||o.highlight!==1||o.shadows||o.highlights)throw Error('UNSUPPORTED_LEGACY_FAST_PRESET');
  const a=c.cal.beta4,r=a.response,low=root.NSPixelKernel.lowSignal4(c),factor=a.light.map((v,i)=>v/a.base[i]);
  function pixel(jr,jg,jb,out){
   const p0=(-Math.log10(Math.max(1/65535,jr)*factor[0])-r.offset[0])/r.span[0],p1=(-Math.log10(Math.max(1/65535,jg)*factor[1])-r.offset[1])/r.span[1],p2=(-Math.log10(Math.max(1/65535,jb)*factor[2])-r.offset[2])/r.span[2];

@@ -25,10 +25,10 @@ try{
   for(let n=0;n<width*height;n++)for(let k=0;k<3;k++)data[n*3+k]=n<10?[0,1/65535,.0001,.001,.01,.1,.4,.8,.99,1][n]:((n*(177+k*263)+k*337)%65536)/65535;
   const im={width,height,data,channels:3,scale:1,encoding:'linear'},cases=[];let worst=0;
   const base=configuration38();
-  for(const id of ['generic','ultramax','gold','portra','portra160','portra800','ektar','proimage','fuji400','fuji400h','bw','hp5','trix','fp4','delta100'])
+  for(const id of ['neutral','film.kodak-gold-200','film.kodak-ektar-100','mono.neutral'])
   for(const toneMode4 of ['smooth','reference'])for(const adjustment of [0,1]){
-   const profile=NSCreativeProfiles.resolve(filmProfiles,id,2),opts={...base.opts,toneMode4,...(adjustment?{exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{} )};
-   const c={...base,opts,profile,neutralProfile:id==='generic',print:adjustment?printStyles.soft:printStyles.neutral,neutralPrint:!adjustment,strength:adjustment?.7:1};
+   const opts={...base.opts,toneMode4,...(adjustment?{exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{} )};
+   const c={...base,opts,look:{id:id==='mono.neutral'?'neutral':id,strength:adjustment?.7:1},monochrome:id==='mono.neutral'};
    const kernel=NSPixelKernel.compile(c);gpu.draw(im,c,'positive',67,42);const pixels=gpu.read().data;let max=0,count=0;
    for(let n=0;n<width*height;n++){const expected=kernel.pixel([data[n*3],data[n*3+1],data[n*3+2]]);for(let k=0;k<3;k++){const d=Math.abs(pixels[n*4+k]-Math.round(expected[k]*255));max=Math.max(max,d);if(d>1)count++;}}
    worst=Math.max(worst,max);cases.push({profile:id,toneMode4,adjustment,maxError:max,overOne:count});

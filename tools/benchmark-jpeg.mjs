@@ -57,7 +57,7 @@ try{
   },{width,height});
  }
  const source=await page.evaluate(({budget,geometry})=>{
-  state={...state,...NSEditing2.neutral,editVersion:2,jpegSize:budget,cropConfirmed:true,cropExport:false,rotation:0};rollShared.profile='generic';rollShared.print='neutral';rollShared.strength=0;rollShared.cropExportToFrame=false;
+  state={...state,...NSEditing2.neutral,editVersion:2,jpegSize:budget,cropConfirmed:true,cropExport:false,rotation:0};rollShared.look={id:'neutral',strength:0};rollShared.monochrome=false;rollShared.cropExportToFrame=false;
   if(roll[activeFrame])roll[activeFrame].geometry=NSGeometry.create(0);
   if(geometry==='presentation'){const model=NSGeometry.create(0);model.rotation.fineDegrees=3;if(!roll[activeFrame]){roll=[{file:{name:'benchmark-linear.tif'},settings:{...state},geometry:model}];activeFrame=0;}else roll[activeFrame].geometry=model;}
   globalThis.jpegBenchmarkSource=working;globalThis.jpegBenchmarkData=working.data;globalThis.jpegBenchmarkSourceBytes=working.data.byteLength;const g=exportGeometrySnapshot(working).g;

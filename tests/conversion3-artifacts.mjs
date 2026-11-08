@@ -1,7 +1,7 @@
 /* Causal diagnostics: fixed calibration, controlled transmission perturbations.
    Smaller noise response alone is not a photographic quality score. */
 import assert from 'node:assert/strict';import fs from 'node:fs';
-import '../src/import/raw-input.js';import '../src/image/image-model.js';import '../src/calibration/color-analysis.js';import '../src/calibration/color-calibration.js';import '../src/editing/creative-profiles.js';import '../src/color/parameters.js';import '../src/editing/editing-engine.js';import '../src/color/conversion3.js';import '../src/color/render-core.js';import '../src/app/settings.js';
+import '../src/import/raw-input.js';import '../src/image/image-model.js';import '../src/calibration/color-analysis.js';import '../src/calibration/color-calibration.js';import '../src/editing/profile-catalog.js';import '../src/editing/profile-engine.js';import '../src/color/parameters.js';import '../src/editing/editing-engine.js';import '../src/color/conversion3.js';import '../src/color/render-core.js';import '../src/app/settings.js';
 import {negative,region} from './helpers/conversion3-fixtures.mjs';
 const im=negative({scene:'neutral'}),base=[.74,.43,.24],power=[.75,1,1.25],comparison=NSColorAnalysis.analyze(im,region),response=NSColorCalibration.estimate(im,region,{base,light:[1,1,1],domain:'diagnostic'}),cal={log39:comparison,beta4:NSColorCalibration.analyze(im,region,response,{base:response.base,light:[1,1,1]})},model=NSConversion3.analyze(im,region,{comparison,base,light:[1,1,1],domain:'diagnostic'});
 const transmission=t=>t.map((v,k)=>base[k]*10**(-power[k]*v)),clamp=x=>Math.max(0,Math.min(1,x)),luma=p=>.2126*p[0]+.7152*p[1]+.0722*p[2],linear=p=>p.map(NSColorEngine.decode),rows=[];

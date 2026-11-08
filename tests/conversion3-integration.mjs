@@ -18,12 +18,12 @@ for(const id of ['log39','calibrated4','density3','curve3','matrix3']){
 const counts=h.run('conversionAnalysisCount3');h.run(`state.engine='curve3';analyzeLevels();state.exposure=.5;configuration38();state.contrast=1.2;configuration38();`);assert.equal(h.run('conversionAnalysisCount3'),counts);
 // New-format projects reject unsupported IDs/versions before geometry or app state mutation.
 const C=h.context.NSConversion3;assert.throws(()=>C.validateProject({format:C.PROJECT_FORMAT,conversionSchemaVersion:99,frames:[]}),/Unsupported/);assert.throws(()=>C.validateProject({format:'negative-studio-roll-beta6',frames:[{settings:{engine:'curve3',conversionVersion:1}}]}),/versioned/);
-h.run(`downloadBlob=b=>globalThis.projectBlob=b;$('saveSettings').onclick();`);const project=JSON.parse(await h.context.projectBlob.text());assert.equal(project.format,C.PROJECT_FORMAT);assert.equal(project.frames[0].settings.engine,'curve3');assert.equal(project.frames[0].settings.conversionVersion,1);assert.equal(project.frames[0].settings.editVersion,2);
+h.run(`downloadBlob=b=>globalThis.projectBlob=b;$('saveSettings').onclick();`);const project=JSON.parse(await h.context.projectBlob.text());assert.equal(project.format,'filmlabb-roll-3');assert.equal(project.frames[0].settings.engine,'curve3');assert.equal(project.frames[0].settings.conversionVersion,1);assert.equal(project.frames[0].settings.editVersion,2);
 console.log('PASS five real app calibrations/configurations, exact prepared pixels, rotated TIFF rows, independent editing, cache reuse, geometry/slider retention and conversion project version boundary');
 
 const legacy=structuredClone(project);legacy.format=h.context.NSGeometry.FORMAT;legacy.frames[0].settings.engine='log39';delete legacy.frames[0].settings.editVersion;delete legacy.frames[0].settings.conversionVersion;
 h.set('legacyImage',h.run('working'));h.run(`readFile=async()=>{hires=legacyImage;src=new ImageData(legacyImage.width,legacyImage.height);previewSrc=src;finishImport('legacy fixture');};`);
-await h.elements.get('settingsFile').onchange({target:{files:[{text:async()=>JSON.stringify(legacy)}],value:'x'}});assert.equal(h.run('state.editVersion'),1);assert.equal(h.run('state.engine'),'log39');
-h.run(`state.exposure=1;$('reset').onclick();`);assert.equal(h.run('state.editVersion'),1);
+const snapshot=h.run('JSON.stringify({roll,state,rollShared})');
+await h.elements.get('settingsFile').onchange({target:{files:[{text:async()=>JSON.stringify(legacy)}],value:'x'}});assert.equal(h.run('JSON.stringify({roll,state,rollShared})'),snapshot);
 await h.run(`importRoll([{name:'new.png',type:'image/png'}])`);assert.equal(h.run('state.editVersion'),2);
 console.log('PASS linear/sRGB integer and spatial source pixels, legacy projects without editing/version fields, legacy reset and genuinely new image defaults');

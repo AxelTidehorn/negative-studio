@@ -1,6 +1,6 @@
 /* One persistent owner of the full Float32 source. Only small previews/metadata
    leave the worker. Same classic-worker pattern as FILMLABB's existing workers. */
-importScripts('./build-info.js','./creative-profiles.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
+importScripts('./build-info.js','./profile-catalog.js','./profile-engine.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
 'use strict';
 const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast;
 // MessageChannel yields to incoming jobs without background-tab timer clamps.
@@ -20,7 +20,7 @@ function parameters(){
  if(intent&&intentKey===key){if(intent.baseId!==base.id)intent=V.freeze({...intent,baseId:base.id,analysis:{...intent.analysis,baseId:base.id}});return;}
  const toneStart=performance.now(),analyzed=R.analyzeWithMask(image,k,options);intent=analyzed.intent;intentKey=key;analysisMask=analyzed.mask;metrics.toneAnalysisMs=performance.now()-toneStart;metrics.toneAnalysisCount=(metrics.toneAnalysisCount||0)+1;
  const start=performance.now(),region={x:0,y:0,w:1,h:1},response=NSColorCalibration.estimate(image,region,{base:base.rgb,light:[1,1,1],domain:'linear-rec2020'});
- legacy=V.freeze(V.clone({kind:'calibrated4',opts:{...NSProjectSettings.imageDefaults(),shadow:0,highlight:1,editVersion:1},workingSpace:'rec2020',cal:{beta4:NSColorCalibration.analyze(image,region,response)},profile:{type:'color'},print:{},neutralProfile:true,neutralPrint:true,strength:0}));
+ legacy=V.freeze(V.clone({kind:'calibrated4',opts:{...NSProjectSettings.imageDefaults(),shadow:0,highlight:1,editVersion:1},workingSpace:'rec2020',cal:{beta4:NSColorCalibration.analyze(image,region,response)},look:{id:'neutral',strength:0},monochrome:false}));
  metrics.legacyAnalysisMs=performance.now()-start;fast=F.compile(k,intent,{viewMode:currentView});fastA=F.compileLegacy(legacy);clearCache();
 }
 async function negative(id,limit){

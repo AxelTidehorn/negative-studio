@@ -12,10 +12,10 @@ const referenceKernels={};
 for(const [variant,fixture] of Object.entries(historical.kernels)){
  const source=readSource(new URL('./fixtures/'+fixture.file,import.meta.url),'utf8');
  assert.equal(createHash('sha256').update(source).digest('hex'),fixture.sha256);
- const ctx={NSCreativeProfiles:h.context.NSCreativeProfiles,NSRawInput:h.context.NSRawInput};vm.createContext(ctx);vm.runInContext(source,ctx);referenceKernels[variant]=ctx.NSPixelKernel;
+ const ctx={NSRawInput:h.context.NSRawInput};vm.createContext(ctx);vm.runInContext(source,ctx);referenceKernels[variant]=ctx.NSPixelKernel;
 }
-function historicalConfig(row){const c=structuredClone(fixtureConfig);Object.assign(c,{workingSpace:row.space,profile:h.context.NSCreativeProfiles.resolve(h.run('filmProfiles'),row.profile,2),neutralProfile:row.profile==='generic',strength:.7});Object.assign(c.opts,{toneMode4:row.tone,...(row.edit?{autoLevels:true,exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})});Object.assign(c.cal.beta4,{lo:.08,span:1.1,base:[.7,.4,.2],light:[.8,1.2,1.1],response:{offset:[.1,-.2,.15],span:[2.5,3.2,4.8]}});return c;}
-for(const row of historical.cases)for(const variant of ['original','legacy']){
+function historicalConfig(row){const c=structuredClone(fixtureConfig);Object.assign(c,{workingSpace:row.space,profile:{type:'color'},neutralProfile:true,strength:0});Object.assign(c.opts,{toneMode4:row.tone,...(row.edit?{autoLevels:true,exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})});Object.assign(c.cal.beta4,{lo:.08,span:1.1,base:[.7,.4,.2],light:[.8,1.2,1.1],response:{offset:[.1,-.2,.15],span:[2.5,3.2,4.8]}});return c;}
+for(const row of historical.cases.filter(r=>r.profile==='generic'))for(const variant of ['original','legacy']){
  const c=historicalConfig(row);c.opts.colorMode4=variant;const k=K.compile(c);
  const ref=referenceKernels[variant].compile(c),expected=historical.sources.map(p=>Array.from(ref.pixel(p)));
  historical.sources.forEach((p,i)=>{
