@@ -13,9 +13,9 @@ const mid=[.32,.22,.14],r=R.present(mid);assert.ok(Math.max(...r)-Math.min(...r)
 const pale=[.65,.64,.68],h=R.present(pale);assert.ok(Math.max(...h)-Math.min(...h)<Math.max(...pale)-Math.min(...pale));
 assert.ok(R.present([.1,.3,.12])[1]>R.present([.1,.3,.12])[0]);assert.ok(R.present([.1,.12,.15])[2]>R.present([.1,.12,.15])[0]);
 const im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:Float32Array.from({length:48*36*3},()=>.005+random()*.5)},area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},input={sourceKey:'presentation',capture:{session:'test',recipe:{decoder:'synthetic'}},measurement:{measured:[.8,.45,.2],kind:'manual-region',status:'review'},area},fresh=P.prepare(im,input);
-assert.equal(fresh.intent.output,R.presentationRecipe.version);assert.equal(fresh.intent.tone,'luminance-photographic-2');P.validate(fresh);
+assert.equal(fresh.intent.output,R.presentationRecipe.version);assert.equal(fresh.intent.tone,'luminance-matched-D-1');P.validate(fresh);
 const historical=P.prepare(im,{...input,photographic:false});assert.equal(historical.intent.output,R.outputRecipe.version);
-assert.deepEqual(fresh.calibration,historical.calibration);assert.deepEqual(fresh.base.rgb,historical.base.rgb);assert.deepEqual(fresh.intent.colorCorrection,historical.intent.colorCorrection);assert.deepEqual(fresh.intent.analysis.exposure,historical.intent.analysis.exposure);
+assert.deepEqual(fresh.calibration,historical.calibration);assert.deepEqual(fresh.base.rgb,historical.base.rgb);assert.deepEqual(fresh.intent.colorCorrection,historical.intent.colorCorrection);assert.equal(fresh.intent.analysis.exposure.candidateVersion,'scene-distribution-1');
 for(const intent of [historical.intent,R.photographic(historical.intent),R.photographic(historical.intent,2)]){
  const previous=V.freeze({...historical,intent,analysisSignature:''}),reopened=P.prepare(im,{...input,previous}),changed=P.prepare(im,{...input,previous,measurement:{...input.measurement,measured:[.81,.45,.2]}});
  assert.equal(reopened.intent.output,R.outputRecipe.version);assert.equal(changed.intent.output,R.outputRecipe.version);assert.equal(changed.intent.tone,intent.tone);assert.deepEqual(changed.calibration,previous.calibration);
