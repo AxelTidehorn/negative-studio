@@ -26,7 +26,7 @@ try{
   await page.evaluate(()=>{cropRegion={x:.2,y:.2,w:.6,h:.6};cropChanged();});assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);
   await page.locator('#base2Enable').click();await page.waitForFunction(()=>FILMLABB_BASE2.snapshot().proposal);assert.equal(await page.locator('#base2Accept').isDisabled(),true);assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);
   await page.locator('#base2Cancel').click();
-  const n=await page.evaluate(()=>analysisCount38);await page.evaluate(()=>$('themeToggle').click());assert.equal(await page.evaluate(()=>analysisCount38),n);assert.equal(await page.locator('footer.foot').count(),1);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
+  const n=await page.evaluate(()=>analysisCount38);await page.evaluate(()=>FILMLABB_APPEARANCE.set(FILMLABB_APPEARANCE.get().mode==='light'?'dark':'light'));assert.equal(await page.evaluate(()=>analysisCount38),n);assert.equal(await page.locator('footer.foot').count(),1);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
   await page.screenshot({path:`docs/filmbas2/screenshots/${name}-accepted.png`});
   if(name==='desktop'){
    const parity=await page.evaluate(async()=>{

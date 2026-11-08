@@ -11,12 +11,39 @@ function guardDisclosure(card,body){
  const sync=()=>{if(!card.open&&body.contains(document.activeElement))card.querySelector('summary').focus({preventScroll:true});body.inert=!card.open;};
  sync();new MutationObserver(sync).observe(card,{attributes:true,attributeFilter:['open']});
 }
+// One owner for the settings disclosure. Keep the native details open during
+// its short exit, but make its controls inert immediately. Reversals start at
+// the currently painted position; no layout or image render is involved.
+function settingsDisclosure(){
+ const card=$('flInfoMenu'),body=$('flInfoContent'),summary=card.querySelector('summary'),reduced=matchMedia('(prefers-reduced-motion:reduce)');
+ let desired=card.open,observed=card.open,animation=null,serial=0;
+ function stop(){++serial;animation?.cancel();animation=null;}
+ function native(open){card.open=open;observed=open;}
+ function sync(){body.inert=!desired;summary.setAttribute('aria-expanded',String(desired));}
+ function finish(){stop();native(desired);sync();}
+ function set(open){
+  const painted=card.open,style=getComputedStyle(body),from=painted?{opacity:style.opacity,transform:style.transform}:{opacity:0,transform:'translateY(-5px)'};
+  stop();desired=open;
+  if(!open&&body.contains(document.activeElement))summary.focus({preventScroll:true});
+  sync();
+  if(reduced.matches||typeof body.animate!=='function'||(!open&&!painted)){native(open);return;}
+  if(open)native(true);
+  const id=serial,to=open?{opacity:1,transform:'translateY(0)'}:{opacity:0,transform:'translateY(-5px)'};
+  animation=body.animate([from,to],{duration:open?200:150,easing:getComputedStyle(body).getPropertyValue('--ui-motion-ease').trim()||'ease',fill:'both'});
+  animation.finished.then(()=>{if(id===serial)finish();},()=>{});
+ }
+ summary.addEventListener('click',e=>{e.preventDefault();set(!desired);});
+ document.addEventListener('pointerdown',e=>{if(desired&&!card.contains(e.target))set(false);});
+ card.addEventListener('keydown',e=>{if(e.key==='Escape'&&desired){e.preventDefault();set(false);summary.focus({preventScroll:true});}});
+ card.addEventListener('focusout',e=>{if(desired&&e.relatedTarget&&!card.contains(e.relatedTarget))set(false);});
+ new MutationObserver(()=>{if(card.open!==observed){stop();observed=card.open;desired=observed;if(!desired&&body.contains(document.activeElement))summary.focus({preventScroll:true});sync();}}).observe(card,{attributes:true,attributeFilter:['open']});
+ reduced.addEventListener('change',()=>{if(reduced.matches)finish();});sync();
+}
 function field(id,parent){const el=$(id);if(!el)return;const label=document.querySelector(`label[for="${id}"]`)||el.closest('label');if(label)parent.append(label);if(!label?.contains(el))parent.append(el);}
 const advanced=$('advancedSettings');t(advanced.querySelector('summary'),'Avancerad bildbehandling');
 const diagnostic=details('diagnostics3','Experiment och diagnostik',advanced);diagnostic.className='sidebar-details';
 for(const id of ['colorMode4','toneMode4'])field(id,diagnostic);
-const backend=$('previewBackend');if(backend){field('previewBackend',diagnostic);}
-for(const id of ['sourceStatus','previewBackendStatus','previewBackendInfo','calibrationStatus4','activeSettingsSummary'])move(id,diagnostic);
+for(const id of ['sourceStatus','calibrationStatus4','activeSettingsSummary'])move(id,diagnostic);
 const raw=details('rawSettings3','RAW-avkodning och källfärgrymd',diagnostic);raw.className='sidebar-details';
 const rawHint=$('rawMode4').nextElementSibling;field('rawMode4',raw);if(rawHint?.matches('p'))raw.append(rawHint);
 const technical=details('technicalResponse3','Teknisk filmrespons',advanced);
@@ -96,7 +123,7 @@ for(const id of cards){
  card.append(body);
  guardDisclosure(card,body);
 }
-guardDisclosure($('flInfoMenu'),$('flInfoMenu').querySelector('.fl-info-content'));
+settingsDisclosure();
 guardDisclosure($('geometryTools'),$('geometryTools').querySelector('.geometry-body'));
 // Reuse the original selector and live explanation in one compact advanced field.
 const engineField=engineSelect.closest('.field');engineField.classList.add('engine-settings');
@@ -137,17 +164,17 @@ function cardSummaries(){
  if(sharedLight)advancedItems.push(tr(currentLight().some(v=>v!==1)?'Ljuskällereferens aktiv':'Ljuskällereferens tillgänglig'));
  if(!state.autoLevels)advancedItems.push(tr('Manuellt tonomfång'));
  write('advancedSettings',advancedItems,'Standardinställningar');
- // There is no exclusive export-format setting: both real export buttons are
- // available. State both formats rather than inventing a selected TIFF/JPEG mode.
- write('exportProject',[state.jpegSize==='safe'?tr('JPEG · högst 12 megapixel'):tr('JPEG · originalstorlek'),tr('TIFF 16-bit · full upplösning'),...(rollShared.cropExportToFrame?[tr('Beskär till filmrutan')]:[])],'Standardinställningar');
+ // The toolbar format is device-local; image recipes still own JPEG sizing.
+ const exportFormat=$('exportFormat').value;
+ write('exportProject',[exportFormat==='jpeg'?(state.jpegSize==='safe'?tr('JPEG · högst 12 megapixel'):tr('JPEG · originalstorlek')):tr(exportFormat==='tiff'?'TIFF 16-bit · full upplösning':exportFormat==='png16'?'PNG 16-bit · full upplösning':'PNG 8-bit · full upplösning'),...(rollShared.cropExportToFrame?[tr('Beskär till filmrutan')]:[])],'Standardinställningar');
 }
 const valuesBefore=updateValues;
 updateValues=function(...args){const result=valuesBefore(...args);cardSummaries();return result;};
-for(const id of ['filmProfile','profileStrength','printStyle','jpegSize','cropExport']){
+for(const id of ['filmProfile','profileStrength','printStyle','jpegSize','cropExport','exportFormat']){
  for(const event of ['input','change'])$(id).addEventListener(event,cardSummaries);
 }
 const icons={import:'M12 3v12m-4-4 4 4 4-4M4 15v6h16v-6',export:'M12 15V3m-4 4 4-4 4 4M4 15v6h16v-6',queue:'M3 4h18v4H3zm0 6h18v4H3zm0 6h18v4H3z',settings:'M4 7h16M4 17h16M8 3v8m8 2v8',zoom:'M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12m5 11 6 6',frame:'M3 8V3h5m8 0h5v5m0 8v5h-5M8 21H3v-5',sample:'m15 3 6 6-4 4-6-6zm-4 4-8 8v6h6l8-8',check:'m4 12 5 5L20 6'};
-for(const [selector,name]of [['label[for="imageFile"]','import'],['#export','export'],['#exportTiff','export'],['#zoomIn','zoom'],['#zoomOut','zoom'],['#zoomReset','frame'],['#cropAuto','frame'],['#base2Region','sample'],['#base2Accept','check'],['#base2Enable','sample']]){const el=document.querySelector(selector);if(!el)continue;el.classList.add('ui3-icon');const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${icons[name]}"/></svg>`;el.style.setProperty('--tool-icon',`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);}
+for(const [selector,name]of [['label[for="imageFile"]','import'],['#export','export'],['#zoomIn','zoom'],['#zoomOut','zoom'],['#zoomReset','frame'],['#cropAuto','frame'],['#base2Region','sample'],['#base2Accept','check'],['#base2Enable','sample']]){const el=document.querySelector(selector);if(!el)continue;el.classList.add('ui3-icon');const svg=`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="${icons[name]}"/></svg>`;el.style.setProperty('--tool-icon',`url("data:image/svg+xml,${encodeURIComponent(svg)}")`);}
 function localizeBase(){for(const id of ['base2Status','base2Preview','base2Lock','base2ResponseLock','base2Cancel','base2Accept','base2Undo','base2Auto']){const el=$(id);if(el.textContent!==FILMLABB_I18N.fromSource(el.textContent))t(el,el.textContent);}}
 function baseState(){
  localizeBase();const snap=globalThis.FILMLABB_BASE2?.snapshot(),a=snap?.accepted;

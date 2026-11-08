@@ -27,3 +27,25 @@ export async function selectEngine(page,value){
  await control.selectOption(value);
  await page.waitForFunction(()=>!rollLoading);
 }
+
+export async function openSettings(page){
+ const summary=page.locator('#flInfoMenu > summary');
+ if(await summary.getAttribute('aria-expanded')!=='true')await summary.click();
+ await page.waitForFunction(()=>!document.getElementById('flInfoContent').inert);
+}
+export async function closeSettings(page){
+ if(await page.locator('#flInfoMenu > summary').getAttribute('aria-expanded')==='true')await page.locator('#flInfoMenu > summary').click();
+ await page.waitForFunction(()=>!document.getElementById('flInfoMenu').open);
+}
+export async function selectLanguage(page,language){
+ const wasOpen=await page.locator('#flInfoMenu > summary').getAttribute('aria-expanded')==='true';
+ await openSettings(page);await page.locator('#languageSelect').selectOption(language);if(!wasOpen)await closeSettings(page);
+}
+export async function selectAppearance(page,mode){
+ const wasOpen=await page.locator('#flInfoMenu > summary').getAttribute('aria-expanded')==='true';
+ await openSettings(page);await page.locator('#themeMode').selectOption(mode);if(!wasOpen)await closeSettings(page);
+}
+
+export async function selectBackend(page,backend){
+ await openSettings(page);await page.locator('#previewBackend').selectOption(backend);await closeSettings(page);
+}

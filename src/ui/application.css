@@ -90,15 +90,6 @@ header {
   align-items:center;
   gap:7px
 }
-.locale-control {
-  display:flex;
-  align-items:center;
-  gap:5px
-}
-.locale-control select {
-  width:auto;
-  max-width:118px
-}
 .support-link {
   white-space:nowrap
 }
@@ -256,7 +247,8 @@ input[type=checkbox] {
   min-width:0
 }
 .actions {
-  margin:0
+  margin:0;
+  flex-shrink:0
 }
 .toolrow select {
   flex:1 1 130px
@@ -348,30 +340,29 @@ input[type=checkbox] {
   background:var(--ui-raised,var(--ui-panel));
   border:1px solid var(--ui-control-edge,var(--ui-border));
   border-radius:var(--ui-radius);
-  box-shadow:var(--ui-raised-shadow,none)
+  box-shadow:var(--ui-raised-shadow,none);
+  transform-origin:top right
 }
 .fl-info-content .status {
   margin:8px 0
 }
-.appearance-settings {
+.settings-group {
   display:grid;
-  grid-template-columns:1fr 1fr;
   gap:6px 10px;
   margin:0 0 8px;
   padding:8px;
   border:1px solid var(--ui-border);
   border-radius:var(--ui-radius)
 }
-.appearance-settings legend {
+.settings-group legend {
   padding:0 5px;
   font-weight:650
 }
-.appearance-settings label {
-  grid-row:1
-}
-.appearance-settings select {
-  grid-row:2
-}
+.settings-group .hint,.settings-group .status,.settings-group h3 {margin:0}
+.appearance-settings {grid-template-columns:1fr 1fr}
+.appearance-settings label {grid-row:1}
+.appearance-settings select {grid-row:2;min-width:0;width:100%}
+#exportFormat {width:auto;max-width:148px}
 .help-link {
   display:inline-block;
   margin-top:12px
@@ -1007,7 +998,8 @@ input[type=range]:disabled::-moz-range-thumb {
   color:var(--ui-text);
   border:1px solid var(--ui-control-edge,var(--ui-border));
   border-radius:var(--ui-radius);
-  box-shadow:var(--ui-raised-shadow,none)
+  box-shadow:var(--ui-raised-shadow,none);
+  transform-origin:top right
 }
 #exportProgressPanel {
   top:calc(var(--fl-header-height,56px) + var(--fl-toolbar-height,48px) + 12px);

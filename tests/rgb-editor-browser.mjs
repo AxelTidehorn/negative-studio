@@ -1,3 +1,5 @@
+import {selectBackend} from './helpers/browser.mjs';
+import {selectLanguage} from './helpers/browser.mjs';
 /* Exercise the real CPU worker/GPU histogram lifecycle and existing editor bindings. */
 import assert from 'node:assert/strict';import fs from 'node:fs';import {ensureBuild} from '../tools/build-artifact.mjs';import {browserHarness} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness();
@@ -7,10 +9,11 @@ try{
  await p.locator('#imageFile').setInputFiles(['demo-negative.png','icon-192.png']);
  await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu'&&currentHistogram?.red&&!$('histogramInfo').textContent.includes('…'));
  const hiddenState=await p.evaluate(()=>JSON.stringify({state,rollShared,calibration}));
- for(const id of ['colorMode4','toneMode4','rawMode4','previewBackend']){
+ for(const id of ['colorMode4','toneMode4','rawMode4']){
   assert.equal(await p.locator('#'+id).isVisible(),false,id+' must not appear in the normal editor');
   assert.equal(await p.locator('#'+id).evaluate(e=>!!e.closest('#diagnostics3')&&!!e.closest('#advancedSettings')),true);
  }
+ assert.equal(await p.locator('#performanceSettings #previewBackend').count(),1);
  assert.equal(await p.evaluate(()=>JSON.stringify({state,rollShared,calibration})),hiddenState,'UI grouping does not mutate recipes');
  assert.equal(await p.evaluate(()=>$('frameSettingsGroup').closest('.tool-card')===$('calibration3')&&$('geometryTools').closest('.tool-card')===$('advancedSettings')),true);
  // Active controls are moved, never cloned; no second geometry section remains.
@@ -33,12 +36,12 @@ try{
  }
  const first=await p.evaluate(()=>JSON.stringify(currentHistogram.luminance)),n=await p.evaluate(()=>histogramRevision);await p.evaluate(()=>chooseFrame(1));await p.waitForFunction(n=>!rollLoading&&histogramRevision>n&&currentHistogram?.red&&!$('histogramInfo').textContent.includes('…'),n);assert.notEqual(await p.evaluate(()=>JSON.stringify(currentHistogram.luminance)),first);await validate('gpu');
  // The diagnostic switch still exercises the real CPU worker; no user preference migration.
- await p.locator('#previewBackend').evaluate(el=>{for(let a=el.parentElement;a;a=a.parentElement)if(a.tagName==='DETAILS')a.open=true;});await p.locator('#previewBackend').selectOption('cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38&&lastPreview38?.histogram);await validate('cpu');
+ await selectBackend(p,'cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38&&lastPreview38?.histogram);await validate('cpu');
  for(const tab of ['tabNeg','tabSplit','tabPos']){const n=await p.evaluate(()=>histogramRevision);await p.locator('#'+tab).click();await p.waitForFunction(n=>histogramRevision>n&&!workerBusy38&&!queued38,n);await validate('cpu');}
  // Worker-free fallback also reports the positive in comparison view.
  await p.evaluate(()=>{stopPreviewWork();workerDisabled38=true;setDisplay('split');});await p.waitForFunction(()=>currentHistogram?.red&&lastPreview38?.positive);await validate('cpu');
  for(const [lang,label]of [['en','Black / white'],['fr','Noir / blanc'],['es','Negro / blanco'],['de','Schwarz / Weiß'],['sv','Svart / vitt']]){
-  await p.locator('#languageSelect').selectOption(lang);await p.waitForFunction(label=>$('histogramClipping').textContent.startsWith(label),label);
+  await selectLanguage(p,lang);await p.waitForFunction(label=>$('histogramClipping').textContent.startsWith(label),label);
  }
  // Keep the same controls, reset semantics, footer and two-column tablet layout.
  await p.evaluate(()=>{setDisplay('positive');$('reset').click();});assert.equal(await p.evaluate(()=>state.exposure),0);

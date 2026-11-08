@@ -28,6 +28,7 @@
  #adjustmentPanel input[type=range]{min-height:36px}
  #adjustmentPanel .btn,#adjustmentPanel select{min-height:44px}
  #adjustmentPanel summary{min-height:40px}
+ .settings-group .btn,.settings-group select{min-height:36px}
 }
 
 /* The picture toolbar keeps its original anchor and pointer target area. */
@@ -67,16 +68,6 @@
 }
 /* Existing secondary surfaces: no wrappers and no photographic crossfades. */
 @supports (transition-behavior:allow-discrete) and selector(details::details-content) {
- #flInfoMenu::details-content {
-  transition:content-visibility var(--ui-motion-normal) allow-discrete;
- }
- #flInfoMenu > .fl-info-content {
-  opacity:0;
-  translate:0 -3px;
-  transition:opacity var(--ui-motion-normal) var(--ui-motion-ease),translate var(--ui-motion-normal) var(--ui-motion-ease);
- }
- #flInfoMenu[open] > .fl-info-content {opacity:1;translate:none}
- #flInfoMenu:not([open]) > .fl-info-content {pointer-events:none}
  #geometryTools::details-content {
   display:grid;
   grid-template-rows:minmax(0,0fr);

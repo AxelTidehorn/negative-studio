@@ -1,3 +1,4 @@
+import {openSettings,selectBackend} from './helpers/browser.mjs';
 import {selectEngine} from './helpers/browser.mjs';
 import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
@@ -61,8 +62,7 @@ try{
   try{await exportTiff();await new Promise(r=>setTimeout(r,0));$('previewBackend').value='cpu';$('previewBackend').dispatchEvent(new Event('change'));await exportTiff();await new Promise(r=>setTimeout(r,0));const jpeg=await jpegBytes();return {same:captured.length===2&&JSON.stringify(captured[0].bytes)===JSON.stringify(captured[1].bytes),jpeg:[jpeg[0],jpeg[1],jpeg[jpeg.length-2],jpeg[jpeg.length-1]]};}finally{downloadBlob=save;}
  });
  assert.equal(exports.same,true);assert.deepEqual(exports.jpeg,[255,216,255,217]);check('CPU/GPU selection leaves TIFF bytes identical; actual browser JPEG encoding succeeds');
- await page.locator('#previewBackend').evaluate(el=>{for(let p=el.parentElement;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#flInfoMenu > summary').click();
- await page.locator('#previewBackend').selectOption('auto');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ await selectBackend(page,'auto');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  // Context loss must show CPU automatically and be recoverable.
  await page.evaluate(()=>{globalThis.gpuLossTest=$('gpuPreview').getContext('webgl2').getExtension('WEBGL_lose_context');gpuLossTest.loseContext();});
  await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&FILMLABB_GPU.snapshot().contextLosses===1);
@@ -72,7 +72,7 @@ try{
  await page.locator('#advancedSettings').evaluate(el=>{el.open=true;});await selectEngine(page,'log39');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu');
  await selectEngine(page,'calibrated4');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  check('Comparison engine automatically uses CPU and Standard returns to GPU');
- await page.locator('#clearQueue').click();assert.equal(await page.locator('#gpuPreview').isVisible(),false);assert.equal(await page.locator('#empty').isVisible(),true);check('Clear queue removes GPU preview and releases resources');
+ await openSettings(page);await page.locator('#clearQueue').click();assert.equal(await page.locator('#gpuPreview').isVisible(),false);assert.equal(await page.locator('#empty').isVisible(),true);check('Clear queue removes GPU preview and releases resources');
  assert.deepEqual(errors,[]);
  // Independent mobile viewport, no-WebGL and failed color-check paths.
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true,locale:'sv-SE'});

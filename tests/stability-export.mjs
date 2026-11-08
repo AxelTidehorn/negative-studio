@@ -32,7 +32,7 @@ await test('TIFF uses sanitized prefix and keeps exact 16-bit samples',async()=>
 });
 await test('TIFF rejects encoder failure and unlocks export',async()=>{
  const h=setup();h.run("NSPixelKernel.exportRows=()=>{throw Error('fixture encoder failure');};");
- await assert.rejects(h.run('exportTiff()'),/fixture encoder failure/);assert.equal(h.run('exportBusy'),false);assert.equal(h.elements.get('exportTiff').disabled,false);
+ await assert.rejects(h.run('exportTiff()'),/fixture encoder failure/);assert.equal(h.run('exportBusy'),false);assert.equal(h.elements.get('export').disabled,false);
 });
 await test('batch TIFF reports partial failure and restores selection',async()=>{
  const h=setup();vm.runInContext(readSource('export-controller.js','utf8'),h.context);

@@ -1,3 +1,4 @@
+import {selectLanguage} from './helpers/browser.mjs';
 /* Caption containment and sidebar transitions on real native DOM/canvases. */
 import assert from 'node:assert/strict';import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';import {browserHarness} from './helpers/browser.mjs';
@@ -15,7 +16,7 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
  // must be fully contained; open captions must actually be invisible, not clipped.
  const captions=async()=>p.evaluate(()=>Array.from(document.querySelectorAll('#adjustmentPanel > .tool-card'),d=>{const e=d.querySelector('.card-status'),s=d.querySelector('summary'),r=e.getBoundingClientRect(),b=s.getBoundingClientRect(),cs=getComputedStyle(e),visible=cs.visibility==='visible'&&e.checkVisibility();return{id:d.id,open:d.open,visible,visibility:cs.visibility,display:cs.display,fits:!visible||(r.left>=b.left-.1&&r.right<=b.right+.1&&r.top>=b.top-.1&&r.bottom<=b.bottom+.1&&r.height>=e.scrollHeight-.5)};}));
  for(const lang of reduced?['sv','en','fr','es','de']:['en']){
-  await p.locator('#languageSelect').selectOption(lang);
+  await selectLanguage(p,lang);
   for(const id of cards){await p.locator('#'+id).evaluate(e=>e.open=false);}await settled(p);
   assert.ok((await captions()).every(x=>!x.open&&x.visible&&x.fits),lang+' closed captions');
   for(const id of cards){

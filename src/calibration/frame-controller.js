@@ -18,7 +18,7 @@ finishImport=function(message){
  for(let i=0;i<workingPreview.data.length;i++)previewSrc.data[Math.floor(i/3)*4+i%3]=Math.round(255*(sourceInfo.encoding==='linear'?CE.clamp(workingPreview.data[i]):CE.encode(workingPreview.data[i])));
  for(let i=3;i<previewSrc.data.length;i+=4)previewSrc.data[i]=255;
  $('preview').width=workingPreview.width;$('preview').height=workingPreview.height;$('preview').classList.remove('hidden');$('empty').classList.add('hidden');
- for(const id of ['export','exportTiff','sample','recalc','analyzeLevels'])$(id).disabled=false;
+ for(const id of ['export','sample','recalc','analyzeLevels'])$(id).disabled=false;
  sampleMode=false;
  const f=roll[activeFrame];if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.cropConfidence=d.confidence;state.cropMethod='auto';state.cropConfirmed=d.confidence>=.7;}
  $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.')+(f&&!NSFileFormats.isRaw(f.file.name)&&state.engine==='calibrated4'&&!NSV2Platform.validSource(working)?' · Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.':''));
@@ -73,7 +73,7 @@ chooseFrame=async function(i,{force=false}={}){
  cropDisplayDismissed=false;$('frameOptions').open=false;const f=roll[i];activeFrame=i;state={...defaultState(),...f.settings};cropRegion=f.crop?CE.rect(f.crop):{x:0,y:0,w:1,h:1};syncControls();
  src=null;hires=null;previewSrc=null;working=null;workingPreview=null;calibration=null;legacyLevels=null;beta3Base=null;beta3Levels=null;zoom=1;panX=0;panY=0;applyView();
  try{(typeof requestAnimationFrame==='function'?await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))):null);await readFile(f.file);if(!working)throw Error('Ingen bild avkodades.');$('qualityInfo').textContent=sourceInfo.label+' · samma färgkedja i förhandsvisning och export';saveCurrentFrame();return true;}
- catch(e){src=null;hires=null;previewSrc=null;working=null;workingPreview=null;$('preview').classList.add('hidden');$('cropOverlay').classList.add('hidden');for(const id of ['export','exportTiff'])$(id).disabled=true;setStatus('Importfel: '+e.message);return false;}
+ catch(e){src=null;hires=null;previewSrc=null;working=null;workingPreview=null;$('preview').classList.add('hidden');$('cropOverlay').classList.add('hidden');for(const id of ['export'])$(id).disabled=true;setStatus('Importfel: '+e.message);return false;}
  finally{rollLoading=false;refreshRollUI();if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>{if(loadId===frameLoadSequence)setFrameLoading(false);});else if(loadId===frameLoadSequence)setFrameLoading(false);}
 };
 
