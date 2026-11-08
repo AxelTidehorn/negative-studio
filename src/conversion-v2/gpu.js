@@ -5,7 +5,7 @@
 const V=root.NSConversionV2,R=root.NSV2Render,vec=a=>'vec3('+a.map(x=>String(x).includes('.')||String(x).includes('e')?String(x):x+'.0').join(',')+')';
 function parameters(recipe){
  root.NSV2Platform.validate(recipe);const c=recipe.calibration,b=recipe.base.rgb,hi=b.map(Math.fround),balance=R.prepareBalance(recipe.intent);
- const p={version:c.version,baseHi:hi,baseLo:b.map((x,i)=>x-hi[i]),logBase:b.map(Math.log10),logFloor:c.epsilon.map(Math.log10),slope:c.responses.map(x=>x.slope),reference:c.responses.map(x=>x.referenceDensity),norm:c.version===3?c.responses.map(x=>V.logExpm1(x.referenceDensity*x.slope)):[0,0,0],densityMatrix:c.densityMatrix||[[1,0,0],[0,1,0],[0,0,1]],matrix:c.matrix,offset:c.offset,balance:!!balance,knots:balance?.knots||[0,1,2],gains:balance?.gains||[[1,1,1],[1,1,1],[1,1,1]],exposure:2**recipe.intent.exposure,photo:R.photographicVersion(recipe.intent),output:R.outputVersion(recipe.intent)};
+ const p={version:c.version,baseHi:hi,baseLo:b.map((x,i)=>x-hi[i]),logBase:b.map(Math.log10),logFloor:c.epsilon.map(Math.log10),slope:c.responses.map(x=>x.slope),reference:c.responses.map(x=>x.referenceDensity),norm:c.version===3?c.responses.map(x=>V.logExpm1(x.referenceDensity*x.slope)):[0,0,0],densityMatrix:c.densityMatrix||[[1,0,0],[0,1,0],[0,0,1]],matrix:c.matrix,offset:c.offset,balance:!!balance,knots:balance?.knots||[0,1,2],gains:balance?.gains||[[1,1,1],[1,1,1],[1,1,1]],exposure:2**recipe.intent.exposure,photo:recipe.intent.tone==='luminance-matched-D-1'?3:R.photographicVersion(recipe.intent),output:R.outputVersion(recipe.intent)};
  // WebGL highp need not preserve subnormals. Refuse unsupported numerical
  // ranges instead of silently changing a historical recipe's reconstruction.
  if(p.logFloor.some(x=>x< -30)||p.slope.some(x=>Math.fround(x)<1e-12)||c.version===3&&p.reference.some(x=>x<1e-12)||Object.values(p).flat(Infinity).some(x=>typeof x==='number'&&!Number.isFinite(Math.fround(x))))throw Error('V2_GPU_PARAMETER_PRECISION');
@@ -58,7 +58,10 @@ vec3 v2positive(vec3 j){
  if(uV2Balance){float y=dot(V2_W,p);if(y>1e-30){int band=y<uV2Knots.y?0:1;float t=clamp((y-uV2Knots[band])/(uV2Knots[band+1]-uV2Knots[band]),0.0,1.0);t=t*t*(3.0-2.0*t);p*=mix(uV2Gain[band],uV2Gain[band+1],t);p*=y/dot(V2_W,p);}}
  float y=dot(V2_W,p)*uV2Exposure,c=1.0;
  if(uV2Photo!=0&&y>0.0){float z=log2(y/${R.photographicRecipe.pivot})/${R.photographicRecipe.widthEV.toFixed(1)};float th=z>=0.0?1.0-2.0/(exp(2.0*z)+1.0):2.0/(exp(-2.0*z)+1.0)-1.0;c=exp2(${R.photographicRecipe.maxEV}*th);}
- p=v2display(p*(uV2Exposure*c/(1.0+y*c)));
+ if(uV2Photo==3){float x=y,oldTone=x/(1.0+x),tone=oldTone;
+ if(x>1.0){float u=4.0/(x+3.0),shoulder=1.0-.5*u*u,t=clamp(x-1.0,0.0,1.0),w=t*t*t*(10.0+t*(-15.0+6.0*t));tone=mix(oldTone,shoulder,w);}
+ p=v2display(p*(y>0.0?uV2Exposure*tone/y:0.0));}
+ else {p=v2display(p*(uV2Exposure*c/(1.0+y*c)));}
  for(int k=0;k<3;k++)p[k]=p[k]<=.0031308?12.92*p[k]:1.055*pow(p[k],1.0/2.4)-.055;
  return p;
 }

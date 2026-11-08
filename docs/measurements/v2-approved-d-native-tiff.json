@@ -1,0 +1,101 @@
+{
+  "image": "05",
+  "tone": "luminance-matched-D-1",
+  "EV": 4.895904403331288,
+  "dimensions": [
+    6032,
+    4032
+  ],
+  "recipe": {
+    "version": "matched-shoulder-D-1",
+    "exposure": "scene-distribution-1",
+    "contrastEV": 0,
+    "knee": 1,
+    "blendEnd": 2,
+    "power": 2
+  },
+  "bytes": 145926902,
+  "sha256": "c49ff4ef9d3b4a7b86523bc43860c28c37d081c9a7d0f3755b638797ba1fcc13",
+  "approvedDsha256": "c49ff4ef9d3b4a7b86523bc43860c28c37d081c9a7d0f3755b638797ba1fcc13",
+  "byteIdentical": true,
+  "rawSHA256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+  "decoded": {
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "sampleFormat": [
+      1,
+      1,
+      1
+    ],
+    "iccBytes": 588,
+    "iccSHA256": "e367a110dae77b7b331d77efb79d8384779519f760ebaad7dd3f936a65e77852",
+    "maxCode": [
+      65535,
+      65535,
+      65535
+    ],
+    "clipped65535Counts": [
+      16440,
+      202,
+      167
+    ],
+    "non8BitSamples": 67820110,
+    "scope": "Every native pixel; no downsampling"
+  },
+  "highlight05Comparison": {
+    "basis": "Every native RGB16 sample in frozen A/B and byte-identical integrated D; same source crop",
+    "frame": {
+      "x": 0.20557029177718833,
+      "y": 0.05009920634920635,
+      "w": 0.6165450928381963,
+      "h": 0.8809523809523809
+    },
+    "variants": {
+      "A": {
+        "fullSourceClipped65535Counts": [
+          144,
+          148,
+          144
+        ],
+        "frameClipped65535Counts": [
+          12,
+          12,
+          12
+        ],
+        "framePixels": 13209888,
+        "framePixelsAnyChannelClipped": 12
+      },
+      "B": {
+        "fullSourceClipped65535Counts": [
+          144,
+          148,
+          144
+        ],
+        "frameClipped65535Counts": [
+          12,
+          12,
+          12
+        ],
+        "framePixels": 13209888,
+        "framePixelsAnyChannelClipped": 12
+      },
+      "D": {
+        "fullSourceClipped65535Counts": [
+          16440,
+          202,
+          167
+        ],
+        "frameClipped65535Counts": [
+          12,
+          12,
+          12
+        ],
+        "framePixels": 13209888,
+        "framePixelsAnyChannelClipped": 12
+      }
+    }
+  }
+}

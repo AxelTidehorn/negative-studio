@@ -7,7 +7,7 @@ assert.equal(V.prior.id,'rec2020-common-prior-1');assert.equal(V.prior.version,2
 assert.equal(V.latestPrior.version,3);assert.notEqual(V.latestPrior.id,V.prior.id);
 const legacy=P.prepare(im,{...input,calibration:V.prior}),saved=JSON.parse(JSON.stringify(legacy)),current=P.prepare(im,input),algorithm2=P.prepare(im,{...input,algorithmVersion:2});
 assert.equal(legacy.algorithmVersion,1);assert.equal(current.algorithmVersion,3);assert.equal(algorithm2.algorithmVersion,2);assert.equal(current.intent.algorithmVersion,3);assert.equal(current.intent.output, R.presentationRecipe.version);assert.equal(algorithm2.intent.algorithmVersion,undefined);
-assert.equal(legacy.intent.analysisVersion,'robust-p60-highlight-1');assert.equal(current.intent.analysisVersion,'robust-p60-highlight-2');
+assert.equal(legacy.intent.analysisVersion,'robust-p60-highlight-1');assert.equal(current.intent.analysisVersion,'scene-distribution-1');
 P.validate(saved);P.validate(algorithm2);P.validate(current);
 const restored=P.prepare(im,{...input,previous:saved});assert.deepEqual(restored,saved,'opening an existing recipe keeps all frozen parameters and intent');
 const oldKernel=V.compile(saved.source,saved.base,saved.calibration),roundTrip=V.compile(restored.source,restored.base,restored.calibration);

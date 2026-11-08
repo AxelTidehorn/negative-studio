@@ -1,0 +1,1823 @@
+{
+  "schema": "filmlabb.profile-inventory",
+  "version": 1,
+  "sourceCommit": "6e3d763cfdaad958fac7baf4d8acda3cb5e9733b",
+  "toneKnots": [
+    0,
+    0.08,
+    0.18,
+    0.35,
+    0.5,
+    0.65,
+    0.8,
+    0.92,
+    1
+  ],
+  "activeVersion": 2,
+  "legacy": {
+    "generic": {
+      "label": "Generisk C-41",
+      "type": "color",
+      "gamma": [
+        1,
+        1,
+        1
+      ],
+      "mix": 0,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1,
+      "curve": 1,
+      "toe": 0,
+      "shoulder": 0,
+      "lift": 0,
+      "note": "Neutral C-41-bas. Avsedd som jämförelseprofil utan tydlig smak."
+    },
+    "ultramax": {
+      "label": "Roadtrip 400",
+      "type": "color",
+      "gamma": [
+        1.03,
+        1,
+        1.02
+      ],
+      "mix": 0.028,
+      "matrix": [
+        [
+          1.08,
+          -0.03,
+          -0.02
+        ],
+        [
+          -0.01,
+          1.03,
+          -0.02
+        ],
+        [
+          -0.05,
+          0.01,
+          1.12
+        ]
+      ],
+      "sat": 1.12,
+      "curve": 1.04,
+      "toe": 0.04,
+      "shoulder": 0.03,
+      "lift": 0.006,
+      "shadowTint": [
+        1.05,
+        1,
+        0.96
+      ],
+      "highlightTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "note": "Roadtrip: lite varmare, punchigare och något mer mättad."
+    },
+    "gold": {
+      "label": "Sundown 200",
+      "type": "color",
+      "gamma": [
+        1.04,
+        1,
+        1.02
+      ],
+      "mix": 0.035,
+      "matrix": [
+        [
+          1.11,
+          -0.05,
+          -0.02
+        ],
+        [
+          -0.02,
+          1.03,
+          -0.01
+        ],
+        [
+          -0.08,
+          0.01,
+          1.07
+        ]
+      ],
+      "sat": 1.13,
+      "curve": 1.05,
+      "toe": 0.05,
+      "shoulder": 0.04,
+      "lift": 0.008,
+      "shadowTint": [
+        1.07,
+        1.01,
+        0.95
+      ],
+      "highlightTint": [
+        1.05,
+        1.02,
+        0.98
+      ],
+      "note": "Sundown: tydligt varmare gul/röd bias och lite mer klassisk konsumfilmskänsla."
+    },
+    "portra": {
+      "label": "Sunday Best 400",
+      "type": "color",
+      "gamma": [
+        0.99,
+        0.995,
+        1
+      ],
+      "mix": 0.01,
+      "matrix": [
+        [
+          1.03,
+          -0.01,
+          -0.02
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          -0.02,
+          0,
+          1.02
+        ]
+      ],
+      "sat": 0.95,
+      "curve": 0.98,
+      "toe": 0.02,
+      "shoulder": 0.08,
+      "lift": 0.01,
+      "shadowTint": [
+        1.01,
+        1,
+        0.99
+      ],
+      "highlightTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "note": "Sunday Best: mjukare kontrast, något lugnare mättnad och mild värme."
+    },
+    "portra160": {
+      "label": "Softspoken 160",
+      "type": "color",
+      "gamma": [
+        0.985,
+        0.995,
+        1
+      ],
+      "mix": 0.008,
+      "matrix": [
+        [
+          1.02,
+          0,
+          -0.02
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          -0.015,
+          0,
+          1.015
+        ]
+      ],
+      "sat": 0.92,
+      "curve": 0.97,
+      "toe": 0.02,
+      "shoulder": 0.1,
+      "lift": 0.012,
+      "shadowTint": [
+        1.01,
+        1,
+        1
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        0.99
+      ],
+      "note": "Softspoken: renare och lite mjukare, lägre mättnad än UltraMax/Gold."
+    },
+    "portra800": {
+      "label": "Afterhours 800",
+      "type": "color",
+      "gamma": [
+        1.01,
+        1,
+        1.005
+      ],
+      "mix": 0.015,
+      "matrix": [
+        [
+          1.05,
+          -0.02,
+          -0.02
+        ],
+        [
+          -0.01,
+          1.01,
+          0
+        ],
+        [
+          -0.03,
+          0,
+          1.04
+        ]
+      ],
+      "sat": 0.98,
+      "curve": 1.01,
+      "toe": 0.05,
+      "shoulder": 0.06,
+      "lift": 0.012,
+      "shadowTint": [
+        1.03,
+        1,
+        0.98
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        1
+      ],
+      "note": "Afterhours: något grövre, lite tätare skuggor men fortfarande relativt mild."
+    },
+    "ektar": {
+      "label": "Chroma 100",
+      "type": "color",
+      "gamma": [
+        1.05,
+        1.01,
+        1.03
+      ],
+      "mix": 0.04,
+      "matrix": [
+        [
+          1.12,
+          -0.04,
+          -0.03
+        ],
+        [
+          -0.01,
+          1.05,
+          -0.03
+        ],
+        [
+          -0.03,
+          0,
+          1.15
+        ]
+      ],
+      "sat": 1.2,
+      "curve": 1.08,
+      "toe": 0.03,
+      "shoulder": 0.02,
+      "lift": 0.003,
+      "shadowTint": [
+        1.03,
+        1,
+        0.97
+      ],
+      "highlightTint": [
+        1.01,
+        1,
+        1.02
+      ],
+      "note": "Chroma: mest färgstark och krispig av profilerna."
+    },
+    "proimage": {
+      "label": "Daylight 100",
+      "type": "color",
+      "gamma": [
+        1.015,
+        1,
+        1.01
+      ],
+      "mix": 0.016,
+      "matrix": [
+        [
+          1.05,
+          -0.02,
+          -0.02
+        ],
+        [
+          -0.01,
+          1.01,
+          -0.01
+        ],
+        [
+          -0.03,
+          0,
+          1.04
+        ]
+      ],
+      "sat": 1.02,
+      "curve": 1,
+      "toe": 0.03,
+      "shoulder": 0.04,
+      "lift": 0.007,
+      "shadowTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        1
+      ],
+      "note": "Daylight: ren, lätt varm och ganska neutral."
+    },
+    "fuji400": {
+      "label": "Coolside 400",
+      "type": "color",
+      "gamma": [
+        1,
+        1,
+        1.02
+      ],
+      "mix": 0.018,
+      "matrix": [
+        [
+          0.99,
+          0.01,
+          0
+        ],
+        [
+          -0.01,
+          1.03,
+          -0.01
+        ],
+        [
+          -0.02,
+          -0.01,
+          1.08
+        ]
+      ],
+      "sat": 1,
+      "curve": 1,
+      "toe": 0.03,
+      "shoulder": 0.05,
+      "lift": 0.006,
+      "shadowTint": [
+        0.99,
+        1.01,
+        1.03
+      ],
+      "highlightTint": [
+        0.99,
+        1,
+        1.02
+      ],
+      "note": "Coolside: svalare cyan/blå dragning och friskare grönt."
+    },
+    "fuji400h": {
+      "label": "Pale Green 400",
+      "type": "color",
+      "gamma": [
+        0.99,
+        1,
+        1.03
+      ],
+      "mix": 0.014,
+      "matrix": [
+        [
+          0.98,
+          0.015,
+          0.005
+        ],
+        [
+          -0.01,
+          1.03,
+          -0.01
+        ],
+        [
+          -0.01,
+          -0.015,
+          1.09
+        ]
+      ],
+      "sat": 0.94,
+      "curve": 0.98,
+      "toe": 0.02,
+      "shoulder": 0.08,
+      "lift": 0.012,
+      "shadowTint": [
+        0.99,
+        1.01,
+        1.04
+      ],
+      "highlightTint": [
+        1,
+        1.01,
+        1.03
+      ],
+      "note": "Pale Green: svalare, mjukare och mer pastellig Fuji-tolkning."
+    },
+    "hp5": {
+      "label": "Ilford HP5 Plus",
+      "type": "bw",
+      "bwCurve": 0.94,
+      "bwLift": 0.012,
+      "note": "HP5 Plus: mjukare lågdagrar, experimentell tonåtergivning – ej kalibrerad mot framkallare."
+    },
+    "trix": {
+      "label": "Kodak Tri-X 400",
+      "type": "bw",
+      "bwCurve": 1.12,
+      "bwLift": -0.008,
+      "note": "Tri-X 400: distinktare mellantoner, experimentell tonåtergivning – ej kalibrerad."
+    },
+    "fp4": {
+      "label": "Ilford FP4 Plus",
+      "type": "bw",
+      "bwCurve": 1.02,
+      "bwLift": 0.005,
+      "note": "FP4 Plus: balanserad tonrespons; experimentell grundkurva."
+    },
+    "delta100": {
+      "label": "Ilford Delta 100",
+      "type": "bw",
+      "bwCurve": 0.98,
+      "bwLift": 0.008,
+      "note": "Delta 100: mjuka mellantoner, experimentell grundkurva."
+    },
+    "bw": {
+      "label": "Svartvitt · neutral",
+      "type": "bw",
+      "gamma": [
+        1,
+        1,
+        1
+      ],
+      "mix": 0,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 0,
+      "curve": 1,
+      "toe": 0,
+      "shoulder": 0,
+      "lift": 0,
+      "note": "Svartvit densitetskonvertering utan simulering av korn eller specifik svartvit film."
+    }
+  },
+  "creativeV2": {
+    "ultramax": {
+      "label": "Roadtrip 400",
+      "tone": [
+        0,
+        0.045,
+        0.13,
+        0.32,
+        0.53,
+        0.73,
+        0.87,
+        0.95,
+        1
+      ],
+      "chroma": [
+        1.1,
+        1.08,
+        1.16,
+        1.05,
+        1.22,
+        1.12
+      ],
+      "low": [
+        0.003,
+        0,
+        -0.006
+      ],
+      "high": [
+        0.004,
+        0,
+        -0.004
+      ],
+      "note": "Färgstark vardagsfilm: tydliga mellantoner, friskt grönt och djupare blått. Mer stuns än Sundown."
+    },
+    "gold": {
+      "label": "Sundown 200",
+      "tone": [
+        0,
+        0.065,
+        0.16,
+        0.37,
+        0.55,
+        0.72,
+        0.84,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.15,
+        1.18,
+        0.96,
+        0.92,
+        0.92,
+        1.07
+      ],
+      "low": [
+        0.014,
+        0.002,
+        -0.02
+      ],
+      "high": [
+        0.025,
+        0.006,
+        -0.027
+      ],
+      "note": "Varm konsumfilmsinspiration: gyllene gula och röda färger, lugnare blått och rundare högdagrar."
+    },
+    "portra": {
+      "label": "Sunday Best 400",
+      "tone": [
+        0,
+        0.095,
+        0.205,
+        0.39,
+        0.55,
+        0.7,
+        0.83,
+        0.935,
+        1
+      ],
+      "chroma": [
+        0.96,
+        0.94,
+        0.93,
+        0.92,
+        0.94,
+        0.95
+      ],
+      "low": [
+        0.002,
+        0,
+        -0.003
+      ],
+      "high": [
+        0.01,
+        0.003,
+        -0.009
+      ],
+      "note": "Porträttinspiration: öppna mellantoner, återhållsamt orangeområde och mild värme. Ingen hudidentifiering."
+    },
+    "portra160": {
+      "label": "Softspoken 160",
+      "tone": [
+        0,
+        0.115,
+        0.235,
+        0.405,
+        0.55,
+        0.69,
+        0.815,
+        0.925,
+        1
+      ],
+      "chroma": [
+        0.89,
+        0.93,
+        0.9,
+        0.88,
+        0.91,
+        0.92
+      ],
+      "low": [
+        0,
+        0.001,
+        0
+      ],
+      "high": [
+        0.004,
+        0.002,
+        -0.004
+      ],
+      "note": "Lågmäld porträttfilm: lägre kontrast, diskret färg och renare neutralitet än Sunday Best."
+    },
+    "portra800": {
+      "label": "Afterhours 800",
+      "tone": [
+        0,
+        0.045,
+        0.125,
+        0.31,
+        0.49,
+        0.68,
+        0.82,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.04,
+        0.99,
+        0.92,
+        0.98,
+        1.05,
+        1.04
+      ],
+      "low": [
+        0.016,
+        0.002,
+        -0.014
+      ],
+      "high": [
+        0.003,
+        0,
+        0
+      ],
+      "note": "Kvällsporträtt: tätare skuggor, varmare låga toner och mer närvaro än de mjuka porträttprofilerna. Inget simulerat korn."
+    },
+    "ektar": {
+      "label": "Chroma 100",
+      "tone": [
+        0,
+        0.04,
+        0.115,
+        0.3,
+        0.505,
+        0.73,
+        0.875,
+        0.956,
+        1
+      ],
+      "chroma": [
+        1.16,
+        1.14,
+        1.24,
+        1.2,
+        1.26,
+        1.2
+      ],
+      "low": [
+        0,
+        0,
+        0
+      ],
+      "high": [
+        0.002,
+        0,
+        0.003
+      ],
+      "note": "Färgrik landskapsinspiration: djup svärta, starkare färgseparation och tydligt grönt/blått. Mest kontrastrik färgprofil."
+    },
+    "proimage": {
+      "label": "Daylight 100",
+      "tone": [
+        0,
+        0.07,
+        0.17,
+        0.35,
+        0.515,
+        0.675,
+        0.82,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.02,
+        1.05,
+        1.02,
+        0.99,
+        0.99,
+        1
+      ],
+      "low": [
+        0.003,
+        0.001,
+        -0.004
+      ],
+      "high": [
+        0.008,
+        0.003,
+        -0.009
+      ],
+      "note": "Balanserad vardagsfilm: lätt värme, naturligare kontrast och små färgförskjutningar. Det lugnaste alternativet nära Neutral."
+    },
+    "fuji400": {
+      "label": "Coolside 400",
+      "tone": [
+        0,
+        0.05,
+        0.14,
+        0.33,
+        0.515,
+        0.705,
+        0.85,
+        0.95,
+        1
+      ],
+      "chroma": [
+        1,
+        0.96,
+        1.18,
+        1.12,
+        1.14,
+        1.03
+      ],
+      "low": [
+        -0.014,
+        0.004,
+        0.014
+      ],
+      "high": [
+        -0.004,
+        0.004,
+        0.006
+      ],
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -0.02,
+          1.02,
+          0
+        ],
+        [
+          -0.015,
+          0.015,
+          1
+        ]
+      ],
+      "note": "Sval vardagsfilmsinspiration: tydligare grönt/cyan, friskare skuggor och fastare kontrast än Pale Green."
+    },
+    "fuji400h": {
+      "label": "Pale Green 400",
+      "tone": [
+        0,
+        0.13,
+        0.255,
+        0.425,
+        0.575,
+        0.71,
+        0.83,
+        0.935,
+        1
+      ],
+      "chroma": [
+        0.92,
+        0.9,
+        0.91,
+        0.88,
+        0.91,
+        0.92
+      ],
+      "low": [
+        -0.012,
+        0.008,
+        0.01
+      ],
+      "high": [
+        0,
+        0.005,
+        0.002
+      ],
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -0.015,
+          1.015,
+          0
+        ],
+        [
+          0,
+          0.01,
+          0.99
+        ]
+      ],
+      "note": "Mjuk professionell färgfilmsinspiration: ljusare lågdagrar, pastellfärg och försiktig grön/sval ton. Den ljusaste färgprofilen."
+    },
+    "hp5": {
+      "label": "Soft Grain",
+      "type": "bw",
+      "tone": [
+        0,
+        0.105,
+        0.225,
+        0.405,
+        0.565,
+        0.715,
+        0.84,
+        0.94,
+        1
+      ],
+      "mono": [
+        0.26,
+        0.64,
+        0.1
+      ],
+      "note": "Dokumentärt svartvitt: öppnare skuggor och mjukt sammanhängande mellantoner. HP5-inspirerad tolkning utan kornsimulering."
+    },
+    "trix": {
+      "label": "Deep Silver",
+      "type": "bw",
+      "tone": [
+        0,
+        0.03,
+        0.105,
+        0.285,
+        0.5,
+        0.735,
+        0.88,
+        0.96,
+        1
+      ],
+      "mono": [
+        0.33,
+        0.57,
+        0.1
+      ],
+      "note": "Klassiskt uttrycksfullt svartvitt: djupare svärta, starkare mellantoner och ljusare rött. Tri-X-inspirerad tolkning."
+    },
+    "fp4": {
+      "label": "Fine Tone",
+      "type": "bw",
+      "tone": [
+        0,
+        0.065,
+        0.17,
+        0.35,
+        0.535,
+        0.71,
+        0.85,
+        0.95,
+        1
+      ],
+      "mono": [
+        0.28,
+        0.6,
+        0.12
+      ],
+      "note": "Balanserat svartvitt: rakare låga toner, tydlig detaljteckning och måttlig kontrast. FP4-inspirerad tolkning."
+    },
+    "delta100": {
+      "label": "Silver Light",
+      "type": "bw",
+      "tone": [
+        0,
+        0.085,
+        0.195,
+        0.37,
+        0.545,
+        0.705,
+        0.825,
+        0.925,
+        1
+      ],
+      "mono": [
+        0.23,
+        0.64,
+        0.13
+      ],
+      "note": "Rent, modernt svartvitt: tydliga mellantoner och lugnare högdagrar. Delta-inspirerad tolkning."
+    }
+  },
+  "resolvedV2": {
+    "generic": {
+      "label": "Generisk C-41",
+      "type": "color",
+      "gamma": [
+        1,
+        1,
+        1
+      ],
+      "mix": 0,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1,
+      "curve": 1,
+      "toe": 0,
+      "shoulder": 0,
+      "lift": 0,
+      "note": "Neutral C-41-bas. Avsedd som jämförelseprofil utan tydlig smak."
+    },
+    "ultramax": {
+      "label": "Roadtrip 400",
+      "type": "color",
+      "gamma": [
+        1.03,
+        1,
+        1.02
+      ],
+      "mix": 0.028,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1.12,
+      "curve": 1.04,
+      "toe": 0.04,
+      "shoulder": 0.03,
+      "lift": 0.006,
+      "shadowTint": [
+        1.05,
+        1,
+        0.96
+      ],
+      "highlightTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "note": "Färgstark vardagsfilm: tydliga mellantoner, friskt grönt och djupare blått. Mer stuns än Sundown.",
+      "tone": [
+        0,
+        0.045,
+        0.13,
+        0.32,
+        0.53,
+        0.73,
+        0.87,
+        0.95,
+        1
+      ],
+      "chroma": [
+        1.1,
+        1.08,
+        1.16,
+        1.05,
+        1.22,
+        1.12
+      ],
+      "low": [
+        0.003,
+        0,
+        -0.006
+      ],
+      "high": [
+        0.004,
+        0,
+        -0.004
+      ],
+      "creativeVersion": 2
+    },
+    "gold": {
+      "label": "Sundown 200",
+      "type": "color",
+      "gamma": [
+        1.04,
+        1,
+        1.02
+      ],
+      "mix": 0.035,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1.13,
+      "curve": 1.05,
+      "toe": 0.05,
+      "shoulder": 0.04,
+      "lift": 0.008,
+      "shadowTint": [
+        1.07,
+        1.01,
+        0.95
+      ],
+      "highlightTint": [
+        1.05,
+        1.02,
+        0.98
+      ],
+      "note": "Varm konsumfilmsinspiration: gyllene gula och röda färger, lugnare blått och rundare högdagrar.",
+      "tone": [
+        0,
+        0.065,
+        0.16,
+        0.37,
+        0.55,
+        0.72,
+        0.84,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.15,
+        1.18,
+        0.96,
+        0.92,
+        0.92,
+        1.07
+      ],
+      "low": [
+        0.014,
+        0.002,
+        -0.02
+      ],
+      "high": [
+        0.025,
+        0.006,
+        -0.027
+      ],
+      "creativeVersion": 2
+    },
+    "portra": {
+      "label": "Sunday Best 400",
+      "type": "color",
+      "gamma": [
+        0.99,
+        0.995,
+        1
+      ],
+      "mix": 0.01,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 0.95,
+      "curve": 0.98,
+      "toe": 0.02,
+      "shoulder": 0.08,
+      "lift": 0.01,
+      "shadowTint": [
+        1.01,
+        1,
+        0.99
+      ],
+      "highlightTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "note": "Porträttinspiration: öppna mellantoner, återhållsamt orangeområde och mild värme. Ingen hudidentifiering.",
+      "tone": [
+        0,
+        0.095,
+        0.205,
+        0.39,
+        0.55,
+        0.7,
+        0.83,
+        0.935,
+        1
+      ],
+      "chroma": [
+        0.96,
+        0.94,
+        0.93,
+        0.92,
+        0.94,
+        0.95
+      ],
+      "low": [
+        0.002,
+        0,
+        -0.003
+      ],
+      "high": [
+        0.01,
+        0.003,
+        -0.009
+      ],
+      "creativeVersion": 2
+    },
+    "portra160": {
+      "label": "Softspoken 160",
+      "type": "color",
+      "gamma": [
+        0.985,
+        0.995,
+        1
+      ],
+      "mix": 0.008,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 0.92,
+      "curve": 0.97,
+      "toe": 0.02,
+      "shoulder": 0.1,
+      "lift": 0.012,
+      "shadowTint": [
+        1.01,
+        1,
+        1
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        0.99
+      ],
+      "note": "Lågmäld porträttfilm: lägre kontrast, diskret färg och renare neutralitet än Sunday Best.",
+      "tone": [
+        0,
+        0.115,
+        0.235,
+        0.405,
+        0.55,
+        0.69,
+        0.815,
+        0.925,
+        1
+      ],
+      "chroma": [
+        0.89,
+        0.93,
+        0.9,
+        0.88,
+        0.91,
+        0.92
+      ],
+      "low": [
+        0,
+        0.001,
+        0
+      ],
+      "high": [
+        0.004,
+        0.002,
+        -0.004
+      ],
+      "creativeVersion": 2
+    },
+    "portra800": {
+      "label": "Afterhours 800",
+      "type": "color",
+      "gamma": [
+        1.01,
+        1,
+        1.005
+      ],
+      "mix": 0.015,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 0.98,
+      "curve": 1.01,
+      "toe": 0.05,
+      "shoulder": 0.06,
+      "lift": 0.012,
+      "shadowTint": [
+        1.03,
+        1,
+        0.98
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        1
+      ],
+      "note": "Kvällsporträtt: tätare skuggor, varmare låga toner och mer närvaro än de mjuka porträttprofilerna. Inget simulerat korn.",
+      "tone": [
+        0,
+        0.045,
+        0.125,
+        0.31,
+        0.49,
+        0.68,
+        0.82,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.04,
+        0.99,
+        0.92,
+        0.98,
+        1.05,
+        1.04
+      ],
+      "low": [
+        0.016,
+        0.002,
+        -0.014
+      ],
+      "high": [
+        0.003,
+        0,
+        0
+      ],
+      "creativeVersion": 2
+    },
+    "ektar": {
+      "label": "Chroma 100",
+      "type": "color",
+      "gamma": [
+        1.05,
+        1.01,
+        1.03
+      ],
+      "mix": 0.04,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1.2,
+      "curve": 1.08,
+      "toe": 0.03,
+      "shoulder": 0.02,
+      "lift": 0.003,
+      "shadowTint": [
+        1.03,
+        1,
+        0.97
+      ],
+      "highlightTint": [
+        1.01,
+        1,
+        1.02
+      ],
+      "note": "Färgrik landskapsinspiration: djup svärta, starkare färgseparation och tydligt grönt/blått. Mest kontrastrik färgprofil.",
+      "tone": [
+        0,
+        0.04,
+        0.115,
+        0.3,
+        0.505,
+        0.73,
+        0.875,
+        0.956,
+        1
+      ],
+      "chroma": [
+        1.16,
+        1.14,
+        1.24,
+        1.2,
+        1.26,
+        1.2
+      ],
+      "low": [
+        0,
+        0,
+        0
+      ],
+      "high": [
+        0.002,
+        0,
+        0.003
+      ],
+      "creativeVersion": 2
+    },
+    "proimage": {
+      "label": "Daylight 100",
+      "type": "color",
+      "gamma": [
+        1.015,
+        1,
+        1.01
+      ],
+      "mix": 0.016,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 1.02,
+      "curve": 1,
+      "toe": 0.03,
+      "shoulder": 0.04,
+      "lift": 0.007,
+      "shadowTint": [
+        1.03,
+        1,
+        0.99
+      ],
+      "highlightTint": [
+        1.02,
+        1,
+        1
+      ],
+      "note": "Balanserad vardagsfilm: lätt värme, naturligare kontrast och små färgförskjutningar. Det lugnaste alternativet nära Neutral.",
+      "tone": [
+        0,
+        0.07,
+        0.17,
+        0.35,
+        0.515,
+        0.675,
+        0.82,
+        0.93,
+        1
+      ],
+      "chroma": [
+        1.02,
+        1.05,
+        1.02,
+        0.99,
+        0.99,
+        1
+      ],
+      "low": [
+        0.003,
+        0.001,
+        -0.004
+      ],
+      "high": [
+        0.008,
+        0.003,
+        -0.009
+      ],
+      "creativeVersion": 2
+    },
+    "fuji400": {
+      "label": "Coolside 400",
+      "type": "color",
+      "gamma": [
+        1,
+        1,
+        1.02
+      ],
+      "mix": 0.018,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -0.02,
+          1.02,
+          0
+        ],
+        [
+          -0.015,
+          0.015,
+          1
+        ]
+      ],
+      "sat": 1,
+      "curve": 1,
+      "toe": 0.03,
+      "shoulder": 0.05,
+      "lift": 0.006,
+      "shadowTint": [
+        0.99,
+        1.01,
+        1.03
+      ],
+      "highlightTint": [
+        0.99,
+        1,
+        1.02
+      ],
+      "note": "Sval vardagsfilmsinspiration: tydligare grönt/cyan, friskare skuggor och fastare kontrast än Pale Green.",
+      "tone": [
+        0,
+        0.05,
+        0.14,
+        0.33,
+        0.515,
+        0.705,
+        0.85,
+        0.95,
+        1
+      ],
+      "chroma": [
+        1,
+        0.96,
+        1.18,
+        1.12,
+        1.14,
+        1.03
+      ],
+      "low": [
+        -0.014,
+        0.004,
+        0.014
+      ],
+      "high": [
+        -0.004,
+        0.004,
+        0.006
+      ],
+      "creativeVersion": 2
+    },
+    "fuji400h": {
+      "label": "Pale Green 400",
+      "type": "color",
+      "gamma": [
+        0.99,
+        1,
+        1.03
+      ],
+      "mix": 0.014,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          -0.015,
+          1.015,
+          0
+        ],
+        [
+          0,
+          0.01,
+          0.99
+        ]
+      ],
+      "sat": 0.94,
+      "curve": 0.98,
+      "toe": 0.02,
+      "shoulder": 0.08,
+      "lift": 0.012,
+      "shadowTint": [
+        0.99,
+        1.01,
+        1.04
+      ],
+      "highlightTint": [
+        1,
+        1.01,
+        1.03
+      ],
+      "note": "Mjuk professionell färgfilmsinspiration: ljusare lågdagrar, pastellfärg och försiktig grön/sval ton. Den ljusaste färgprofilen.",
+      "tone": [
+        0,
+        0.13,
+        0.255,
+        0.425,
+        0.575,
+        0.71,
+        0.83,
+        0.935,
+        1
+      ],
+      "chroma": [
+        0.92,
+        0.9,
+        0.91,
+        0.88,
+        0.91,
+        0.92
+      ],
+      "low": [
+        -0.012,
+        0.008,
+        0.01
+      ],
+      "high": [
+        0,
+        0.005,
+        0.002
+      ],
+      "creativeVersion": 2
+    },
+    "hp5": {
+      "label": "Soft Grain",
+      "type": "bw",
+      "bwCurve": 0.94,
+      "bwLift": 0.012,
+      "note": "Dokumentärt svartvitt: öppnare skuggor och mjukt sammanhängande mellantoner. HP5-inspirerad tolkning utan kornsimulering.",
+      "tone": [
+        0,
+        0.105,
+        0.225,
+        0.405,
+        0.565,
+        0.715,
+        0.84,
+        0.94,
+        1
+      ],
+      "mono": [
+        0.26,
+        0.64,
+        0.1
+      ],
+      "creativeVersion": 2,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "trix": {
+      "label": "Deep Silver",
+      "type": "bw",
+      "bwCurve": 1.12,
+      "bwLift": -0.008,
+      "note": "Klassiskt uttrycksfullt svartvitt: djupare svärta, starkare mellantoner och ljusare rött. Tri-X-inspirerad tolkning.",
+      "tone": [
+        0,
+        0.03,
+        0.105,
+        0.285,
+        0.5,
+        0.735,
+        0.88,
+        0.96,
+        1
+      ],
+      "mono": [
+        0.33,
+        0.57,
+        0.1
+      ],
+      "creativeVersion": 2,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "fp4": {
+      "label": "Fine Tone",
+      "type": "bw",
+      "bwCurve": 1.02,
+      "bwLift": 0.005,
+      "note": "Balanserat svartvitt: rakare låga toner, tydlig detaljteckning och måttlig kontrast. FP4-inspirerad tolkning.",
+      "tone": [
+        0,
+        0.065,
+        0.17,
+        0.35,
+        0.535,
+        0.71,
+        0.85,
+        0.95,
+        1
+      ],
+      "mono": [
+        0.28,
+        0.6,
+        0.12
+      ],
+      "creativeVersion": 2,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "delta100": {
+      "label": "Silver Light",
+      "type": "bw",
+      "bwCurve": 0.98,
+      "bwLift": 0.008,
+      "note": "Rent, modernt svartvitt: tydliga mellantoner och lugnare högdagrar. Delta-inspirerad tolkning.",
+      "tone": [
+        0,
+        0.085,
+        0.195,
+        0.37,
+        0.545,
+        0.705,
+        0.825,
+        0.925,
+        1
+      ],
+      "mono": [
+        0.23,
+        0.64,
+        0.13
+      ],
+      "creativeVersion": 2,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ]
+    },
+    "bw": {
+      "label": "Svartvitt · neutral",
+      "type": "bw",
+      "gamma": [
+        1,
+        1,
+        1
+      ],
+      "mix": 0,
+      "matrix": [
+        [
+          1,
+          0,
+          0
+        ],
+        [
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          0,
+          1
+        ]
+      ],
+      "sat": 0,
+      "curve": 1,
+      "toe": 0,
+      "shoulder": 0,
+      "lift": 0,
+      "note": "Svartvit densitetskonvertering utan simulering av korn eller specifik svartvit film."
+    }
+  },
+  "printStyles": {
+    "neutral": {
+      "label": "Neutral",
+      "contrast": 1,
+      "shoulder": 0
+    },
+    "soft": {
+      "label": "Mjuk",
+      "contrast": 0.9,
+      "shoulder": 0.2
+    },
+    "classic": {
+      "label": "Klassisk",
+      "contrast": 1.1,
+      "shoulder": 0
+    }
+  }
+}
