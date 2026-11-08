@@ -1,0 +1,17 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';
+import '../src/conversion-v2/core.js';import '../src/conversion-v2/render.js';import '../src/conversion-v2/fast.js';
+import {parameters,placement,propose} from '../tools/v2-scene-tone-model.mjs';
+const R=NSV2Render,V=NSConversionV2,recipe=R.reconstructionExposureRecipe;
+const stats={p10:.01,p50:.04,p60:.055,p90:.073,p99:.082,samples:1000,validFraction:.9,areaStatus:'confirmed'};
+const result=placement(R,stats,recipe);assert.ok(result.correctionEV>.9&&result.correctionEV<=1);assert.ok(result.appliedEV>result.baselineEV);
+const dark={...stats,p10:.05,p50:.06,p60:.065,p90:.3,p99:.5};assert.ok(placement(R,dark,recipe).correctionEV<-.4);
+const normal={...stats,p10:.001,p50:.013,p60:.02,p90:.08,p99:.36};assert.equal(placement(R,normal,recipe).correctionEV,0);assert.equal(placement(R,normal,recipe).appliedEV,R.exposureFromStatistics(normal,recipe).appliedEV);
+for(const scale of [.01,.1,10,100]){const scaled={...stats};for(const key of ['p10','p50','p60','p90','p99'])scaled[key]*=scale;assert.ok(Math.abs(placement(R,scaled,recipe).correctionEV-result.correctionEV)<1e-13);}
+for(const override of [{areaStatus:'missing'},{areaStatus:'estimated',areaConfidence:.65},{samples:0},{validFraction:NaN},{p60:Infinity},{p90:NaN},{p10:0},{p90:.001}]){const s={...stats,...override},a=placement(R,s,recipe),b=R.exposureFromStatistics(s,recipe);assert.equal(a.correctionEV,0);assert.equal(a.appliedEV,b.appliedEV);assert.ok(a.candidateFallback);}
+for(const p60 of [1e-300,1e300])assert.ok(Number.isFinite(placement(R,{...stats,p10:p60/2,p50:p60,p60,p90:p60*1.1,p99:p60*1.2},recipe).appliedEV));
+let prev;for(let i=0;i<10000;i++){const p90=stats.p60*2**(.1+i/5000),a=placement(R,{...stats,p90,p99:p90*2},recipe);assert.ok(Number.isFinite(a.appliedEV));assert.ok(a.correctionEV>=-.5&&a.correctionEV<=1);if(prev)assert.ok(Math.abs(a.appliedEV-prev.appliedEV)<.002);prev=a;}
+const im={width:8,height:8,channels:3,colorSpace:'rec2020',encoding:'linear',data:new Float32Array(8*8*3).fill(.1)},source=V.source(im,{revision:'tone-test'}),k=V.compile(source,V.assumed([1,1,1],source,V.capture({session:"test",recipe:{decoder:"synthetic"}})),V.latestPrior),intent=R.analyze(im,k,{algorithmVersion:3,photographic:2,output:R.presentationRecipe.version,analysisArea:{region:{x:0,y:0,w:1,h:1},status:'confirmed'}}),saved=JSON.stringify(intent),candidate=propose(R,intent,stats).intent;
+assert.equal(JSON.stringify(intent),saved);for(const key of ['colorCorrection','tone','photographic','output','algorithmVersion','baseId','calibrationId'])assert.deepEqual(candidate[key],intent[key]);
+for(const mode of ['auto','technical','fixed']){const f=NSV2Fast.compile(k,candidate,{viewMode:mode});for(const p of [[.1,.2,.3],[1e-8,.01,.1],[.8,.9,.7]]){const out=[0,0,0];f.pixel(...p,out);const oracle=R.view(k.pixel(p).positive,candidate,mode);assert.ok(out.every((v,c)=>Math.abs(v-oracle[c])<1e-13));if(mode!=='auto')assert.deepEqual(R.view(k.pixel(p).positive,candidate,mode),R.view(k.pixel(p).positive,intent,mode));}}
+for(const f of ['index.html','app-manifest.mjs','src/conversion-v2/render.js','src/conversion-v2/platform.js'])assert.ok(!fs.readFileSync(f,'utf8').includes('v2-scene-tone-model'));
+assert.ok(Object.isFrozen(parameters));console.log('PASS bounded continuous scene experiment, fallback, scale invariance, frozen intent, CPU oracle and fixed/technical invariance; no production integration');
