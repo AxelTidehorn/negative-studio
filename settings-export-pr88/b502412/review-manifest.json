@@ -1,0 +1,369 @@
+{
+  "productCommit": "b502412eebee99958669ed66f2cd351a05aa46ed",
+  "pullRequest": 88,
+  "appBuild": {
+    "schema": "filmlabb.build",
+    "schemaVersion": 1,
+    "sourceCommit": "b502412eebee99958669ed66f2cd351a05aa46ed",
+    "sourceBranch": "feat/settings-and-export-controls",
+    "dirty": false,
+    "version": "2.0.0-beta.43.dev.gb502412eebee",
+    "contentHash": "b886f2653bd9aa302dec5efe22362b43cb6f6ac330968fabb488bf6bc46ca46d"
+  },
+  "localFullGroups": 125,
+  "localFullFailures": 0,
+  "localFullSeconds": 660.000179988,
+  "screenshots": [
+    {
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "touch": false,
+      "mode": "dark",
+      "opened": false,
+      "file": "desktop-dark-settings-closed.png",
+      "sha256": "c7094fd0df9f78ca1593d67055adb1e78378a0ea701fca3fbc1bf9404b9c7ccb",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": false,
+        "inert": true,
+        "expanded": "false",
+        "menu": {
+          "x": 1064,
+          "y": 89.5,
+          "w": 370,
+          "h": 541.515625,
+          "scrollHeight": 540
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "touch": false,
+      "mode": "dark",
+      "opened": true,
+      "file": "desktop-dark-settings-open.png",
+      "sha256": "e71285505c12f35e381f91cbca2a42c02d266b72d1ecf905118cfd697c79bce1",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": true,
+        "inert": false,
+        "expanded": "true",
+        "menu": {
+          "x": 1064,
+          "y": 93.5,
+          "w": 370,
+          "h": 541.515625,
+          "scrollHeight": 540
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "touch": false,
+      "mode": "light",
+      "opened": false,
+      "file": "desktop-light-settings-closed.png",
+      "sha256": "40894373a716090273f7d76e6e651a8f1b66103341c4e5bda04b69ee44869951",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": false,
+        "inert": true,
+        "expanded": "false",
+        "menu": {
+          "x": 1064,
+          "y": 89.5,
+          "w": 370,
+          "h": 541.515625,
+          "scrollHeight": 540
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "desktop",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "touch": false,
+      "mode": "light",
+      "opened": true,
+      "file": "desktop-light-settings-open.png",
+      "sha256": "db8147046e27415b24566fe6973e2ee911c69c4e9f76abf5bae25b7ea6c722fd",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": true,
+        "inert": false,
+        "expanded": "true",
+        "menu": {
+          "x": 1064,
+          "y": 93.5,
+          "w": 370,
+          "h": 541.515625,
+          "scrollHeight": 540
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "ipad",
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "touch": true,
+      "mode": "dark",
+      "opened": false,
+      "file": "ipad-dark-settings-closed.png",
+      "sha256": "040b3b0e27c92bb4434b24f94f56714f1b17b5286a2921019dae4df311e77b93",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": false,
+        "inert": true,
+        "expanded": "false",
+        "menu": {
+          "x": 291.609375,
+          "y": 97,
+          "w": 370,
+          "h": 537.59375,
+          "scrollHeight": 580
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "ipad",
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "touch": true,
+      "mode": "dark",
+      "opened": true,
+      "file": "ipad-dark-settings-open.png",
+      "sha256": "8fd7491f4af90457e1bb01d78aa22e1debafb1b22cd5785f06e2d982a62d4933",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": true,
+        "inert": false,
+        "expanded": "true",
+        "menu": {
+          "x": 296.25,
+          "y": 101,
+          "w": 370,
+          "h": 537.59375,
+          "scrollHeight": 580
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "ipad",
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "touch": true,
+      "mode": "light",
+      "opened": false,
+      "file": "ipad-light-settings-closed.png",
+      "sha256": "e9e4caec8838e0bf2f432ebd10af26fdf94510ea73a1cf70601f53a7b4087c01",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": false,
+        "inert": true,
+        "expanded": "false",
+        "menu": {
+          "x": 291.609375,
+          "y": 97,
+          "w": 370,
+          "h": 537.59375,
+          "scrollHeight": 580
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    },
+    {
+      "device": "ipad",
+      "viewport": {
+        "width": 1024,
+        "height": 768
+      },
+      "touch": true,
+      "mode": "light",
+      "opened": true,
+      "file": "ipad-light-settings-open.png",
+      "sha256": "ed05b48e122ad4b39141b3a504aee988dbc1dd1bc5fabef910332eb5f75265a0",
+      "ui": {
+        "horizontalOverflow": false,
+        "menuOpen": true,
+        "inert": false,
+        "expanded": "true",
+        "menu": {
+          "x": 296.25,
+          "y": 101,
+          "w": 370,
+          "h": 537.59375,
+          "scrollHeight": 580
+        },
+        "format": "jpeg",
+        "headerHeight": 52,
+        "settingsGroups": [
+          "Appearance",
+          "Workspace",
+          "Performance and diagnostics",
+          "Other"
+        ]
+      },
+      "errors": []
+    }
+  ],
+  "exportProof": {
+    "source": {
+      "width": 64,
+      "height": 48,
+      "dataType": "Float32Array",
+      "encoding": "linear",
+      "colorSpace": "rec2020",
+      "engine": "v2"
+    },
+    "fixture": "repository synthetic-negative.dng (not a private photograph)",
+    "jpeg": {
+      "bits": 8,
+      "width": 64,
+      "height": 48,
+      "bytes": 1074
+    },
+    "png8": {
+      "width": 64,
+      "height": 48,
+      "bits": 8,
+      "srgb": true,
+      "bytes": 2939
+    },
+    "png16": {
+      "width": 64,
+      "height": 48,
+      "bits": 16,
+      "colorType": 2,
+      "srgb": true,
+      "bytes": 4808,
+      "non8BitSamples": 9132,
+      "totalSamples": 9216,
+      "examples": [
+        50570,
+        37252,
+        18778,
+        46706,
+        37781,
+        43766,
+        34947,
+        17871,
+        41318,
+        33685,
+        17149,
+        39134
+      ],
+      "maxDifferenceFromTiff16": 0
+    },
+    "tiff16": {
+      "width": 64,
+      "height": 48,
+      "bits": 16,
+      "iccBytes": 588,
+      "bytes": 19190
+    },
+    "files": {
+      "jpeg": {
+        "file": "precision-jpeg.jpg",
+        "bytes": 1074,
+        "sha256": "5084cbbf82a6588ff3fc1e999944bffa723a7c1aa9b0e3b5519d5a1aea4dd8a3"
+      },
+      "png8": {
+        "file": "precision-png8.png",
+        "bytes": 2939,
+        "sha256": "c4488329c972de747cd6304861de3d32b55a3a69da6201df6ee980ecea627b3d"
+      },
+      "png16": {
+        "file": "precision-png16.png",
+        "bytes": 4808,
+        "sha256": "8271dac97934c292594dd5476c2aff789070627c36fd8c20095605e50856e35c"
+      },
+      "tiff": {
+        "file": "precision-tiff.tif",
+        "bytes": 19190,
+        "sha256": "c09b43a3ecb5060c3c785c892ed1f1c8f538393d679602b50ed2f1fb7b7fc43d"
+      }
+    }
+  },
+  "note": "Actual Chromium full-page screenshots, public NASA Eileen Collins portrait, source/negative view. iPad is touch emulation, not physical Safari. Export samples use the repository synthetic DNG, no private photos or RAW files."
+}

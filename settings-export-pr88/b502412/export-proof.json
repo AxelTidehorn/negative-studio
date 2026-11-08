@@ -1,0 +1,78 @@
+{
+  "source": {
+    "width": 64,
+    "height": 48,
+    "dataType": "Float32Array",
+    "encoding": "linear",
+    "colorSpace": "rec2020",
+    "engine": "v2"
+  },
+  "fixture": "repository synthetic-negative.dng (not a private photograph)",
+  "jpeg": {
+    "bits": 8,
+    "width": 64,
+    "height": 48,
+    "bytes": 1074
+  },
+  "png8": {
+    "width": 64,
+    "height": 48,
+    "bits": 8,
+    "srgb": true,
+    "bytes": 2939
+  },
+  "png16": {
+    "width": 64,
+    "height": 48,
+    "bits": 16,
+    "colorType": 2,
+    "srgb": true,
+    "bytes": 4808,
+    "non8BitSamples": 9132,
+    "totalSamples": 9216,
+    "examples": [
+      50570,
+      37252,
+      18778,
+      46706,
+      37781,
+      43766,
+      34947,
+      17871,
+      41318,
+      33685,
+      17149,
+      39134
+    ],
+    "maxDifferenceFromTiff16": 0
+  },
+  "tiff16": {
+    "width": 64,
+    "height": 48,
+    "bits": 16,
+    "iccBytes": 588,
+    "bytes": 19190
+  },
+  "files": {
+    "jpeg": {
+      "file": "precision-jpeg.jpg",
+      "bytes": 1074,
+      "sha256": "5084cbbf82a6588ff3fc1e999944bffa723a7c1aa9b0e3b5519d5a1aea4dd8a3"
+    },
+    "png8": {
+      "file": "precision-png8.png",
+      "bytes": 2939,
+      "sha256": "c4488329c972de747cd6304861de3d32b55a3a69da6201df6ee980ecea627b3d"
+    },
+    "png16": {
+      "file": "precision-png16.png",
+      "bytes": 4808,
+      "sha256": "8271dac97934c292594dd5476c2aff789070627c36fd8c20095605e50856e35c"
+    },
+    "tiff": {
+      "file": "precision-tiff.tif",
+      "bytes": 19190,
+      "sha256": "c09b43a3ecb5060c3c785c892ed1f1c8f538393d679602b50ed2f1fb7b7fc43d"
+    }
+  }
+}
