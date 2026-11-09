@@ -176,8 +176,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 6.799999997019768,
-              "positiveFloatError": 0.0000010728836059570312,
-              "technicalRelativeError": 0.0000019087781894319604,
+              "positiveFloatError": 1.0728836059570312e-06,
+              "technicalRelativeError": 1.9087781894319604e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -526,8 +526,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 6.899999998509884,
-              "positiveFloatError": 0.0000035017728805541992,
-              "technicalRelativeError": 0.0000026559516600311078,
+              "positiveFloatError": 3.5017728805541992e-06,
+              "technicalRelativeError": 2.6559516600311078e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -894,8 +894,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 15.100000001490116,
-              "positiveFloatError": 0.000001039355993270874,
-              "technicalRelativeError": 0.000001412596710422125,
+              "positiveFloatError": 1.039355993270874e-06,
+              "technicalRelativeError": 1.412596710422125e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -1168,35 +1168,35 @@
         "sourceVersion": 1,
         "import": {
           "id": 1,
-          "started": 916.3000000044703,
+          "started": 2625.10000000149,
           "phase": "ready",
           "stages": {
-            "preview": 270,
-            "frameAnalysis": 3037.2999999970198,
-            "baseAnalysis": 18,
-            "v2Analysis": 372.20000000298023,
-            "renderSubmit": 5285.29999999702,
-            "finishImport": 9296.30000000447
+            "preview": 311.8999999985099,
+            "frameAnalysis": 4397.5,
+            "baseAnalysis": 22.30000000447035,
+            "v2Analysis": 195.60000000149012,
+            "renderSubmit": 5391.70000000298,
+            "finishImport": 10691.5
           },
           "sourceVersion": 0,
           "cancelled": false,
-          "preliminaryTransformMs": 27,
-          "jpegPrepareMs": 200.5,
+          "preliminaryTransformMs": 38.80000000447035,
+          "jpegPrepareMs": 488.6000000014901,
           "preliminaryKind": "approximate-positive",
-          "preliminaryPaintMs": 457.29999999701977,
-          "firstVisibleMs": 457.29999999701977,
-          "readyMs": 47683.29999999702,
+          "preliminaryPaintMs": 889.2999999970198,
+          "firstVisibleMs": 889.2999999970198,
+          "readyMs": 100972.79999999702,
           "success": true,
           "decoder": {
             "cacheHit": false,
-            "totalMs": 37740.40000000596,
+            "totalMs": 89798,
             "stages": {
-              "librawInit": 86.10000000149012,
-              "fileRead": 108.30000000447035,
-              "rawOpen": 100.20000000298023,
-              "metadata": 11.799999997019768,
-              "rawImageData": 36999,
-              "rgbConvert": 379.1000000014901
+              "librawInit": 155.39999999850988,
+              "fileRead": 410.19999999552965,
+              "rawOpen": 90.39999999850988,
+              "metadata": 45.20000000298023,
+              "rawImageData": 88427.79999999702,
+              "rgbConvert": 417.79999999701977
             },
             "memory": {
               "fileBytes": 50229760,
@@ -1214,7 +1214,7 @@
               "frames": 1,
               "sourceUploads": 1,
               "validationError": 0,
-              "lastSubmitMs": 3891.4000000059605,
+              "lastSubmitMs": 3703.10000000149,
               "lastGpuMs": null,
               "reason": null,
               "contextLosses": 0,
@@ -1223,11 +1223,11 @@
               "positiveDiscards": 0,
               "positiveCancelled": 0,
               "positiveCacheBytes": 20966400,
-              "positivePreparationMs": 65.5,
+              "positivePreparationMs": 78.79999999701977,
               "positiveReconstructionMs": 0,
               "positiveCopyMs": 0,
-              "positiveStartedAt": 44700,
-              "positiveReadyAt": 48591.40000000596,
+              "positiveStartedAt": 99831.5,
+              "positiveReadyAt": 103534.60000000149,
               "histogramReconstructions": 0,
               "histogramSourceBytes": 0,
               "preference": "auto",
@@ -1240,12 +1240,12 @@
               "positiveUploads": 0,
               "validationUploads": 4,
               "positiveUploadSubmitMs": 0,
-              "gpuReconstructionSubmitMs": 65.5,
+              "gpuReconstructionSubmitMs": 78.79999999701977,
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
-              "sourceUploadSubmitMs": 8.800000004470348,
-              "positiveFloatError": 0.0000035017728805541992,
-              "technicalRelativeError": 0.0000026559516600311078,
+              "sourceUploadSubmitMs": 6.299999997019768,
+              "positiveFloatError": 3.5017728805541992e-06,
+              "technicalRelativeError": 2.6559516600311078e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -1263,12 +1263,12 @@
             "previewBytes": 15724800,
             "legacyPreviewBytes": 5241600
           },
-          "technicalPaintMs": 48261.89999999851,
-          "usableMs": 48261.89999999851,
-          "elapsedMs": 48261.89999999851,
+          "technicalPaintMs": 101553.60000000149,
+          "usableMs": 101553.60000000149,
+          "elapsedMs": 101553.60000000149,
           "heap": {
-            "used": 358360139,
-            "total": 411138203
+            "used": 376638130,
+            "total": 431008522
           }
         },
         "sameBoundedSourceAsPR96": true
@@ -1417,7 +1417,7 @@
           "mode": "frame-edge-connected-content-3",
           "status": "estimated",
           "sourceRevision": "v2-5c76f911",
-          "baseId": "base-b511200d-709a-496d-91d9-d4c93fc4653d",
+          "baseId": "base-5621c823-e827-4311-a371-1ce1e327d4ea",
           "cols": 160,
           "rows": 150,
           "samples": 24000,
@@ -1595,8 +1595,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 8.700000002980232,
-              "positiveFloatError": 0.0000035017728805541992,
-              "technicalRelativeError": 0.0000026559516600311078,
+              "positiveFloatError": 3.5017728805541992e-06,
+              "technicalRelativeError": 2.6559516600311078e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -1963,8 +1963,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 12.200000002980232,
-              "positiveFloatError": 6.556510925292969e-7,
-              "technicalRelativeError": 0.0000019056446360344028,
+              "positiveFloatError": 6.556510925292969e-07,
+              "technicalRelativeError": 1.9056446360344028e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -2255,35 +2255,35 @@
         "sourceVersion": 1,
         "import": {
           "id": 1,
-          "started": 873.7000000029802,
+          "started": 1097.3000000044703,
           "phase": "ready",
           "stages": {
-            "preview": 249.30000000447035,
-            "frameAnalysis": 3330.5,
-            "baseAnalysis": 19.899999998509884,
-            "v2Analysis": 308.30000000447035,
-            "renderSubmit": 3432.8000000044703,
-            "finishImport": 7678.79999999702
+            "preview": 301.6000000014901,
+            "frameAnalysis": 3343.7000000029802,
+            "baseAnalysis": 21.19999999552965,
+            "v2Analysis": 505.70000000298023,
+            "renderSubmit": 4466.70000000298,
+            "finishImport": 9067.39999999851
           },
           "sourceVersion": 0,
           "cancelled": false,
-          "preliminaryTransformMs": 19.399999998509884,
-          "jpegPrepareMs": 200.19999999552965,
+          "preliminaryTransformMs": 81.60000000149012,
+          "jpegPrepareMs": 271,
           "preliminaryKind": "approximate-positive",
-          "preliminaryPaintMs": 221.89999999850988,
-          "firstVisibleMs": 221.89999999850988,
-          "readyMs": 43423.39999999851,
+          "preliminaryPaintMs": 557,
+          "firstVisibleMs": 557,
+          "readyMs": 72157.79999999702,
           "success": true,
           "decoder": {
             "cacheHit": false,
-            "totalMs": 35359.70000000298,
+            "totalMs": 62332.09999999404,
             "stages": {
-              "librawInit": 86.5,
-              "fileRead": 103.70000000298023,
-              "rawOpen": 40.100000001490116,
-              "metadata": 45,
-              "rawImageData": 34635.20000000298,
-              "rgbConvert": 363.70000000298023
+              "librawInit": 100.60000000149012,
+              "fileRead": 142.70000000298023,
+              "rawOpen": 77.59999999403954,
+              "metadata": 12,
+              "rawImageData": 61489.5,
+              "rgbConvert": 393.30000000447035
             },
             "memory": {
               "fileBytes": 50245120,
@@ -2301,7 +2301,7 @@
               "frames": 1,
               "sourceUploads": 1,
               "validationError": 0,
-              "lastSubmitMs": 2329.5,
+              "lastSubmitMs": 2384.7000000029802,
               "lastGpuMs": null,
               "reason": null,
               "contextLosses": 0,
@@ -2310,11 +2310,11 @@
               "positiveDiscards": 0,
               "positiveCancelled": 0,
               "positiveCacheBytes": 20966400,
-              "positivePreparationMs": 39.70000000298023,
+              "positivePreparationMs": 81.29999999701977,
               "positiveReconstructionMs": 0,
               "positiveCopyMs": 0,
-              "positiveStartedAt": 41955,
-              "positiveReadyAt": 44284.5,
+              "positiveStartedAt": 70864.39999999851,
+              "positiveReadyAt": 73249.10000000149,
               "histogramReconstructions": 0,
               "histogramSourceBytes": 0,
               "preference": "auto",
@@ -2327,12 +2327,12 @@
               "positiveUploads": 0,
               "validationUploads": 4,
               "positiveUploadSubmitMs": 0,
-              "gpuReconstructionSubmitMs": 39.70000000298023,
+              "gpuReconstructionSubmitMs": 81.29999999701977,
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
-              "sourceUploadSubmitMs": 5.5,
-              "positiveFloatError": 5.364418029785156e-7,
-              "technicalRelativeError": 0.0000014434279773529408,
+              "sourceUploadSubmitMs": 13.399999998509884,
+              "positiveFloatError": 5.364418029785156e-07,
+              "technicalRelativeError": 1.4434279773529408e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -2350,12 +2350,12 @@
             "previewBytes": 15724800,
             "legacyPreviewBytes": 5241600
           },
-          "technicalPaintMs": 43637.60000000149,
-          "usableMs": 43637.60000000149,
-          "elapsedMs": 43637.60000000149,
+          "technicalPaintMs": 72486.69999999553,
+          "usableMs": 72486.69999999553,
+          "elapsedMs": 72486.69999999553,
           "heap": {
-            "used": 349234723,
-            "total": 411953351
+            "used": 386983933,
+            "total": 427382685
           }
         },
         "sameBoundedSourceAsPR96": true
@@ -2504,7 +2504,7 @@
           "mode": "frame-edge-connected-content-3",
           "status": "estimated",
           "sourceRevision": "v2-dcf43b74",
-          "baseId": "base-fa35ca98-25d8-4519-83ff-c470eb6ec13a",
+          "baseId": "base-2470f074-2c6a-4ec1-bf71-f4c8f4b87667",
           "cols": 160,
           "rows": 150,
           "samples": 24000,
@@ -2700,8 +2700,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 6.100000001490116,
-              "positiveFloatError": 7.152557373046875e-7,
-              "technicalRelativeError": 0.0000012835114002153845,
+              "positiveFloatError": 7.152557373046875e-07,
+              "technicalRelativeError": 1.2835114002153845e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -3050,8 +3050,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 8.199999995529652,
-              "positiveFloatError": 0.0000035017728805541992,
-              "technicalRelativeError": 0.0000026559516600311078,
+              "positiveFloatError": 3.5017728805541992e-06,
+              "technicalRelativeError": 2.6559516600311078e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -3400,8 +3400,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 6.600000001490116,
-              "positiveFloatError": 0.0000035017728805541992,
-              "technicalRelativeError": 0.0000026559516600311078,
+              "positiveFloatError": 3.5017728805541992e-06,
+              "technicalRelativeError": 2.6559516600311078e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -3768,8 +3768,8 @@
               "gpuReconstructionMs": null,
               "sourcePreparationMs": 0,
               "sourceUploadSubmitMs": 7.199999995529652,
-              "positiveFloatError": 6.556510925292969e-7,
-              "technicalRelativeError": 0.0000022212231813219044,
+              "positiveFloatError": 6.556510925292969e-07,
+              "technicalRelativeError": 2.2212231813219044e-06,
               "capabilities": {
                 "floatColor": true
               },
@@ -3963,5 +3963,6 @@
         }
       }
     }
-  ]
+  ],
+  "note": "8983 and 9235 repeated on implementation commit 0d953b5, including final status copy; other nine are the preceding eleven-original workflow run. No timing comparison is intended."
 }

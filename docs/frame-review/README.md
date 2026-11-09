@@ -171,3 +171,34 @@ Layoutbilder: [1024×768](screenshots/review-1024x768.jpg),
 [390×844](screenshots/review-390x844.jpg),
 [844×390](screenshots/review-844x390.jpg). Testerna kontrollerar också att
 44-pixels träffytor och knappar ligger inom sina synliga områden.
+
+## Kompletterande webbläsarverifiering
+
+De nya riktade filmrute- och reglagetesterna har passerat i Chromium 156,
+Microsoft Edge 157 på Linux och Playwright Linux WebKit (rapporterad Safari
+27.2-user-agent). Fem viewportstorlekar ingår i respektive filmrutetest.
+Chromium och Edge klarade båda de riktiga touchsekvenserna drag–släpp–vertikal
+skroll samt dubbeltryck–skroll–kortbyte, med exakt oförändrat reglagevärde under
+skrollningen och ingen kvarvarande pekägare.
+
+Även **riktig RAW-import i Linux WebKit** har körts för 8983 och 9235:
+[se resultat](raw-webkit-results.json). 8983 öppnade sitt väntande förslag,
+9235 gick vidare automatiskt, båda med samma tekniska källhash som sina
+sparade referensprov. Dessa körningar använder ordinarie WASM-avkodning,
+inte browserprovets kontrollerade avkodare.
+
+Den separata elva-originalskörningen verifierar flödet i fler motiv. Två
+huvudbilder kördes om på implementationens commit `0d953b5`, inklusive den
+rättade statusraden efter bekräftelse; deras skärmbilder och rader i rapporten
+har uppdaterats. Rapporten är ingen prestandajämförelse.
+
+Befintliga tester för andra bildverktyg accepterar nu uttryckligen sin
+demobilds filmruta innan de prövar det normala verktygsfältet. Projektprov som
+ändrar filmrutan använder dess bekräftelsekedja i stället för att enbart sätta
+en boolesk flagga. Det nya väntande tillståndet provas separat och godkänns
+aldrig automatiskt av testharnessen.
+
+Full regression körs via befintlig `npm run test:full` och PR:ens ordinarie CI.
+Den omfattar V2/D, Neutral/filmprofiler, GPU/CPU, projekt/kö, importavbrott,
+JPEG, PNG8/PNG16, TIFF16, exportavbrott och pixel-/geometriregressioner. Slutlig
+status finns på PR:ens CI-kontroller; fysisk iPad-verifiering ingår inte.
