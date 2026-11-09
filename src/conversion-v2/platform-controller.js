@@ -4,7 +4,11 @@
 state.v2Recipe=null;
 delete state.rawSourceRecipeV2;
 let v2AnalysisCount=0,v2LastSource=null,v2LastKey=null,v2AutomaticCache=null;
-function v2Area(){return state.cropConfirmed?{region:{...cropRegion},status:'confirmed'}:{region:{...cropRegion},status:'estimated',method:'application-frame',confidence:Number(state.cropConfidence)||0};}
+function v2Area(){
+ const a=state.cropConfirmed?{region:{...cropRegion},status:'confirmed'}:{region:{...cropRegion},status:'estimated',method:'application-frame',confidence:Number(state.cropConfidence)||0},d=state.frameDetection;
+ if(state.cropMethod==='auto'&&NSFrameDetector.matches(d,cropRegion,working)&&(d.analysisSafe||state.cropConfirmed))a.polygon=d.analysisQuad.map(p=>({...p}));
+ return a;
+}
 function preparePlatformV2(){
  if(state.engine!=='v2'||!working)return;
  if(!NSV2Platform.validSource(working))throw Error('V2 kräver verifierad linjär Rec.2020.');

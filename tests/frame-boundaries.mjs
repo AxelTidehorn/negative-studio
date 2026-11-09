@@ -1,12 +1,12 @@
 import assert from 'node:assert/strict';
-import '../src/image/image-model.js';import '../src/calibration/color-analysis.js';
+import '../src/image/image-model.js';import '../src/calibration/frame-detector.js';import '../src/calibration/color-analysis.js';
 import {negativeFrame} from './helpers/negative-frame.mjs';
 const results=[];
 for(const options of [{},{angle:180},{angle:90,frame:{x:.25,y:.15,w:.5,h:.7}},{frame:{x:.04,y:.08,w:.90,h:.86},separator:1},{frame:{x:.018,y:.018,w:.962,h:.96},holder:0,separator:1},{angle:3},{angle:-4},{light:.12},{separator:0},{frame:{x:.15,y:.05,w:.76,h:.87}}]){
  const f=negativeFrame(options),d=NSColorAnalysis.detect(f.image),r=d.region;
 
  assert.ok(d.confidence>=.7,JSON.stringify({options,d}));
- for(const x of [r.x,r.x+r.w])for(const y of [r.y,r.y+r.h])assert.ok(f.inside(x*f.image.width,y*f.image.height),JSON.stringify({options,d,x,y}));
+ for(const p of d.analysisQuad)assert.ok(f.inside(p.x*f.image.width,p.y*f.image.height),JSON.stringify({options,d,p}));
  assert.ok(r.w*r.h>f.frame.w*f.frame.h*.70,JSON.stringify({options,d}));results.push({options,confidence:d.confidence,region:r});
 }
 for(const options of [{weak:true},{missing:['top']},{missing:['left','bottom']},{frame:{x:0,y:0,w:1,h:1},holder:0,separator:0}]){

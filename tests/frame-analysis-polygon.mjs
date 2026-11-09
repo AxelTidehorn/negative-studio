@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import '../src/image/image-model.js';import '../src/calibration/frame-detector.js';
+for(const file of ['core','render','fast','platform'])await import('../src/conversion-v2/'+file+'.js');
+import {negativeFrame} from './helpers/negative-frame.mjs';import {harness} from './helpers/app-harness.mjs';
+const f=negativeFrame({angle:17,frame:{x:.20,y:.24,w:.60,h:.52}}),d=NSFrameDetector.detect(f.image);assert.equal(d.analysisSafe,true);
+const changed={...f.image,data:f.image.data.slice()};for(let y=0;y<changed.height;y++)for(let x=0;x<changed.width;x++)if(!f.inside(x+.5,y+.5))changed.data.set([.94,.17,.07],(y*changed.width+x)*3);
+const area={region:d.region,polygon:d.analysisQuad,status:'confirmed'},prepare=(im,a)=>NSV2Platform.prepare(im,{sourceKey:'polygon-test',capture:{session:'test',recipe:{decoder:'synthetic'}},area:a}),a=prepare(f.image,area),b=prepare(changed,area);
+assert.equal(a.intent.exposure,b.intent.exposure);assert.deepEqual(a.intent.colorCorrection,b.intent.colorCorrection);assert.equal(a.intent.analysis.maskId,b.intent.analysis.maskId);
+const rectangular=prepare(f.image,{region:{x:0,y:0,w:1,h:1},status:'confirmed'}),withPolygon=prepare(f.image,{region:{x:0,y:0,w:1,h:1},polygon:[{x:0,y:0},{x:1,y:0},{x:1,y:1},{x:0,y:1}],status:'confirmed'});assert.equal(rectangular.intent.exposure,withPolygon.intent.exposure);assert.deepEqual(rectangular.intent.colorCorrection,withPolygon.intent.colorCorrection);assert.equal(rectangular.intent.analysis.maskId,withPolygon.intent.analysis.maskId);
+assert.equal(NSV2Render.areaDescriptor({...area,polygon:[...area.polygon].reverse()}).status,'invalid');assert.equal(NSV2Render.areaDescriptor({...area,polygon:[...area.polygon.slice(0,3),{x:NaN,y:0}]}).status,'invalid');
+assert.notEqual(a.analysisSignature,rectangular.analysisSignature);
+const h=harness();h.context.crypto=globalThis.crypto;h.set('fixture',f.image);h.set('detection',JSON.parse(JSON.stringify(d)));
+h.run(`render=()=>{};scheduleRender=()=>{};working=fixture;workingPreview=fixture;sourceInfo={encoding:'linear',colorSpace:'rec2020',label:'synthetic'};src=new ImageData(working.width,working.height);previewSrc=src;state={...defaultState(),engine:'v2',noBase:true,cropConfirmed:true,cropMethod:'auto',frameDetection:detection};cropRegion={...detection.region};roll=[{file:{name:'synthetic.dng'},settings:{...state},crop:{...cropRegion}}];activeFrame=0;analyzeLevels();`);
+assert.equal(h.run('v2Area().polygon.length'),4);const before=h.run('JSON.stringify(v2Area())'),id=h.run('state.v2Recipe.intent.id');h.run('rollShared.cropExportToFrame=true;');assert.equal(h.run('JSON.stringify(v2Area())'),before);h.run('rollShared.cropExportToFrame=false;saveCurrentFrame();');assert.equal(h.run('roll[0].settings.frameDetection.version'),1);
+h.run('cropRegion={x:.3,y:.3,w:.4,h:.4};cropChanged();');assert.equal(h.run('state.frameDetection'),undefined);assert.equal(h.run('v2Area().polygon'),undefined);assert.notEqual(h.run('state.v2Recipe.intent.id'),id);
+console.log('PASS rotated polygon isolates V2 from changed exterior; full rectangle identity; invalid polygons abstain; source coordinates, queue metadata, export composition independence and manual reanalysis');

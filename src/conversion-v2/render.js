@@ -11,9 +11,18 @@ const reconstructionExposureRecipe=V.freeze({...exposureRecipe,version:'robust-p
 const exposureRecipeFor=c=>c?.version===3?reconstructionExposureRecipe:exposureRecipe;
 const trustedArea=area=>area?.status==='confirmed'||area?.status==='estimated'&&area.confidence>=.67;
 const fullRegion={x:0,y:0,w:1,h:1};
+// Optional convex polygon is an analysis selection in normalized source space,
+// not another image transform. Reconstruction, balance and D-tone stay unchanged.
+function analysisPolygon(p,r){
+ if(!Array.isArray(p)||p.length!==4||!p.every(v=>v&&Number.isFinite(v.x)&&Number.isFinite(v.y)&&v.x>=r.x-1e-9&&v.y>=r.y-1e-9&&v.x<=r.x+r.w+1e-9&&v.y<=r.y+r.h+1e-9))return null;
+ if(!p.every((v,i)=>{const b=p[(i+1)%4],c=p[(i+2)%4];return (b.x-v.x)*(c.y-v.y)-(b.y-v.y)*(c.x-v.x)>1e-10;}))return null;
+ return p.map(v=>({x:v.x,y:v.y}));
+}
+function polygonContains(p,x,y){return p.every((v,i)=>{const b=p[(i+1)%4];return (b.x-v.x)*(y-v.y)-(b.y-v.y)*(x-v.x)>=0;});}
 function areaDescriptor(area){
  const r=area?.region,valid=r&&['x','y','w','h'].every(c=>Number.isFinite(r[c]))&&r.x>=0&&r.y>=0&&r.w>0&&r.h>0&&r.x+r.w<=1.000001&&r.y+r.h<=1.000001;
- const automatic=valid&&area.status==='estimated'&&area.method==='application-frame'&&Number.isFinite(area.confidence)&&area.confidence>=.67&&area.confidence<=1;return {region:valid?{x:r.x,y:r.y,w:r.w,h:r.h}:{...fullRegion},status:valid&&area.status==='confirmed'?'confirmed':automatic?'estimated':valid?'unconfirmed':area?'invalid':'missing',method:valid&&area.status==='confirmed'?'manual-frame':automatic?'application-frame':'unconfirmed-frame',confidence:automatic?area.confidence:valid&&area.status==='confirmed'?1:0};
+ const polygon=valid&&area.polygon!==undefined?analysisPolygon(area.polygon,r):null,invalidPolygon=area?.polygon!==undefined&&!polygon;
+ const automatic=valid&&!invalidPolygon&&area.status==='estimated'&&area.method==='application-frame'&&Number.isFinite(area.confidence)&&area.confidence>=.67&&area.confidence<=1;return {region:valid?{x:r.x,y:r.y,w:r.w,h:r.h}:{...fullRegion},status:invalidPolygon?'invalid':valid&&area.status==='confirmed'?'confirmed':automatic?'estimated':valid?'unconfirmed':area?'invalid':'missing',method:valid&&area.status==='confirmed'?'manual-frame':automatic?'application-frame':'unconfirmed-frame',confidence:invalidPolygon?0:automatic?area.confidence:valid&&area.status==='confirmed'?1:0,...(polygon?{polygon}:{})};
 }
 function algorithmFor(k,options={}){const a=options.algorithmVersion??(k.calibration.version===3?2:1);if(!(a===1&&k.calibration.version===2||[2,3].includes(a)&&k.calibration.version===3))throw Error('V2_ALGORITHM_INVALID');return a;}
 function analysisKey(k,options={}){const algorithm=algorithmFor(k,options),output=options.output??outputRecipe.version;if(algorithm===3&&![outputRecipe.version,presentationRecipe.version].includes(output))throw Error('OUTPUT_RECIPE_INVALID');return JSON.stringify({version:exposureRecipeFor(k.calibration).version,colorVersion:balanceRecipeFor(algorithm).version,colorMode:options.colorMode==='identity'?'identity':'auto',source:k.source,base:{domain:k.base.domain,rgb:k.base.rgb,measured:k.base.origin!=='prior'},calibration:k.calibration,area:areaDescriptor(options.analysisArea),maskMode:options.maskMode==='all'?'all':'content',...(algorithm===3?{algorithmVersion:3,outputVersion:output}:{}),...(options.approvedD?{toneVersion:'matched-shoulder-D-1'}:{}),...(options.photographic?{photographic:photographicRecipeFor(options.photographic).version}:{})});}
@@ -105,7 +114,7 @@ function analyzeWithMask(im,k,options={}){
  const values=[],all=[];let hash=2166136261;
  for(let i=0;i<n;i++){
   if(kind[i]!==1&&kind[i]!==3)all.push(luma[i]);
-  const x=(i%cols+.5)/cols,y=(Math.floor(i/cols)+.5)/rows,outside=x<region.x||y<region.y||x>=region.x+region.w||y>=region.y+region.h;
+  const x=(i%cols+.5)/cols,y=(Math.floor(i/cols)+.5)/rows,px=(Math.floor(x*im.width)+.5)/im.width,py=(Math.floor(y*im.height)+.5)/im.height,outside=x<region.x||y<region.y||x>=region.x+region.w||y>=region.y+region.h||!!area.polygon&&!polygonContains(area.polygon,px,py);
   const excluded=outside||kind[i]===1||kind[i]===3||(maskMode!=='all'&&(kind[i]===2||edge[i]));mask[i]=excluded?0:1;
   if(mask[i]){values.push(luma[i]);counts.kept++;}
   else if(outside)counts.outsideArea++;else if(kind[i]===1)counts.invalid++;else if(kind[i]===3)counts.logFloor++;else if(kind[i]===2)counts.clipped++;else if(kind[i]===4)counts.edgeBase++;else if(kind[i]===5)counts.edgeHolder++;else if(kind[i]===6)counts.edgeClear++;

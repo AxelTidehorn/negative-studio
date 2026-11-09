@@ -37,6 +37,7 @@ function prepare(im,{sourceKey,recipe,capture,measurement,area,previous,calibrat
 function validate(r){
  if(r?.schema!=='FILMLABB.V2Recipe'||r.version!==1||![1,2,3].includes(r.algorithmVersion))throw Error('V2_RECIPE_VERSION');
  V.compile(r.source,r.base,r.calibration);R.toneOnly([.18,.18,.18],r.intent);R.prepareBalance(r.intent);
+ if(r.intent.analysis?.area?.polygon!==undefined&&R.areaDescriptor(r.intent.analysis.area).status==='invalid')throw Error('V2_ANALYSIS_AREA_INVALID');
  selectAlgorithm(r.calibration,r.algorithmVersion);
  if((r.intent.algorithmVersion??algorithmForCalibration(r.calibration))!==r.algorithmVersion)throw Error('V2_RECIPE_INCONSISTENT');
  R.outputVersion(r.intent);

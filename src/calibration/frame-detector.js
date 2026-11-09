@@ -91,19 +91,20 @@ function edgeQuads(colors,w,h){
  }
  return out;
 }
-function detect(im,{limit=480,debug=false,verify=true}={}){
+function detect(im,{limit=480,debug=false,verify=true,strategy='hybrid'}={}){
+ if(!['hybrid','contours','lines'].includes(strategy))throw Error('Unknown frame detector strategy');
  const C=root.NSColorEngine,small=C.preview(im,limit),w=small.width,h=small.height,n=w*h,colors=new Array(n),lum=new Float32Array(n),wide=im.colorSpace==='rec2020';
  for(let y=0;y<h;y++)for(let x=0;x<w;x++){const i=y*w+x;colors[i]=lab(C.pixel(small,x,y),wide);lum[i]=colors[i][0];}
  const at=(x,y)=>colors[Math.max(0,Math.min(h-1,Math.floor(y)))*w+Math.max(0,Math.min(w-1,Math.floor(x)))];
  // Homogeneous perimeter patches provide multiple background modes (e.g.
  // clear film AND a black holder). Hue is not predetermined or required.
- const models=[];
- for(const depth of [.012,.035])for(let side=0;side<4;side++)for(let t=0;t<9;t++){
+ const models=[],clusters=[];
+ for(const depth of [.012,.035]){if(depth>.012&&models.some(m=>m[0]>.25))break;for(let side=0;side<4;side++)for(let t=0;t<9;t++){
   const f=.03+.94*t/8,x=(side<2?(side?1-depth:depth):f)*w,y=(side<2?f:(side===3?1-depth:depth))*h,ps=[];
   for(let dy=-2;dy<=2;dy++)for(let dx=-2;dx<=2;dx++)ps.push(at(x+dx,y+dy));
   const center=[0,1,2].map(c=>quant(ps.map(v=>v[c]),.5)),spread=quant(ps.map(v=>distance(v,center)),.8);
-  if(spread<.025&&!models.some(m=>distance(m,center)<.045))models.push(center);
- }
+  if(spread<.025){let cluster=clusters.find(m=>distance(m.center,center)<.045);if(!cluster){cluster={center,count:0,sides:new Set()};clusters.push(cluster);}cluster.count++;cluster.sides.add(side);}
+ }for(const c of clusters.filter(c=>c.count>=3&&c.sides.size>=2))if(!models.some(m=>distance(m,c.center)<.045))models.push(c.center);}
  const prototypes=models.slice(0,12),hypotheses=[];
  if(prototypes.length){for(const threshold of [.035,.065,.10]){const m=Uint8Array.from(colors,p=>prototypes.every(b=>distance(p,b)>threshold)?1:0);hypotheses.push({mask:m,name:'background-'+threshold});}}
  const ls=Array.from(lum);
@@ -111,18 +112,22 @@ function detect(im,{limit=480,debug=false,verify=true}={}){
  const candidates=[];
  function scoreQuad(q,method){
    const quad=q.map(v=>({x:v.x/w,y:v.y/h}));if(!validQuad(quad))return;
-   const supports=[],outsideSpread=[],content=[],texture=[];
+   const supports=[],outsideSpread=[],content=[],texture=[],clearToSubject=[];
    for(let side=0;side<4;side++){
     const a=q[side],b=q[(side+1)%4],l=Math.hypot(b.x-a.x,b.y-a.y),nx=(a.y-b.y)/l,ny=(b.x-a.x)/l,outer=[],inner=[];let supported=0,subject=0;
     for(let t=0;t<31;t++){const f=.05+.90*t/30,x=a.x+(b.x-a.x)*f,y=a.y+(b.y-a.y)*f,o=at(x-nx*3,y-ny*3),inside=at(x+nx*3,y+ny*3);outer.push(o);inner.push(inside);if(distance(o,inside)>.035)supported++;if(!prototypes.length||prototypes.every(b=>distance(inside,b)>.035))subject++;}
     const center=[0,1,2].map(c=>quant(outer.map(v=>v[c]),.5));outsideSpread.push(quant(outer.map(v=>distance(v,center)),.75));supports.push(supported/31);content.push(subject/31);
     const ic=[0,1,2].map(c=>quant(inner.map(v=>v[c]),.5));texture.push(Math.min(1,quant(inner.map(v=>distance(v,ic)),.75)/.06));
+    clearToSubject.push(quant(outer.map((v,i)=>v[0]-inner[i][0]),.5)>.025);
    }
-   const strong=supports.filter((v,i)=>v>=.65&&content[i]>=.6).length;if(strong<3)return;
+   // A holder -> uniform clear-film transition is the OUTER film edge, not
+   // the photograph. Clear-film -> denser subject or textured subject beside
+   // a holder provides independent evidence for the photographic boundary.
+   const strong=supports.filter((v,i)=>v>=.65&&content[i]>=.6&&(texture[i]>.25||clearToSubject[i])).length;if(strong<3)return;
    const uniform=outsideSpread.reduce((s,v)=>s+Math.max(0,1-v/.12),0)/4,score=supports.reduce((s,v,i)=>s+v*Math.min(1,content[i]/.7),0)/4*.60+uniform*.20+texture.reduce((s,v)=>s+v,0)/4*.20;
-   candidates.push({quad,region:bounds(quad),score,supports,content,texture,strong,uniform,method,detectorSize:{width:w,height:h}});
+   candidates.push({quad,region:bounds(quad),score,supports,content,texture,clearToSubject,strong,uniform,method,detectorSize:{width:w,height:h}});
  }
- for(const hypothesis of hypotheses){
+ for(const hypothesis of strategy==='lines'?[]:hypotheses){
   const mask=close(hypothesis.mask,w,h);
   for(const component of components(mask,w,h)){
    if(component.touch)continue;
@@ -131,17 +136,25 @@ function detect(im,{limit=480,debug=false,verify=true}={}){
    scoreQuad(q,hypothesis.name);
   }
  }
- for(const q of edgeQuads(colors,w,h))scoreQuad(q,'gradient-lines');
+ if(strategy!=='contours')for(const q of edgeQuads(colors,w,h))scoreQuad(q,'gradient-lines');
  const similarity=(a,b)=>{const aa=area(a.quad),bb=area(b.quad),r=a.region,s=b.region,overlap=Math.max(0,Math.min(r.x+r.w,s.x+s.w)-Math.max(r.x,s.x))*Math.max(0,Math.min(r.y+r.h,s.y+s.h)-Math.max(r.y,s.y));return Math.min(aa,bb)/Math.max(aa,bb)>.88&&overlap/Math.min(r.w*r.h,s.w*s.h)>.94;};
  const groups=[];for(const c of candidates){let g=groups.find(g=>similarity(g.best,c));if(!g){g={best:c,votes:new Set()};groups.push(g);}g.votes.add(c.method);if(c.score>g.best.score)g.best=c;}
  const rank=g=>g.best.score+Math.sqrt(area(g.best.quad))*.12+Math.min(3,g.votes.size)*.015;
  groups.sort((a,b)=>rank(b)-rank(a));
- const best=groups[0],competitor=groups.find((g,i)=>i&&area(g.best.quad)>area(best.best.quad)*.5&&!g.best.quad.every(p=>contains(best.best.quad,p.x,p.y))),ambiguous=!!(best&&competitor&&rank(competitor)>rank(best)-.035);let reason=!best?'no-boundary-evidence':ambiguous?'competing-regions':best.best.strong<4?'partial-boundary':'coherent-quadrilateral';
- let safe=!!best&&!ambiguous&&best.best.strong===4&&(best.votes.size>=2||best.best.method==='gradient-lines'&&best.best.uniform>.85)&&best.best.score>=.85,agreement=null;
- const c=best?.best;
- if(safe&&verify&&limit>360){const coarse=detect(im,{limit:320,verify:false}),near=coarse.quad&&c.quad.every(p=>coarse.quad.some(q=>Math.hypot((p.x-q.x)*w,(p.y-q.y)*h)<Math.max(4,Math.hypot(w,h)*.012)));agreement=!!near;if(!near){safe=false;reason='scale-disagreement';}}
- const analysisQuad=c?inset(c.quad,2,w,h):null,confidence=safe?.84:best?.55:0;
+ const credible=(c,votes)=>c.strong===4&&c.score>=.85&&(votes>=2||c.method==='gradient-lines'&&c.uniform>.85);let eligible=groups,agreement=null;
+ // Compare supported hypotheses, not just the two winning rectangles. A noisy
+ // outer film edge must not veto a stable inner photographic boundary.
+ if(verify&&limit>360&&groups.some(g=>credible(g.best,g.votes.size))){
+  const coarse=detect(im,{limit:320,verify:false,strategy,debug:true}),supported=coarse.candidates.filter(c=>credible(c,c.votes));
+  eligible=groups.filter(g=>credible(g.best,g.votes.size)&&supported.some(c=>g.best.quad.every(p=>c.quad.some(q=>Math.hypot((p.x-q.x)*w,(p.y-q.y)*h)<Math.max(4,Math.hypot(w,h)*.012)))));agreement=eligible.length>0;
+ }
+ const best=eligible[0]||groups[0],competitor=eligible.find((g,i)=>i&&area(g.best.quad)>area(best.best.quad)*.5&&!g.best.quad.every(p=>contains(best.best.quad,p.x,p.y))),ambiguous=!!(best&&competitor&&rank(competitor)>rank(best)-.035);let reason=!best?'no-boundary-evidence':ambiguous?'competing-regions':best.best.strong<4?'partial-boundary':agreement===false?'scale-disagreement':'coherent-quadrilateral';
+ let safe=!!best&&!ambiguous&&agreement!==false&&credible(best.best,best.votes.size);
+ const c=(ambiguous?groups[0]:best)?.best;
+ const analysisQuad=c?inset(c.quad,2,w,h):null;if(safe&&!analysisQuad){safe=false;reason='insufficient-resolution';}if(!safe&&reason==='coherent-quadrilateral')reason='weak-boundary-support';const confidence=safe?.84:best?.55:0;
  return {version:1,method:'frame-contours-1',region:safe?c.region:full(),proposal:c?.region||null,quad:c?.quad||null,analysisQuad,analysisSafe:safe&&!!analysisQuad,confidence,reason,coordinateSpace:'normalized-source',evidence:c?{sides:c.supports,thresholds:best.votes.size,score:c.score,backgroundModes:prototypes.length,scaleAgreement:agreement}:null,...(debug?{candidates:groups.map(g=>({...g.best,votes:g.votes.size})),detectorSize:{width:w,height:h}}:{})};
 }
-root.NSFrameDetector=Object.freeze({detect,validQuad,contains,bounds,inset});
+function validRecord(d){return !!d&&d.version===1&&d.coordinateSpace==='normalized-source'&&typeof d.analysisSafe==='boolean'&&Number.isFinite(d.confidence)&&d.confidence>=0&&d.confidence<=1&&(d.quad===null?!d.analysisSafe&&d.analysisQuad===null:validQuad(d.quad)&&(d.analysisQuad===null?!d.analysisSafe:validQuad(d.analysisQuad)&&d.analysisQuad.every(p=>contains(d.quad,p.x,p.y))))&&(!d.sourceDimensions||['width','height'].every(k=>Number.isSafeInteger(d.sourceDimensions[k])&&d.sourceDimensions[k]>0));}
+function matches(d,r,im){if(!validRecord(d)||!validQuad(d.quad)||!validQuad(d.analysisQuad)||!r)return false;const b=bounds(d.quad);return ['x','y','w','h'].every(k=>Math.abs(b[k]-r[k])<1e-8)&&(!d.sourceDimensions||!im||d.sourceDimensions.width===im.width&&d.sourceDimensions.height===im.height);}
+root.NSFrameDetector=Object.freeze({detect,validQuad,validRecord,matches,contains,bounds,inset});
 })(globalThis);
