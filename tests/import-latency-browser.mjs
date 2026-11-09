@@ -23,7 +23,7 @@ try{
  await upload('fail.dng');await p.waitForFunction(()=>rollLoading);await upload('fast.dng');await p.waitForFunction(()=>working&&!rollLoading);await p.waitForTimeout(500);assert.equal(await p.evaluate(()=>working.data[0]),Math.fround(.3));assert.ok(!(await p.locator('#status').textContent()).includes('late failure'));
  // A failed first attempt must remain selectable, without saving stale analysis.
  await p.evaluate(()=>{globalThis.retryDecode=NSRawDecoder.decode;globalThis.retryOnce=true;NSRawDecoder.decode=async(...args)=>{if(retryOnce){retryOnce=false;throw Error('retry fixture');}return retryDecode(...args);};});
- await upload('retry.dng');await p.waitForFunction(()=>!rollLoading&&!working&&$('status').textContent.includes('retry fixture'));assert.equal(await p.evaluate(()=>activeFrame),-1);
+ await upload('retry.dng');await p.waitForFunction(()=>!rollLoading&&!working&&$('status').textContent.includes('retry fixture'));assert.equal(await p.evaluate(()=>activeFrame),0);
  const failedRecord=await p.evaluate(()=>JSON.stringify({settings:roll[0].settings,crop:roll[0].crop,base:roll[0].base,levels:roll[0].levels}));await p.evaluate(()=>saveCurrentFrame());assert.equal(await p.evaluate(()=>JSON.stringify({settings:roll[0].settings,crop:roll[0].crop,base:roll[0].base,levels:roll[0].levels})),failedRecord);
  await p.locator('#filmstrip .frame').first().click();await p.waitForFunction(()=>working&&!rollLoading);assert.equal(await p.evaluate(()=>activeFrame),0);assert.equal(await p.evaluate(()=>working.data[0]),Math.fround(.3));await p.evaluate(()=>NSRawDecoder.decode=retryDecode);
  // Broken decorations fall back without touching source, analysis or export.

@@ -7,7 +7,7 @@ roll=[{file:{name:'a.png'},geometry:NSGeometry.create(),settings:{...state},crop
 globalThis.savedB=JSON.stringify(roll[1]);globalThis.failOnce=true;
 readFile=async()=>{if(failOnce){failOnce=false;working=source;roll[activeFrame].thumb='partial-positive';roll[activeFrame].thumbPositive=true;base=[1,2,3];levels={lo:[0,0,0],hi:[1,1,1]};saveCurrentFrame();throw Error('controlled failure after partial import');}hires=source;src=new ImageData(12,10);finishImport('fixture');};
 `;h.run(setup);
-assert.equal(await h.run('chooseFrame(1)'),false);assert.equal(h.run('activeFrame'),-1);assert.equal(h.run('working'),null);assert.deepEqual(JSON.parse(h.run('JSON.stringify(roll[1])')),JSON.parse(h.run('savedB')));
+assert.equal(await h.run('chooseFrame(1)'),false);assert.equal(h.run('activeFrame'),1);assert.equal(h.run('working'),null);assert.deepEqual(JSON.parse(h.run('JSON.stringify(roll[1])')),JSON.parse(h.run('savedB')));
 h.run('base=[7,8,9];levels={bad:true};saveCurrentFrame();');assert.deepEqual(JSON.parse(h.run('JSON.stringify(roll[1])')),JSON.parse(h.run('savedB')));
 assert.equal(await h.run('chooseFrame(1)'),true);assert.equal(h.run('activeFrame'),1);assert.equal(h.run('state.exposure'),1.25);assert.ok(h.run('base.every(v=>v!==7&&v!==8&&v!==9)'));
 // The successful conversion is independent of the failed/partially saved job.

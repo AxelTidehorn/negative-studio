@@ -50,5 +50,11 @@ try{
  await raw.evaluate(()=>$('loadFullRaw').click());await ready(raw);assert.deepEqual(await sourceRecipe(),beforeReload,'Standard reload preserves locked decode, compatible base and exact source/output pixels');
  await selectEngine(raw,'v2');await selectEngine(raw,'log39');await raw.waitForFunction(()=>working&&!rollLoading&&state.engine==='log39'&&sourceInfo.rawMode4==='reference');
  assert.equal(await raw.evaluate(()=>state.rawMode4),'reference');assert.equal(await raw.evaluate(()=>state.rawSourceRecipeV2||0),0);assert.deepEqual(await raw.evaluate(()=>({domain:sourceInfo.domain,pixels:[0,300,working.data.length-3].flatMap(i=>Array.from(working.data.subarray(i,i+3)))})),original);
+ // A deliberately non-cancellable old engine reload must not roll back a new queue.
+ await raw.evaluate(()=>{globalThis.decoderBeforeRace=NSRawDecoder.decode;NSRawDecoder.decode=async file=>{await new Promise(r=>setTimeout(r,file.name==='replacement.dng'?450:120));return{im:{width:16,height:12,bits:16,colors:3,data:new Float32Array(16*12*3).fill(file.name==='replacement.dng'?.6:.2),scale:1,colorSpace:'rec2020',rawMode4:'wide'},meta:{},provenance:{decoder:'controlled-race',version:'1',options:NSV2Platform.decoderOptions()}};};});
+ const oldSwitch=raw.evaluate(async()=>{$('engineMode').value='v2';await $('engineMode').onchange({target:$('engineMode')});});await raw.waitForFunction(()=>rollLoading);
+ await raw.locator('#imageFile').setInputFiles({name:'replacement.dng',mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')});await ready(raw);await oldSwitch;
+ assert.equal(await raw.evaluate(()=>roll[activeFrame].file.name),'replacement.dng');assert.equal(await raw.evaluate(()=>state.engine),'v2');assert.equal(await raw.evaluate(()=>sourceInfo.colorSpace),'rec2020');assert.equal(await raw.evaluate(()=>working.data[0]),Math.fround(.6));assert.equal(await raw.evaluate(()=>state.acceptedCalibration2||null),null);await raw.evaluate(()=>NSRawDecoder.decode=decoderBeforeRace);
+ console.log('PASS delayed engine reload cannot roll back a replacement image or leak its accepted base/settings');
  assert.deepEqual(errors,[]);console.log('PASS Standard forced reload retains locked source recipe, base and pixel results; Original restores prior reference RAW recipe and pixels');
 }finally{await h.close();}
