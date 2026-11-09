@@ -1,0 +1,168 @@
+{
+  "Chromium": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+    "viewportCases": [
+      {
+        "size": [
+          1440,
+          900
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          1024,
+          768
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          768,
+          1024
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      }
+    ]
+  },
+  "Edge Linux 157": {
+    "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+    "viewportCases": [
+      {
+        "size": [
+          1440,
+          900
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          1024,
+          768
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          768,
+          1024
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      }
+    ]
+  },
+  "WebKit Linux WPE": {
+    "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+    "viewportCases": [
+      {
+        "size": [
+          1440,
+          900
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          1024,
+          768
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          768,
+          1024
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          390,
+          844
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      },
+      {
+        "size": [
+          844,
+          390
+        ],
+        "position": "absolute",
+        "objectFit": "contain",
+        "spinner": "hidden",
+        "kind": "approximate-positive"
+      }
+    ]
+  },
+  "limits": "Physical iPad Safari and Windows Edge were not tested. WebKit uses headless Linux WPE with touch enabled and user-local official Debian runtime libraries. Layout test uses a synthetic RAF envelope and controlled worker; separate real-RAW screenshots/records document actual _DSF9235 import."
+}

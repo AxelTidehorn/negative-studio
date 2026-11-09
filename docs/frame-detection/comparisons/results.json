@@ -1,0 +1,1253 @@
+{
+  "environment": {
+    "node": "v24.22.1",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "platform": "linux"
+  },
+  "method": "One serial bounded-preview detector pass per image; not end-to-end import timing. Blue manual reference: main case +/-3 pixels on a 720px display; other annotations coarse +/-8 pixels on a 480px display. includedBorderFraction means outside the annotated motif, not authoritative film-base classification. Orange previous proposal; red new corners; green analysis polygon. Review JPEGs are bounded diagnostic renders, not full-resolution RAW exports.",
+  "results": [
+    {
+      "filename": "_DSF8434.RAF",
+      "sha256": "50c5bf7bf26d0cc536af69ddf8a0120a2a4ad9d3b852d1d181ff55b7c08bb444",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.82,
+        "accepted": true,
+        "reason": "four-coherent-film-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9442323425143169,
+          "includedBorderFraction": 0,
+          "analysisPixels": 76175,
+          "maxBoundaryDeviationPixels": 7.358825056523037,
+          "meanBoundaryDeviationPixels": 4.116722970249722
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "scale-disagreement",
+        "metrics": {
+          "retainedMotifFraction": 0.9934675360091232,
+          "includedBorderFraction": 0.009771042412627969,
+          "analysisPixels": 79316,
+          "maxBoundaryDeviationPixels": 5.560690473120209,
+          "meanBoundaryDeviationPixels": 1.7941382700096438
+        },
+        "elapsedMs": 1418.960653,
+        "quad": [
+          {
+            "x": 0.7642465017127782,
+            "y": 0.08158905951867594
+          },
+          {
+            "x": 0.7719847747438017,
+            "y": 0.9585253735951789
+          },
+          {
+            "x": 0.17266717587949235,
+            "y": 0.9695909657242814
+          },
+          {
+            "x": 0.16147663305949153,
+            "y": 0.08449764600088594
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.7601346272240802,
+            "y": 0.08783946286169766
+          },
+          {
+            "x": 0.7677634494192203,
+            "y": 0.9523723101430348
+          },
+          {
+            "x": 0.17675485213961492,
+            "y": 0.9632844877508376
+          },
+          {
+            "x": 0.16572256043988767,
+            "y": 0.09070771987357143
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 3,
+          "score": 0.9346978125513332,
+          "backgroundModes": 2,
+          "scaleAgreement": false
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 742.1465109999999,
+          "metrics": {
+            "retainedMotifFraction": 0.9987976299675236,
+            "includedBorderFraction": 0.013987748319734133,
+            "analysisPixels": 80642,
+            "maxBoundaryDeviationPixels": 7.501446539958653,
+            "meanBoundaryDeviationPixels": 2.22310806060878
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 1166.8176749999998,
+          "metrics": {
+            "retainedMotifFraction": 0.9934675360091232,
+            "includedBorderFraction": 0.009771042412627969,
+            "analysisPixels": 79316,
+            "maxBoundaryDeviationPixels": 5.560690473120209,
+            "meanBoundaryDeviationPixels": 1.7941382700096438
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF8948.RAF",
+      "sha256": "644375ef0652998341a34ba0ddc904901a4b13ea5232aeca119c822201754326",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 1,
+          "includedBorderFraction": 0.47468847352024923,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 115.7410903698423,
+          "meanBoundaryDeviationPixels": 66.54682041561583
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "scale-disagreement",
+        "metrics": {
+          "retainedMotifFraction": 0.9917593278972078,
+          "includedBorderFraction": 0.02172327246201209,
+          "analysisPixels": 80881,
+          "maxBoundaryDeviationPixels": 8.96472115651554,
+          "meanBoundaryDeviationPixels": 3.242244562756601
+        },
+        "elapsedMs": 1367.7474339999999,
+        "quad": [
+          {
+            "x": 0.24163393390628016,
+            "y": 0.05952826245864732
+          },
+          {
+            "x": 0.8476874668418856,
+            "y": 0.06629761824489575
+          },
+          {
+            "x": 0.8485644709386175,
+            "y": 0.9543947488544026
+          },
+          {
+            "x": 0.24173778180569708,
+            "y": 0.9517558413361321
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.2458013312561231,
+            "y": 0.06580551389504097
+          },
+          {
+            "x": 0.8435269026183022,
+            "y": 0.07248184995316131
+          },
+          {
+            "x": 0.8443916290781003,
+            "y": 0.9481460464723838
+          },
+          {
+            "x": 0.24590372545897315,
+            "y": 0.9455434018347343
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 3,
+          "score": 0.97049768434794,
+          "backgroundModes": 3,
+          "scaleAgreement": false
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 753.5382010000003,
+          "metrics": {
+            "retainedMotifFraction": 0.9935754880158142,
+            "includedBorderFraction": 0.0008637114187730218,
+            "analysisPixels": 78730,
+            "maxBoundaryDeviationPixels": 3.3713097460021983,
+            "meanBoundaryDeviationPixels": 1.0129134174006684
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 1141.6060319999997,
+          "metrics": {
+            "retainedMotifFraction": 0.9917593278972078,
+            "includedBorderFraction": 0.02172327246201209,
+            "analysisPixels": 80881,
+            "maxBoundaryDeviationPixels": 8.96472115651554,
+            "meanBoundaryDeviationPixels": 3.242244562756601
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF8951.RAF",
+      "sha256": "d52ce3a32f13ae3b0e6f9917b438f6c00ffc580a5398f1522bbf76b4001e0f99",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.82,
+        "accepted": true,
+        "reason": "four-coherent-film-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9295969178206666,
+          "includedBorderFraction": 0,
+          "analysisPixels": 76728,
+          "maxBoundaryDeviationPixels": 11.316868212201994,
+          "meanBoundaryDeviationPixels": 4.995073285600213
+        }
+      },
+      "current": {
+        "confidence": 0.84,
+        "accepted": true,
+        "reason": "coherent-quadrilateral",
+        "metrics": {
+          "retainedMotifFraction": 0.9998424986975853,
+          "includedBorderFraction": 0,
+          "analysisPixels": 81000,
+          "maxBoundaryDeviationPixels": 2.0259197824791735,
+          "meanBoundaryDeviationPixels": 0.7007527998361667
+        },
+        "elapsedMs": 1264.9150690000006,
+        "quad": [
+          {
+            "x": 0.8344798951834442,
+            "y": 0.03955098284728755
+          },
+          {
+            "x": 0.8454071536746041,
+            "y": 0.939413132237414
+          },
+          {
+            "x": 0.24076044264996885,
+            "y": 0.9531860964442849
+          },
+          {
+            "x": 0.23043803436776455,
+            "y": 0.06501064730701867
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.8303903237823639,
+            "y": 0.045956357752552565
+          },
+          {
+            "x": 0.8411653057627362,
+            "y": 0.9332785028580064
+          },
+          {
+            "x": 0.24485423486865632,
+            "y": 0.9468615934228544
+          },
+          {
+            "x": 0.23467569456430104,
+            "y": 0.07106503905017715
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 1,
+          "score": 0.9764847859421741,
+          "backgroundModes": 2,
+          "scaleAgreement": true
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "competing-regions",
+          "elapsedMs": 487.25252999999975,
+          "metrics": {
+            "retainedMotifFraction": 0.002180787264202377,
+            "includedBorderFraction": 0,
+            "analysisPixels": 37,
+            "maxBoundaryDeviationPixels": 86.05894943309241,
+            "meanBoundaryDeviationPixels": 68.9247492452115
+          }
+        },
+        "lines": {
+          "accepted": true,
+          "reason": "coherent-quadrilateral",
+          "elapsedMs": 1057.3551189999998,
+          "metrics": {
+            "retainedMotifFraction": 0.9998424986975853,
+            "includedBorderFraction": 0,
+            "analysisPixels": 81000,
+            "maxBoundaryDeviationPixels": 2.0259197824791735,
+            "meanBoundaryDeviationPixels": 0.7007527998361667
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF8983.RAF",
+      "sha256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.44999999999999996,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9410302172441382,
+          "includedBorderFraction": 0.47270898234683284,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 22.887387921917377,
+          "meanBoundaryDeviationPixels": 9.616357531537272
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "scale-disagreement",
+        "metrics": {
+          "retainedMotifFraction": 0.994350421564404,
+          "includedBorderFraction": 0.01813628869302193,
+          "analysisPixels": 80667,
+          "maxBoundaryDeviationPixels": 10.122238480149205,
+          "meanBoundaryDeviationPixels": 2.401591076431129
+        },
+        "elapsedMs": 1357.5050570000003,
+        "quad": [
+          {
+            "x": 0.2391734582024085,
+            "y": 0.0379968596514346
+          },
+          {
+            "x": 0.8360552834991274,
+            "y": 0.05674887752528595
+          },
+          {
+            "x": 0.8419122016999007,
+            "y": 0.941737697114769
+          },
+          {
+            "x": 0.22731611995289666,
+            "y": 0.9303913409306137
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.24325643885714315,
+            "y": 0.04435703772778596
+          },
+          {
+            "x": 0.8319287980213701,
+            "y": 0.06285114180844259
+          },
+          {
+            "x": 0.8377035795761623,
+            "y": 0.9354289952754276
+          },
+          {
+            "x": 0.23156535862174002,
+            "y": 0.9242387837592239
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            0.8709677419354839,
+            1
+          ],
+          "thresholds": 3,
+          "score": 0.9295665992187387,
+          "backgroundModes": 2,
+          "scaleAgreement": false
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "partial-boundary",
+          "elapsedMs": 514.411177,
+          "metrics": {
+            "retainedMotifFraction": 0.9569696596713644,
+            "includedBorderFraction": 0,
+            "analysisPixels": 75622,
+            "maxBoundaryDeviationPixels": 19.7089359880809,
+            "meanBoundaryDeviationPixels": 2.901025686994401
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "weak-boundary-support",
+          "elapsedMs": 780.2386630000001,
+          "metrics": {
+            "retainedMotifFraction": 0.994350421564404,
+            "includedBorderFraction": 0.01813628869302193,
+            "analysisPixels": 80667,
+            "maxBoundaryDeviationPixels": 10.122238480149205,
+            "meanBoundaryDeviationPixels": 2.401591076431129
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9229.RAF",
+      "sha256": "43bfc84fa67b2c9457aba48515245f2aaae5a6fd50c8dd4923a8c2840f1ee783",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.44999999999999996,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9495669245871348,
+          "includedBorderFraction": 0.4380192107995846,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 108.87762029403348,
+          "meanBoundaryDeviationPixels": 37.40909477698844
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "weak-boundary-support",
+        "metrics": {
+          "retainedMotifFraction": 0.9931631828155676,
+          "includedBorderFraction": 0,
+          "analysisPixels": 83985,
+          "maxBoundaryDeviationPixels": 3.153183717569996,
+          "meanBoundaryDeviationPixels": 0.8006819259535702
+        },
+        "elapsedMs": 898.9551169999995,
+        "quad": [
+          {
+            "x": 0.17414104271745368,
+            "y": 0.027181296529275017
+          },
+          {
+            "x": 0.781706823896985,
+            "y": 0.04463638657183626
+          },
+          {
+            "x": 0.7735916230379482,
+            "y": 0.9652204923397888
+          },
+          {
+            "x": 0.16388860410054454,
+            "y": 0.9468475046590222
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.17823750550924597,
+            "y": 0.0335306654941496
+          },
+          {
+            "x": 0.7774859302695247,
+            "y": 0.05074680164939305
+          },
+          {
+            "x": 0.7694806214230737,
+            "y": 0.9588648154629095
+          },
+          {
+            "x": 0.1681238989063176,
+            "y": 0.9407433377739809
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 1,
+          "score": 0.9676793513666011,
+          "backgroundModes": 1,
+          "scaleAgreement": null
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "competing-regions",
+          "elapsedMs": 500.49661299999934,
+          "metrics": {
+            "retainedMotifFraction": 0.003106594294953228,
+            "includedBorderFraction": 0,
+            "analysisPixels": 0,
+            "maxBoundaryDeviationPixels": 85.86457768291693,
+            "meanBoundaryDeviationPixels": 82.51494203401174
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "weak-boundary-support",
+          "elapsedMs": 818.1070019999988,
+          "metrics": {
+            "retainedMotifFraction": 0.9931631828155676,
+            "includedBorderFraction": 0,
+            "analysisPixels": 83985,
+            "maxBoundaryDeviationPixels": 3.153183717569996,
+            "meanBoundaryDeviationPixels": 0.8006819259535702
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9231.RAF",
+      "sha256": "cd2575f8f65ebf4f8c2e2850bebb6c73ff8b47dc86eb97313e5625c5ae7858c5",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.82,
+        "accepted": true,
+        "reason": "four-coherent-film-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9949182296960177,
+          "includedBorderFraction": 0.0033666917336727022,
+          "analysisPixels": 86435,
+          "maxBoundaryDeviationPixels": 1.9931511609028074,
+          "meanBoundaryDeviationPixels": 0.6312160653068574
+        }
+      },
+      "current": {
+        "confidence": 0.84,
+        "accepted": true,
+        "reason": "coherent-quadrilateral",
+        "metrics": {
+          "retainedMotifFraction": 1,
+          "includedBorderFraction": 0.0008319370071359104,
+          "analysisPixels": 85343,
+          "maxBoundaryDeviationPixels": 2.531695076932026,
+          "meanBoundaryDeviationPixels": 0.9770249532309839
+        },
+        "elapsedMs": 1366.1936260000002,
+        "quad": [
+          {
+            "x": 0.1687306174053183,
+            "y": 0.026639224896818494
+          },
+          {
+            "x": 0.7873347009094372,
+            "y": 0.028717128442713156
+          },
+          {
+            "x": 0.7878671343824676,
+            "y": 0.9494991772250682
+          },
+          {
+            "x": 0.16972193535558158,
+            "y": 0.9462540377164013
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.17290402094280818,
+            "y": 0.03288378875797841
+          },
+          {
+            "x": 0.7831716273528148,
+            "y": 0.03493368990981192
+          },
+          {
+            "x": 0.7836968507319602,
+            "y": 0.9432467160714035
+          },
+          {
+            "x": 0.17388191460660954,
+            "y": 0.9400453087882751
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 3,
+          "score": 0.9130138184085437,
+          "backgroundModes": 2,
+          "scaleAgreement": true
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": true,
+          "reason": "coherent-quadrilateral",
+          "elapsedMs": 743.5191629999972,
+          "metrics": {
+            "retainedMotifFraction": 1,
+            "includedBorderFraction": 0,
+            "analysisPixels": 85149,
+            "maxBoundaryDeviationPixels": 2.032517283486859,
+            "meanBoundaryDeviationPixels": 0.8133009481624872
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 1235.337821000001,
+          "metrics": {
+            "retainedMotifFraction": 1,
+            "includedBorderFraction": 0.20009558706388403,
+            "analysisPixels": 106709,
+            "maxBoundaryDeviationPixels": 75.14649883247817,
+            "meanBoundaryDeviationPixels": 23.486288720774077
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9235.RAF",
+      "sha256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Manual visual annotation on a 720x481 linear-source display, approximate +/-3 display pixels; not camera ground truth.",
+      "previous": {
+        "confidence": 0.3,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9842976246297419,
+          "includedBorderFraction": 0.43250908618899275,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 104.02921373190382,
+          "meanBoundaryDeviationPixels": 36.57098455933695
+        }
+      },
+      "current": {
+        "confidence": 0.84,
+        "accepted": true,
+        "reason": "coherent-quadrilateral",
+        "metrics": {
+          "retainedMotifFraction": 0.99495648394881,
+          "includedBorderFraction": 0.0006331637079942781,
+          "analysisPixels": 85286,
+          "maxBoundaryDeviationPixels": 3.249038540398712,
+          "meanBoundaryDeviationPixels": 0.951410138025048
+        },
+        "elapsedMs": 1353.7701269999998,
+        "quad": [
+          {
+            "x": 0.16943937782705065,
+            "y": 0.04167667828363725
+          },
+          {
+            "x": 0.7911928022774377,
+            "y": 0.035505912516159185
+          },
+          {
+            "x": 0.7881438906829775,
+            "y": 0.9633914455630118
+          },
+          {
+            "x": 0.17356428127347245,
+            "y": 0.9540344200577515
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.17363412124922212,
+            "y": 0.047865713207581775
+          },
+          {
+            "x": 0.7870054755964534,
+            "y": 0.04177813763933563
+          },
+          {
+            "x": 0.7839978549110458,
+            "y": 0.9570974692831005
+          },
+          {
+            "x": 0.17770315745784088,
+            "y": 0.9478665822492393
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 1,
+          "score": 0.9673237930260259,
+          "backgroundModes": 2,
+          "scaleAgreement": true
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "competing-regions",
+          "elapsedMs": 496.2297580000013,
+          "metrics": {
+            "retainedMotifFraction": 0.007834032868628415,
+            "includedBorderFraction": 0,
+            "analysisPixels": 485,
+            "maxBoundaryDeviationPixels": 63.88487811304403,
+            "meanBoundaryDeviationPixels": 50.13711684590789
+          }
+        },
+        "lines": {
+          "accepted": true,
+          "reason": "coherent-quadrilateral",
+          "elapsedMs": 1230.376745999998,
+          "metrics": {
+            "retainedMotifFraction": 0.99495648394881,
+            "includedBorderFraction": 0.0006331637079942781,
+            "analysisPixels": 85286,
+            "maxBoundaryDeviationPixels": 3.249038540398712,
+            "meanBoundaryDeviationPixels": 0.951410138025048
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9237.RAF",
+      "sha256": "37df5503bc615791d60e946553847de1e56c5fa188c24022a525d44893527fce",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.82,
+        "accepted": true,
+        "reason": "four-coherent-film-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9652639428374272,
+          "includedBorderFraction": 0,
+          "analysisPixels": 86728,
+          "maxBoundaryDeviationPixels": 4.931645426549081,
+          "meanBoundaryDeviationPixels": 2.5714569304552795
+        }
+      },
+      "current": {
+        "confidence": 0.84,
+        "accepted": true,
+        "reason": "coherent-quadrilateral",
+        "metrics": {
+          "retainedMotifFraction": 0.978730981980879,
+          "includedBorderFraction": 0,
+          "analysisPixels": 85783,
+          "maxBoundaryDeviationPixels": 4.923522596738103,
+          "meanBoundaryDeviationPixels": 1.6423124059399241
+        },
+        "elapsedMs": 1436.519898999999,
+        "quad": [
+          {
+            "x": 0.17147216391036374,
+            "y": 0.03150476491676081
+          },
+          {
+            "x": 0.79375,
+            "y": 0.030323529970836663
+          },
+          {
+            "x": 0.79375,
+            "y": 0.9500760608574814
+          },
+          {
+            "x": 0.17356302560893253,
+            "y": 0.9540569964511175
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.1756529573297006,
+            "y": 0.03772736336751049
+          },
+          {
+            "x": 0.7895833333333333,
+            "y": 0.03656197393462157
+          },
+          {
+            "x": 0.7895833333333333,
+            "y": 0.9438722193917397
+          },
+          {
+            "x": 0.17771553486310748,
+            "y": 0.9477997547933361
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 2,
+          "score": 0.9281094983391468,
+          "backgroundModes": 3,
+          "scaleAgreement": true
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 755.9933090000013,
+          "metrics": {
+            "retainedMotifFraction": 0.978730981980879,
+            "includedBorderFraction": 0,
+            "analysisPixels": 85783,
+            "maxBoundaryDeviationPixels": 4.923522596738103,
+            "meanBoundaryDeviationPixels": 1.6423124059399241
+          }
+        },
+        "lines": {
+          "accepted": true,
+          "reason": "coherent-quadrilateral",
+          "elapsedMs": 1223.669965000001,
+          "metrics": {
+            "retainedMotifFraction": 0,
+            "includedBorderFraction": 1,
+            "analysisPixels": 14684,
+            "maxBoundaryDeviationPixels": 67.86404155024955,
+            "meanBoundaryDeviationPixels": 39.77804485537348
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9238.RAF",
+      "sha256": "be99fa6a39acb700a08686b07a5231658f5b4f037e4b8bf41e6b6a3281e182e2",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.44999999999999996,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9865658443678578,
+          "includedBorderFraction": 0.42751817237798545,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 83.9913616431548,
+          "meanBoundaryDeviationPixels": 26.56934977046782
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "competing-regions",
+        "metrics": {
+          "retainedMotifFraction": 0.9958167059677127,
+          "includedBorderFraction": 0.022542422800697796,
+          "analysisPixels": 88278,
+          "maxBoundaryDeviationPixels": 9.961785661879778,
+          "meanBoundaryDeviationPixels": 2.817913444932922
+        },
+        "elapsedMs": 1355.097256000001,
+        "quad": [
+          {
+            "x": 0.1729190766481911,
+            "y": 0.012590398243665332
+          },
+          {
+            "x": 0.7919018469107034,
+            "y": 0.02311513796007526
+          },
+          {
+            "x": 0.7917269562607597,
+            "y": 0.9699025523022947
+          },
+          {
+            "x": 0.17287556365937337,
+            "y": 0.9682690248714464
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.1770854563985164,
+            "y": 0.018892172761814974
+          },
+          {
+            "x": 0.7877340421971806,
+            "y": 0.02927520397445936
+          },
+          {
+            "x": 0.7875614423719418,
+            "y": 0.9636610176603286
+          },
+          {
+            "x": 0.17704251351748485,
+            "y": 0.9620494846990085
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            0.8709677419354839,
+            1,
+            1
+          ],
+          "thresholds": 1,
+          "score": 0.9220653395995646,
+          "backgroundModes": 2,
+          "scaleAgreement": true
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": true,
+          "reason": "coherent-quadrilateral",
+          "elapsedMs": 698.4018359999973,
+          "metrics": {
+            "retainedMotifFraction": 0.9941388536187193,
+            "includedBorderFraction": 0,
+            "analysisPixels": 85556,
+            "maxBoundaryDeviationPixels": 1.7867837702772567,
+            "meanBoundaryDeviationPixels": 0.6347312604184042
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "competing-regions",
+          "elapsedMs": 1123.510996000001,
+          "metrics": {
+            "retainedMotifFraction": 0.9949891166334119,
+            "includedBorderFraction": 0.21758247711226278,
+            "analysisPixels": 110758,
+            "maxBoundaryDeviationPixels": 77.83682261354699,
+            "meanBoundaryDeviationPixels": 25.468470357164847
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9239.RAF",
+      "sha256": "62426373bbbf4240113c6dc5a750758d2745aa1f8f9d2de80fbe542e9433e3f7",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.3,
+        "accepted": false,
+        "reason": "incomplete-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9799041132717985,
+          "includedBorderFraction": 0.4206126687435099,
+          "analysisPixels": 154080,
+          "maxBoundaryDeviationPixels": 101.17806086301516,
+          "meanBoundaryDeviationPixels": 34.59821904754468
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "weak-boundary-support",
+        "metrics": {
+          "retainedMotifFraction": 0.9928869074289811,
+          "includedBorderFraction": 0.0468169486724121,
+          "analysisPixels": 91783,
+          "maxBoundaryDeviationPixels": 16.220381226407802,
+          "meanBoundaryDeviationPixels": 5.323577637798181
+        },
+        "elapsedMs": 879.1647000000012,
+        "quad": [
+          {
+            "x": 0.8107807188995332,
+            "y": 0.03131951788043416
+          },
+          {
+            "x": 0.8195254664315486,
+            "y": 0.9945129674956629
+          },
+          {
+            "x": 0.17516065917935772,
+            "y": 0.9814838502756441
+          },
+          {
+            "x": 0.1694595894251617,
+            "y": 0.04206297781508174
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.8066708633225411,
+            "y": 0.037619287058538405
+          },
+          {
+            "x": 0.8153010687169268,
+            "y": 0.9881964505813473
+          },
+          {
+            "x": 0.1792901894258514,
+            "y": 0.9753362505731752
+          },
+          {
+            "x": 0.17366381386481564,
+            "y": 0.04822346889763111
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 1,
+          "score": 0.8839713976024975,
+          "backgroundModes": 1,
+          "scaleAgreement": null
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "competing-regions",
+          "elapsedMs": 486.3955180000012,
+          "metrics": {
+            "retainedMotifFraction": 0,
+            "includedBorderFraction": 1,
+            "analysisPixels": 15222,
+            "maxBoundaryDeviationPixels": 82.05120506728692,
+            "meanBoundaryDeviationPixels": 34.51921413837403
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "weak-boundary-support",
+          "elapsedMs": 737.2245570000014,
+          "metrics": {
+            "retainedMotifFraction": 0.9928869074289811,
+            "includedBorderFraction": 0.0468169486724121,
+            "analysisPixels": 91783,
+            "maxBoundaryDeviationPixels": 16.220381226407802,
+            "meanBoundaryDeviationPixels": 5.323577637798181
+          }
+        }
+      }
+    },
+    {
+      "filename": "_DSF9243.RAF",
+      "sha256": "1aa2cad3bbbb315de5ff03c9ff8e284af4657d4ccd89b21a14b47314d132fdc0",
+      "sourceDimensions": {
+        "width": 6032,
+        "height": 4032
+      },
+      "fixture": {
+        "width": 480,
+        "height": 321,
+        "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export"
+      },
+      "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale.",
+      "previous": {
+        "confidence": 0.82,
+        "accepted": true,
+        "reason": "four-coherent-film-boundaries",
+        "metrics": {
+          "retainedMotifFraction": 0.9808883586472721,
+          "includedBorderFraction": 0.0005610491619328144,
+          "analysisPixels": 85554,
+          "maxBoundaryDeviationPixels": 2.965565846663937,
+          "meanBoundaryDeviationPixels": 1.4194480703702812
+        }
+      },
+      "current": {
+        "confidence": 0.55,
+        "accepted": false,
+        "reason": "scale-disagreement",
+        "metrics": {
+          "retainedMotifFraction": 0.9898247143578213,
+          "includedBorderFraction": 0.027066198884223847,
+          "analysisPixels": 86935,
+          "maxBoundaryDeviationPixels": 10.156839540537739,
+          "meanBoundaryDeviationPixels": 3.4527253277048677
+        },
+        "elapsedMs": 1270.484152000001,
+        "quad": [
+          {
+            "x": 0.1695089578521673,
+            "y": 0.045911296262513064
+          },
+          {
+            "x": 0.7867925365065889,
+            "y": 0.03304804860865752
+          },
+          {
+            "x": 0.7887811858140168,
+            "y": 0.9749902116463123
+          },
+          {
+            "x": 0.1731464344505141,
+            "y": 0.9848474817281219
+          }
+        ],
+        "analysisQuad": [
+          {
+            "x": 0.1736994957994497,
+            "y": 0.05205510641172352
+          },
+          {
+            "x": 0.7826391871119953,
+            "y": 0.03936573263526544
+          },
+          {
+            "x": 0.7846014848872466,
+            "y": 0.9688262483934834
+          },
+          {
+            "x": 0.17728877537658055,
+            "y": 0.9785502696390409
+          }
+        ],
+        "evidence": {
+          "sides": [
+            1,
+            1,
+            1,
+            1
+          ],
+          "thresholds": 3,
+          "score": 0.9754575624911401,
+          "backgroundModes": 1,
+          "scaleAgreement": false
+        }
+      },
+      "alternatives": {
+        "contours": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 767.9242560000021,
+          "metrics": {
+            "retainedMotifFraction": 0.9923828752351672,
+            "includedBorderFraction": 0.0005662914985488781,
+            "analysisPixels": 84762,
+            "maxBoundaryDeviationPixels": 2.7985768605937182,
+            "meanBoundaryDeviationPixels": 1.0339939328552354
+          }
+        },
+        "lines": {
+          "accepted": false,
+          "reason": "scale-disagreement",
+          "elapsedMs": 1134.8534689999942,
+          "metrics": {
+            "retainedMotifFraction": 0.9898247143578213,
+            "includedBorderFraction": 0.027066198884223847,
+            "analysisPixels": 86935,
+            "maxBoundaryDeviationPixels": 10.156839540537739,
+            "meanBoundaryDeviationPixels": 3.4527253277048677
+          }
+        }
+      }
+    }
+  ]
+}

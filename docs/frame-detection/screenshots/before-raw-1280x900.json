@@ -1,0 +1,193 @@
+{
+  "import": {
+    "id": 1,
+    "started": 439.30000000074506,
+    "phase": "ready",
+    "stages": {
+      "preview": 159.39999999850988,
+      "frameAnalysis": 43.900000002235174,
+      "baseAnalysis": 1.3999999985098839,
+      "v2Analysis": 112.19999999925494,
+      "renderSubmit": 2616.099999997765,
+      "finishImport": 3070.699999999255
+    },
+    "sourceVersion": 0,
+    "cancelled": false,
+    "jpegPrepareMs": 73.59999999776483,
+    "preliminaryPaintMs": 161.10000000149012,
+    "firstVisibleMs": 161.10000000149012,
+    "readyMs": 23677.300000000745,
+    "success": true,
+    "decoder": {
+      "cacheHit": false,
+      "totalMs": 20333.599999997765,
+      "stages": {
+        "librawInit": 32,
+        "fileRead": 70.79999999701977,
+        "rawOpen": 35.599999997764826,
+        "metadata": 5.800000000745058,
+        "rawImageData": 19980.199999999255,
+        "rgbConvert": 162.20000000298023
+      },
+      "memory": {
+        "fileBytes": 50245120,
+        "rgb16Bytes": 145926144,
+        "sourceBytes": 291852288,
+        "wasmHeapBytes": null
+      },
+      "activeWorkers": 0,
+      "cacheBytes": 291852288
+    },
+    "renderMetrics": {
+      "cpuRenderMs": 0,
+      "gpu": {
+        "backend": "gpu",
+        "frames": 1,
+        "sourceUploads": 1,
+        "validationError": 0,
+        "lastSubmitMs": 1850.699999999255,
+        "lastGpuMs": null,
+        "reason": null,
+        "contextLosses": 0,
+        "positiveRequests": 1,
+        "positiveReconstructions": 1,
+        "positiveDiscards": 0,
+        "positiveCancelled": 0,
+        "positiveCacheBytes": 20966400,
+        "positivePreparationMs": 15.899999998509884,
+        "positiveReconstructionMs": 0,
+        "positiveCopyMs": 0,
+        "positiveStartedAt": 22259,
+        "positiveReadyAt": 24109.60000000149,
+        "histogramReconstructions": 0,
+        "histogramSourceBytes": 0,
+        "preference": "auto",
+        "interactiveLimit": 700,
+        "sourceVersion": 1,
+        "sourceMatches": true,
+        "positivePending": false,
+        "positiveKey": "44572ec0",
+        "reconstructionBackend": "gpu",
+        "positiveUploads": 0,
+        "validationUploads": 4,
+        "positiveUploadSubmitMs": 0,
+        "gpuReconstructionSubmitMs": 15.899999998509884,
+        "gpuReconstructionMs": null,
+        "sourcePreparationMs": 0,
+        "sourceUploadSubmitMs": 6.399999998509884,
+        "positiveFloatError": 0.0000035017728805541992,
+        "technicalRelativeError": 0.0000026559516600311078,
+        "capabilities": {
+          "floatColor": true
+        },
+        "textureBytes": 36691200,
+        "mainPositive": {
+          "conversions": 0,
+          "adoptions": 0,
+          "reconstructionMs": 0,
+          "bytes": 0
+        }
+      }
+    },
+    "memory": {
+      "sourceBytes": 291852288,
+      "previewBytes": 15724800,
+      "legacyPreviewBytes": 5241600
+    },
+    "technicalPaintMs": 23918.800000000745,
+    "usableMs": 23918.800000000745,
+    "elapsedMs": 23918.800000000745,
+    "heap": {
+      "used": 324848876,
+      "total": 345452564
+    }
+  },
+  "proof": false,
+  "sourceReady": true,
+  "previewSHA256": "2104eee77e5836aa5affd025989798c85d4b9d48c5985d58ea2f19e352a47dd9",
+  "dimensions": [
+    6032,
+    4032
+  ],
+  "area": {
+    "region": {
+      "x": 0,
+      "y": 0,
+      "w": 1,
+      "h": 1
+    },
+    "status": "estimated",
+    "method": "application-frame",
+    "confidence": 0.3
+  },
+  "base": "prior",
+  "analysis": {
+    "version": 3,
+    "key": "analysis-bb458d42",
+    "area": {
+      "region": {
+        "x": 0,
+        "y": 0,
+        "w": 1,
+        "h": 1
+      },
+      "status": "unconfirmed",
+      "method": "unconfirmed-frame",
+      "confidence": 0
+    },
+    "exposure": {
+      "recipe": {
+        "version": "robust-p60-highlight-2",
+        "target": 0.8,
+        "highlightCeiling": 16,
+        "minSamples": 16,
+        "minValidFraction": 0.05,
+        "maxAbsEV": 16
+      },
+      "percentiles": {
+        "p50": 0.09103282508499991,
+        "p60": 0.13792143258376965,
+        "p99": 29.30369248019906
+      },
+      "requestedEV": 2.5361533351734726,
+      "highlightEV": -0.8730105611468097,
+      "softEV": -0.8793742113527275,
+      "appliedEV": 0,
+      "highlightReductionEV": 0,
+      "highlightLimited": false,
+      "fallback": "ANALYSIS_AREA_UNCONFIRMED",
+      "candidateVersion": "scene-distribution-1",
+      "correctionEV": 0,
+      "inference": null,
+      "candidateFallback": "ANALYSIS_AREA_UNCONFIRMED"
+    },
+    "mode": "frame-edge-connected-content-3",
+    "status": "insufficient",
+    "sourceRevision": "v2-dcf43b74",
+    "baseId": "prior-base-93548ff9-1f8d-4528-99de-4164fb01388d",
+    "cols": 160,
+    "rows": 150,
+    "samples": 24000,
+    "counts": {
+      "invalid": 0,
+      "clipped": 0,
+      "logFloor": 0,
+      "edgeBase": 0,
+      "edgeHolder": 475,
+      "edgeClear": 0,
+      "outsideArea": 0,
+      "kept": 23525
+    },
+    "keptFraction": 0.9802083333333333,
+    "maskId": "mask-2a32086a",
+    "baseEvidence": "prior",
+    "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+    "fullSourceMedian": 0.09419979277232159,
+    "fullSourceRequestedEV": 0.9342011153481268
+  },
+  "sameBoundedSourceAsBaseline": true,
+  "exportBorderCheck": {
+    "sameAnalysis": true,
+    "cropExport": false
+  }
+}

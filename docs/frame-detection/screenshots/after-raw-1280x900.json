@@ -1,0 +1,309 @@
+{
+  "import": {
+    "id": 1,
+    "started": 669.6000000014901,
+    "phase": "ready",
+    "stages": {
+      "preview": 132.60000000149012,
+      "frameAnalysis": 1661.6000000014901,
+      "baseAnalysis": 12.399999998509884,
+      "v2Analysis": 164.5,
+      "renderSubmit": 2116.89999999851,
+      "finishImport": 4223
+    },
+    "sourceVersion": 0,
+    "cancelled": false,
+    "preliminaryTransformMs": 12.700000002980232,
+    "jpegPrepareMs": 113.10000000149012,
+    "preliminaryKind": "approximate-positive",
+    "preliminaryPaintMs": 237,
+    "firstVisibleMs": 237,
+    "readyMs": 27441.89999999851,
+    "success": true,
+    "decoder": {
+      "cacheHit": false,
+      "totalMs": 22874.80000000447,
+      "stages": {
+        "librawInit": 35.600000001490116,
+        "fileRead": 79.70000000298023,
+        "rawOpen": 41.899999998509884,
+        "metadata": 35.19999999552965,
+        "rawImageData": 22433.40000000596,
+        "rgbConvert": 179.20000000298023
+      },
+      "memory": {
+        "fileBytes": 50245120,
+        "rgb16Bytes": 145926144,
+        "sourceBytes": 291852288,
+        "wasmHeapBytes": null
+      },
+      "activeWorkers": 0,
+      "cacheBytes": 291852288
+    },
+    "renderMetrics": {
+      "cpuRenderMs": 0,
+      "gpu": {
+        "backend": "gpu",
+        "frames": 1,
+        "sourceUploads": 1,
+        "validationError": 0,
+        "lastSubmitMs": 1471,
+        "lastGpuMs": null,
+        "reason": null,
+        "contextLosses": 0,
+        "positiveRequests": 1,
+        "positiveReconstructions": 1,
+        "positiveDiscards": 0,
+        "positiveCancelled": 0,
+        "positiveCacheBytes": 20966400,
+        "positivePreparationMs": 14.700000002980232,
+        "positiveReconstructionMs": 0,
+        "positiveCopyMs": 0,
+        "positiveStartedAt": 26632.29999999702,
+        "positiveReadyAt": 28103.29999999702,
+        "histogramReconstructions": 0,
+        "histogramSourceBytes": 0,
+        "preference": "auto",
+        "interactiveLimit": 700,
+        "sourceVersion": 1,
+        "sourceMatches": true,
+        "positivePending": false,
+        "positiveKey": "b2041c3",
+        "reconstructionBackend": "gpu",
+        "positiveUploads": 0,
+        "validationUploads": 4,
+        "positiveUploadSubmitMs": 0,
+        "gpuReconstructionSubmitMs": 14.700000002980232,
+        "gpuReconstructionMs": null,
+        "sourcePreparationMs": 0,
+        "sourceUploadSubmitMs": 5.399999998509884,
+        "positiveFloatError": 5.364418029785156e-7,
+        "technicalRelativeError": 0.0000014434372520056938,
+        "capabilities": {
+          "floatColor": true
+        },
+        "textureBytes": 36691200,
+        "mainPositive": {
+          "conversions": 0,
+          "adoptions": 0,
+          "reconstructionMs": 0,
+          "bytes": 0
+        }
+      }
+    },
+    "memory": {
+      "sourceBytes": 291852288,
+      "previewBytes": 15724800,
+      "legacyPreviewBytes": 5241600
+    },
+    "technicalPaintMs": 27595.5,
+    "usableMs": 27595.5,
+    "elapsedMs": 27595.5,
+    "heap": {
+      "used": 390041941,
+      "total": 434406261
+    }
+  },
+  "proof": false,
+  "sourceReady": true,
+  "previewSHA256": "2104eee77e5836aa5affd025989798c85d4b9d48c5985d58ea2f19e352a47dd9",
+  "dimensions": [
+    6032,
+    4032
+  ],
+  "area": {
+    "region": {
+      "x": 0.16943937782705065,
+      "y": 0.035505912516159185,
+      "w": 0.6217534244503871,
+      "h": 0.9278855330468526
+    },
+    "status": "confirmed",
+    "polygon": [
+      {
+        "x": 0.17363412124922212,
+        "y": 0.047865713207581775
+      },
+      {
+        "x": 0.7870054755964534,
+        "y": 0.04177813763933563
+      },
+      {
+        "x": 0.7839978549110458,
+        "y": 0.9570974692831005
+      },
+      {
+        "x": 0.17770315745784088,
+        "y": 0.9478665822492393
+      }
+    ]
+  },
+  "detection": {
+    "version": 1,
+    "method": "frame-contours-1",
+    "region": {
+      "x": 0.16943937782705065,
+      "y": 0.035505912516159185,
+      "w": 0.6217534244503871,
+      "h": 0.9278855330468526
+    },
+    "proposal": {
+      "x": 0.16943937782705065,
+      "y": 0.035505912516159185,
+      "w": 0.6217534244503871,
+      "h": 0.9278855330468526
+    },
+    "quad": [
+      {
+        "x": 0.16943937782705065,
+        "y": 0.04167667828363725
+      },
+      {
+        "x": 0.7911928022774377,
+        "y": 0.035505912516159185
+      },
+      {
+        "x": 0.7881438906829775,
+        "y": 0.9633914455630118
+      },
+      {
+        "x": 0.17356428127347245,
+        "y": 0.9540344200577515
+      }
+    ],
+    "analysisQuad": [
+      {
+        "x": 0.17363412124922212,
+        "y": 0.047865713207581775
+      },
+      {
+        "x": 0.7870054755964534,
+        "y": 0.04177813763933563
+      },
+      {
+        "x": 0.7839978549110458,
+        "y": 0.9570974692831005
+      },
+      {
+        "x": 0.17770315745784088,
+        "y": 0.9478665822492393
+      }
+    ],
+    "analysisSafe": true,
+    "confidence": 0.84,
+    "reason": "coherent-quadrilateral",
+    "coordinateSpace": "normalized-source",
+    "evidence": {
+      "sides": [
+        1,
+        1,
+        1,
+        1
+      ],
+      "thresholds": 1,
+      "score": 0.9673237930260254,
+      "backgroundModes": 2,
+      "scaleAgreement": true
+    },
+    "sourceDimensions": {
+      "width": 6032,
+      "height": 4032
+    }
+  },
+  "base": "measured",
+  "analysis": {
+    "version": 3,
+    "key": "analysis-5bac7125",
+    "area": {
+      "region": {
+        "x": 0.16943937782705065,
+        "y": 0.035505912516159185,
+        "w": 0.6217534244503871,
+        "h": 0.9278855330468526
+      },
+      "status": "confirmed",
+      "method": "manual-frame",
+      "confidence": 1,
+      "polygon": [
+        {
+          "x": 0.17363412124922212,
+          "y": 0.047865713207581775
+        },
+        {
+          "x": 0.7870054755964534,
+          "y": 0.04177813763933563
+        },
+        {
+          "x": 0.7839978549110458,
+          "y": 0.9570974692831005
+        },
+        {
+          "x": 0.17770315745784088,
+          "y": 0.9478665822492393
+        }
+      ]
+    },
+    "exposure": {
+      "recipe": {
+        "version": "robust-p60-highlight-2",
+        "target": 0.8,
+        "highlightCeiling": 16,
+        "minSamples": 16,
+        "minValidFraction": 0.05,
+        "maxAbsEV": 16
+      },
+      "percentiles": {
+        "p50": 0.013285291493128184,
+        "p60": 0.01758173664095624,
+        "p99": 0.04898294939980155
+      },
+      "requestedEV": 5.507850514761371,
+      "highlightEV": 8.351576544571088,
+      "softEV": 5.49398707880264,
+      "appliedEV": 5.49398707880264,
+      "highlightReductionEV": 0.013863435958731074,
+      "highlightLimited": true,
+      "fallback": null,
+      "candidateVersion": "scene-distribution-1",
+      "baselineEV": 5.49398707880264,
+      "correctionEV": 0,
+      "inference": {
+        "lowerEV": 4.93037495069241,
+        "upperEV": 1.1019794267529281,
+        "rangeEV": 6.032354377445338,
+        "highSupport": 0,
+        "lowSupport": 0,
+        "assumption": "Distribution shape only; no measured scene exposure or semantic classification"
+      },
+      "candidateFallback": null
+    },
+    "mode": "frame-edge-connected-content-3",
+    "status": "estimated",
+    "sourceRevision": "v2-dcf43b74",
+    "baseId": "base-7233ed3d-bb9b-4f9c-8545-3e9f283e2353",
+    "cols": 160,
+    "rows": 150,
+    "samples": 24000,
+    "counts": {
+      "invalid": 0,
+      "clipped": 0,
+      "logFloor": 0,
+      "edgeBase": 1,
+      "edgeHolder": 0,
+      "edgeClear": 0,
+      "outsideArea": 10685,
+      "kept": 13314
+    },
+    "keptFraction": 0.55475,
+    "maskId": "mask-4c840209",
+    "baseEvidence": "measured",
+    "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+    "fullSourceMedian": 0.026496490165726264,
+    "fullSourceRequestedEV": 2.764123734440448
+  },
+  "sameBoundedSourceAsBaseline": true,
+  "exportBorderCheck": {
+    "sameAnalysis": true,
+    "cropExport": false
+  }
+}

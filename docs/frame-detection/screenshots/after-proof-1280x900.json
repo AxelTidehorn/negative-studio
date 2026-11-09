@@ -1,0 +1,22 @@
+{
+  "import": {
+    "id": 1,
+    "started": 785.8000000007451,
+    "phase": "decode",
+    "stages": {},
+    "sourceVersion": 0,
+    "cancelled": false,
+    "preliminaryTransformMs": 22,
+    "jpegPrepareMs": 126,
+    "preliminaryKind": "approximate-positive",
+    "preliminaryPaintMs": 242.60000000149012,
+    "firstVisibleMs": 242.60000000149012,
+    "elapsedMs": 728.3999999985099,
+    "heap": {
+      "used": 6329561,
+      "total": 8729669
+    }
+  },
+  "proof": true,
+  "sourceReady": false
+}

@@ -1,0 +1,233 @@
+{
+  "_DSF8434.RAF": {
+    "quad": [
+      {
+        "x": 0.17291666666666666,
+        "y": 0.08722741433021806
+      },
+      {
+        "x": 0.7645833333333333,
+        "y": 0.07476635514018691
+      },
+      {
+        "x": 0.7708333333333334,
+        "y": 0.9626168224299065
+      },
+      {
+        "x": 0.18125,
+        "y": 0.9719626168224299
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF8948.RAF": {
+    "quad": [
+      {
+        "x": 0.2375,
+        "y": 0.06230529595015576
+      },
+      {
+        "x": 0.83125,
+        "y": 0.06230529595015576
+      },
+      {
+        "x": 0.83125,
+        "y": 0.9439252336448598
+      },
+      {
+        "x": 0.2375,
+        "y": 0.9501557632398754
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF8951.RAF": {
+    "quad": [
+      {
+        "x": 0.23125,
+        "y": 0.06542056074766354
+      },
+      {
+        "x": 0.83125,
+        "y": 0.04361370716510903
+      },
+      {
+        "x": 0.84375,
+        "y": 0.940809968847352
+      },
+      {
+        "x": 0.24166666666666667,
+        "y": 0.9501557632398754
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF8983.RAF": {
+    "quad": [
+      {
+        "x": 0.23541666666666666,
+        "y": 0.037383177570093455
+      },
+      {
+        "x": 0.8270833333333333,
+        "y": 0.056074766355140186
+      },
+      {
+        "x": 0.8208333333333333,
+        "y": 0.940809968847352
+      },
+      {
+        "x": 0.225,
+        "y": 0.9283489096573209
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9229.RAF": {
+    "quad": [
+      {
+        "x": 0.17291666666666666,
+        "y": 0.03426791277258567
+      },
+      {
+        "x": 0.7833333333333333,
+        "y": 0.03426791277258567
+      },
+      {
+        "x": 0.7729166666666667,
+        "y": 0.9595015576323987
+      },
+      {
+        "x": 0.1625,
+        "y": 0.9501557632398754
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9231.RAF": {
+    "quad": [
+      {
+        "x": 0.17083333333333334,
+        "y": 0.03115264797507788
+      },
+      {
+        "x": 0.7854166666666667,
+        "y": 0.03115264797507788
+      },
+      {
+        "x": 0.7875,
+        "y": 0.9470404984423676
+      },
+      {
+        "x": 0.175,
+        "y": 0.9470404984423676
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9237.RAF": {
+    "quad": [
+      {
+        "x": 0.17291666666666666,
+        "y": 0.028037383177570093
+      },
+      {
+        "x": 0.7916666666666666,
+        "y": 0.021806853582554516
+      },
+      {
+        "x": 0.79375,
+        "y": 0.9657320872274143
+      },
+      {
+        "x": 0.16875,
+        "y": 0.9595015576323987
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9238.RAF": {
+    "quad": [
+      {
+        "x": 0.17083333333333334,
+        "y": 0.04361370716510903
+      },
+      {
+        "x": 0.7916666666666666,
+        "y": 0.04672897196261682
+      },
+      {
+        "x": 0.7895833333333333,
+        "y": 0.9750778816199377
+      },
+      {
+        "x": 0.175,
+        "y": 0.9688473520249221
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9239.RAF": {
+    "quad": [
+      {
+        "x": 0.17083333333333334,
+        "y": 0.04361370716510903
+      },
+      {
+        "x": 0.7895833333333333,
+        "y": 0.018691588785046728
+      },
+      {
+        "x": 0.8,
+        "y": 0.9532710280373832
+      },
+      {
+        "x": 0.17291666666666666,
+        "y": 0.9688473520249221
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9243.RAF": {
+    "quad": [
+      {
+        "x": 0.17083333333333334,
+        "y": 0.03426791277258567
+      },
+      {
+        "x": 0.7875,
+        "y": 0.03115264797507788
+      },
+      {
+        "x": 0.7875,
+        "y": 0.9439252336448598
+      },
+      {
+        "x": 0.16875,
+        "y": 0.9532710280373832
+      }
+    ],
+    "annotation": "Coarse manual visual annotation of a 480x321 technical-source image; approximately +/-8 display pixels, not authoritative camera ground truth. 8951/9231 additionally reviewed at 2x display scale."
+  },
+  "_DSF9235.RAF": {
+    "quad": [
+      {
+        "x": 0.16944444444444445,
+        "y": 0.04158004158004158
+      },
+      {
+        "x": 0.7847222222222222,
+        "y": 0.037422037422037424
+      },
+      {
+        "x": 0.7875,
+        "y": 0.9584199584199584
+      },
+      {
+        "x": 0.17222222222222222,
+        "y": 0.9646569646569647
+      }
+    ],
+    "annotation": "Manual visual annotation on a 720x481 linear-source display, approximate +/-3 display pixels; not camera ground truth."
+  }
+}
