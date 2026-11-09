@@ -1,0 +1,1081 @@
+{
+  "kind": "actual Chromium application exports from synthetic linear Rec.2020; no RAW decode or 26/40-MP projection",
+  "repo": "/workspace/filmlabb-frame-export",
+  "build": {
+    "schema": "filmlabb.build",
+    "schemaVersion": 1,
+    "sourceCommit": "0f80b386e19ddc4b12522bddd7462a41bf2f48ba",
+    "sourceBranch": "fix/frame-analysis-export",
+    "dirty": false,
+    "version": "3.0.0-beta.57.dev.g0f80b386e19d",
+    "contentHash": "ce4b33488ac217fdba0382ab65e7c3906856d6bbc55f7b744aa599eef42b27f0"
+  },
+  "commit": "0f80b386e19ddc4b12522bddd7462a41bf2f48ba",
+  "node": "v24.22.1",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "platform": "linux 6.18.57 x64",
+  "width": 640,
+  "height": 480,
+  "repeats": 3,
+  "browser": "156.0.8078.79",
+  "cases": [
+    {
+      "name": "tiff-direct",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 1146.3999999985099,
+          "ticks": 112,
+          "maxTimerGapMs": 25.899999998509884,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 993.2000000141561,
+              "maxStripeMs": 120.30000000074506,
+              "encodeMs": 0.9999999888241291,
+              "cache": null
+            },
+            "width": 640,
+            "height": 480,
+            "outputPixelBytes": 1843200,
+            "blobBytes": 1843958,
+            "yieldBackend": "background-task",
+            "cache": null,
+            "ms": 1143.5
+          },
+          "rssBefore": 570273792,
+          "rssPeak": 628891648,
+          "heapBefore": {
+            "usedSize": 2139152,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4029616,
+            "backingStorageSize": 5561446
+          },
+          "heapAfter": {
+            "usedSize": 5144764,
+            "totalSize": 16777216,
+            "embedderHeapUsedSize": 5829688,
+            "backingStorageSize": 5562984
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1163.3999999985099,
+          "ticks": 116,
+          "maxTimerGapMs": 14.899999998509884,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1029.2999999895692,
+              "maxStripeMs": 125.69999999925494,
+              "encodeMs": 1.000000011175871,
+              "cache": null
+            },
+            "width": 640,
+            "height": 480,
+            "outputPixelBytes": 1843200,
+            "blobBytes": 1843958,
+            "yieldBackend": "background-task",
+            "cache": null,
+            "ms": 1162
+          },
+          "rssBefore": 617971712,
+          "rssPeak": 657809408,
+          "heapBefore": {
+            "usedSize": 2284224,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4434472,
+            "backingStorageSize": 5561704
+          },
+          "heapAfter": {
+            "usedSize": 4935000,
+            "totalSize": 19398656,
+            "embedderHeapUsedSize": 5956232,
+            "backingStorageSize": 5562984
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1175.5,
+          "ticks": 115,
+          "maxTimerGapMs": 28,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1043.3999999985099,
+              "maxStripeMs": 115.79999999701977,
+              "encodeMs": 1.3999999947845936,
+              "cache": null
+            },
+            "width": 640,
+            "height": 480,
+            "outputPixelBytes": 1843200,
+            "blobBytes": 1843958,
+            "yieldBackend": "background-task",
+            "cache": null,
+            "ms": 1173.8999999985099
+          },
+          "rssBefore": 630710272,
+          "rssPeak": 657469440,
+          "heapBefore": {
+            "usedSize": 2349060,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4647648,
+            "backingStorageSize": 5561704
+          },
+          "heapAfter": {
+            "usedSize": 5771088,
+            "totalSize": 18087936,
+            "embedderHeapUsedSize": 6015536,
+            "backingStorageSize": 5562984
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-fine",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 1102.300000000745,
+          "ticks": 109,
+          "maxTimerGapMs": 17.100000001490116,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 960.4999999962747,
+              "maxStripeMs": 117.69999999925494,
+              "encodeMs": 0.30000000074505806,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1657868,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1099.800000000745
+          },
+          "rssBefore": 630333440,
+          "rssPeak": 669167616,
+          "heapBefore": {
+            "usedSize": 2432048,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4199488,
+            "backingStorageSize": 5561704
+          },
+          "heapAfter": {
+            "usedSize": 8458264,
+            "totalSize": 17825792,
+            "embedderHeapUsedSize": 5947536,
+            "backingStorageSize": 5563037
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1151.5999999977648,
+          "ticks": 113,
+          "maxTimerGapMs": 29.100000001490116,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1004.0999999977648,
+              "maxStripeMs": 146.39999999850988,
+              "encodeMs": 0.10000000149011612,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1657868,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1149.5
+          },
+          "rssBefore": 623104000,
+          "rssPeak": 674750464,
+          "heapBefore": {
+            "usedSize": 2478248,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4756144,
+            "backingStorageSize": 5561723
+          },
+          "heapAfter": {
+            "usedSize": 6541460,
+            "totalSize": 21495808,
+            "embedderHeapUsedSize": 6368864,
+            "backingStorageSize": 5563009
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1160.800000000745,
+          "ticks": 115,
+          "maxTimerGapMs": 16,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1021.4999999962747,
+              "maxStripeMs": 133.39999999850988,
+              "encodeMs": 0,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1657868,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1159.699999999255
+          },
+          "rssBefore": 629551104,
+          "rssPeak": 671948800,
+          "heapBefore": {
+            "usedSize": 2479272,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 5218768,
+            "backingStorageSize": 5561723
+          },
+          "heapAfter": {
+            "usedSize": 8282672,
+            "totalSize": 19136512,
+            "embedderHeapUsedSize": 6340264,
+            "backingStorageSize": 5563009
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-composed",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 636.1999999992549,
+          "ticks": 63,
+          "maxTimerGapMs": 17.800000000745058,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 514.1999999955297,
+              "maxStripeMs": 83.39999999850988,
+              "encodeMs": 0.30000000074505806,
+              "cache": {
+                "bytes": 3520000,
+                "limit": 4194304,
+                "tiles": 550,
+                "hits": 382283,
+                "misses": 128565
+              }
+            },
+            "width": 416,
+            "height": 307,
+            "outputPixelBytes": 766272,
+            "blobBytes": 767030,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 3520000,
+              "limit": 4194304,
+              "tiles": 550,
+              "hits": 382283,
+              "misses": 128565
+            },
+            "ms": 633.3999999985099
+          },
+          "rssBefore": 621989888,
+          "rssPeak": 658366464,
+          "heapBefore": {
+            "usedSize": 2558400,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 4175736,
+            "backingStorageSize": 5561704
+          },
+          "heapAfter": {
+            "usedSize": 5415460,
+            "totalSize": 23330816,
+            "embedderHeapUsedSize": 5790976,
+            "backingStorageSize": 5563008
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        },
+        {
+          "ms": 618.1000000014901,
+          "ticks": 61,
+          "maxTimerGapMs": 13.100000001490116,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 506.79999999701977,
+              "maxStripeMs": 74.80000000074506,
+              "encodeMs": 0.19999999925494194,
+              "cache": {
+                "bytes": 3520000,
+                "limit": 4194304,
+                "tiles": 550,
+                "hits": 382283,
+                "misses": 128565
+              }
+            },
+            "width": 416,
+            "height": 307,
+            "outputPixelBytes": 766272,
+            "blobBytes": 767030,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 3520000,
+              "limit": 4194304,
+              "tiles": 550,
+              "hits": 382283,
+              "misses": 128565
+            },
+            "ms": 615.9000000022352
+          },
+          "rssBefore": 624902144,
+          "rssPeak": 648339456,
+          "heapBefore": {
+            "usedSize": 2559164,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4680384,
+            "backingStorageSize": 5561795
+          },
+          "heapAfter": {
+            "usedSize": 8173080,
+            "totalSize": 14155776,
+            "embedderHeapUsedSize": 6571736,
+            "backingStorageSize": 5562984
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        },
+        {
+          "ms": 667.1999999992549,
+          "ticks": 66,
+          "maxTimerGapMs": 18.800000000745058,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 535.3999999985099,
+              "maxStripeMs": 117,
+              "encodeMs": 0.19999999925494194,
+              "cache": {
+                "bytes": 3520000,
+                "limit": 4194304,
+                "tiles": 550,
+                "hits": 382283,
+                "misses": 128565
+              }
+            },
+            "width": 416,
+            "height": 307,
+            "outputPixelBytes": 766272,
+            "blobBytes": 767030,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 3520000,
+              "limit": 4194304,
+              "tiles": 550,
+              "hits": 382283,
+              "misses": 128565
+            },
+            "ms": 664.3000000007451
+          },
+          "rssBefore": 620302336,
+          "rssPeak": 647475200,
+          "heapBefore": {
+            "usedSize": 2560532,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4862544,
+            "backingStorageSize": 5561795
+          },
+          "heapAfter": {
+            "usedSize": 5930832,
+            "totalSize": 13631488,
+            "embedderHeapUsedSize": 6369008,
+            "backingStorageSize": 5562984
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "png16-fine",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 1170.3999999985099,
+          "ticks": 116,
+          "maxTimerGapMs": 17.699999999254942,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16-bit 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "png16",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 963.1000000014901,
+              "maxStripeMs": 112.89999999850988,
+              "encodeMs": 55.900000002235174,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1633148,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1168.199999999255
+          },
+          "rssBefore": 620511232,
+          "rssPeak": 673939456,
+          "heapBefore": {
+            "usedSize": 2614504,
+            "totalSize": 3932160,
+            "embedderHeapUsedSize": 4531672,
+            "backingStorageSize": 5561704
+          },
+          "heapAfter": {
+            "usedSize": 5075312,
+            "totalSize": 16252928,
+            "embedderHeapUsedSize": 6306432,
+            "backingStorageSize": 5563107
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1290.3999999985099,
+          "ticks": 128,
+          "maxTimerGapMs": 16.800000000745058,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16-bit 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "png16",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1101.0999999940395,
+              "maxStripeMs": 157.5,
+              "encodeMs": 55.900000009685755,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1633148,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1288.3999999985099
+          },
+          "rssBefore": 623616000,
+          "rssPeak": 673443840,
+          "heapBefore": {
+            "usedSize": 2617452,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4271656,
+            "backingStorageSize": 5561777
+          },
+          "heapAfter": {
+            "usedSize": 7319784,
+            "totalSize": 15990784,
+            "embedderHeapUsedSize": 5944896,
+            "backingStorageSize": 5563079
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1200,
+          "ticks": 119,
+          "maxTimerGapMs": 16.700000002980232,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16-bit 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "png16",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 1016.2000000029802,
+              "maxStripeMs": 141.30000000074506,
+              "encodeMs": 56.19999999180436,
+              "cache": {
+                "bytes": 4192000,
+                "limit": 4194304,
+                "tiles": 655,
+                "hits": 826450,
+                "misses": 278290
+              }
+            },
+            "width": 607,
+            "height": 455,
+            "outputPixelBytes": 1657110,
+            "blobBytes": 1633148,
+            "yieldBackend": "background-task",
+            "cache": {
+              "bytes": 4192000,
+              "limit": 4194304,
+              "tiles": 655,
+              "hits": 826450,
+              "misses": 278290
+            },
+            "ms": 1198.800000000745
+          },
+          "rssBefore": 624238592,
+          "rssPeak": 673779712,
+          "heapBefore": {
+            "usedSize": 2622456,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4270752,
+            "backingStorageSize": 5561777
+          },
+          "heapAfter": {
+            "usedSize": 5787452,
+            "totalSize": 15990784,
+            "embedderHeapUsedSize": 6133704,
+            "backingStorageSize": 5563079
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-large",
+      "width": 3000,
+      "height": 2000,
+      "runs": [
+        {
+          "ms": 14528.400000002235,
+          "ticks": 1450,
+          "maxTimerGapMs": 33.80000000074506,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 36000758,
+          "status": "TIFF 16 bit \u00b7 3000\u00d72000 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 14257.199999999255,
+              "maxStripeMs": 243.19999999925494,
+              "encodeMs": 6.400000009685755,
+              "cache": null
+            },
+            "width": 3000,
+            "height": 2000,
+            "outputPixelBytes": 36000000,
+            "blobBytes": 36000758,
+            "yieldBackend": "background-task",
+            "cache": null,
+            "ms": 14522.5
+          },
+          "rssBefore": 693596160,
+          "rssPeak": 775901184,
+          "heapBefore": {
+            "usedSize": 2641092,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4517840,
+            "backingStorageSize": 73771678
+          },
+          "heapAfter": {
+            "usedSize": 2988436,
+            "totalSize": 3932160,
+            "embedderHeapUsedSize": 5022448,
+            "backingStorageSize": 73763129
+          },
+          "output": [
+            3000,
+            2000
+          ],
+          "pixelSHA256": "8b99d5e891d6608110f116e43c49a4d78954c58022499a38d4553ef8907df939",
+          "colorMetadata": true
+        },
+        {
+          "ms": 17749,
+          "ticks": 1773,
+          "maxTimerGapMs": 24.099999997764826,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 36000758,
+          "status": "TIFF 16 bit \u00b7 3000\u00d72000 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 1,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": false,
+            "backend": "worker",
+            "worker": {
+              "renderMs": 17456.00000000745,
+              "maxStripeMs": 305.80000000074506,
+              "encodeMs": 6.799999989569187,
+              "cache": null
+            },
+            "width": 3000,
+            "height": 2000,
+            "outputPixelBytes": 36000000,
+            "blobBytes": 36000758,
+            "yieldBackend": "background-task",
+            "cache": null,
+            "ms": 17747.39999999851
+          },
+          "rssBefore": 691544064,
+          "rssPeak": 768237568,
+          "heapBefore": {
+            "usedSize": 2632420,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4281320,
+            "backingStorageSize": 73761889
+          },
+          "heapAfter": {
+            "usedSize": 4960636,
+            "totalSize": 18087936,
+            "embedderHeapUsedSize": 6153248,
+            "backingStorageSize": 73764461
+          },
+          "output": [
+            3000,
+            2000
+          ],
+          "pixelSHA256": "8b99d5e891d6608110f116e43c49a4d78954c58022499a38d4553ef8907df939",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "cancel-fine",
+      "width": 3000,
+      "height": 2000,
+      "runs": [
+        {
+          "ms": 51.80000000074506,
+          "ticks": 5,
+          "maxTimerGapMs": 16.199999999254942,
+          "cancelTimerDelayMs": 0.19999999925494194,
+          "cancelFinishDelayMs": 1.800000000745058,
+          "downloaded": false,
+          "bytes": 0,
+          "status": "Export cancelled.",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 0,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": true,
+            "cache": null,
+            "ms": 50.600000001490116
+          },
+          "rssBefore": 689106944,
+          "rssPeak": 703553536,
+          "heapBefore": {
+            "usedSize": 2622388,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4447712,
+            "backingStorageSize": 73761889
+          },
+          "heapAfter": {
+            "usedSize": 2748464,
+            "totalSize": 14155776,
+            "embedderHeapUsedSize": 5790000,
+            "backingStorageSize": 73763204
+          }
+        },
+        {
+          "ms": 51.80000000074506,
+          "ticks": 5,
+          "maxTimerGapMs": 13.899999998509884,
+          "cancelTimerDelayMs": 0.19999999925494194,
+          "cancelFinishDelayMs": 1.800000000745058,
+          "downloaded": false,
+          "bytes": 0,
+          "status": "Export cancelled.",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 0,
+          "metrics": {
+            "format": "tiff",
+            "chunks": 0,
+            "yields": 0,
+            "maxChunkMs": 0,
+            "renderMs": 0,
+            "encodeMs": 0,
+            "blobMs": 0,
+            "cancelled": true,
+            "cache": null,
+            "ms": 50.5
+          },
+          "rssBefore": 691048448,
+          "rssPeak": 703344640,
+          "heapBefore": {
+            "usedSize": 2638176,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 4513104,
+            "backingStorageSize": 73761974
+          },
+          "heapAfter": {
+            "usedSize": 2737696,
+            "totalSize": 12582912,
+            "embedderHeapUsedSize": 6054344,
+            "backingStorageSize": 73763201
+          }
+        }
+      ]
+    }
+  ]
+}

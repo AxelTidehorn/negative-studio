@@ -43,7 +43,7 @@ motivdelar utan evidens. V2:s befintliga osäkerhetsläge ger identitetsbalans o
 
 `tests/frame-boundaries.mjs`: syntetiska tunna/asymmetriska kanter, hållare,
 separator, måttlig ljusgradient och roterade negativ. Samma motiv med ändrad
-utsida ger exakt samma V2-exponering, färgbalans och mask. En avsiktligt felaktig
+utsida och samma bas/prior ger exakt samma V2-exponering, färgbalans och mask. En avsiktligt felaktig
 övre remsa ändrar tonplaceringen cirka 0,18 EV. Det är ett mätresultat på denna
 syntetiska bild, inte en uppmätt reproduktion av användarens cyan-/blåstick.
 Manuell ändring och lås provas genom appens verkliga controllerfunktioner.
@@ -171,3 +171,68 @@ sparade bildinställningar: snapshot tas efter att den nuvarande bilden sparats.
 Felvyn tömmer gammal preview och visar tomläge. Detta har en separat regression.
 Sparade filmrutor omtolkas inte automatiskt: ny detektion används vid ny bild
 eller uttryckligt Auto-val, medan manuella/låsta och sparade projektval behålls.
+
+## G. Riktiga webbläsarexporter – före/efter
+
+Reproduktion, seriellt, inte parallellt med andra benchmarkar:
+
+```sh
+node tools/benchmark-export-browser.mjs /sokvag/till/baseline3a672b0 /tmp/before.json 640 480 3
+node tools/benchmark-export-browser.mjs /sokvag/till/kandidat /tmp/after.json 640 480 3
+```
+
+Linux/Chromium 156, AMD EPYC 9V74, Node v24.22.1. Verkliga app-exportfunktioner
+med V2/D, Gold P70, JPEG/PNG:s vanliga importoberoende exportgeometri och
+syntetiska linjära Rec.2020-indata. Det är inte kamera-/RAW-import eller nya
+fotografiska nativeexporter. 640×480 har tre körningar, 3000×2000 två.
+Före är ren main 3a672b0, efter byggd arbetsversion 0f80b38. Byggidentitet och
+råa körningar finns i `measurements/browser-before.json` och `browser-after.json`.
+Slutlig återanvändning av evikterade cachebuffertar berör inte dessa mätningar
+(direktvägen har ingen cache; små finrotationsprov ryms i cachen). Ingen ytterligare
+hastighetsvinst anges för den ändringen.
+
+Alla färdiga bilder avkodas till RGB16 och samtliga pixelhashar, dimensioner,
+färgdjup, lågbitar och färgmetadata överensstämmer före/efter. Tid inkluderar
+appens färg/sampling, kodning och Blob; avkodning/verifiering och protokolltransport
+av resultatet sker efter mätningen. Första och följande körningar redovisas
+separat i JSON, utan påstått generellt cold/warm-löfte.
+
+|Prov|Storlek|n|Före median [min–max] ms|Efter median [min–max] ms|Max timeruppehåll före → efter ms|
+|---|---|---:|---:|---:|---:|
+|tiff-direct|640×480|3|1130 [1121–1148]|1163 [1146–1176]|297 → 28|
+|tiff-fine|640×480|3|3898 [3873–4089]|1152 [1102–1161]|626 → 29|
+|tiff-composed|640×480|3|1914 [1844–1984]|636 [618–667]|506 → 19|
+|png16-fine|640×480|3|3986 [3910–4018]|1200 [1170–1290]|619 → 18|
+|tiff-large|3000×2000|2|20659 [20614–20704]|16139 [14528–17749]|1344 → 34|
+|cancel-fine|3000×2000|2|1030 [1027–1033]|52 [52–52]|1031 → 16|
+
+Finrotationens TIFF/PNG16 förbättras tydligt, liksom det större direkta provet.
+Liten direkt TIFF är cirka 3 % långsammare i denna körning; ingen generell
+hastighetsvinst på direktvägen hävdas. Avbrott planeras vid +50 ms: båda
+kandidatproven slutar cirka 52 ms från start, jämfört med cirka 1030 ms före.
+Inget prov laddar ner en ofullständig fil eller lämnar exporten låst.
+
+Minnet ger inget entydigt generellt vinstpåstående. Exempel: RSS-ökning under
+640×480 fin-TIFF är cirka 21–26 MiB före och 37–49 MiB efter (worker/isolate +
+cache). På 6 MP direkt är den cirka 73–96 respektive 73–79 MiB. Mätningen
+samplar RSS med 50 ms intervall, summerar delat processminne och kan missa korta
+toppar; den är inte unik minneskostnad. JS-/backing-storage-tal ligger separat
+i JSON. Fysiska iPad/Safari-minnesgränser kan inte härledas ur detta.
+
+## Återstående verifiering
+
+Användarens ursprungliga övre-filmkant-fall och fler verkliga negativ återstår.
+Fysisk Windows Edge/iPad Safari har inte körts. Ingen profilparameter, RAW-
+demosaicing eller V2/D-formel har ändrats. Inkrementell Blob-output och ytterligare
+worker-/komprimeringsoptimering lämnas utanför denna PR. Synlig version följer
+befintlig first-parent-beta-policy; ingen manuell räknare eller publicering görs.
+Full lokal regression och slutlig CI-status redovisas i PR:n. Ingen automatisk
+merge eller deployment.
+
+Även V2-plattformens äldre automatiska findBase-väg kräver nu betrodd filmruta.
+Det räcker inte att bara låta balans/exponering avstå: en felvald automatisk
+bas kan annars fortfarande ändra själva rekonstruktionen. Accepterade/explicita
+filmbasmätningar behålls. App-controller-testet injicerar en automatisk bas och
+verifierar att den inte läses vid osäker ruta, men används efter bekräftelse.
+Cachen återanvänder evikterade tilebuffertar och nollställer validitetsmasken;
+forced-eviction-testet kräver fortsatt exakt överensstämmelse med före-koden.
