@@ -10,7 +10,7 @@ for(const options of [{},{angle:180},{angle:90,frame:{x:.25,y:.15,w:.5,h:.7}},{f
  assert.ok(r.w*r.h>f.frame.w*f.frame.h*.70,JSON.stringify({options,d}));results.push({options,confidence:d.confidence,region:r});
 }
 for(const options of [{weak:true},{missing:['top']},{missing:['left','bottom']},{frame:{x:0,y:0,w:1,h:1},holder:0,separator:0}]){
- const d=NSColorAnalysis.detect(negativeFrame(options).image);assert.ok(d.confidence<.67,JSON.stringify({options,d}));assert.equal(d.analysisSafe,false);
+ const d=NSColorAnalysis.detect(negativeFrame(options).image);assert.ok(d.confidence<.67,JSON.stringify({options,d}));assert.equal(d.analysisSafe,false);assert.deepEqual(d.region,{x:0,y:0,w:1,h:1});
 }
 console.log('PASS',results.length,'synthetic independent four-side boundaries, thin/asymmetric film, dark separator/holder, uneven light, rotated frames and uncertain cases');
 

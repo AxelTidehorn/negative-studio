@@ -17,7 +17,7 @@ function detect(im){
  const small=C.preview(im,480),w=small.width,h=small.height;
  const ps=C.sample(small,{x:0,y:0,w:1,h:1},0,30000),orange=ps.filter(p=>p[0]>p[1]*1.12&&p[1]>p[2]*1.08&&p[1]>.02);
  const fallback=reason=>({region:{x:0,y:0,w:1,h:1},confidence:0,method:'film-boundary-traces-1',reason,edges:{},analysisSafe:false});
- if(orange.length<40){const old=legacyDetect(small);return {...fallback('no-clear-film-evidence'),region:old.confidence>.2?old.region:{x:0,y:0,w:1,h:1},confidence:Math.min(.6,old.confidence)};}
+ if(orange.length<40){const old=legacyDetect(small);return {...fallback('no-clear-film-evidence'),proposal:old.confidence>.2?old.region:null,confidence:Math.min(.6,old.confidence)};}
  const scale=[0,1,2].map(c=>C.quantile(orange.map(p=>p[c]),.97));
  const clear=p=>p[0]>p[1]*1.12&&p[1]>p[2]*1.08&&Math.min(...p.map((v,c)=>v/Math.max(1e-5,scale[c])))>.84;
  function side(vertical,reverse){
@@ -48,7 +48,7 @@ function detect(im){
  const edges={left:side(true,false),right:side(true,true),top:side(false,false),bottom:side(false,true)},all=Object.values(edges).every(Boolean);
  const x=edges.left?.position??0,y=edges.top?.position??0,right=edges.right?.position??1,bottom=edges.bottom?.position??1;
  if(right-x<.30||bottom-y<.30)return {...fallback('inconsistent-boundaries'),edges};
- return {region:{x,y,w:right-x,h:bottom-y},confidence:all ? .82 :Math.min(.6,Object.values(edges).filter(Boolean).length*.15),method:'film-boundary-traces-1',reason:all?'four-coherent-film-boundaries':'incomplete-boundaries',edges,analysisSafe:all};
+ return {region:all?{x,y,w:right-x,h:bottom-y}:{x:0,y:0,w:1,h:1},proposal:{x,y,w:right-x,h:bottom-y},confidence:all ? .82 :Math.min(.6,Object.values(edges).filter(Boolean).length*.15),method:'film-boundary-traces-1',reason:all?'four-coherent-film-boundaries':'incomplete-boundaries',edges,analysisSafe:all};
 }
 
 root.NSColorAnalysis={analyze,detect};

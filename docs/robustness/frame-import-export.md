@@ -22,7 +22,11 @@ ger en inskriven axelparallell rektangel; exportrotation ändras aldrig.
 Alla fyra kanter krävs för hög konfidens (.82, en heuristik, inte uppmätt
 sannolikhet). Partiella/osäkra gränser ligger under V2:s befintliga .67-gräns.
 Utan evidens används ingen generell procentbeskärning. Äldre projektion kan
-fortfarande ge en osäker vägledning när orange filmbas saknas.
+fortfarande ge en osäker vägledning i resultatets proposal-fält när orange
+filmbas saknas. Delvis identifierade/osäkra rutor används inte automatiskt som
+film-/kompositionsruta: hela bilden behålls tills gränserna är betrodda eller
+användaren väljer manuellt. Därmed kan en ensam falsk intern kant inte klippa
+bort motiv genom kompositionsverktygets förval.
 
 Appens `cropRegion` är filmrutan för analys, medan kompositionsbeskärningen
 ligger separat i bildens geometri. `v2Area()` lämnar filmrutan till V2:s
