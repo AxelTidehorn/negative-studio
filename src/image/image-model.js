@@ -82,6 +82,8 @@ function analyze(im,region,options={}){
 function density(p,shape,exposure){return p.map((v,c)=>-Math.log10(Math.max(1e-8,v/Math.max(1e-8,shape[c]*exposure))));}
 function positive(p,cal,auto=true,strength=1){const d=density(p.map((v,c)=>v*cal.light[c]),cal.baseShape,cal.exposure);return d.map((v,c)=>{const u=auto?(v-cal.lo-(cal.balance[c]||0)*strength)/cal.span:v;return clamp(Math.expm1(clamp(u)*1.6)/Math.expm1(1.6));});}
 function sampleBase(im,x,y){const p=[],cx=Math.min(im.width-1,Math.floor(clamp(x)*im.width)),cy=Math.min(im.height-1,Math.floor(clamp(y)*im.height));for(let yy=Math.max(0,cy-3);yy<=Math.min(im.height-1,cy+3);yy++)for(let xx=Math.max(0,cx-3);xx<=Math.min(im.width-1,cx+3);xx++)p.push(pixel(im,xx,yy));const measured=[0,1,2].map(c=>median(p.map(v=>v[c])));if(Math.min(...measured)<1e-5||Math.max(...measured)>.995)throw Error('Filmbasprovet är klippt eller för mörkt. Välj en annan yta.');return {shape:normalizeBase(measured),measured,kind:'manual',confidence:1};}
+// Exact U16 code normalization (no transfer/gamut/color conversion).
+function unitFloat32(input){const out=new Float32Array(input.length);for(let i=0;i<input.length;i++)out[i]=input[i]/65535;return out;}
 function exportGeometry(im,region,crop,rotation=0){const b=crop?bounds(im,region):{x0:0,y0:0,x1:im.width,y1:im.height},sw=b.x1-b.x0,sh=b.y1-b.y0,rot=((rotation%360)+360)%360;return {width:rot%180?sh:sw,height:rot%180?sw:sh,at(x,y){return [b.x0+(rot===90?y:rot===180?sw-1-x:rot===270?sw-1-y:x),b.y0+(rot===90?sh-1-x:rot===180?sh-1-y:rot===270?x:y)];}};}
-root.NSColorEngine={clamp,decode,encode,rect,bounds,pixel,linearPixel,sample,preview,detectFrame,findBase,analyze,positive,sampleBase,exportGeometry,quantile,normalizeBase};
+root.NSColorEngine={unitFloat32,clamp,decode,encode,rect,bounds,pixel,linearPixel,sample,preview,detectFrame,findBase,analyze,positive,sampleBase,exportGeometry,quantile,normalizeBase};
 })(globalThis);

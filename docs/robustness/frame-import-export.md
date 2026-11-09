@@ -137,3 +137,16 @@ sammanlagd process-RSS där Linux/CDP tillåter det; RSS summerar delat minne oc
 är en grov indikator, inte unik appallokering eller Safari-minnesprofil.
 Cachen kan tillföra högst 4 MiB pixeldata plus metadata och en begränsad stripe.
 Det görs inget generellt löfte om lägre total minnesanvändning.
+
+## E. Verifierad linjär TIFF
+
+Kvarvarande Float32Array.from i prepareTiff och V2-labbets TIFF-import ersätts
+med en gemensam rak normaliseringsloop. Divisionen med 65535 och Float32-
+avrundningen är exakt samma; det är ingen färgkonvertering. RAW-loopen från
+#93 ändras inte. Alla 65 536 kodvärden jämförs bitexakt, och ICC-avvisning för
+användarverifierad Rec.2020 behålls.
+
+Node-mikromätning: 18 miljoner kanaler (6 MP RGB), tre körningar. Före:
+2837/2313/1658 ms; efter: 60/41/45 ms. In- och utbuffert är fortsatt 36 respektive
+72 MB. Detta mäter endast normalisering, inte TIFF-avkodning, filinläsning,
+V2-analys eller tid till synlig bild. Rådata i `tiff-normalization.json`.

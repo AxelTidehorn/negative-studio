@@ -1,0 +1,5 @@
+import assert from 'node:assert/strict';import '../src/image/image-model.js';import {harness} from './helpers/app-harness.mjs';
+const codes=Uint16Array.from({length:65536},(_,i)=>i),copy=codes.slice(),expected=Float32Array.from(codes,v=>v/65535),actual=NSColorEngine.unitFloat32(codes);assert.deepEqual(actual,expected);assert.deepEqual(codes,copy);
+const h=harness();h.set('tiffCodes',Uint16Array.from({length:65536*3},(_,i)=>i%65536));h.run("state={...defaultState(),engine:'v2',tiffEncoding:'linear-rec2020'};globalThis.normalized=prepareTiff({width:256,height:256,channels:3,bits:16,data:tiffCodes});");assert.deepEqual(h.context.normalized.data,Float32Array.from({length:65536*3},(_,i)=>(i%65536)/65535));assert.equal(h.context.normalized.colorSpace,'rec2020');assert.equal(h.context.normalized.scale,1);assert.equal(h.context.normalized.encoding,'linear');
+assert.throws(()=>h.run('prepareTiff({data:tiffCodes,icc:new Uint8Array([1])})'),/utan ICC/);
+console.log('PASS every U16 code maps to the exact previous Float32 word, unchanged input, verified TIFF source contract and ICC rejection');

@@ -1,0 +1,28 @@
+{
+  "kind": "Node U16 normalization only",
+  "node": "v24.22.1",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "samples": 18000000,
+  "equivalentRGBPixels": 6000000,
+  "repeats": 3,
+  "inputBytes": 36000000,
+  "outputBytes": 72000000,
+  "rows": [
+    {
+      "name": "before",
+      "ms": [
+        2836.535769,
+        2313.238285,
+        1658.0293389999997
+      ]
+    },
+    {
+      "name": "after",
+      "ms": [
+        60.19847000000027,
+        41.03329499999927,
+        45.30653400000028
+      ]
+    }
+  ]
+}

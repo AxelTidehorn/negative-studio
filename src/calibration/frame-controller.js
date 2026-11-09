@@ -33,7 +33,7 @@ function normalizeIccTiff(raw){const profile=NSColorManagement.parseICC(raw.icc)
 function prepareTiff(raw){
  if(state.tiffEncoding==='linear-rec2020'){
   if(raw.icc)throw Error('Verifierad linjär Rec.2020 kräver TIFF utan ICC.');
-  raw={...raw,data:Float32Array.from(raw.data,v=>v/65535),channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};
+  raw={...raw,data:NSColorEngine.unitFloat32(raw.data),channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};
   sourceInfo={encoding:'linear',colorSpace:'rec2020',gain:1,domain:'verified-linear-rec2020-tiff',label:'Verifierad linjär Rec.2020-TIFF'};return raw;
  }
  if(state.engine==='v2')throw Error('V2 kräver verifierad linjär Rec.2020-TIFF.');

@@ -31,7 +31,7 @@ async function negative(id,limit){
 async function load(m){
  const t=performance.now();progress(m.id,/\.tiff?$/i.test(m.file.name)?'tiff':'raw');let raw,recipe,wb=null,camera=null,format,verification='decoder';
  if(/\.tiff?$/i.test(m.file.name)){
-  if(!m.tiffConfirmed)throw Error('TIFF_DOMAIN_CONFIRMATION_REQUIRED');raw=await NSTiff.decode(await m.file.arrayBuffer());check(m.id);if(raw.icc)throw Error('TIFF_ICC_NOT_VERIFIED');raw={...raw,data:Float32Array.from(raw.data,v=>v/65535),scale:1,colorSpace:'rec2020'};recipe={decoder:'filmlabb-tiff',version:'1',options:null};format='TIFF';verification='user-verified-recipe';
+  if(!m.tiffConfirmed)throw Error('TIFF_DOMAIN_CONFIRMATION_REQUIRED');raw=await NSTiff.decode(await m.file.arrayBuffer());check(m.id);if(raw.icc)throw Error('TIFF_ICC_NOT_VERIFIED');raw={...raw,data:NSColorEngine.unitFloat32(raw.data),scale:1,colorSpace:'rec2020'};recipe={decoder:'filmlabb-tiff',version:'1',options:null};format='TIFF';verification='user-verified-recipe';
  }else{
   const options={...NSRawInput.options('wide'),useAutoWb:false,noInterpolation:false,halfSize:false,userQual:3,useCameraMatrix:3,highlight:0,threshold:0},result=await NSRawDecoder.decode(m.file,'wide',{options});check(m.id);raw=result.im;recipe={decoder:result.provenance.decoder,version:result.provenance.version,options};wb=result.meta?.color_data?.cam_mul||null;camera=result.meta?.camera_model||null;format=result.provenance.format.toUpperCase();
  }
