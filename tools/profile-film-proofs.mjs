@@ -9,7 +9,7 @@ const [inputArg,outArg]=process.argv.slice(2);if(!inputArg||!outArg)throw Error(
 const input=path.resolve(inputArg),out=path.resolve(outArg);for(const p of [input,out])if(p===process.cwd()||p.startsWith(process.cwd()+path.sep))throw Error('Keep private images outside repository');fs.mkdirSync(out,{recursive:true});
 const sha=b=>crypto.createHash('sha256').update(b).digest('hex'),variants=[['neutral','neutral',0],...Object.keys(NSProfileCatalog.profiles).flatMap(id=>[.35,.7,1].map(s=>[id.split('.')[1]+Math.round(s*100),id,s]))];
 const manifest={baseline:'merged PR #90 Neutral exports; technical conversion, exposure and editing already baked in and unchanged',caveat:'RGB8 overviews and RGB16 detail crops are reprocessed quantized positives, not new RAW/native full-frame exports. Do not use these to claim full-frame clipping or stock calibration.',catalogSHA256:sha(fs.readFileSync('src/editing/profile-catalog.js')),operatorSHA256:sha(fs.readFileSync('src/editing/profile-engine.js')),variants,files:[]};
-for(const dir of ['overview','detail-crops'])for(const name of fs.readdirSync(path.join(input,dir)).filter(n=>n.endsWith('_neutral.png')).sort()){
+for(const dir of ['overview','detail-crops'])for(const name of fs.readdirSync(path.join(input,dir)).filter(n=>n.endsWith('_neutral.png')&&!n.includes('_A_')).sort()){
  const source=fs.readFileSync(path.join(input,dir,name)),im=decodePng(source),scale=im.bits===16?65535:255,record={source:dir+'/'+name,sourceSHA256:sha(source),width:im.width,height:im.height,bits:im.bits,variants:[]};
  assert.ok(im.srgb);if(dir==='detail-crops')assert.equal(im.bits,16);
  for(const [label,id,strength] of variants){

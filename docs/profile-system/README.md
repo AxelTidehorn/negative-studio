@@ -19,7 +19,8 @@ slutrendering/export nycklas på look och monokrom presentation.
 Katalogen genereras med `node tools/generate-profile-catalog.mjs` från den
 bifogade Work-JSON:ens **start**-värden. `--check` kontrolleras i test. En explicit
 aktiveringslista innehåller Gold 200, Ektar 100, Fujifilm Pro 400H och Kodak
-Portra 400. Alla fyra är fotografiska
+Portra 400 samt de egna Backstreet, Afterglow, Pale Static och Redline.
+Filmkaraktärerna är fotografiska
 **prototyper**, inte uppmätta emulsionssimulationer. Forskningsposter aktiveras
 inte automatiskt. Katalogens presentation/kategori/operator/revision skiljer
 filmkaraktärer från framtida kreativa uttryck och monokrom presentation.
@@ -179,3 +180,10 @@ Utgår från mergad PR #90, main `e6115f5`. Operatör, renderingsordning, cache,
 Editing 2.0 och exportägare är oförändrade. Gold/Ektars definitioner är frysta
 med SHA256-regressionstest. Se [etappens rapport](film-stage-2.md) för riktning,
 faktiska resultat, reproduktion och fotografiska begränsningar.
+
+
+## Egna kreativa profiler
+
+Backstreet, Afterglow, Pale Static och Redline använder samma operator och
+katalog. Deras explicita designvärden finns i `creative-profile-designs.json`.
+Se [identitet, verifiering och begränsningar](creative-profiles.md).

@@ -2,12 +2,12 @@ import assert from 'node:assert/strict';import fs from 'node:fs';import {execFil
 import '../src/editing/editing-engine.js';import '../src/editing/profile-catalog.js';import '../src/editing/profile-engine.js';
 execFileSync(process.execPath,['tools/generate-profile-catalog.mjs','--check']);
 const P=NSProfiles,E=NSEditing2,library=JSON.parse(fs.readFileSync('docs/profile-system/work/FILMLABB_3_Profile_Library.json')),colors=library.tests.synthetic_patch_input;let maxError=0,cases=0;
-assert.deepEqual(Object.keys(NSProfileCatalog.profiles),['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400']);
+assert.deepEqual(Object.keys(NSProfileCatalog.profiles),['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400','creative.backstreet','creative.afterglow','creative.pale-static','creative.redline']);
 // Frozen merged #90 definitions: extending the catalog must not retune Gold/Ektar.
-for(const [id,hash] of [['film.kodak-gold-200','38698e5ba9f9757455de67c0080b04047b2fa3a3e4a11a92152a40efd31ec3a4'],['film.kodak-ektar-100','548759f66a382783ec9b0cd0ff0be08a030e12492c0195a9a9c4f5ed01bdd6cf']])assert.equal(createHash('sha256').update(JSON.stringify(NSProfileCatalog.profiles[id])).digest('hex'),hash);
+for(const [id,hash] of [['film.kodak-gold-200','38698e5ba9f9757455de67c0080b04047b2fa3a3e4a11a92152a40efd31ec3a4'],['film.kodak-ektar-100','548759f66a382783ec9b0cd0ff0be08a030e12492c0195a9a9c4f5ed01bdd6cf'],['film.fuji-pro-400h','09ad5204669f4460dd4ff8e9ac0c33d4138b8ac030bbdd46daf7daea7b525223'],['film.kodak-portra-400','c53c548b73423923120b7dedae68cc0882e83891e7e3dc18861ffd140f0b9442']])assert.equal(createHash('sha256').update(JSON.stringify(NSProfileCatalog.profiles[id])).digest('hex'),hash);
 for(const id of Object.keys(NSProfileCatalog.profiles))for(const strength of [0,.35,.7,1]){
  const k=P.compile({id,strength});
- for(const sample of colors){const q=k.pixel(sample.sRGB),expected=library.tests.synthetic_result[id][String(strength)][sample.id].sRGB;maxError=Math.max(maxError,...q.map((v,c)=>Math.abs(v-expected[c])));if(strength===0)assert.equal(q,sample.sRGB);cases++;}
+ for(const sample of colors){const q=k.pixel(sample.sRGB),expected=library.tests.synthetic_result[id]?.[String(strength)][sample.id].sRGB;if(expected)maxError=Math.max(maxError,...q.map((v,c)=>Math.abs(v-expected[c])));else assert.deepEqual(q,sample.sRGB.map((v,c)=>v+strength*(P.compile({id,strength:1}).pixel(sample.sRGB)[c]-v)));if(strength===0)assert.equal(q,sample.sRGB);cases++;}
  for(let r=0;r<=16;r++)for(let g=0;g<=16;g++)for(let b=0;b<=16;b++)assert.ok(k.pixel([r/16,g/16,b/16]).every(v=>Number.isFinite(v)&&v>=0&&v<=1));
  let prev=-1;for(let i=0;i<=10000;i++){const y=i/10000,q=k.pixel([y,y,y]);assert.equal(q[0],q[1]);assert.equal(q[1],q[2]);assert.ok(q[0]>=prev-1e-15);prev=q[0];}
  const rows=NSProfileCatalog.profiles[id].hue;for(const h of [0,...rows.map(v=>v[0]),360])for(const column of [1,2,3])assert.ok(Math.abs(P.hueValue(rows,h-1e-5,column)-P.hueValue(rows,h+1e-5,column))<1e-5);
@@ -21,10 +21,20 @@ for(const id of ['film.fuji-pro-400h','film.kodak-portra-400']){
  for(const sample of colors.filter(p=>p.id.startsWith('skin_'))){const a=lab(sample.sRGB),b=lab(k.pixel(sample.sRGB));assert.ok(Math.abs(hue(b)-hue(a))<=3);assert.ok(Math.abs(chroma(b)-chroma(a))<=.008);}
  const cloud=colors.find(p=>p.id==='cloud_high'),a=lab(cloud.sRGB),b=lab(k.pixel(cloud.sRGB));assert.ok(Math.abs(chroma(b)-chroma(a))<=.004);assert.ok(Math.abs(b[0]-a[0])<=.015);
 }
+// Matte endpoints use the existing PCHIP coefficients, identically on CPU/GPU.
+assert.ok(P.compile({id:'creative.pale-static',strength:1}).pixel([0,0,0])[0]>0);
+assert.ok(P.compile({id:'creative.pale-static',strength:1}).pixel([1,1,1])[0]<1);
+const creativeSkin=[];
+for(const id of Object.keys(NSProfileCatalog.profiles).filter(id=>id.startsWith('creative.'))){
+ let maxHue=0,maxChroma=0;
+ for(const sample of colors.filter(p=>p.id.startsWith('skin_'))){const a=lab(sample.sRGB),b=lab(P.compile({id,strength:1}).pixel(sample.sRGB));maxHue=Math.max(maxHue,Math.abs(hue(b)-hue(a)));maxChroma=Math.max(maxChroma,Math.abs(chroma(b)-chroma(a)));}
+ assert.ok(maxHue<=5,JSON.stringify({id,maxHue}));assert.ok(maxChroma<=.02,JSON.stringify({id,maxChroma}));creativeSkin.push({id,maxHue,maxChroma});
+}
+console.log('Creative skin safety at 100% (synthetic, not photo acceptance)',JSON.stringify(creativeSkin));
 const color=[.2,.4,.8];assert.equal(P.compile({id:'neutral',strength:1}).pixel(color),color);
 const mono=P.compile({id:'film.kodak-gold-200',strength:0},true).pixel(color),Y=E.W.reduce((s,v,k)=>s+v*E.decode(color[k]),0);assert.deepEqual(mono,[E.encode(Y),E.encode(Y),E.encode(Y)]);assert.notEqual(mono[0],E.W.reduce((s,v,k)=>s+v*color[k],0));
 for(const strength of [-1,2,NaN,Infinity])assert.throws(()=>P.compile({id:'neutral',strength}));for(const id of ['gold','__proto__','constructor','toString',null])assert.throws(()=>P.compile({id,strength:.7}));
-for(const mutate of [p=>p.tone[3]=-.1,p=>p.hue[2][0]=1,p=>p.chroma[2]=NaN,p=>p.skinPass=2]){const d=structuredClone(NSProfileCatalog.profiles['film.kodak-gold-200']);mutate(d);assert.throws(()=>P.validateDefinition(d));}
+for(const mutate of [p=>p.tone[3]=-.1,p=>p.hue[2][0]=1,p=>p.chroma[2]=NaN,p=>p.skinPass=2,p=>p.tone[0]=-.001,p=>p.tone[8]=1.001,p=>p.tone[3]=p.tone[4]+.001]){const d=structuredClone(NSProfileCatalog.profiles['film.kodak-gold-200']);mutate(d);assert.throws(()=>P.validateDefinition(d));}
 for(const doc of [{format:'old'},{format:P.FORMAT},{format:P.FORMAT,look:{id:'gold',strength:.7},monochrome:false}])assert.throws(()=>P.validateProject(doc));
 // A neutral-density negative under an uneven capture/base keeps its technical
 // RGB information until positive luminance. This is synthetic, not a real B&W scan.
