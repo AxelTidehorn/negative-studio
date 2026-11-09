@@ -165,3 +165,9 @@ Browserregressionen provar faktisk syntetisk DNG, köbyte och trasig thumbnail,
 med oförändrad källversion/analys. Formatvägen är gemensam för RAW, browserbilder
 och TIFF när en positiv preview finns. Detta är inte verifiering av en fysisk
 ARW-kamera eller ett verkligt RAF-negativs fotografiska kvalitet.
+
+Även ett misslyckat framtvingat återladdningsförsök behåller aktuella ännu ej
+sparade bildinställningar: snapshot tas efter att den nuvarande bilden sparats.
+Felvyn tömmer gammal preview och visar tomläge. Detta har en separat regression.
+Sparade filmrutor omtolkas inte automatiskt: ny detektion används vid ny bild
+eller uttryckligt Auto-val, medan manuella/låsta och sparade projektval behålls.
