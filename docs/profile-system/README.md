@@ -18,7 +18,8 @@ slutrendering/export nycklas på look och monokrom presentation.
 
 Katalogen genereras med `node tools/generate-profile-catalog.mjs` från den
 bifogade Work-JSON:ens **start**-värden. `--check` kontrolleras i test. En explicit
-aktiveringslista innehåller bara Gold 200 och Ektar 100. Båda är fotografiska
+aktiveringslista innehåller Gold 200, Ektar 100, Fujifilm Pro 400H och Kodak
+Portra 400. Alla fyra är fotografiska
 **prototyper**, inte uppmätta emulsionssimulationer. Forskningsposter aktiveras
 inte automatiskt. Katalogens presentation/kategori/operator/revision skiljer
 filmkaraktärer från framtida kreativa uttryck och monokrom presentation.
@@ -170,3 +171,11 @@ Footer visar det ärligt identifierade dirty-utvecklingsbygget före commit.
 |1440×900|[Dark](ui/dark-1440x900.png)|[Light](ui/light-1440x900.png)|
 |1024×768 touch|[Dark](ui/dark-1024x768.png)|[Light](ui/light-1024x768.png)|
 |768×1024 touch|[Dark](ui/dark-768x1024.png)|[Light](ui/light-768x1024.png)|
+
+
+## Etapp 2: Pro 400H och Portra 400
+
+Utgår från mergad PR #90, main `e6115f5`. Operatör, renderingsordning, cache,
+Editing 2.0 och exportägare är oförändrade. Gold/Ektars definitioner är frysta
+med SHA256-regressionstest. Se [etappens rapport](film-stage-2.md) för riktning,
+faktiska resultat, reproduktion och fotografiska begränsningar.
