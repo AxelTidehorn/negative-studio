@@ -1,9 +1,9 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
-import {browserHarness} from './helpers/browser.mjs';
+import {browserHarness,confirmFrameIfNeeded} from './helpers/browser.mjs';
 const {browser,url,close}=await browserHarness();
 try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'en-US'}),errors=[];page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
- const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'edit-a.png',mimeType:'image/png',buffer},{name:'edit-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');
+ const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'edit-a.png',mimeType:'image/png',buffer},{name:'edit-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');await confirmFrameIfNeeded(page);
  await page.evaluate(()=>{roll[1].settings.editVersion=1;});assert.equal(await page.evaluate(()=>state.editVersion),2);assert.equal(await page.locator('#editVersion').isVisible(),false);
  const frozen=await page.evaluate(()=>({cal:JSON.stringify({calibration,base,cropRegion,response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));
  await page.locator('#editVersion').selectOption('2',{force:true});await page.waitForFunction(()=>state.editVersion===2&&FILMLABB_GPU.snapshot().backend==='gpu');

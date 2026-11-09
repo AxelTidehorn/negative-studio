@@ -79,9 +79,13 @@ pan-x`, vilket reserverade fel skrollriktning för ett horisontellt reglage.
    implicit capture, även vid `pointercancel`, `lostpointercapture`, fönsterblur
    och dold sida. Ingen generell `blur()` av reglaget införs. Inaktiverade reglage får
    varken en pekägare eller dubbeltrycksåterställning.
-3. `pan-y` tillåter vertikal skrollning. Om det naturliga reglaget hinner hoppa
-   vid kontakt före ett skrollavbrott återställs startvärdet genom samma
-   `input`/`change`-bindningar. En avsiktlig horisontell justering behålls.
+3. `pan-y` tillåter vertikal skrollning. Reglagets naturliga `input`/`change`
+   väntar tills en horisontell dragning eller ett avslutat tryck visar avsikt.
+   Vid avbruten skrollning återställs bara tumpositionen; bildmodellen har ännu
+   inte ändrats. Detta bevarar även sparade värden mellan reglagets steg och
+   förhindrar att exempelvis filmruteinset ändrar geometri under skrollning.
+   En påbörjad avsiktlig horisontell justering behålls. Ingen egen värdemappning
+   ersätter det naturliga reglaget.
 4. Mus, tangentbord, fokusmarkering och pennans naturliga reglagefunktion finns
    kvar; ingen separat beräkning av reglagevärden har införts.
 
