@@ -7,7 +7,7 @@
  const stageText={initialise:'Initierar RAW-avkodare…',read:'Läser fil…',decode:'Avkodar RAW…',convert:'Förbereder bild…',prepare:'Analyserar negativ…'};
  function phase(stage){if(!trace||trace.cancelled||trace.usableMs!==undefined)return;trace.phase=stage;const text=stageText[stage];if(text)setStatus(text);}
  function removeProof(){if(proof){proof.remove();proof=null;}if(cancelButton){cancelButton.remove();cancelButton=null;}}
- function cancel(){if(!rollLoading)return;frameLoadSequence++;NSRawDecoder.cancel();if(trace){trace.cancelled=true;trace.elapsedMs=clock()-trace.started;}rollLoading=false;activeFrame=-1;working=workingPreview=hires=src=previewSrc=null;stopPreviewWork();setFrameLoading(false);removeProof();$('preview').classList.add('hidden');$('gpuPreview')?.classList.add('hidden');$('empty').classList.remove('hidden');$('export').disabled=true;refreshRollUI();setStatus('Import avbruten.');}
+ function cancel(){if(!rollLoading||!trace||trace.cancelled||trace.readyMs!==undefined)return false;frameLoadSequence++;NSRawDecoder.cancel();if(trace){trace.cancelled=true;trace.elapsedMs=clock()-trace.started;}rollLoading=false;activeFrame=-1;working=workingPreview=hires=src=previewSrc=null;stopPreviewWork();setFrameLoading(false);removeProof();$('preview').classList.add('hidden');$('gpuPreview')?.classList.add('hidden');$('empty').classList.remove('hidden');$('export').disabled=true;refreshRollUI();setStatus('Import avbruten.');return true;}
  function rawPaint(t){if(t!==trace||t.cancelled||t.technicalPaintMs!==undefined)return;painted(()=>{if(t!==trace||t.cancelled)return;t.technicalPaintMs=clock()-t.started;if(t.firstVisibleMs===undefined)t.firstVisibleMs=t.technicalPaintMs;removeProof();if(t.readyMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}});}
  async function preliminary(file,t,force=false){
   const locked=NSV2Platform.usesLockedSource(state);if(!force&&NSRawDecoder.isCached(file,locked?'wide':state.rawMode4,locked?NSV2Platform.decoderOptions():undefined))return;
@@ -27,7 +27,7 @@
  const choose=chooseFrame;
  chooseFrame=async function(i,opts={}){
   if(i<0||i>=roll.length||exportBusy||cropDrag||(!opts.force&&i===activeFrame))return choose(i,opts);
-  if(rollLoading)cancel();removeProof();
+  if(rollLoading&&!cancel())return choose(i,opts);removeProof();
   const t=trace={id:++next,started:clock(),phase:'read',stages:{},sourceVersion:sourceVersion38,cancelled:false};
   cancelButton=document.createElement('button');cancelButton.className='import-cancel';cancelButton.type='button';cancelButton.textContent='Avbryt import';cancelButton.onclick=cancel;$('picture').append(cancelButton);
   phase('read');$('export').disabled=true;
@@ -37,8 +37,8 @@
   if(ok){t.renderMetrics={cpuRenderMs:stats38.lastRenderMs,gpu:globalThis.FILMLABB_GPU?.snapshot()||null};t.memory={sourceBytes:working.data.byteLength,previewBytes:workingPreview.data.byteLength,legacyPreviewBytes:previewSrc?.data.byteLength||0};if(t.technicalPaintMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}}
   else removeProof();return ok;
  };
- const clear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollingExport)return;if(rollLoading)cancel();removeProof();NSRawDecoder.clearCache();clear();};
- const importFiles=importRoll;importRoll=async function(files,options){if(exportBusy||rollingExport||cropDrag)return;if(rollLoading)cancel();NSRawDecoder.clearCache();return importFiles(files,options);};
+ const clear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollingExport)return;if(rollLoading&&!cancel())return;removeProof();NSRawDecoder.clearCache();clear();};
+ const importFiles=importRoll;importRoll=async function(files,options){if(exportBusy||rollingExport||cropDrag)return;if(rollLoading&&!cancel())return;NSRawDecoder.clearCache();return importFiles(files,options);};
  const finish=finishImport;finishImport=function(...args){phase('prepare');const t=clock();try{return finish(...args);}finally{if(trace&&trace.usableMs===undefined)trace.stages.finishImport=clock()-t;}};
  const renderImport=render;render=function(...args){const t=trace,start=clock(),before=globalThis.FILMLABB_GPU?.snapshot().frames,result=renderImport(...args);if(t===trace&&t&&t.usableMs===undefined&&sourceVersion38!==t.sourceVersion){t.stages.renderSubmit=(t.stages.renderSubmit||0)+clock()-start;if(globalThis.FILMLABB_GPU?.snapshot().frames>before)rawPaint(t);}return result;};
  const show=showPreview38;showPreview38=function(...args){const start=clock(),result=show(...args);if(trace&&trace.usableMs===undefined)trace.stages.canvasPresentation=(trace.stages.canvasPresentation||0)+clock()-start;if(trace&&sourceVersion38!==trace.sourceVersion)rawPaint(trace);return result;};
