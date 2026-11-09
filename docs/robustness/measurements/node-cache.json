@@ -1,0 +1,168 @@
+{
+  "kind": "Node microbenchmark, synthetic linear RGB; exact full Gold P/operator; no native file/encoder",
+  "node": "v24.22.1",
+  "platform": "linux 6.18.57 x64",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "inputSHA256": "ffc4444b8eb5d70a73c325684f3a3835ca1b030e3db6936eda38e75dee1580b6",
+  "configSHA256": "dd7bcced45d5d26ff85dca5660a56816d4ea97a64443c10763cf99766aa9606c",
+  "baselineSamplerSHA256": "1bf1e3e0b9906747ad36ea933ff0f908fb64f4e7f206294818b18b6281d5b048",
+  "samplerSHA256": "e770ff82aa5ddd659109666127b2a1f23d4cd4b2e9b7aa77dd26a6b667498b12",
+  "width": 320,
+  "height": 240,
+  "repeats": 3,
+  "cacheBytes": 4194304,
+  "cases": [
+    {
+      "name": "direct",
+      "output": [
+        320,
+        240
+      ],
+      "results": [
+        {
+          "label": "before",
+          "ms": [
+            1119.874069,
+            1052.47934,
+            1055.026265
+          ],
+          "min": 1052.47934,
+          "median": 1055.026265,
+          "max": 1119.874069,
+          "sha256": "710d7f71dd21656a1ff42568f52b859b5847077ae19d7dc15d54e38079b0a6db"
+        },
+        {
+          "label": "after",
+          "ms": [
+            1063.6821060000002,
+            1079.286427,
+            1070.0023570000003
+          ],
+          "min": 1063.6821060000002,
+          "median": 1070.0023570000003,
+          "max": 1079.286427,
+          "sha256": "710d7f71dd21656a1ff42568f52b859b5847077ae19d7dc15d54e38079b0a6db",
+          "cache": null
+        }
+      ],
+      "speedup": 0.9860036831675874
+    },
+    {
+      "name": "quarter-crop",
+      "output": [
+        220,
+        300
+      ],
+      "results": [
+        {
+          "label": "before",
+          "ms": [
+            870.794331,
+            879.6797900000001,
+            959.724083000001
+          ],
+          "min": 870.794331,
+          "median": 879.6797900000001,
+          "max": 959.724083000001,
+          "sha256": "049a7b750886c6535b0819a9fb1b3d08978e4b69c487f1a6b0c6ef5492b0b742"
+        },
+        {
+          "label": "after",
+          "ms": [
+            929.3633069999996,
+            881.4480640000002,
+            930.0020810000005
+          ],
+          "min": 881.4480640000002,
+          "median": 929.3633069999996,
+          "max": 930.0020810000005,
+          "sha256": "049a7b750886c6535b0819a9fb1b3d08978e4b69c487f1a6b0c6ef5492b0b742",
+          "cache": null
+        }
+      ],
+      "speedup": 0.946540264043371
+    },
+    {
+      "name": "fine",
+      "output": [
+        303,
+        227
+      ],
+      "results": [
+        {
+          "label": "before",
+          "ms": [
+            3911.810507,
+            4053.495766,
+            3853.424393000001
+          ],
+          "min": 3853.424393000001,
+          "median": 3911.810507,
+          "max": 4053.495766,
+          "sha256": "5d3433a1f0bb3c6dafe9fff484191f0f65a3fa50fe1c752f4c026c80096197ba"
+        },
+        {
+          "label": "after",
+          "ms": [
+            1201.0842150000026,
+            1216.0391619999973,
+            1190.553240000001
+          ],
+          "min": 1190.553240000001,
+          "median": 1201.0842150000026,
+          "max": 1216.0391619999973,
+          "sha256": "5d3433a1f0bb3c6dafe9fff484191f0f65a3fa50fe1c752f4c026c80096197ba",
+          "cache": {
+            "bytes": 1920000,
+            "limit": 4194304,
+            "tiles": 300,
+            "hits": 205276,
+            "misses": 69848
+          }
+        }
+      ],
+      "speedup": 3.256899439811547
+    },
+    {
+      "name": "fine-composition-quarter",
+      "output": [
+        208,
+        153
+      ],
+      "results": [
+        {
+          "label": "before",
+          "ms": [
+            1944.7296129999995,
+            1894.6752609999967,
+            1923.8841109999994
+          ],
+          "min": 1894.6752609999967,
+          "median": 1923.8841109999994,
+          "max": 1944.7296129999995,
+          "sha256": "c8d8facde8324de12b58bb7f006fd54bea2c68af792d2c46aadd7ce71f2fbf17"
+        },
+        {
+          "label": "after",
+          "ms": [
+            584.684484999998,
+            531.7677750000003,
+            514.8842670000013
+          ],
+          "min": 514.8842670000013,
+          "median": 531.7677750000003,
+          "max": 584.684484999998,
+          "sha256": "c8d8facde8324de12b58bb7f006fd54bea2c68af792d2c46aadd7ce71f2fbf17",
+          "cache": {
+            "bytes": 972800,
+            "limit": 4194304,
+            "tiles": 152,
+            "hits": 94972,
+            "misses": 32324
+          }
+        }
+      ],
+      "speedup": 3.6179027790843445
+    }
+  ]
+}

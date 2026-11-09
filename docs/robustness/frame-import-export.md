@@ -87,3 +87,21 @@ allokeringsändringen ger alltså ingen konsekvent stor vinst. I denna mätning
 kostar finrotation cirka 3,6 gånger direktvägen, inte ett generellt sexgångslöfte.
 Det motiverar att utvärdera återanvändning av de upp till fyra återkommande
 färg-/tonberäkningarna per utpixel.
+
+En jobblokal lat tilecache lagrar nu färdig färgtransform och sRGB-avkodning
+före interpolation i Float64. Samma grannordning, multiplikation/addition,
+transferfunktion och kvantisering används. Inga Float32-mellanvärden införs.
+16×16-tiles skapas bara vid efterfrågan och kastas via LRU vid högst 4 MiB
+pixel-/validitetsdata, plus liten Map-metadata. Det är ingen fullstor mellanbild.
+Cachen hör till ett compiled/prepared exportjobb och släpps vid avslut/avbrott.
+108 profil-/kvart-/finrotations-/cropfall matchar den frysta gamla koden exakt
+i RGB16 och RGBA8; separata tester tvingar eviction, ny beräkning och release.
+Packade workerstripes använder samma logiska källkoordinater och testas också.
+
+Slutlig Node-mikromätning, 320×240, tre körningar, Gold P100: finrotation
+3912 → 1201 ms (3,26×), kombinerad komposition/kvart/finkorrigering
+1924 → 532 ms (3,62×). Direkt- och rena kvartsvägar lämnas utan cache och har
+ingen visad hastighetsvinst (1055 → 1070 respektive 880 → 929 ms i denna körning).
+Råa tider, miljö, indata-/config-/kodhashar och cachetal finns i
+`measurements/node-cache.json`; allokeringssteget i `node-allocation.json`.
+Ingen extrapolering till 26 eller 40 MP görs.
