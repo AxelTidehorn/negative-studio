@@ -1,6 +1,6 @@
 /* One persistent owner of the full Float32 source. Only small previews/metadata
    leave the worker. Same classic-worker pattern as FILMLABB's existing workers. */
-importScripts('./build-info.js','./profile-catalog.js','./profile-engine.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
+importScripts('./build-info.js','./profile-catalog.js','./profile-engine.js','./editing-engine.js','./conversion3.js','./file-formats.js','./raw-input.js','./raw-decoder.js','./tiff-codec.js','./image-model.js','./film-base-measurement.js','./frame-detector.js','./color-analysis.js','./color-calibration.js','./project-settings.js','./color-parameters.js','./render-core.js','./srgb-profile.js','./tiff-header.js','./v2-core.js','./v2-render.js','./v2-base.js','./v2-diagnostics.js','./v2-output.js','./v2-fast.js');
 'use strict';
 const V=NSConversionV2,R=NSV2Render,O=NSV2Output,F=NSV2Fast;
 // MessageChannel yields to incoming jobs without background-tab timer clamps.

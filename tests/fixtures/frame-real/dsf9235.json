@@ -1,0 +1,63 @@
+{
+  "width": 480,
+  "height": 321,
+  "channels": 3,
+  "scale": 1,
+  "encoding": "linear",
+  "colorSpace": "rec2020",
+  "sourceDimensions": {
+    "width": 6032,
+    "height": 4032
+  },
+  "sourceSHA256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+  "sourceBytes": 50245120,
+  "filename": "_DSF9235.RAF",
+  "decoder": {
+    "decoder": "libraw-wasm",
+    "version": "1.6.0",
+    "format": "raf",
+    "mode": "wide",
+    "options": {
+      "outputBps": 16,
+      "outputColor": 8,
+      "useCameraWb": true,
+      "noAutoBright": true,
+      "gamm": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "bright": 1,
+      "useAutoWb": false,
+      "noInterpolation": false,
+      "halfSize": false,
+      "userQual": 3,
+      "useCameraMatrix": 3,
+      "highlight": 0,
+      "threshold": 0
+    }
+  },
+  "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export",
+  "referenceQuad": [
+    {
+      "x": 0.16944444444444445,
+      "y": 0.04158004158004158
+    },
+    {
+      "x": 0.7847222222222222,
+      "y": 0.037422037422037424
+    },
+    {
+      "x": 0.7875,
+      "y": 0.9584199584199584
+    },
+    {
+      "x": 0.17222222222222222,
+      "y": 0.9646569646569647
+    }
+  ],
+  "annotation": "Manual visual annotation on a 720x481 linear-source display, approximate +/-3 display pixels; not camera ground truth."
+}

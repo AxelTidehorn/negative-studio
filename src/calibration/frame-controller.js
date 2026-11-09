@@ -20,7 +20,7 @@ finishImport=function(message){
  $('preview').width=workingPreview.width;$('preview').height=workingPreview.height;$('preview').classList.remove('hidden');$('empty').classList.add('hidden');
  for(const id of ['export','sample','recalc','analyzeLevels'])$(id).disabled=false;
  sampleMode=false;
- const f=roll[activeFrame];if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.cropConfidence=d.confidence;state.cropMethod='auto';state.cropConfirmed=d.confidence>=.7;}
+ const f=roll[activeFrame];if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropMethod='auto';state.cropConfirmed=d.confidence>=.7;}
  $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.')+(f&&!NSFileFormats.isRaw(f.file.name)&&state.engine==='calibrated4'&&!NSV2Platform.validSource(working)?' · Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.':''));
 };
 const importRawOriginal=importRawRGB16;
@@ -81,9 +81,9 @@ chooseFrame=async function(i,{force=false,full=false}={}){
 
 $('frameOptions').addEventListener('toggle',()=>{if($('frameOptions').open)cropDisplayDismissed=false;drawCrop();});
 function updateCropUI(){$('cropStatus').textContent=(state.cropMethod==='manual'?'Manuell filmruta':'Automatisk filmruta')+(state.cropConfirmed?' · bekräftad':' · osäker, kontrollera rektangeln');$('cropConfirm').hidden=!!state.cropConfirmed&&cropDisplayDismissed;$('cropLock').textContent=state.cropLocked?'Lås upp filmruta':'Lås filmruta';$('cropVisible').checked=state.cropVisible!==false;$('cropExport').checked=!!state.cropExport;drawCrop();}
-function cropChanged(method='manual'){state.cropMethod=method;state.cropConfirmed=method==='manual';saveCrop();updateCropUI();updateBase();analyzeLevels();scheduleRender(true);}
+function cropChanged(method='manual'){if(method==='manual')delete state.frameDetection;state.cropMethod=method;state.cropConfirmed=method==='manual';saveCrop();updateCropUI();updateBase();analyzeLevels();scheduleRender(true);}
 setCropByInset=function(v){if(state.cropLocked)return;const n=Number(v)/100;cropRegion={x:n,y:n,w:1-2*n,h:1-2*n};updateCropLabel();cropChanged();};
-$('cropAuto').onclick=()=>{if(!workingPreview||cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före automatisk detektering.');return;}const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.cropConfidence=d.confidence;state.cropConfirmed=d.confidence>=.7;state.cropMethod='auto';saveCrop();updateCropUI();updateBase();analyzeLevels();};
+$('cropAuto').onclick=()=>{if(!workingPreview||cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före automatisk detektering.');return;}const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropConfirmed=d.confidence>=.7;state.cropMethod='auto';saveCrop();updateCropUI();updateBase();analyzeLevels();};
 $('cropReset').onclick=()=>{if(cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före återställning.');return;}cropRegion={x:0,y:0,w:1,h:1};cropChanged();};
 $('cropConfirm').onclick=()=>{cropDisplayDismissed=true;state.cropConfirmed=true;$('frameOptions').open=false;updateCropUI();saveCurrentFrame();render();};
 $('cropLock').onclick=()=>{state.cropLocked=!state.cropLocked;updateCropUI();saveCurrentFrame();};
@@ -130,7 +130,7 @@ $('picture').addEventListener('pointerdown',e=>{
  e.preventDefault();e.stopImmediatePropagation();dragPoint=null;
  const p=imagePoint(e),r=cropRegion,edge=side==='left'?r.x:side==='right'?r.x+r.w:side==='top'?r.y:r.y+r.h;
  cropDrag={side,pointerId:e.pointerId,offset:(side==='left'||side==='right'?p.x:p.y)-edge};
- state.cropMethod='manual';state.cropConfirmed=true;saveCurrentFrame();updateCropUI();
+ delete state.frameDetection;state.cropMethod='manual';state.cropConfirmed=true;saveCurrentFrame();updateCropUI();
  $('picture').setPointerCapture(e.pointerId);
 },true);
 $('picture').addEventListener('pointermove',e=>{

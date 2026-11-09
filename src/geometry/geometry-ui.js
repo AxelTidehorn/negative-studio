@@ -43,7 +43,7 @@
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
-  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
+  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.frameDetection,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
   if(key===overlayKey)return;overlayKey=key;
   handles.replaceChildren();handles.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
   const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
@@ -51,7 +51,13 @@
   if(grid){for(const f of [1/3,2/3]){const lerp=(a,b)=>({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f});for(const [a,b]of [[lerp(corners[0],corners[1]),lerp(corners[3],corners[2])],[lerp(corners[0],corners[3]),lerp(corners[1],corners[2])]])svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'grid-line');}}
   if(mode==='frame'&&state.cropVisible!==false){
    const r=cropRegion,W=working.width,H=working.height,ps=[[r.x*W,r.y*H],[(r.x+r.w)*W,r.y*H],[(r.x+r.w)*W,(r.y+r.h)*H],[r.x*W,(r.y+r.h)*H]].map(([x,y])=>v.toView({x,y}));
-   svg('polygon',{points:points(ps)},'frame-line');if(!state.cropLocked)for(const [side,a,b]of [['top',0,1],['right',1,2],['bottom',3,2],['left',0,3]])svg('line',{x1:ps[a].x,y1:ps[a].y,x2:ps[b].x,y2:ps[b].y,'data-side':side},'hit');
+   const d=state.frameDetection,detected=state.cropMethod==='auto'&&NSFrameDetector.matches(d,cropRegion,working)&&d.quad;
+   const framePoints=detected?d.quad.map(q=>v.toView({x:q.x*W,y:q.y*H})):ps;
+   // A convex contour may start at any corner. Match edge labels to SOURCE
+   // axes, independent of winding start, film proportions and display rotation.
+   let topEdge=0,bestAlignment=-Infinity;
+   if(detected)for(let start=0;start<4;start++){let alignment=0;for(let j=0;j<4;j++){const a=d.quad[(start+j)%4],b=d.quad[(start+j+1)%4],dx=(b.x-a.x)*W,dy=(b.y-a.y)*H,l=Math.hypot(dx,dy),axis=[[0,-1],[1,0],[0,1],[-1,0]][j];alignment+=(dy*axis[0]-dx*axis[1])/l;}if(alignment>bestAlignment){topEdge=start;bestAlignment=alignment;}}
+   svg('polygon',{points:points(framePoints),...(detected&&!d.analysisSafe?{'stroke-dasharray':'6 4'}:{})},'frame-line');if(!state.cropLocked)for(const [j,side]of ['top','right','bottom','left'].entries()){const a=(topEdge+j)%4,b=(a+1)%4;svg('line',{x1:framePoints[a].x,y1:framePoints[a].y,x2:framePoints[b].x,y2:framePoints[b].y,'data-side':side},'hit');}
   }
   if(mode==='composition'){
    const body=svg('polygon',{points:points(corners),'data-composition':'move',fill:'transparent','pointer-events':'all'},'composition-line');body.style.cursor='move';

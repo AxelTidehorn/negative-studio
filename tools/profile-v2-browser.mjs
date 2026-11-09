@@ -4,7 +4,7 @@ import fs from 'node:fs';import {execFileSync} from 'node:child_process';import 
 ensureBuild();const h=await browserHarness();
 try{
  const page=await h.browser.newPage();await page.goto(h.url+'v2.html');
- for(const file of ['profile-catalog.js','profile-engine.js','editing-engine.js','raw-input.js','raw-decoder.js','film-base-measurement.js','color-analysis.js','color-calibration.js','project-settings.js','color-parameters.js','render-core.js','srgb-profile.js','tiff-header.js'])await page.addScriptTag({url:h.url+file});
+ for(const file of ['profile-catalog.js','profile-engine.js','editing-engine.js','raw-input.js','raw-decoder.js','film-base-measurement.js','frame-detector.js','color-analysis.js','color-calibration.js','project-settings.js','color-parameters.js','render-core.js','srgb-profile.js','tiff-header.js'])await page.addScriptTag({url:h.url+file});
  const oldBase=execFileSync('git',['show','b0f68ed:src/conversion-v2/base.js'],{encoding:'utf8'});await page.addScriptTag({content:oldBase});
  const baseline=await page.evaluate(async()=>{
   const im={width:1000,height:1000,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(3000000)};for(let i=0;i<im.data.length;i++)im.data[i]=.04+(i%503)/600;
