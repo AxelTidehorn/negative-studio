@@ -53,3 +53,20 @@ verifieras senare; inga syntetiska prover anges som verkliga negativ. Nästan
 ogenomskinlig bas, motiv som liknar klar film, kraftig lutning/perspektiv och
 mycket stora marginaler kan ge osäker detektion. Bekräftelse/manuellt val behövs
 då fortfarande. Inget generellt löfte om semantisk motivdetektion görs.
+
+## B. Importåterhämtning och bildägande
+
+#93 skyddar redan sena decoderresultat med sekvens-ID och current-kontroller.
+Det görs inte om. Däremot kvarstod två fel: misslyckad `chooseFrame` behöll
+activeFrame trots working=null, och `saveCurrentFrame` skrev global bas/nivåer
+även utan en färdig bild. Samma bild kunde därför inte väljas igen, och ett
+senare sparanrop kunde skriva föregående/halvfärdig analys till fel köpost.
+
+Vid fel återställs nu köpostens ursprungliga bildspecifika fält transaktionellt,
+activeFrame blir -1, arbetsbuffertar/analys rensas och tomt bildläge kan inte
+sparas. Gemensamma köval och markeringsstatus behålls. Samma bild kan väljas
+på nytt; oförändrad bild väljs bara bort om en verklig arbetsbild finns.
+`import-recovery.mjs` injicerar fel efter en avsiktlig partiell skrivning och
+jämför nästa lyckade analys exakt mot ett separat rent importförlopp.
+Browserregressionen klickar samma köbild efter fel och kontrollerar att sena
+ersatta/avbrutna jobb fortfarande inte kan påverka nästa bild.

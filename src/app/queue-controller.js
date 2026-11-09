@@ -2,7 +2,7 @@
 let roll=[],activeFrame=-1,rollLoading=false,rollingExport=false;
 const rollShared=NSProjectSettings.rollDefaults();
 const copyState=()=>NSProjectSettings.clone(state);
-function saveCurrentFrame(){if(activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
+function saveCurrentFrame(){if(working&&activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
 function refreshRollUI(){
  if(roll.length&&activeFrame<0){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('rollStatus'),'Välj en bild i arbetskön.');else $('rollStatus').textContent='Välj en bild i arbetskön.';}
  else if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:profileLabel()});
