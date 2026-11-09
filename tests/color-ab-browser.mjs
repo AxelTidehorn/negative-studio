@@ -21,8 +21,8 @@ try{
   const width=73,height=19,data=new Float32Array(width*height*3),levels=[0,1e-12,1/65535,4/65535,8/65535,16/65535,32/65535,64/65535,65/65535,.002,.01,.1,1];
   for(let n=0;n<width*height;n++)for(let k=0;k<3;k++)data[n*3+k]=n%2?levels[(n*(k+1)+k*3)%levels.length]:levels[n%levels.length];
   const im={width,height,channels:3,scale:1,encoding:'linear',data};let worst=0;
-  for(const colorMode4 of ['legacy','original','robust'])for(const space of ['srgb','rec2020'])for(const id of ['generic','gold','bw'])for(const toneMode4 of ['smooth','reference','experimental'])for(const edit of [false,true]){
-   const c={...base,workingSpace:space,opts:{...base.opts,colorMode4,toneMode4,...(edit?{exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})},profile:NSCreativeProfiles.resolve(filmProfiles,id,2),neutralProfile:id==='generic',strength:.7};
+  for(const colorMode4 of ['legacy','original','robust'])for(const space of ['srgb','rec2020'])for(const id of ['neutral','film.kodak-gold-200','mono.neutral'])for(const toneMode4 of ['smooth','reference','experimental'])for(const edit of [false,true]){
+   const c={...base,workingSpace:space,opts:{...base.opts,colorMode4,toneMode4,...(edit?{exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})},look:{id:id==='mono.neutral'?'neutral':id,strength:.7},monochrome:id==='mono.neutral',strength:.7};
    gpu.draw(im,c,'positive',width,1);const actual=gpu.read(),kernel=NSPixelKernel.compile(c);let max=0;
    for(let n=0;n<width*height;n++){const q=kernel.pixel(Array.from(data.slice(n*3,n*3+3)));for(let k=0;k<3;k++)max=Math.max(max,Math.abs(actual.data[n*4+k]-Math.round(q[k]*255)));}
    worst=Math.max(worst,max);cases.push({colorMode4,space,id,toneMode4,edit,max});

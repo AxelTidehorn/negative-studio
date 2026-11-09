@@ -62,8 +62,8 @@ for(let n=0;n<=1200;n++){
 const uneven=structuredClone(config);Object.assign(uneven.cal.beta4,{base:[.7,.4,.2],light:[.8,1.2,1.1],response:{offset:[.1,-.2,.15],span:[2.5,3.2,4.8]}});
 for(const d of [.1,.5,.75,.8]){const a=uneven.cal.beta4,source=a.base.map((v,k)=>v/a.light[k]*10**(-a.response.offset[k]-a.response.span[k]*d));close(K.compile(uneven).pixel(source),reference(source,uneven));}
 // Monochrome bypasses chroma confidence, including colored clipped source pixels.
-const mono=structuredClone(config);mono.profile={type:'bw'};
-for(const source of [[.002,.001,0],[0,0,0],[.01,.2,.7]]){const density=source.map(v=>-Math.log10(Math.max(1/65535,v))/4),y=lum(density),mapped=y<=.8?y:.8+.2*(1-Math.exp(-(y-.8)/.2));close(K.compile(mono).pixel(source),[encode(mapped),encode(mapped),encode(mapped)]);}
+const mono=structuredClone(config);mono.monochrome=true;
+for(const source of [[.002,.001,0],[0,0,0],[.01,.2,.7]]){const positive=kernel.pixel(source).map(decode),gray=encode(lum(positive));close(K.compile(mono).pixel(source),[gray,gray,gray]);}
 // Strong, valid colors with all source channels above the knee are unchanged.
 let highSignal=0;
 for(let i=0;i<500;i++){

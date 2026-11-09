@@ -8,7 +8,7 @@ const newImageDefaults=({v2Compatible=true,engine=v2Compatible?'v2':'calibrated4
  if(!['v2','calibrated4','log39'].includes(engine)||engine==='v2'&&!v2Compatible)throw Error('Unsupported fresh-image engine/source');
  return {...imageDefaults(),engine,conversionVersion:engine==='v2'?2:1};
 };
-const rollDefaults=()=>({cropExportToFrame:false,profile:'generic',profileVersion:2,print:'neutral',strength:.7});
+const rollDefaults=()=>({cropExportToFrame:false,look:{id:'neutral',strength:.7},monochrome:false});
 const clone=value=>JSON.parse(JSON.stringify(value));
 root.NSProjectSettings={imageDefaults,newImageDefaults,rollDefaults,clone};
 })(globalThis);

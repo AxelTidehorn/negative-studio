@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict';
-for(const n of ['import/raw-input','image/image-model','calibration/color-analysis','calibration/color-calibration','color/parameters','color/render-core','app/settings','conversion-v2/core','conversion-v2/render','conversion-v2/output','conversion-v2/fast'])await import('../src/'+n+'.js');
+for(const n of ['import/raw-input','image/image-model','calibration/color-analysis','calibration/color-calibration','editing/editing-engine','editing/profile-catalog','editing/profile-engine','color/parameters','color/render-core','app/settings','conversion-v2/core','conversion-v2/render','conversion-v2/output','conversion-v2/fast'])await import('../src/'+n+'.js');
 const V=NSConversionV2,R=NSV2Render,O=NSV2Output,im={width:60,height:40,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(7200)};let seed=37;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};for(let i=0;i<im.data.length;i++)im.data[i]=10**(-random()*7);
 const s=V.source(im,{revision:'fast-test'}),ctx=V.capture({session:'fast',recipe:{decoder:'fixture'}}),out=new Float64Array(3);let maxError=0;
 const relative=(a,b,t=1e-12)=>{const e=Math.abs(a-b)/Math.max(1,Math.abs(b));maxError=Math.max(maxError,e);assert.ok(e<t,`${a} != ${b}, error ${e}`);};

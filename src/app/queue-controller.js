@@ -4,8 +4,8 @@ const rollShared=NSProjectSettings.rollDefaults();
 const copyState=()=>NSProjectSettings.clone(state);
 function saveCurrentFrame(){if(activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
 function refreshRollUI(){
- if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:filmProfiles[rollShared.profile].label});
- else $('rollStatus').textContent=roll.length?`${roll.length} bilder · Bild ${activeFrame+1} · ${filmProfiles[rollShared.profile].label} · snabb förhandsvisning`:'Inga bilder inlästa.';
+ if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:profileLabel()});
+ else $('rollStatus').textContent=roll.length?`${roll.length} bilder · Bild ${activeFrame+1} · ${profileLabel()} · snabb förhandsvisning`:'Inga bilder inlästa.';
  $('batchJpeg').disabled=!roll.length||rollLoading; $('batchTiff').disabled=!roll.length||rollLoading; $('loadFullRaw').disabled=!roll.length;
  const strip=$('filmstrip');strip.textContent='';
  roll.forEach((frame,i)=>{const b=document.createElement('div');b.className='frame'+(i===activeFrame?' active':'');
@@ -27,7 +27,7 @@ async function importRoll(files,{engine}={}){
  const acceptable=files.filter(NSFileFormats.supported);
  if(acceptable.length>5){setStatus('Max fem bilder åt gången. Välj fem filer eller färre.');return}
  if(!acceptable.length){setStatus(NSFileFormats.error(rejected[0]));return;}
- rollShared.profileVersion=2;roll=[];activeFrame=-1;src=null;hires=null;
+ roll=[];activeFrame=-1;src=null;hires=null;
  for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...NSProjectSettings.newImageDefaults({v2Compatible:NSFileFormats.isRaw(file.name),engine}),cropExport:rollShared.cropExportToFrame,noBase:false,autoLevels:true},base:null,levels:null,selected:true,thumb:null,crop:null})}
  refreshRollUI();
  const imported=roll;
@@ -43,9 +43,8 @@ async function importRoll(files,{engine}={}){
 $('loadFullRaw').onclick=async()=>{if(activeFrame<0)return;await chooseFrame(activeFrame,{full:true,force:true})};
 $('clearQueue').onclick=()=>{roll=[];activeFrame=-1;src=null;hires=null;previewSrc=null;working=null;workingPreview=null;cropRegion=null;$('preview').classList.add('hidden');$('empty').classList.remove('hidden');refreshRollUI();$('export').disabled=true;setStatus('Arbetskön tömd.');};
 $('imageFile').addEventListener('change',async e=>{const files=Array.from(e.target.files);try{await importRoll(files)}catch(err){setStatus(err.message)}finally{e.target.value=''}});
-$('filmProfile').onchange=e=>{rollShared.profile=e.target.value;rollShared.profileVersion=2;refreshProfileInfo();scheduleRender(true);refreshRollUI()};
-$('profileStrength').oninput=e=>{rollShared.strength=Number(e.target.value)/100;$('profileStrengthValue').textContent=e.target.value+' %';scheduleRender()};$('profileStrength').onchange=()=>scheduleRender(true);
-$('printStyle').onchange=e=>{rollShared.print=e.target.value;scheduleRender(true)};
+$('filmProfile').onchange=e=>{const id=e.target.value;rollShared.monochrome=id==='mono.neutral';rollShared.look={id:rollShared.monochrome?'neutral':id,strength:rollShared.look.strength};NSProfiles.validate(rollShared.look,rollShared.monochrome);refreshProfileInfo();scheduleRender(true);refreshRollUI()};
+$('profileStrength').oninput=e=>{rollShared.look={...rollShared.look,strength:Number(e.target.value)/100};$('profileStrengthValue').textContent=e.target.value+' %';scheduleRender()};$('profileStrength').onchange=()=>scheduleRender(true);
 $('applyRoll').onclick=()=>{if(!roll.length)return;saveCurrentFrame();const mode=$('copyMode').value;const color=['temperature','tint','saturation','vibrance'],tone=['contrast','gamma','shadow','highlight','balanceStrength'];const keys=mode==='color'?color:mode==='tone'?tone:[...color,...tone];let count=0;for(const f of roll){if(!f.selected)continue;for(const k of keys)f.settings[k]=state[k];count++}setStatus(`${mode==='color'?'Färg':mode==='tone'?'Ton':'Alla inställningar utom exponering'} kopierades till ${count} markerade bilder. Individuell exponering bevarad.`);refreshRollUI()};
 refreshProfileInfo();
 // Commit per-image settings after slider debounce/change without affecting UI responsiveness

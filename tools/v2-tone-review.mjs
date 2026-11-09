@@ -33,7 +33,7 @@ try{for(const id of cases.split(',')){
   const statistics={p10:R.quantile(ys,.1),p50:R.quantile(ys,.5),p60:R.quantile(ys,.6),p90:R.quantile(ys,.9),p99:R.quantile(ys,.99),samples:ys.length,validFraction:ys.length/(analyzed.mask.data.length-analyzed.intent.analysis.counts.outsideArea),areaStatus:analyzed.intent.analysis.area.status,areaConfidence:analyzed.intent.analysis.area.confidence};
   Object.assign(state,NSEditing2.neutral,{editVersion:2,rotation:0,exposure:0});rollShared.cropExportToFrame=false;state.cropExport=false;
   const before={...state.v2Recipe,source:m.source,base:m.base,calibration:m.calibration,intent:analyzed.intent,analysisSignature:R.analysisKey(k,{analysisArea:m.area,algorithmVersion:3,photographic:2,output:R.presentationRecipe.version})};
-  const config=configuration38();config.v2=before;config.opts={...config.opts,...NSEditing2.neutral,editVersion:2};config.profile={type:'color'};config.print={contrast:1,shoulder:0};config.strength=0;config.neutralProfile=config.neutralPrint=true;
+  const config=configuration38();config.v2=before;config.opts={...config.opts,...NSEditing2.neutral,editVersion:2};config.look={id:'neutral',strength:0};config.monochrome=false;
   // Only the test page is pinned. The real export owner and pixel kernel are
   // unchanged; no proposal can be saved into a user's project or default.
   globalThis.toneReview={before,statistics,config,analyzed};configuration38=()=>toneReview.config;

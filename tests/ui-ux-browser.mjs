@@ -23,7 +23,7 @@ try{
  await p.reload();await p.waitForFunction(()=>globalThis.FILMLABB_APPEARANCE);assert.deepEqual(await p.evaluate(()=>FILMLABB_APPEARANCE.get()),{mode:'light'});
  // Reload intentionally discards source files; preferences are not project settings.
  await p.locator('#imageFile').setInputFiles([{name:'Åsa-a.png',mimeType:'image/png',buffer},{name:'Åsa-b.png',mimeType:'image/png',buffer}]);await p.waitForFunction(()=>working&&!rollLoading);await p.waitForTimeout(600);
- await p.locator('#creativeProfiles > summary').click();await p.locator('#filmProfile').selectOption('gold');await p.locator('#profileStrength').fill('55');await p.locator('#profileStrength').dispatchEvent('input');await p.locator('#filmProfile').selectOption('generic');assert.equal(await p.locator('.profile-strength').isVisible(),false);await p.locator('#filmProfile').selectOption('gold');assert.equal(await p.locator('#profileStrength').inputValue(),'55');
+ await p.locator('#creativeProfiles > summary').click();await p.locator('#filmProfile').selectOption('film.kodak-gold-200');await p.locator('#profileStrength').fill('55');await p.locator('#profileStrength').dispatchEvent('input');await p.locator('#filmProfile').selectOption('neutral');assert.equal(await p.locator('.profile-strength').isVisible(),false);await p.locator('#filmProfile').selectOption('film.kodak-gold-200');assert.equal(await p.locator('#profileStrength').inputValue(),'55');
  for(const id of ['advancedSettings','exportProject','geometryTools','frameSettingsGroup'])await p.evaluate(id=>document.getElementById(id).open=true,id);
  for(const lang of ['sv','en','fr','es','de']){
   await selectLanguage(p,lang);await p.waitForTimeout(50);assert.equal(await p.locator('html').getAttribute('lang'),lang);
@@ -34,7 +34,7 @@ try{
   await p.evaluate(()=>{let e=$('i18nProbe');if(!e){e=document.createElement('span');e.id='i18nProbe';document.body.append(e);}e.textContent='Bekräfta';e.title='Finrotation';e.setAttribute('aria-label','Spara projekt');});await p.waitForTimeout(30);
   assert.equal(await p.locator('#i18nProbe').textContent(),await p.evaluate(()=>FILMLABB_I18N.t('Bekräfta')));assert.equal(await p.locator('#i18nProbe').getAttribute('title'),await p.evaluate(()=>FILMLABB_I18N.t('Finrotation')));
   await p.evaluate(async()=>{await chooseFrame(activeFrame===0?1:0);});await p.waitForFunction(()=>!rollLoading);await p.waitForTimeout(50);
-  assert.ok((await p.locator('#rollStatus').textContent()).includes(await p.evaluate(()=>FILMLABB_I18N.fromSource('Generisk C-41')))||await p.locator('#filmProfile').inputValue()==='gold');
+  assert.ok((await p.locator('#rollStatus').textContent()).includes(await p.evaluate(()=>FILMLABB_I18N.fromSource('Neutral')))||await p.locator('#filmProfile').inputValue()==='film.kodak-gold-200');
   for(const engine of ['log39','calibrated4'])await p.evaluate(engine=>{$('engineMode').value=engine;$('engineMode').dispatchEvent(new Event('change'));},engine);
   await p.evaluate(()=>{FILMLABB_APPEARANCE.set(FILMLABB_APPEARANCE.get().mode==='dark'?'light':'dark');setStatus('Exportfel: Ingen bild avkodades.');});await p.waitForTimeout(50);
   assert.equal(await p.locator('#status').innerText(),await p.evaluate(()=>FILMLABB_I18N.t('export.error',{error:'Ingen bild avkodades.'})));

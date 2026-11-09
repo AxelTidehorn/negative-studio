@@ -105,7 +105,7 @@ const labels={rotateLeft:'Rotera 90° åt vänster',rotateRight:'Rotera 90° åt
 const shortNames={rotateLeft:'90° vänster',rotateRight:'90° höger',compositionEdit:'Beskär',compositionReset:'Återställ komposition'};t($('straighten'),'Räta upp');$('straighten').setAttribute('aria-label',FILMLABB_I18N.fromSource('Räta upp med linje'));
 for(const [id,s]of Object.entries(labels)){t($(id),shortNames[id]||s);$(id).setAttribute('aria-label',FILMLABB_I18N.fromSource(s));$(id).title=FILMLABB_I18N.fromSource(s);}
 t(document.querySelector('label[for="engineMode"]'),'Konverteringsmotor');t($('imageAdjustments').querySelector('summary'),'Bildjusteringar');
-const creativeHint=document.createElement('p');creativeHint.className='hint';t(creativeHint,'Kreativ återgivning · ingen uppmätt filmprofil');$('creativeProfiles').append(creativeHint);
+const creativeHint=document.createElement('p');creativeHint.id='profileDescription';creativeHint.className='hint';t(creativeHint,'Fotografisk prototyp – inte en kalibrerad filmsimulering.');$('creativeProfiles').append(creativeHint);refreshProfileInfo();
 // Five existing groups, with one opaque content surface each. Move the live
 // controls; never clone them or bind a second set of image-control handlers.
 const cards=['imageAdjustments','creativeProfiles','calibration3','advancedSettings','exportProject'];
@@ -142,9 +142,7 @@ function cardSummaries(){
   const full=all.join(' · ');if(el.title!==full)el.title=full;
  }
  write('imageAdjustments',changes,'Inga manuella justeringar');
- const profile=rollShared.profile,print=rollShared.print;
- const profiles=profile&&profile!=='generic'?[tr($('filmProfile').selectedOptions[0]?.textContent||filmProfiles[profile]?.label||profile),number(rollShared.strength*100)+' %']:[];
- if(print&&print!=='neutral')profiles.push(tr($('printStyle').selectedOptions[0]?.textContent||printStyles[print]?.label||print));
+ const profiles=rollShared.monochrome?[tr('Neutral svartvit')]:rollShared.look.id!=='neutral'?[profileLabel(),number(rollShared.look.strength*100)+' %']:[];
  write('creativeProfiles',profiles,'Ingen kreativ profil');
  // Use the calibration owner's compatibility-filtered accepted reference, not
  // a candidate, lock checkbox, or the mere presence of a saved recipe.
@@ -170,7 +168,7 @@ function cardSummaries(){
 }
 const valuesBefore=updateValues;
 updateValues=function(...args){const result=valuesBefore(...args);cardSummaries();return result;};
-for(const id of ['filmProfile','profileStrength','printStyle','jpegSize','cropExport','exportFormat']){
+for(const id of ['filmProfile','profileStrength','jpegSize','cropExport','exportFormat']){
  for(const event of ['input','change'])$(id).addEventListener(event,cardSummaries);
 }
 const icons={import:'M12 3v12m-4-4 4 4 4-4M4 15v6h16v-6',export:'M12 15V3m-4 4 4-4 4 4M4 15v6h16v-6',queue:'M3 4h18v4H3zm0 6h18v4H3zm0 6h18v4H3z',settings:'M4 7h16M4 17h16M8 3v8m8 2v8',zoom:'M10 4a6 6 0 1 0 0 12 6 6 0 0 0 0-12m5 11 6 6',frame:'M3 8V3h5m8 0h5v5m0 8v5h-5M8 21H3v-5',sample:'m15 3 6 6-4 4-6-6zm-4 4-8 8v6h6l8-8',check:'m4 12 5 5L20 6'};
@@ -222,7 +220,7 @@ $('engineMode').addEventListener('change',refresh);
 new MutationObserver(refresh).observe($('rotationSummary'),{childList:true,subtree:true});
 new MutationObserver(refresh).observe($('geometryHint'),{childList:true,subtree:true});
 new MutationObserver(refresh).observe($('base2Status'),{childList:true});
-$('filmProfile').setAttribute('aria-label',FILMLABB_I18N.fromSource('Kreativ profil'));
+$('filmProfile').setAttribute('aria-label',FILMLABB_I18N.fromSource('Profil'));
 window.addEventListener('filmlabb:language',refresh);
 refresh();
 })();

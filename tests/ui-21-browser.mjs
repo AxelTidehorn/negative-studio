@@ -53,10 +53,10 @@ try{
  assert.match(await p.locator('#imageAdjustmentsSummary').textContent(),/Exponering \+0,4 EV.*Lyster \+20/);
  await p.locator('#exposure').dblclick();assert.doesNotMatch(await p.locator('#imageAdjustmentsSummary').textContent(),/Exponering/);
  await p.locator('#reset').click();assert.equal(await p.locator('#imageAdjustmentsSummary').textContent(),'Inga manuella justeringar');
- await p.locator('#creativeProfiles > summary').click();await p.locator('#filmProfile').selectOption('portra');
+ await p.locator('#creativeProfiles > summary').click();await p.locator('#filmProfile').selectOption('film.kodak-ektar-100');
  await p.locator('#profileStrength').fill('55');await p.locator('#profileStrength').dispatchEvent('input');
- assert.match(await p.locator('#creativeProfilesSummary').textContent(),/Sunday Best 400 · 55 %/);
- await p.locator('#filmProfile').selectOption('generic');assert.equal(await p.locator('#creativeProfilesSummary').textContent(),'Ingen kreativ profil');
+ assert.match(await p.locator('#creativeProfilesSummary').textContent(),/Kodak Ektar 100 · 55 %/);
+ await p.locator('#filmProfile').selectOption('neutral');assert.equal(await p.locator('#creativeProfilesSummary').textContent(),'Ingen kreativ profil');
  await p.locator('#exportProject > summary').click();await p.locator('#jpegSize').selectOption('safe');assert.match(await p.locator('#exportProjectSummary').textContent(),/12 megapixel/);
  const chosen=await open();await p.evaluate(async()=>{saveCurrentFrame();await chooseFrame(1)});await p.waitForFunction(()=>!rollLoading);
  assert.deepEqual(await open(),chosen);assert.equal(await p.locator('#imageAdjustmentsSummary').textContent(),'Inga manuella justeringar');

@@ -17,7 +17,7 @@ try{
  const save=()=>p.evaluate(async()=>{saveCurrentFrame();let blob;const download=downloadBlob;downloadBlob=b=>blob=b;try{$('saveSettings').onclick();return JSON.parse(await blob.text());}finally{downloadBlob=download;}});
  // Await this load's completion, not a matching status left by the prior project.
  const load=async data=>{await p.evaluate(()=>setStatus(''));await p.locator('#settingsFile').setInputFiles({name:'saved.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(data))});await p.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));};
- const original=await save();assert.equal(original.format,'negative-studio-roll-v2');assert.equal(original.frames[0].settings.engine,'v2');
+ const original=await save();assert.equal(original.format,'filmlabb-roll-3');assert.equal(original.frames[0].settings.engine,'v2');
  const exported=await p.evaluate(async()=>{state.cropConfirmed=true;saveCurrentFrame();const c=configuration38(),g=exportGeometrySnapshot(working).g;const recipe=JSON.stringify(c.v2);let blob;const download=downloadBlob;downloadBlob=b=>blob=b;try{const expected=NSPresentation.tiff(working,c,g,0,g.height,NSPixelKernel.prepare(working,c));await exportTiff();const tiff=await NSTiff.decode(await blob.arrayBuffer()),bytes=await jpegBytes(),bitmap=await createImageBitmap(new Blob([bytes],{type:'image/jpeg'}));const result={bits:tiff.bits,icc:tiff.icc.length,pixels:tiff.data.every((v,i)=>v===expected[i]),size:[bitmap.width,bitmap.height],expectedSize:[g.width,g.height],jpeg:[bytes[0],bytes[1]],recipe:recipe===JSON.stringify(configuration38().v2)};bitmap.close();return result;}finally{downloadBlob=download;}});
  assert.equal(exported.bits,16);assert.equal(exported.icc,588);assert.equal(exported.pixels,true);assert.equal(exported.recipe,true);assert.deepEqual(exported.jpeg,[255,216]);assert.deepEqual(exported.size,exported.expectedSize);
  await selectBackend(p,'cpu');await p.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&!workerBusy38&&!queued38&&lastPreview38);
@@ -27,15 +27,9 @@ try{
  await p.evaluate(async()=>{saveCurrentFrame();await chooseFrame(1);});await p.waitForFunction(()=>!rollLoading);assert.equal(await p.evaluate(()=>state.engine),'v2');
  await p.evaluate(()=>chooseFrame(0));await p.waitForFunction(()=>!rollLoading);assert.equal(await p.evaluate(()=>state.engine),'calibrated4');
  const mixed=await save();await load(mixed);assert.equal(await p.evaluate(()=>state.engine),'calibrated4');assert.deepEqual(await p.evaluate(()=>roll.map(f=>f.settings.engine)),['calibrated4','v2']);
- // Older records use exactly #66's incomplete-record baseline, independently of
- // the new-import factory. Compare missing engine with explicit historic Standard.
- let standardPixels;
- for(const engine of ['calibrated4','log39',null]){
-  const legacy={format:'negative-studio-roll-v08',sourceCalibrationVersion:39,profile:'generic',print:'neutral',strength:.7,frames:original.frames.map(f=>({filename:f.filename,settings:engine?{engine}:{},crop:f.crop,base:null,levels:null}))};
-  await load(legacy);const result=await p.evaluate(()=>({engine:state.engine,edit:state.editVersion,recipe:!!state.v2Recipe,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));
-  assert.equal(result.engine,engine||'calibrated4');assert.equal(result.edit,1);assert.equal(result.recipe,false);
-  if(engine==='calibrated4')standardPixels=result.pixels;if(engine===null)assert.deepEqual(result.pixels,standardPixels,'missing historical engine must reproduce explicit historical Standard');
- }
+ // Retired outer formats reject atomically instead of inheriting new defaults.
+ const frozen=await p.evaluate(()=>JSON.stringify({state,rollShared,roll:roll.map(f=>f.settings)}));
+ await p.locator('#settingsFile').setInputFiles({name:'old.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify({...original,format:'negative-studio-roll-v08'}))});await p.waitForFunction(()=>$('status').textContent.startsWith('Projektimport:'));assert.equal(await p.evaluate(()=>JSON.stringify({state,rollShared,roll:roll.map(f=>f.settings)})),frozen);
  await load(original);assert.equal(await p.evaluate(()=>state.engine),'v2');assert.equal(await p.evaluate(()=>state.v2Recipe.intent.id),original.frames[0].settings.v2Recipe.intent.id);
  await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading);
  assert.equal(await p.evaluate(()=>state.engine),'calibrated4');assert.match(await p.locator('#status').textContent(),/Standard: V2 kräver RAW/);assert.match(await p.locator('#advancedSettingsSummary').textContent(),/Konverteringsmotor: Standard/);

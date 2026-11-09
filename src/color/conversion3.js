@@ -91,7 +91,7 @@ function compile(kind,a,auto=true,{identity=false}={}){
  return {technical,present,pixel:p=>present(p.map(technical))};
 }
 function validateProject(data){
- const v2=!!root.NSV2Platform&&data?.format===root.NSV2Platform.PROJECT_FORMAT,modern=data?.format===PROJECT_FORMAT||v2;
+ const v2=!!root.NSV2Platform&&(data?.format===root.NSV2Platform.PROJECT_FORMAT||data?.format===root.NSProfiles?.FORMAT),modern=data?.format===PROJECT_FORMAT||v2;
  if(modern&&data.conversionSchemaVersion!==VERSION)throw Error('Unsupported conversion project version.');
  const known=['log39','calibrated4','legacy','beta2','beta3','reference','density38',...ids];
  for(const f of data?.frames||[]){const o=f?.settings;if(!o)continue;
@@ -135,8 +135,7 @@ vec3 conversion3(vec3 source){
 }
 vec3 finishConversion3(vec3 p){
  p=encode3(p);
- if(uProfile==2||uProfile==3)p=creative(p);else if(uProfile==1&&uStrength>0.0)p=mix(p,creative(p),uStrength);
- if(uPrint==1){p=clamp(p,0.0,1.0);if(uPrintShoulder!=0.0)p=p/(vec3(1.0)+uPrintShoulder*(vec3(1.0)-p));p=clamp(vec3(.5)+(p-vec3(.5))*uPrintContrast,0.0,1.0);}
+ p=lookPositive(p);
  p=clamp((clamp(p,0.0,1.0)-vec3(uLegacyBlack3))/uLegacyRange3,0.0,1.0);
  if(uInvGamma!=1.0)p=pow(p,vec3(uInvGamma));p=clamp(p*uExposure*uGains,0.0,1.0);
  if(uContrast!=1.0)p=clamp(vec3(.5)+(p-vec3(.5))*uContrast,0.0,1.0);

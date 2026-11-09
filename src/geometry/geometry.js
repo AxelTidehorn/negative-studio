@@ -145,8 +145,8 @@ function viewTransform(width,height,value,view,options={}){
  return {forward(s){const q=p.forward(s);return {x:ox+(q.x-.5)*p.area.width*scale,y:oy+(q.y-.5)*p.area.height*scale};},inverse(v){return p.inverse({x:.5+(v.x-ox)/(p.area.width*scale),y:.5+(v.y-oy)/(p.area.height*scale)});}};
 }
 function prepareProject(data,queue=[]){
- if(!object(data)||!['negative-studio-roll-v08','negative-studio-roll-beta3',FORMAT].includes(data.format)||!Array.isArray(data.frames))fail('okänt projektformat eller saknad bildlista.');
- const modern=data.format===FORMAT;
+ if(!object(data)||!['negative-studio-roll-v08','negative-studio-roll-beta3',FORMAT,root.NSProfiles?.FORMAT].filter(Boolean).includes(data.format)||!Array.isArray(data.frames))fail('okänt projektformat eller saknad bildlista.');
+ const modern=data.format===FORMAT||data.format===root.NSProfiles?.FORMAT;
  if((modern&&data.geometryVersion!==VERSION)||(!modern&&data.geometryVersion!==undefined))fail('okänd projektgeometriversion.');
  const names=new Set();
  for(const f of data.frames){

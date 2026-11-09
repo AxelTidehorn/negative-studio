@@ -15,7 +15,7 @@ function lowSignal4(c){
 }
 function compile(c){
  if(root.NSEditing2?.version(c.opts.editVersion)===2){
-  const base=compile({...c,opts:{...c.opts,...NSEditing2.neutral}}),edit=NSEditing2.compile(c.opts,c.profile.type==='bw');
+  const base=compile({...c,opts:{...c.opts,...NSEditing2.neutral}}),edit=NSEditing2.compile(c.opts,!!c.monochrome);
   if(edit.parameters.identity){base.editIdentity=true;return base;}
   return {technical:base.technical,finish:p=>edit.pixel(base.finish(p)),pixel:p=>edit.pixel(base.pixel(p))};
  }
@@ -24,9 +24,9 @@ function compile(c){
   const finish=p=>downstream.finish(conversion.present(p));
   return {technical:conversion.technical,finish,pixel:p=>finish(p.map(conversion.technical))};
  }
- const o=c.opts,f=c.profile,print=c.print,parameters=NSColorParameters.prepare(c),bw=parameters.bw,ev=parameters.exposureGain,
+ const o=c.opts,look=NSProfiles.compile(c.look,!!c.monochrome),parameters=NSColorParameters.prepare(c),ev=parameters.exposureGain,
  gains=parameters.gains,invGamma=parameters.inverseGamma,range=parameters.displayRange,sat=parameters.saturation,
- variant=colorVariant4(o.colorMode4),confidence=c.kind==='calibrated4'&&!bw&&variant!=='original'?lowSignal4(c):null,
+ variant=colorVariant4(o.colorMode4),confidence=c.kind==='calibrated4'&&variant!=='original'?lowSignal4(c):null,
  lowStart=confidence?.start,
  knee=variant==='robust'&&confidence?confidence.invRange.map(v=>1/v/(o.autoLevels?c.cal.beta4.span:1)):null,
  kneeStart=knee?lowStart.map(v=>Math.max(0,o.autoLevels?(v-c.cal.beta4.lo)/c.cal.beta4.span:v)):null;
@@ -51,17 +51,6 @@ function compile(c){
   if(c.kind==='reference')q=Math.max(0,1-Math.max(1/65535,Math.min(1,v*c.light[k]))/(c.noBase?1:Math.max(1/65535,c.base[k])));
   if(o.autoLevels&&c.levels){const lo=c.levels.lo[k],span=c.spans[k];q=(q-lo)/c.ref+((q-lo)/span-(q-lo)/c.ref)*o.balanceStrength;}
   return q;
- }
- function emulsion(p){
-  if(f.creativeVersion===2)return NSCreativeProfiles.apply(p,f,bw?c.strength:1);
-  if(bw){const g=clamp(.2126*p[0]+.7152*p[1]+.0722*p[2]),v=clamp(g**(1/Math.max(.7,f.bwCurve||1))+(f.bwLift||0));return [v,v,v];}
-  const m=f.matrix||[[1,0,0],[0,1,0],[0,0,1]];let q=m.map(r=>clamp(r[0]*p[0]+r[1]*p[1]+r[2]*p[2]));
-  let l=.2126*q[0]+.7152*q[1]+.0722*q[2];q=q.map((v,k)=>clamp(v+(v-l)*(f.mix||0))**(1/(f.gamma?.[k]||1)));
-  l=.2126*q[0]+.7152*q[1]+.0722*q[2];if(f.sat&&f.sat!==1)q=q.map(v=>clamp(l+(v-l)*f.sat));
-  l=.2126*q[0]+.7152*q[1]+.0722*q[2];
-  if(f.shadowTint){const w=(1-l)**1.15;q=q.map((v,k)=>clamp(v*(1+((f.shadowTint[k]||1)-1)*w)));}
-  if(f.highlightTint){const w=l**1.35*.75;q=q.map((v,k)=>clamp(v*(1+((f.highlightTint[k]||1)-1)*w)));}
-  return q.map(v=>{v=clamp(v+(f.lift||0));if(f.shoulder)v=v/(1+f.shoulder*(1-v));if(f.toe)v=v**(1/(1+f.toe));if(f.curve&&f.curve!==1)v=v**(1/f.curve);return clamp(v);});
  }
  const encode=v=>{v=clamp(v);return v<=.0031308?12.92*v:1.055*v**(1/2.4)-.055;};
  const black4=parameters.black,whiteRange4=parameters.whiteRange;
@@ -98,21 +87,18 @@ function compile(c){
    r=r*target/y;g=g*target/y;b=b*target/y;
   }
   if(c.workingSpace==='rec2020'){const q=NSRawInput.matrix.map(m=>m[0]*r+m[1]*g+m[2]*b);const l=Math.max(0,.2126*q[0]+.7152*q[1]+.0722*q[2]),minimum=Math.min(...q),s=minimum<0?l/Math.max(1e-12,l-minimum):1;[r,g,b]=q.map(v=>Math.max(0,l+(v-l)*s));}
-  if(bw&&f.creativeVersion===2){const neutral=.2126*r+.7152*g+.0722*b,mixed=r*f.mono[0]+g*f.mono[1]+b*f.mono[2],gray=neutral+(mixed-neutral)*clamp(c.strength);r=g=b=gray;}
   if(sat!==1){y=.2126*r+.7152*g+.0722*b;r=Math.max(0,y+(r-y)*sat);g=Math.max(0,y+(g-y)*sat);b=Math.max(0,y+(b-y)*sat);}
   const peak=Math.max(r,g,b),mapped=o.toneMode4==='reference'?Math.min(1,peak):peak<=.8?peak:.8+.2*(-Math.expm1(-Math.min(100,(peak-.8)/.2)));
   if(peak>0){r=r*mapped/peak;g=g*mapped/peak;b=b*mapped/peak;}
   // Experiment: roll saturated highlights gently toward neutral white rather
   // than preserving tiny chroma differences that become blue/magenta specks.
   // Only the calibrated4 standard shoulder is affected; reference stays intact.
-  if(variant==='legacy'&&!bw&&o.toneMode4==='experimental'&&peak>.85){
+  if(variant==='legacy'&&o.toneMode4==='experimental'&&peak>.85){
    const t=clamp((peak-.85)/.45),fade=t*t*(3-2*t);
    r+=fade*(mapped-r);g+=fade*(mapped-g);b+=fade*(mapped-b);
   }
   p=[encode(r),encode(g),encode(b)];
-  // Existing creative profiles remain downstream and do not enter calibration.
-  if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
-  if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
+  p=look.pixel(p);
   return p;
  }
  if(c.kind==='v2'){
@@ -120,16 +106,14 @@ function compile(c){
   const k=NSV2Fast.compile(NSConversionV2.compile(c.v2.source,c.v2.base,c.v2.calibration),c.v2.intent),out=new Float64Array(3);
   // Fixed RGB arity avoids Array.from's typed-array iterator/callback per pixel.
   function pixel(p){if(!c.v2Positive){k.pixel(p[0],p[1],p[2],out);p=[NSV2Render.encode(out[0]),NSV2Render.encode(out[1]),NSV2Render.encode(out[2])];}
-   if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
-   if(!c.neutralPrint)p=p.map(v=>{if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});return p;
+   p=look.pixel(p);return p;
   }
   return {technical:v=>v,finish:pixel,pixel};
  }
  function finish(p){
   if(c.kind==='calibrated4')return finish4(p);
   if(c.kind==='beta2'||c.kind==='density38'||c.kind==='log39')p=p.map(encode);
-  if(bw)p=emulsion(p);else if(!c.neutralProfile&&c.strength>0){const q=emulsion(p);p=p.map((v,k)=>v+(q[k]-v)*c.strength);}
-  if(!c.neutralPrint)p=p.map(v=>{v=clamp(v);if(print.shoulder)v=v/(1+print.shoulder*(1-v));return clamp(.5+(v-.5)*print.contrast);});
+  p=look.pixel(p);
   p=p.map((v,k)=>{v=clamp((clamp(v)-o.shadow)/range);if(o.gamma!==1)v=v**invGamma;v=clamp(v*ev*gains[k]);return o.contrast===1?v:clamp(.5+(v-.5)*o.contrast);});
   const l=.2126*p[0]+.7152*p[1]+.0722*p[2];p=p.map(v=>clamp(l+(v-l)*sat));
   if(o.shadows||o.highlights){const l=clamp(.2126*p[0]+.7152*p[1]+.0722*p[2]),sw=(1-clamp(l/.65))**2,hw=clamp((l-.35)/.65)**2,a=-(o.shadows/100)*sw*(1-l)*.7+(o.highlights/100)*hw*l*.7;p=p.map(v=>clamp(v+a));}
@@ -142,7 +126,7 @@ function compile(c){
 function tables(kernel){const a=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let k=0;k<3;k++)for(let i=0;i<65536;i++)a[k][i]=kernel.technical(i/65535,k);return a;}
 function completeTables(config,kernel){
  if(config.kind==='v2'||root.NSConversion3?.is(config.kind)||config.kind==='calibrated4'||root.NSEditing2?.version(config.opts.editVersion)===2&&!kernel.editIdentity)return null;
- if(!config.neutralProfile||!config.neutralPrint||config.opts.saturation!==1||config.opts.shadows||config.opts.highlights)return null;
+ if(!NSProfiles.compile(config.look,!!config.monochrome).identity||config.opts.saturation!==1||config.opts.shadows||config.opts.highlights)return null;
  const t=[new Float64Array(65536),new Float64Array(65536),new Float64Array(65536)];for(let i=0;i<65536;i++){const p=kernel.pixel([i/65535,i/65535,i/65535]);for(let c=0;c<3;c++)t[c][i]=p[c];}return t;
 }
 let renderCache=null,technicalRenderCache4=null;
@@ -153,7 +137,7 @@ function read(im,i,x,y,v2=false){if(v2)return NSV2Platform.read(im,i,x,y);if(im.
 let v2PreviewCache=null,v2PreviewConversions=0,v2PreviewAdoptions=0,v2PreviewReconstructionMs=0;
 // Pixel dependencies only: creative edits, geometry and metadata-only intent IDs
 // never change the positive source. Source owners increment previewRevision.
-function v2PreviewKey(im,c){const r=c.v2,t=r.intent;return JSON.stringify({image:{revision:im.previewRevision,width:im.width,height:im.height,channels:im.channels,encoding:im.encoding,colorSpace:im.colorSpace,scale:im.scale,normalization:im.normalization,flatField:im.flatField},source:r.source,base:{rgb:r.base.rgb,domain:r.base.domain},calibration:r.calibration,intent:{algorithmVersion:t.algorithmVersion,output:t.output,tone:t.tone,photographic:t.photographic,exposure:t.exposure,colorCorrection:t.colorCorrection}});}
+function v2PreviewKey(im,c){const r=c.v2,t=r.intent;return JSON.stringify({image:{revision:im.previewRevision,width:im.width,height:im.height,channels:im.channels,encoding:im.encoding,colorSpace:im.colorSpace,scale:im.scale,normalization:im.normalization,flatField:im.flatField},source:r.source,base:{rgb:r.base.rgb,domain:r.base.domain},calibration:r.calibration,intent:{algorithmVersion:t.algorithmVersion,output:t.output,tone:t.tone,toneRecipe:t.toneRecipe,photographic:t.photographic,exposure:t.exposure,colorCorrection:t.colorCorrection}});}
 const positiveImage=(im,data)=>({width:im.width,height:im.height,channels:3,scale:1,normalization:1,encoding:'srgb',colorSpace:'srgb',data});
 function cachedV2Positive(im,c){return v2PreviewCache?.source===im&&v2PreviewCache.key===v2PreviewKey(im,c)&&v2PreviewCache.data.byteLength?positiveImage(im,v2PreviewCache.data):null;}
 function installV2Positive(im,c,data){
