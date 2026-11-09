@@ -1,0 +1,25 @@
+/* Same browser/file/settings before/after; injected spans preserve pixels.
+ node tools/benchmark-import.mjs FILE OUTPUT [cpu|auto] [fresh runs=3]
+ FILMLABB_IMPORT_PROOF=off disables RAF extraction in the measurement harness. */
+import fs from 'node:fs';import crypto from 'node:crypto';import {ensureBuild} from './build-artifact.mjs';import {browserHarness} from '../tests/helpers/browser.mjs';
+const [file,out,backend='auto',runs='3']=process.argv.slice(2);if(!out)throw Error('FILE OUTPUT required');ensureBuild();const h=await browserHarness(),results=[];
+try{const p=await h.browser.newPage({viewport:{width:1440,height:900},locale:'sv-SE',serviceWorkers:'block'});p.setDefaultTimeout(600000);await p.addInitScript(backend=>localStorage.setItem('filmlabb-preview-backend',backend),backend);await p.goto(h.url);
+ await p.evaluate(async({proofOff})=>{
+ if(proofOff)readRafJpeg=async()=>null;
+ const M=globalThis.importBench={spans:{},events:{},t:0,paint:null};
+ function wrap(obj,key,kind,async=false){const old=obj[key];if(typeof old!=='function')return;obj[key]=async?async function(...a){const t=performance.now();try{return await old.apply(this,a);}finally{M.spans[kind]=(M.spans[kind]||0)+performance.now()-t;}}:function(...a){const t=performance.now();try{return old.apply(this,a);}finally{M.spans[kind]=(M.spans[kind]||0)+performance.now()-t;}};}
+ wrap(Blob.prototype,'arrayBuffer','fileRead',true);wrap(NSRawInput,'convert','rgbConvert');wrap(NSV2Platform,'preview','technicalPreview');wrap(NSV2Platform,'prepare','v2Analysis');wrap(CE,'detectFrame','frameAnalysis');wrap(CE,'findBase','baseAnalysis');
+ const decode=NSRawDecoder.decode;NSRawDecoder.decode=(f,m,o={})=>decode(f,m,{...o,...(!NSRawDecoder.metrics?{createDecoder:async()=>{const t=performance.now(),D=(await import('./libraw/dist/index.js')).default,d=new D();M.spans.decoderConstruct=(M.spans.decoderConstruct||0)+performance.now()-t;wrap(d,'open','rawOpenIncludingInit',true);wrap(d,'metadata','metadata',true);wrap(d,'imageData','rgbRetrieval',true);return d;}}:{})});
+ const imported=importRawRGB16;importRawRGB16=async(...a)=>{const t=performance.now();try{return await imported(...a);}finally{M.spans.rawImportAndFinish=performance.now()-t;}};
+ const draw=render;render=function(...a){const t=performance.now(),r=draw(...a);M.spans.initialRenderSubmit=(M.spans.initialRenderSubmit||0)+performance.now()-t;return r;};
+ document.getElementById('imageFile').addEventListener('change',()=>{M.spans={};M.events={};M.frames=FILMLABB_GPU.snapshot().frames;M.sourceVersion=sourceVersion38;M.t=performance.now();},true);
+ const observe=()=>{if(M.t&&!M.events.firstPaint){const gpu=FILMLABB_GPU.snapshot();if(sourceVersion38!==M.sourceVersion&&(gpu.sourceVersion===sourceVersion38&&gpu.frames>M.frames||lastPreview38)){const began=M.t;requestAnimationFrame(()=>requestAnimationFrame(()=>{if(M.t===began&&!M.events.firstPaint)M.events.firstPaint=performance.now()-M.t;}));}}M.paint=requestAnimationFrame(observe);};observe();
+ },{proofOff:process.env.FILMLABB_IMPORT_PROOF==='off'});
+ for(let i=0;i<=Number(runs);i++){
+  await p.evaluate(()=>{importBench.spans={};importBench.events={};importBench.frames=FILMLABB_GPU.snapshot().frames;importBench.sourceVersion=sourceVersion38;importBench.t=performance.now();});
+  if(i===Number(runs))await p.evaluate(async()=>{await chooseFrame(0,{force:true});});else await p.locator('#imageFile').setInputFiles(file);
+  await p.waitForFunction(()=>working&&!rollLoading);const usable=await p.evaluate(()=>performance.now()-importBench.t);await p.waitForFunction(()=>importBench.events.firstPaint);await p.waitForFunction(()=>!workerBusy38&&!queued38);
+  results.push(await p.evaluate(({i,usable,runCount})=>({run:i,start:i===0?'cold page/module (OS cache unspecified)':i===runCount?'same active File reselect':'same-page repeated file-picker import',usableMs:usable,firstPaintMs:importBench.events.firstPaint,spans:importBench.spans,source:{width:working.width,height:working.height,bytes:working.data.byteLength,previewBytes:workingPreview.data.byteLength},heap:performance.memory?{used:performance.memory.usedJSHeapSize,total:performance.memory.totalJSHeapSize,limit:performance.memory.jsHeapSizeLimit}:null,gpu:FILMLABB_GPU.snapshot(),importMetrics:globalThis.FILMLABB_IMPORT?.snapshot()||null}),{i,usable,runCount:Number(runs)}));console.log('RUN',i,results.at(-1).firstPaintMs,usable);
+ }
+ fs.writeFileSync(out,JSON.stringify({build:JSON.parse(fs.readFileSync('site/build-info.json')),cameraProof:process.env.FILMLABB_IMPORT_PROOF==='off'?'disabled extraction in harness':'enabled',sourceSHA256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex'),bytes:fs.statSync(file).size,backend,environment:await p.evaluate(()=>navigator.userAgent),method:'Starts at browser file-input change, excluding automation file transfer; final reselect at chooseFrame. firstPaint is double-rAF after real renderer output, not physical display. Nested spans must not be summed. Heap excludes worker/WASM/GPU.',results},null,2));
+}finally{await h.close();}

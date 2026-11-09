@@ -2,6 +2,15 @@
 (function(root){
 'use strict';
 const rows=[
+["Välj en bild i arbetskön.","Select an image in the queue.","Sélectionnez une image dans la file.","Selecciona una imagen de la cola.","Wählen Sie ein Bild in der Warteschlange."],
+["Initierar RAW-avkodare…","Initializing RAW decoder…","Initialisation du décodeur RAW…","Inicializando el decodificador RAW…","RAW-Decoder wird initialisiert…"],
+["Läser fil…","Reading file…","Lecture du fichier…","Leyendo archivo…","Datei wird gelesen…"],
+["Avkodar RAW…","Decoding RAW…","Décodage RAW…","Decodificando RAW…","RAW wird dekodiert…"],
+["Förbereder bild…","Preparing image…","Préparation de l’image…","Preparando imagen…","Bild wird vorbereitet…"],
+["Analyserar negativ…","Analyzing negative…","Analyse du négatif…","Analizando negativo…","Negativ wird analysiert…"],
+["Import avbruten.","Import cancelled.","Importation annulée.","Importación cancelada.","Import abgebrochen."],
+["Avbryt import","Cancel import","Annuler l’importation","Cancelar importación","Import abbrechen"],
+["Kameraförhandsvisning · preliminär · inte FILMLABB-resultat","Camera preview · preliminary · not a FILMLABB result","Aperçu caméra · provisoire · pas un résultat FILMLABB","Vista de cámara · provisional · no es un resultado FILMLABB","Kameravorschau · vorläufig · kein FILMLABB-Ergebnis"],
 ["Dokumentär färg med täta skuggor, grafiska mellantoner, olivgrönt och tydligt rött.", "Documentary color with dense shadows, graphic midtones, olive greens and distinct reds.", "Couleur documentaire : ombres denses, tons moyens graphiques, verts olive et rouges affirmés.", "Color documental con sombras densas, medios tonos gráficos, verdes oliva y rojos definidos.", "Dokumentarische Farbe mit dichten Schatten, markanten Mitteltönen, Olivgrün und klaren Rottönen."],
 ["Nattfärg med djupa blå toner, varma ljus och mjuka högdagerövergångar.", "Night color with deep blues, warm lights and soft highlight transitions.", "Couleur nocturne : bleus profonds, lumières chaudes et hautes lumières douces.", "Color nocturno con azules profundos, luces cálidas y transiciones suaves en altas luces.", "Nachtfarbe mit tiefen Blautönen, warmen Lichtern und weichen Spitzlichtern."],
 ["Ljus matt tonalitet, återhållsam färg och jordnära mellantoner med bevarad struktur.", "Light matte tones, restrained color and earthy midtones with preserved structure.", "Tons mats lumineux, couleur retenue et tons moyens terreux à la structure préservée.", "Tonos mate luminosos, color contenido y medios tonos terrosos con estructura conservada.", "Helle matte Tonwerte, zurückhaltende Farben und erdige Mitteltöne mit erhaltener Struktur."],

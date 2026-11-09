@@ -1,29 +1,32 @@
 'use strict';
-async function readFile(file){
+async function readFile(file,{isCurrent=()=>true,force=false}={}){
+ const current=()=>{if(!isCurrent())throw Object.assign(Error('Import avbruten.'),{name:'AbortError'});};
  if(!file)return;
  if(NSFileFormats.isRaw(file.name)){
   setStatus('RAW: laddar LibRaw och avkodar bilden… Detta kan ta tid.');
   try {
-    const locked=NSV2Platform.usesLockedSource(state),{im,meta,provenance}=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});
+    const locked=NSV2Platform.usesLockedSource(state),{im,meta,provenance}=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,{...(locked?{options:NSV2Platform.decoderOptions()}:{}),force,cache:true,onStage:stage=>{if(isCurrent())globalThis.FILMLABB_IMPORT?.phase(stage);}});
+    current();globalThis.FILMLABB_IMPORT?.phase('prepare');
     if(locked){state.rawMode4='wide';state.rawSourceRecipeV2=1;}
     im.v2Decoded=locked;im.decoderRecipe=provenance;await importRawRGB16(im,file.name,meta);
     sourceInfo.rawMetadata=provenance;
     if(roll[activeFrame])roll[activeFrame].sourceMetadata=provenance;
   } catch(rawError) {
+    if(rawError.name==='AbortError'||!isCurrent())throw rawError;
     if(state.engine==='v2')throw rawError;
     setStatus('RAW-avkodning misslyckades: '+rawError.message);
     const jpeg=/\.raf$/i.test(file.name)?await readRafJpeg(file):null;
-    if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
+    current();if(!jpeg)throw Error('RAW-avkodning misslyckades: '+rawError.message+' (ingen reserv-JPEG för denna filtyp)');
     if((globalThis.FILMLABB_I18N?.confirmSource||confirm)('RAW-avkodning misslyckades: '+rawError.message+'\n\nVill du använda den inbäddade 8-bitars JPEG-bilden i stället?')) {
       await importBrowserImage(new File([jpeg],file.name+'.jpg',{type:'image/jpeg'}),
-         `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`);
+         `RAF ${file.name} – JPEG-RESERVLÄGE (8 bitar), inte RAW.`,isCurrent);
     }
   }
   return;
  }
  setStatus('Läser in bild…');src=null;hires=null;
  if(/\.tiff?$/i.test(file.name)||file.type==='image/tiff'){
-  try{const raw=prepareTiff(await NSTiff.decode(await file.arrayBuffer()));hires=raw;fullWidth=raw.width;fullHeight=raw.height;
+  try{const decoded=await NSTiff.decode(await file.arrayBuffer());current();const raw=prepareTiff(decoded);hires=raw;fullWidth=raw.width;fullHeight=raw.height;
    const scale=Math.min(1,1600/Math.max(raw.width,raw.height));const w=Math.max(1,Math.round(raw.width*scale)),h=Math.max(1,Math.round(raw.height*scale));
    const im=new ImageData(w,h);
    for(let y=0;y<h;y++)for(let x=0;x<w;x++){const sx=Math.min(raw.width-1,Math.floor(x*raw.width/w)),sy=Math.min(raw.height-1,Math.floor(y*raw.height/h)),j=(sy*raw.width+sx)*raw.channels,i=(y*w+x)*4;for(let c=0;c<3;c++)im.data[i+c]=Math.round(raw.data[j+c]/(raw.scale||65535)*255);im.data[i+3]=255;}
@@ -31,7 +34,7 @@ async function readFile(file){
   }catch(e){throw Error('TIFF: '+e.message);}
  }
  if(NSFileFormats.kind(file)!=='browser'){throw Error(NSFileFormats.error(file));}
- await importBrowserImage(file);
+ await importBrowserImage(file,'',isCurrent);
 }
 async function importRawRGB16(im,name,meta){
  const raw={width:im.width,height:im.height,channels:3,data:im.data,scale:im.scale||65535,colorSpace:im.colorSpace||'srgb',encoding:'linear'};
@@ -74,8 +77,8 @@ async function readRafJpeg(file){
  // Blob slicing retains the original JPEG bytes without allocating the full RAF.
  return file.slice(offset,offset+length,'image/jpeg');
 }
-async function importBrowserImage(file,note=''){
- return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{let c;try{const maxSide=16384,budget=Number(navigator.deviceMemory)<4?24000000:40000000;const scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight),Math.sqrt(budget/(img.naturalWidth*img.naturalHeight)));fullWidth=img.naturalWidth;fullHeight=img.naturalHeight;c=document.createElement('canvas');c.width=Math.max(1,Math.round(fullWidth*scale));c.height=Math.max(1,Math.round(fullHeight*scale));const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);src=ctx.getImageData(0,0,c.width,c.height);finishImport(`${note ? note+" · " : ""}${file.name} · ${fullWidth}×${fullHeight} px · 8-bitars bild; bearbetning ${c.width}×${c.height}.`);resolve();}catch(e){setStatus('Kunde inte läsa bilden: '+e.message);reject(e);}finally{if(c)c.width=c.height=0;URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);setStatus('Kunde inte öppna bilden.');reject(Error('Bildimport misslyckades'))};img.src=url;});
+async function importBrowserImage(file,note='',isCurrent=()=>true){
+ return new Promise((resolve,reject)=>{const url=URL.createObjectURL(file),img=new Image();img.onload=()=>{let c;try{if(!isCurrent())throw Object.assign(Error('Import avbruten.'),{name:'AbortError'});const maxSide=16384,budget=Number(navigator.deviceMemory)<4?24000000:40000000;const scale=Math.min(1,maxSide/Math.max(img.naturalWidth,img.naturalHeight),Math.sqrt(budget/(img.naturalWidth*img.naturalHeight)));fullWidth=img.naturalWidth;fullHeight=img.naturalHeight;c=document.createElement('canvas');c.width=Math.max(1,Math.round(fullWidth*scale));c.height=Math.max(1,Math.round(fullHeight*scale));const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(img,0,0,c.width,c.height);src=ctx.getImageData(0,0,c.width,c.height);finishImport(`${note ? note+" · " : ""}${file.name} · ${fullWidth}×${fullHeight} px · 8-bitars bild; bearbetning ${c.width}×${c.height}.`);resolve();}catch(e){if(isCurrent())setStatus('Kunde inte läsa bilden: '+e.message);reject(e);}finally{if(c)c.width=c.height=0;URL.revokeObjectURL(url);}};img.onerror=()=>{URL.revokeObjectURL(url);if(isCurrent())setStatus('Kunde inte öppna bilden.');reject(Error('Bildimport misslyckades'))};img.src=url;});
 }
 // Synchronous compatibility entry for uncompressed/LZW/PackBits TIFF.
 function parseTiff16(buffer){return NSTiff.decodeSync(buffer);}

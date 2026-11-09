@@ -9,3 +9,8 @@ const source={...raw,encoding:'linear',scale:65535,channels:3},controlledTiff={.
 for(const r of [{x:0,y:0,w:1,h:1},{x:.2,y:.1,w:.7,h:.6}]){const a=CC.estimate(source,r),b=CC.estimate(controlledTiff,r);assert.deepEqual(a,b);assert.deepEqual(C.preview(source,20,'area-v1'),C.preview(controlledTiff,20,'area-v1'));}
 const low={width:16,height:16,channels:3,data:new Uint16Array(16*16*3).fill(2),scale:65535,encoding:'linear'},stats=h.context.NSColorAnalysis.analyze(low,{x:0,y:0,w:1,h:1});assert.ok(stats.dark.every(v=>v===1));assert.ok(CC.coordinate([0,2/65535,1],CC.estimate(low,{x:0,y:0,w:1,h:1})).every(Number.isFinite));
 console.log('PASS unclipped diagonal WB/base invariance, clipping exception, explicit linear RAW options, controlled post-decode TIFF equivalence, low-signal finite response');
+
+// Exhaust every uint16 code against the original Float32Array.from transform.
+const all=Uint16Array.from({length:65536*3},(_,i)=>(i*173)%65536),expected=Float32Array.from(all,v=>v/65535),wide=R.convert({width:65536,height:1,channels:3,colors:3,bits:16,data:all},'wide');
+assert.deepEqual(wide.data,expected);assert.deepEqual(Array.from(wide.inputDiagnostics4.clipped),[2,2,2]);
+console.log('PASS wide conversion bit-exact for all uint16 values and clipping counters');
