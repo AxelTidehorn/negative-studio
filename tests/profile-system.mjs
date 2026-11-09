@@ -3,11 +3,35 @@ import '../src/editing/editing-engine.js';import '../src/editing/profile-catalog
 execFileSync(process.execPath,['tools/generate-profile-catalog.mjs','--check']);
 const P=NSProfiles,E=NSEditing2,library=JSON.parse(fs.readFileSync('docs/profile-system/work/FILMLABB_3_Profile_Library.json')),colors=library.tests.synthetic_patch_input;let maxError=0,cases=0;
 assert.deepEqual(Object.keys(NSProfileCatalog.profiles),['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400','creative.backstreet','creative.afterglow','creative.pale-static','creative.redline']);
-// Frozen merged #90 definitions: extending the catalog must not retune Gold/Ektar.
-for(const [id,hash] of [['film.kodak-gold-200','38698e5ba9f9757455de67c0080b04047b2fa3a3e4a11a92152a40efd31ec3a4'],['film.kodak-ektar-100','548759f66a382783ec9b0cd0ff0be08a030e12492c0195a9a9c4f5ed01bdd6cf'],['film.fuji-pro-400h','09ad5204669f4460dd4ff8e9ac0c33d4138b8ac030bbdd46daf7daea7b525223'],['film.kodak-portra-400','c53c548b73423923120b7dedae68cc0882e83891e7e3dc18861ffd140f0b9442']])assert.equal(createHash('sha256').update(JSON.stringify(NSProfileCatalog.profiles[id])).digest('hex'),hash);
+// Only Gold/Portra intentionally move to Work P revision 2. All six others freeze.
+for(const [id,hash] of [
+ ['film.kodak-gold-200','f27f9024d50168c05c866a15e37e77d9f742bddab2fdfdeb1e0a26ce7b2b2feb'],
+ ['film.kodak-ektar-100','548759f66a382783ec9b0cd0ff0be08a030e12492c0195a9a9c4f5ed01bdd6cf'],
+ ['film.fuji-pro-400h','09ad5204669f4460dd4ff8e9ac0c33d4138b8ac030bbdd46daf7daea7b525223'],
+ ['film.kodak-portra-400','26015e7103ef518983adeaba7732987789149f84ae0dbdb65e5d08832d64f179'],
+ ['creative.backstreet','5cb246c710ff28c5b1367324797a5d1af9ca5a950dc3f75a1e39fb69effb4584'],
+ ['creative.afterglow','7d64832aa6bf7a0c9eb9cc005ba19e55d0295faf66987af5852f4e3b8b9b3884'],
+ ['creative.pale-static','507ffed1e0e6b76adc3dbcb90e472547b42122a61a1a63d3a758e05fdca99271'],
+ ['creative.redline','cf27e43ac0dd7781af7eb07505c873dbb2822ff0058ccd201b87e79e434cc478'],
+])assert.equal(createHash('sha256').update(JSON.stringify(NSProfileCatalog.profiles[id])).digest('hex'),hash,id);
+assert.deepEqual(NSProfileCatalog.neutral,{id:'neutral',label:'Neutral',category:'reference',presentation:'color',operator:'exact-identity',revision:1});
+assert.deepEqual(NSProfileCatalog.monochrome,{id:'mono.neutral',label:'Neutral svartvit',category:'reference',presentation:'monochrome',operator:'monochrome-linear-Y-1',revision:1});
+// Independent Python Work renderer output, not a JavaScript self-reference.
+const workP=JSON.parse(fs.readFileSync('tests/fixtures/work-parametric-oracle.json')),revised=new Set(Object.keys(workP.parameters));
+let workPError=0,workPCases=0;
+for(const id of revised){
+ const definition=NSProfileCatalog.profiles[id];assert.equal(definition.revision,2);
+ for(const [field,expected] of Object.entries(workP.parameters[id]))assert.deepEqual(definition[field],expected,id+' '+field);
+ for(const strength of [0,.35,.7,1]){
+  const kernel=P.compile({id,strength}),column=workP.columns.indexOf(id);
+  for(const row of workP.samples){const input=row[0],expected=input.map((v,c)=>v+strength*(row[column][c]-v)),actual=kernel.pixel(input);workPError=Math.max(workPError,...actual.map((v,c)=>Math.abs(v-expected[c])));if(strength===0)assert.equal(actual,input);workPCases++;}
+ }
+}
+assert.ok(workPError<2e-7,JSON.stringify({workPError}));
+console.log('PASS supplied Work P independent oracle',JSON.stringify({workPCases,workPError}));
 for(const id of Object.keys(NSProfileCatalog.profiles))for(const strength of [0,.35,.7,1]){
  const k=P.compile({id,strength});
- for(const sample of colors){const q=k.pixel(sample.sRGB),expected=library.tests.synthetic_result[id]?.[String(strength)][sample.id].sRGB;if(expected)maxError=Math.max(maxError,...q.map((v,c)=>Math.abs(v-expected[c])));else assert.deepEqual(q,sample.sRGB.map((v,c)=>v+strength*(P.compile({id,strength:1}).pixel(sample.sRGB)[c]-v)));if(strength===0)assert.equal(q,sample.sRGB);cases++;}
+ for(const sample of colors){const q=k.pixel(sample.sRGB),expected=revised.has(id)?null:library.tests.synthetic_result[id]?.[String(strength)][sample.id].sRGB;if(expected)maxError=Math.max(maxError,...q.map((v,c)=>Math.abs(v-expected[c])));else assert.deepEqual(q,sample.sRGB.map((v,c)=>v+strength*(P.compile({id,strength:1}).pixel(sample.sRGB)[c]-v)));if(strength===0)assert.equal(q,sample.sRGB);cases++;}
  for(let r=0;r<=16;r++)for(let g=0;g<=16;g++)for(let b=0;b<=16;b++)assert.ok(k.pixel([r/16,g/16,b/16]).every(v=>Number.isFinite(v)&&v>=0&&v<=1));
  let prev=-1;for(let i=0;i<=10000;i++){const y=i/10000,q=k.pixel([y,y,y]);assert.equal(q[0],q[1]);assert.equal(q[1],q[2]);assert.ok(q[0]>=prev-1e-15);prev=q[0];}
  const rows=NSProfileCatalog.profiles[id].hue;for(const h of [0,...rows.map(v=>v[0]),360])for(const column of [1,2,3])assert.ok(Math.abs(P.hueValue(rows,h-1e-5,column)-P.hueValue(rows,h+1e-5,column))<1e-5);
