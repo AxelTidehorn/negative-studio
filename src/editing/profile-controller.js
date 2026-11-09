@@ -4,8 +4,9 @@ function profileLabel(){return rollShared.monochrome?'Neutral svartvit':rollShar
 function refreshProfileInfo(){
  const mono=rollShared.monochrome,id=rollShared.look.id;
  $('filmProfile').value=mono?'mono.neutral':id;document.body.classList.toggle('bw-active',mono);
- $('filmProfile').title=id==='neutral'?'Neutral presentation.':'Fotografisk prototyp – inte en kalibrerad filmsimulering.';
- const note=document.getElementById('profileDescription'),text=mono||id==='neutral'?'Neutral presentation.':'Fotografisk prototyp – inte en kalibrerad filmsimulering.';if(note){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(note,text);else note.textContent=text;}
+ const text=mono||id==='neutral'?'Neutral presentation.':NSProfileCatalog.profiles[id].description||'Fotografisk prototyp – inte en kalibrerad filmsimulering.';
+ $('filmProfile').title=globalThis.FILMLABB_I18N?.fromSource?.(text)||text;
+ const note=document.getElementById('profileDescription');if(note){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(note,text);else note.textContent=text;}
  const parent=$('profileStrength').parentElement;if(parent)parent.hidden=mono||id==='neutral';
  $('profileStrength').value=Math.round(rollShared.look.strength*100);$('profileStrengthValue').textContent=Math.round(rollShared.look.strength*100)+' %';
 }
