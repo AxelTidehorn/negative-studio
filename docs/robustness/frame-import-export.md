@@ -150,3 +150,18 @@ Node-mikromätning: 18 miljoner kanaler (6 MP RGB), tre körningar. Före:
 2837/2313/1658 ms; efter: 60/41/45 ms. In- och utbuffert är fortsatt 36 respektive
 72 MB. Detta mäter endast normalisering, inte TIFF-avkodning, filinläsning,
 V2-analys eller tid till synlig bild. Rådata i `tiff-normalization.json`.
+
+## F. Filmremsans miniatyrer
+
+Miniatyrer tas nu från redan renderad positiv CPU-/GPU-preview, högst 160 px,
+först när bilden faktiskt har öppnats. Ingen separat RAW-avkodning eller
+bakgrundsavkodning av kamerans negativa RAF-JPEG görs för filmremsan. Ännu ej
+öppnade bilder har en stabil placeholder; felaktiga bild-URL:er får samma fallback.
+Thumbnailkod läser bara visningscanvas och kan inte vara källa för analys/export.
+Den första positiva miniatyren behålls under redigering för att undvika återkommande
+readbacks. Den följer därför inte varje efterföljande profil-/geometriändring.
+
+Browserregressionen provar faktisk syntetisk DNG, köbyte och trasig thumbnail,
+med oförändrad källversion/analys. Formatvägen är gemensam för RAW, browserbilder
+och TIFF när en positiv preview finns. Detta är inte verifiering av en fysisk
+ARW-kamera eller ett verkligt RAF-negativs fotografiska kvalitet.
