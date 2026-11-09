@@ -47,7 +47,7 @@ function cacheFor(prepared,im){
 function cachedLinear(c,prepared,i,x,y){
  const key=(y>>4)*c.columns+(x>>4);let tile;
  if(key===c.lastKey)tile=c.last;
- else{tile=c.tiles.get(key);if(tile)c.tiles.delete(key);else{if(c.tiles.size===MAX_TILES)c.tiles.delete(c.tiles.keys().next().value);tile={values:new Float64Array(TILE*TILE*3),valid:new Uint8Array(TILE*TILE)};}c.tiles.set(key,tile);c.lastKey=key;c.last=tile;}
+ else{tile=c.tiles.get(key);if(tile)c.tiles.delete(key);else{if(c.tiles.size===MAX_TILES){const oldest=c.tiles.keys().next().value;tile=c.tiles.get(oldest);c.tiles.delete(oldest);tile.valid.fill(0);}else tile={values:new Float64Array(TILE*TILE*3),valid:new Uint8Array(TILE*TILE)};}c.tiles.set(key,tile);c.lastKey=key;c.last=tile;}
  const n=(y%TILE)*TILE+x%TILE;c.offset=n*3;
  if(!tile.valid[n]){const p=prepared.pixel(i,x,y);for(let k=0;k<3;k++)tile.values[c.offset+k]=decode(p[k]);tile.valid[n]=1;c.misses++;}else c.hits++;
  return tile.values;
