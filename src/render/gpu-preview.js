@@ -87,7 +87,7 @@
    if(!active){stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=dragTimer38=null;}
    const ms=renderer.metrics.gpuMs;
    if(ms!==null){if(ms>25)interactiveLimit=Math.max(400,Math.round(interactiveLimit*.75));else if(ms<10)interactiveLimit=Math.min(1400,interactiveLimit+100);}
-   const start=now38(),before=renderer.metrics.reconstructions,id=++request38,mode=display==='split'&&globalThis.FILMLABB_GEOMETRY?'positive':display,r=renderer.draw(workingPreview,config,mode,interactive?interactiveLimit:1400,sourceVersion38);r.id=id;r.configKey=previewConfigKey38(config);
+   const start=now38(),before=renderer.metrics.reconstructions,id=++request38,mode=display==='split'&&globalThis.FILMLABB_GEOMETRY?'positive':display,r=renderer.draw(workingPreview,config,mode,interactive?interactiveLimit:1400,sourceVersion38);r.id=id;r.configKey=previewConfigKey38(config);if(!interactive&&mode==='positive')updateFrameThumb(canvas);
    globalThis.FILMLABB_GEOMETRY?.colorGpu(canvas,r,sourceVersion38);
    if(display==='split'&&globalThis.FILMLABB_GEOMETRY){renderer.draw(workingPreview,config,'negative',interactive?interactiveLimit:1400,sourceVersion38);FILMLABB_GEOMETRY.colorGpu(canvas,r,sourceVersion38,true);}
    const reconstructed=renderer.metrics.reconstructions-before;if(reconstructed){metrics.positiveRequests+=reconstructed;metrics.positiveReconstructions+=reconstructed;metrics.positiveStartedAt=start;metrics.positiveReadyAt=now38();metrics.positivePreparationMs=renderer.metrics.reconstructionSubmitMs;}metrics.positiveCacheBytes=renderer.metrics.positiveTextureBytes;

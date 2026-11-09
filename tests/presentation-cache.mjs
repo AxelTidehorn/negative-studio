@@ -1,0 +1,14 @@
+import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';import {harness} from './helpers/app-harness.mjs';
+const h=harness(),P=h.context.NSPresentation,K=h.context.NSPixelKernel,G=h.context.NSGeometry;
+vm.runInContext(fs.readFileSync('tests/fixtures/presentation-sampler-before-optimization.js','utf8'),h.context);const old=h.context.NSPresentation;h.context.NSPresentation=P;
+h.run(`render=()=>{};scheduleRender=()=>{};working={width:40,height:30,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:3600},(_,i)=>3000+(i*173)%55000)};workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'synthetic'};state={...defaultState(),engine:'log39',cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};analyzeLevels();`);
+const config=h.run('configuration38()');let cases=0;
+for(const id of ['neutral',...Object.keys(h.context.NSProfileCatalog.profiles)])for(const q of [0,1,2,3])for(const fine of [0,-3.1,2.6]){
+ const c={...config,look:{id,strength:.7}},im={width:23,height:17,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:23*17*3},(_,i)=>1000+(i*173)%60000)},snapshot=im.data.slice(),frame={x:.05,y:.09,w:.89,h:.82},model=G.create(q*90);model.rotation.fineDegrees=fine;if(q%2)model.compositionCrop={cx:0,cy:0,w:.63,h:.48};const g=P.plan(im,model,true,frame),a=K.prepare(im,c),b=K.prepare(im,c);
+ for(let y=0;y<g.height;y+=3){const rows=Math.min(3,g.height-y);const expected=old.tiff(im,c,g,y,rows,b);assert.deepEqual(P.tiff(im,c,g,y,rows,a),expected);const spans=new Uint16Array(expected.length);for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x+=5)P.rgb16Span(im,a,g,x,y+dy,Math.min(5,g.width-x),spans,(dy*g.width+x)*3);assert.deepEqual(spans,expected);assert.deepEqual(P.rgba(im,a,g,g,y,rows),old.rgba(im,b,g,g,y,rows));}
+ assert.deepEqual(im.data,snapshot);P.release(a);assert.equal(P.cacheStats(a),null);cases++;
+}
+const im={width:2048,height:2048,channels:3,data:new Float32Array(0)},g={presentation:true,bounds:{x0:0,y0:0,x1:2048,y1:2048},point(x,y){return{x:x+.75,y:y+.75};}},prepared={pixel(i,x,y){return[x/2048,y/2048,.47];}};
+for(let n=0;n<1100;n++){const x=n%64*16,y=Math.floor(n/64)*16;assert.deepEqual(P.pixel(im,prepared,g,g,x,y),old.pixel(im,prepared,g,g,x,y));assert.ok(P.cacheStats(prepared).bytes<=P.CACHE_BYTES);}
+assert.ok(P.cacheStats(prepared).misses>1100);const evicted=P.pixel(im,prepared,g,g,0,0);assert.deepEqual(evicted,old.pixel(im,prepared,g,g,0,0));P.release(prepared);assert.equal(P.cacheStats(prepared),null);
+console.log('PASS',cases,'all-profile/quarter/fine/crop RGB16 and RGBA8 cases exactly match frozen pre-optimization code; source intact, lazy cache eviction/release and 4-MiB bound');

@@ -2,7 +2,7 @@
 let roll=[],activeFrame=-1,rollLoading=false,rollingExport=false;
 const rollShared=NSProjectSettings.rollDefaults();
 const copyState=()=>NSProjectSettings.clone(state);
-function saveCurrentFrame(){if(activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
+function saveCurrentFrame(){if(working&&activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
 function refreshRollUI(){
  if(roll.length&&activeFrame<0){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('rollStatus'),'Välj en bild i arbetskön.');else $('rollStatus').textContent='Välj en bild i arbetskön.';}
  else if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:profileLabel()});
@@ -10,18 +10,19 @@ function refreshRollUI(){
  $('batchJpeg').disabled=!roll.length||rollLoading; $('batchTiff').disabled=!roll.length||rollLoading; $('loadFullRaw').disabled=!roll.length;
  const strip=$('filmstrip');strip.textContent='';
  roll.forEach((frame,i)=>{const b=document.createElement('div');b.className='frame'+(i===activeFrame?' active':'');
- const img=document.createElement('img');if(frame.thumb)img.src=frame.thumb;img.alt='Miniatyr '+(i+1);b.append(img);
+ const img=document.createElement('img');img.src=frame.thumb||thumbPlaceholder;img.onerror=()=>{img.onerror=null;frame.thumb=null;frame.thumbPositive=false;img.src=thumbPlaceholder;};img.alt='Miniatyr '+(i+1);b.append(img);
  const label=document.createElement('span');label.textContent=(i+1)+': '+frame.file.name;label.setAttribute('data-i18n-ignore','');b.append(label);
  const check=document.createElement('input');check.type='checkbox';check.checked=frame.selected;check.title='Markera för TIFF-batch';check.onchange=()=>frame.selected=check.checked;b.append(check);
  b.onclick=e=>{if(e.target!==check)chooseFrame(i)};strip.append(b)});
 }
 function syncControls(){for(const [id] of controls){setSliderPosition(id)}$('auto').checked=state.auto;$('noBase').checked=state.noBase;$('autoLevels').checked=state.autoLevels;updateValues()}
-async function makeThumb(file){try{
- let blob=file;
- if(/\.raf$/i.test(file.name)){blob=await readRafJpeg(file);if(!blob)return null}if(NSFileFormats.isRaw(file)&&NSFileFormats.extension(file)!=='raf')return null;
- if(/\.tiff?$/i.test(file.name))return null;
- const bitmap=await createImageBitmap(blob);const c=document.createElement('canvas');let scale=Math.min(1,160/Math.max(bitmap.width,bitmap.height));c.width=Math.max(1,Math.round(bitmap.width*scale));c.height=Math.max(1,Math.round(bitmap.height*scale));c.getContext('2d').drawImage(bitmap,0,0,c.width,c.height);bitmap.close();return c.toDataURL('image/jpeg',.65)
- }catch(e){return null}}
+// Queue decoration only: use pixels already rendered for a positive preview.
+// Unopened files get a stable placeholder, never a separate RAW/JPEG decode.
+const thumbPlaceholder='data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="110"><rect width="160" height="110" fill="#292722"/><rect x="35" y="25" width="90" height="60" rx="3" fill="none" stroke="#b99a63" stroke-width="2"/></svg>');
+function updateFrameThumb(canvas){
+ const frame=roll[activeFrame];if(!working||!frame||frame.thumbPositive||display!=='positive'||!canvas.width||!canvas.height)return;
+ try{const c=document.createElement('canvas'),scale=Math.min(1,160/Math.max(canvas.width,canvas.height));c.width=Math.max(1,Math.round(canvas.width*scale));c.height=Math.max(1,Math.round(canvas.height*scale));c.getContext('2d').drawImage(canvas,0,0,c.width,c.height);const url=c.toDataURL('image/jpeg',.65);c.width=c.height=0;frame.thumb=url;frame.thumbPositive=true;refreshRollUI();}catch{}
+}
 async function importRoll(files,{engine}={}){
  if(!files.length||rollLoading||exportBusy||rollingExport||cropDrag)return;
  const rejected=files.filter(f=>!NSFileFormats.supported(f));
@@ -33,12 +34,6 @@ async function importRoll(files,{engine}={}){
  refreshRollUI();
  const imported=roll;
  const ready=await chooseFrame(0);if(!ready||roll!==imported)return;
- for(const frame of imported){
-  if(roll!==imported)return;
-  const thumb=await makeThumb(frame.file);
-  if(roll!==imported)return;
-  frame.thumb=thumb;refreshRollUI();
- }
  if(rejected.length)setStatus(rejected.map(NSFileFormats.error).join(' '));
 }
 $('loadFullRaw').onclick=async()=>{if(activeFrame<0)return;await chooseFrame(activeFrame,{full:true,force:true})};

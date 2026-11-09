@@ -39,7 +39,7 @@ function workerAttempt(job){return new Promise((resolve,reject)=>{
    }else if(m.type==='progress')progress(job,m.done,m.total);
    else if(m.type==='encoding')show(description(job)+' · '+job.label+'-kodning…',97);
    else if(m.type==='error'){const e=Error(m.error);e.stage=m.stage;e.code=m.code;fail(e);}
-   else if(m.type==='done'){settled=true;clearTimeout(timer);resolve(m.blob);}
+   else if(m.type==='done'){settled=true;clearTimeout(timer);job.workerMetrics=m.metrics||null;resolve(m.blob);}
   }catch(e){fail(e);}
  };
  try{worker.postMessage({type:'start',id:job.id,source:NSExportPlan.metadata(job.im),config:job.config,region:job.region,crop:job.opts.cropExport,rotation:job.opts.rotation,target:job.target,presentation:job.g.spec||null,format:job.format});}catch(e){e.stage='init';fail(e);}
@@ -91,7 +91,7 @@ async function canvasBytes(format,skipBusyCheck=false){
   }
   throw Error((format==='png8'?'PNG-kodning i originalstorlek misslyckades: ':'JPEG-kodning misslyckades även vid reducerad storlek: ')+(error?.message||'okänt fel'));
  }catch(e){if(e.name==='AbortError'){stats.cancelled++;if(!batch)doneUI('Export avbruten. Ingen fil har hämtats.');}else if(!batch)doneUI('Exportfel: '+e.message);throw e;}
- finally{job.worker?.terminate();job.prepared=null;active=null;exportBusy=false;lock();}
+ finally{job.worker?.terminate();if(job.prepared)NSPresentation.release(job.prepared);job.prepared=null;active=null;exportBusy=false;lock();}
 };
 jpegBytes=skipBusyCheck=>canvasBytes('jpeg',skipBusyCheck);
 const formats=['jpeg','png8','png16','tiff'],formatKey='filmlabb-export-format-v1';
@@ -136,9 +136,9 @@ const writeTiff=exportTiff;
 async function export16(label,write){
  if(active||!exportReady())throw Error('Ingen exportklar bild finns.');
  const job={id:++sequence,im:working,cancelled:false,worker:null,rejectCancel:()=>{}};
- active=job;lock();beginUI(label);
+ job.cancelPromise=new Promise((_,reject)=>{job.rejectCancel=reject;});job.cancelPromise.catch(()=>{});active=job;lock();beginUI(label);
  try{
-  await write({check:()=>check(job),progress:(done,total)=>{
+  await write({worker:async snapshot=>{Object.assign(job,snapshot);job.nextY=0;return {blob:await workerAttempt(job),metrics:job.workerMetrics};},check:()=>check(job),progress:(done,total)=>{
    check(job);show((batch?`Bild ${batch.index+1}/${batch.total} · `:'')+label+' '+Math.floor(100*done/total)+' %',100*done/total);
   }});
   if(!batch)doneUI(label+' klar',true);

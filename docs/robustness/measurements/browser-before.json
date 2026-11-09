@@ -1,0 +1,629 @@
+{
+  "kind": "actual Chromium application exports from synthetic linear Rec.2020; no RAW decode or 26/40-MP projection",
+  "repo": "/workspace/filmlabb-robustness-baseline",
+  "build": {
+    "schema": "filmlabb.build",
+    "schemaVersion": 1,
+    "sourceCommit": "3a672b002bd6dae27621a241bf9bb914b24129b6",
+    "sourceBranch": null,
+    "dirty": false,
+    "version": "3.0.0-beta.49.dev.g3a672b002bd6",
+    "contentHash": "e9f3bfdf98490a2766c0172418a2c23a230744d8f1a0c275f00fab20b20f3d37"
+  },
+  "commit": "3a672b002bd6dae27621a241bf9bb914b24129b6",
+  "node": "v24.22.1",
+  "cpu": "AMD EPYC 9V74 80-Core Processor",
+  "platform": "linux 6.18.57 x64",
+  "width": 640,
+  "height": 480,
+  "repeats": 3,
+  "browser": "156.0.8078.79",
+  "cases": [
+    {
+      "name": "tiff-direct",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 1120.8999999985099,
+          "ticks": 5,
+          "maxTimerGapMs": 286.69999999925494,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 71.80000000074506,
+          "metrics": null,
+          "rssBefore": 576004096,
+          "rssPeak": 623484928,
+          "heapBefore": {
+            "usedSize": 2115480,
+            "totalSize": 3145728,
+            "embedderHeapUsedSize": 3960864,
+            "backingStorageSize": 5551441
+          },
+          "heapAfter": {
+            "usedSize": 4726444,
+            "totalSize": 23330816,
+            "embedderHeapUsedSize": 5315872,
+            "backingStorageSize": 7396856
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1147.699999999255,
+          "ticks": 5,
+          "maxTimerGapMs": 296.6000000014901,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 53.69999999925494,
+          "metrics": null,
+          "rssBefore": 617955328,
+          "rssPeak": 655446016,
+          "heapBefore": {
+            "usedSize": 2409340,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4369312,
+            "backingStorageSize": 5551681
+          },
+          "heapAfter": {
+            "usedSize": 6238396,
+            "totalSize": 23330816,
+            "embedderHeapUsedSize": 5344816,
+            "backingStorageSize": 7396955
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1129.699999999255,
+          "ticks": 5,
+          "maxTimerGapMs": 286.29999999701977,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1843958,
+          "status": "TIFF 16 bit \u00b7 640\u00d7480 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 54,
+          "metrics": null,
+          "rssBefore": 634077184,
+          "rssPeak": 659136512,
+          "heapBefore": {
+            "usedSize": 2483452,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4429184,
+            "backingStorageSize": 5551681
+          },
+          "heapAfter": {
+            "usedSize": 3497924,
+            "totalSize": 24117248,
+            "embedderHeapUsedSize": 5243232,
+            "backingStorageSize": 7396856
+          },
+          "output": [
+            640,
+            480
+          ],
+          "pixelSHA256": "144a731672cbc6539184292188c6e55b2ab7d48eea92adf193fb1c642b022ed5",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-fine",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 3898.10000000149,
+          "ticks": 13,
+          "maxTimerGapMs": 615.5,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 318.19999999925494,
+          "metrics": null,
+          "rssBefore": 631726080,
+          "rssPeak": 653479936,
+          "heapBefore": {
+            "usedSize": 2538044,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 3976576,
+            "backingStorageSize": 5551681
+          },
+          "heapAfter": {
+            "usedSize": 10541580,
+            "totalSize": 28573696,
+            "embedderHeapUsedSize": 5562200,
+            "backingStorageSize": 7210889
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 4088.699999999255,
+          "ticks": 14,
+          "maxTimerGapMs": 626,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 315.1000000014901,
+          "metrics": null,
+          "rssBefore": 625745920,
+          "rssPeak": 647393280,
+          "heapBefore": {
+            "usedSize": 2659096,
+            "totalSize": 3932160,
+            "embedderHeapUsedSize": 4388040,
+            "backingStorageSize": 5551700
+          },
+          "heapAfter": {
+            "usedSize": 9008328,
+            "totalSize": 26738688,
+            "embedderHeapUsedSize": 5470016,
+            "backingStorageSize": 7210880
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 3873.39999999851,
+          "ticks": 13,
+          "maxTimerGapMs": 610.8000000007451,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1657868,
+          "status": "TIFF 16 bit \u00b7 607\u00d7455 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 306.8999999985099,
+          "metrics": null,
+          "rssBefore": 621944832,
+          "rssPeak": 648990720,
+          "heapBefore": {
+            "usedSize": 2666448,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 4529232,
+            "backingStorageSize": 5551700
+          },
+          "heapAfter": {
+            "usedSize": 8593696,
+            "totalSize": 25952256,
+            "embedderHeapUsedSize": 5408280,
+            "backingStorageSize": 7210871
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-composed",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 1843.6000000014901,
+          "ticks": 9,
+          "maxTimerGapMs": 455.9000000022352,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 221.69999999925494,
+          "metrics": null,
+          "rssBefore": 621297664,
+          "rssPeak": 648802304,
+          "heapBefore": {
+            "usedSize": 2742600,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 3985800,
+            "backingStorageSize": 5551681
+          },
+          "heapAfter": {
+            "usedSize": 7197848,
+            "totalSize": 27000832,
+            "embedderHeapUsedSize": 6062200,
+            "backingStorageSize": 6320120
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1914,
+          "ticks": 9,
+          "maxTimerGapMs": 416.4000000022352,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 208.90000000223517,
+          "metrics": null,
+          "rssBefore": 621375488,
+          "rssPeak": 659935232,
+          "heapBefore": {
+            "usedSize": 2742336,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 4742976,
+            "backingStorageSize": 5551772
+          },
+          "heapAfter": {
+            "usedSize": 15569040,
+            "totalSize": 27262976,
+            "embedderHeapUsedSize": 5365832,
+            "backingStorageSize": 6320007
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        },
+        {
+          "ms": 1983.800000000745,
+          "ticks": 8,
+          "maxTimerGapMs": 505.69999999925494,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 767030,
+          "status": "TIFF 16 bit \u00b7 416\u00d7307 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 246.19999999925494,
+          "metrics": null,
+          "rssBefore": 622358528,
+          "rssPeak": 663941120,
+          "heapBefore": {
+            "usedSize": 2742612,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 4519256,
+            "backingStorageSize": 5551772
+          },
+          "heapAfter": {
+            "usedSize": 15603816,
+            "totalSize": 27525120,
+            "embedderHeapUsedSize": 5348552,
+            "backingStorageSize": 6320007
+          },
+          "output": [
+            416,
+            307
+          ],
+          "pixelSHA256": "aabc8fb3b986f1960af31f7e7fd92a37dad1bb28e091397e775a15644f411c70",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "png16-fine",
+      "width": 640,
+      "height": 480,
+      "runs": [
+        {
+          "ms": 4018.5,
+          "ticks": 12,
+          "maxTimerGapMs": 618.7999999970198,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 300.5,
+          "metrics": null,
+          "rssBefore": 622612480,
+          "rssPeak": 656162816,
+          "heapBefore": {
+            "usedSize": 2832296,
+            "totalSize": 4456448,
+            "embedderHeapUsedSize": 4100888,
+            "backingStorageSize": 5551681
+          },
+          "heapAfter": {
+            "usedSize": 10989780,
+            "totalSize": 28311552,
+            "embedderHeapUsedSize": 5762040,
+            "backingStorageSize": 11224575
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 3909.5,
+          "ticks": 14,
+          "maxTimerGapMs": 571.7000000029802,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 281.9000000022352,
+          "metrics": null,
+          "rssBefore": 625799168,
+          "rssPeak": 649986048,
+          "heapBefore": {
+            "usedSize": 2851376,
+            "totalSize": 3670016,
+            "embedderHeapUsedSize": 4121864,
+            "backingStorageSize": 5551778
+          },
+          "heapAfter": {
+            "usedSize": 14196132,
+            "totalSize": 28573696,
+            "embedderHeapUsedSize": 5630488,
+            "backingStorageSize": 11224575
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        },
+        {
+          "ms": 3986.10000000149,
+          "ticks": 12,
+          "maxTimerGapMs": 612.9000000022352,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 1633148,
+          "status": "PNG 16 bit \u00b7 607\u00d7455 \u00b7 sRGB",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 3686400,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 310.1000000014901,
+          "metrics": null,
+          "rssBefore": 620462080,
+          "rssPeak": 649322496,
+          "heapBefore": {
+            "usedSize": 2876564,
+            "totalSize": 4194304,
+            "embedderHeapUsedSize": 4124984,
+            "backingStorageSize": 5551778
+          },
+          "heapAfter": {
+            "usedSize": 9296228,
+            "totalSize": 27787264,
+            "embedderHeapUsedSize": 5775912,
+            "backingStorageSize": 10877685
+          },
+          "output": [
+            607,
+            455
+          ],
+          "pixelSHA256": "3e94ca77f68d5ac4c5bbcf4cbec8afa656bcbd7c750843cefc96ab61c508c59b",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "tiff-large",
+      "width": 3000,
+      "height": 2000,
+      "runs": [
+        {
+          "ms": 20703.599999997765,
+          "ticks": 33,
+          "maxTimerGapMs": 1344.300000000745,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 36000758,
+          "status": "TIFF 16 bit \u00b7 3000\u00d72000 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 236.90000000223517,
+          "metrics": null,
+          "rssBefore": 687366144,
+          "rssPeak": 788086784,
+          "heapBefore": {
+            "usedSize": 2892296,
+            "totalSize": 4194304,
+            "embedderHeapUsedSize": 4201656,
+            "backingStorageSize": 73761679
+          },
+          "heapAfter": {
+            "usedSize": 3090596,
+            "totalSize": 42729472,
+            "embedderHeapUsedSize": 4731136,
+            "backingStorageSize": 109762608
+          },
+          "output": [
+            3000,
+            2000
+          ],
+          "pixelSHA256": "8b99d5e891d6608110f116e43c49a4d78954c58022499a38d4553ef8907df939",
+          "colorMetadata": true
+        },
+        {
+          "ms": 20613.800000000745,
+          "ticks": 31,
+          "maxTimerGapMs": 1341.2000000029802,
+          "cancelTimerDelayMs": null,
+          "cancelFinishDelayMs": null,
+          "downloaded": true,
+          "bytes": 36000758,
+          "status": "TIFF 16 bit \u00b7 3000\u00d72000 \u00b7 embedded sRGB profile",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 195,
+          "metrics": null,
+          "rssBefore": 679469056,
+          "rssPeak": 756477952,
+          "heapBefore": {
+            "usedSize": 2947512,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4343824,
+            "backingStorageSize": 73761658
+          },
+          "heapAfter": {
+            "usedSize": 5966152,
+            "totalSize": 41943040,
+            "embedderHeapUsedSize": 5001096,
+            "backingStorageSize": 109763597
+          },
+          "output": [
+            3000,
+            2000
+          ],
+          "pixelSHA256": "8b99d5e891d6608110f116e43c49a4d78954c58022499a38d4553ef8907df939",
+          "colorMetadata": true
+        }
+      ]
+    },
+    {
+      "name": "cancel-fine",
+      "width": 3000,
+      "height": 2000,
+      "runs": [
+        {
+          "ms": 1027,
+          "ticks": 1,
+          "maxTimerGapMs": 1024.3999999985099,
+          "cancelTimerDelayMs": 974.3999999985099,
+          "cancelFinishDelayMs": 977,
+          "downloaded": false,
+          "bytes": 0,
+          "status": "Export cancelled.",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 525.8999999985099,
+          "metrics": null,
+          "rssBefore": 671670272,
+          "rssPeak": 702332928,
+          "heapBefore": {
+            "usedSize": 2956240,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4386728,
+            "backingStorageSize": 73761658
+          },
+          "heapAfter": {
+            "usedSize": 9322460,
+            "totalSize": 25980928,
+            "embedderHeapUsedSize": 6620568,
+            "backingStorageSize": 74205428
+          }
+        },
+        {
+          "ms": 1033.0999999977648,
+          "ticks": 1,
+          "maxTimerGapMs": 1030.6000000014901,
+          "cancelTimerDelayMs": 980.5999999977648,
+          "cancelFinishDelayMs": 983.0999999977648,
+          "downloaded": false,
+          "bytes": 0,
+          "status": "Export cancelled.",
+          "exportBusy": false,
+          "active": false,
+          "sourceBytes": 72000000,
+          "sourceFirst": 0.4239674210548401,
+          "maxStripeMs": 517.8999999985099,
+          "metrics": null,
+          "rssBefore": 677670912,
+          "rssPeak": 703098880,
+          "heapBefore": {
+            "usedSize": 2970372,
+            "totalSize": 3407872,
+            "embedderHeapUsedSize": 4631648,
+            "backingStorageSize": 73761743
+          },
+          "heapAfter": {
+            "usedSize": 16353448,
+            "totalSize": 25980928,
+            "embedderHeapUsedSize": 6823664,
+            "backingStorageSize": 74205376
+          }
+        }
+      ]
+    }
+  ]
+}

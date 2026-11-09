@@ -11,7 +11,7 @@ function preparePlatformV2(){
  const file=roll[activeFrame]?.file,ctx=capture2(),saved=accepted2(),proposed=effectiveProposal2()?.measurement,explicit=state.filmBaseVersion===2?saved?.measurement:!state.auto?calibrationBase():null;
  // Filmbas 2 owns proposal/acceptance. Its findBase guard must also apply to
  // an automatic result cached before Filmbas 2 was activated.
- const regionKey=JSON.stringify(cropRegion),automaticAllowed=state.filmBaseVersion!==2&&!explicit&&!state.noBase;
+ const regionKey=JSON.stringify(cropRegion),automaticAllowed=state.filmBaseVersion!==2&&!explicit&&!state.noBase&&NSV2Render.trustedArea(v2Area());
  if(automaticAllowed&&(v2AutomaticCache?.source!==working||v2AutomaticCache.regionKey!==regionKey))v2AutomaticCache={source:working,regionKey,measurement:CE.findBase(working,cropRegion)};
  const automatic=automaticAllowed?v2AutomaticCache?.measurement:null;
  const measurement=!state.noBase?(proposed?{...proposed,preview:true}:explicit||(automatic?{...automatic,acceptance:'automatic-platform'}:null)):null;
@@ -42,7 +42,7 @@ FM2.measure=function(im,region,options={}){if(state.engine!=='v2'||im!==working)
 };
 const engineBeforeV2=$('engineMode').onchange;
 $('engineMode').onchange=async e=>{
- const next=e.target.value,previous=state.engine,previousSettings=NSProjectSettings.clone(state);
+ const frameOwner=roll[activeFrame],next=e.target.value,previous=state.engine,previousSettings=NSProjectSettings.clone(state);
  if(next===previous)return;
  if(rollLoading||exportBusy||rollingExport){e.target.value=previous;return;}
  if(next==='v2'){
@@ -52,14 +52,14 @@ $('engineMode').onchange=async e=>{
   stopPreviewWork();state.engine='v2';state.conversionVersion=2;state.v2LegacyEditVersion=state.editVersion;state.editVersion=2;
   if(raw&&(!working||!sourceInfo.v2Decoded)){
    state.rawMode4='wide';state.rawSourceRecipeV2=1;saveCurrentFrame();setStatus('V2: samma original avkodas på nytt med låst linjärt Rec.2020-recept.');
-   v2LastSource=null;v2AutomaticCache=null;working=workingPreview=hires=src=calibration=null;await chooseFrame(activeFrame,{force:true});
-  if(!working)state=previousSettings;
+   v2LastSource=null;v2AutomaticCache=null;working=workingPreview=hires=src=calibration=null;const pending=chooseFrame(activeFrame,{force:true}),sequence=frameLoadSequence;await pending;if(frameLoadSequence!==sequence||roll[activeFrame]!==frameOwner)return;
+  if(!working){state=previousSettings;frameOwner.settings=NSProjectSettings.clone(previousSettings);}
   }else if(working){workingPreview=NSV2Platform.preview(working);sourceVersion38++;analyzeLevels();render();}
  }else if(previous==='v2'||NSV2Platform.usesLockedSource(state)&&['log39','legacy','reference'].includes(next)){
   stopPreviewWork();state.engine=next;state.conversionVersion=1;if(previous==='v2')state.editVersion=state.v2LegacyEditVersion||2;
   if(['log39','legacy','reference'].includes(next)&&roll[activeFrame]&&NSFileFormats.isRaw(roll[activeFrame].file)){
-   state.rawMode4=['reference','protected'].includes(state.v2LegacyRawMode4)?state.v2LegacyRawMode4:'protected';delete state.rawSourceRecipeV2;saveCurrentFrame();setStatus('Original: avkodar samma fil i dess linjära sRGB-domän.');v2LastSource=null;v2AutomaticCache=null;working=workingPreview=hires=src=calibration=null;await chooseFrame(activeFrame,{force:true});
-   if(!working)state=previousSettings;
+   state.rawMode4=['reference','protected'].includes(state.v2LegacyRawMode4)?state.v2LegacyRawMode4:'protected';delete state.rawSourceRecipeV2;saveCurrentFrame();setStatus('Original: avkodar samma fil i dess linjära sRGB-domän.');v2LastSource=null;v2AutomaticCache=null;working=workingPreview=hires=src=calibration=null;const pending=chooseFrame(activeFrame,{force:true}),sequence=frameLoadSequence;await pending;if(frameLoadSequence!==sequence||roll[activeFrame]!==frameOwner)return;
+   if(!working){state=previousSettings;frameOwner.settings=NSProjectSettings.clone(previousSettings);}
   }else if(sourceInfo.colorSpace==='rec2020'&&['log39','legacy','reference'].includes(next)){state=previousSettings;e.target.value=previous;setStatus('Original kräver en sRGB-källa.');return;
   }else{if(working)workingPreview=CE.preview(working,1400,state.previewSampling);sourceVersion38++;analyzeLevels();render();}
  }else return engineBeforeV2(e);

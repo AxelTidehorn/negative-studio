@@ -26,7 +26,7 @@
  }
  const choose=chooseFrame;
  chooseFrame=async function(i,opts={}){
-  if(i<0||i>=roll.length||exportBusy||cropDrag||(!opts.force&&i===activeFrame))return choose(i,opts);
+  if(i<0||i>=roll.length||exportBusy||cropDrag||(!opts.force&&i===activeFrame&&working))return choose(i,opts);
   if(rollLoading&&!cancel())return choose(i,opts);removeProof();
   const t=trace={id:++next,started:clock(),phase:'read',stages:{},sourceVersion:sourceVersion38,cancelled:false};
   cancelButton=document.createElement('button');cancelButton.className='import-cancel';cancelButton.type='button';cancelButton.textContent='Avbryt import';cancelButton.onclick=cancel;$('picture').append(cancelButton);

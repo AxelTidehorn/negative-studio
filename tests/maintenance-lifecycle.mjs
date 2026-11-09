@@ -21,19 +21,17 @@ h.run('cropDrag={pointerId:1}');await h.run(`importRoll([{name:'blocked.ARW'}])`
 assert.equal(h.run('roll[0].file.name'),'replacement.ARW');h.run('cropDrag=null');
 console.log('PASS new import cancels old ownership; stale completion cannot clear new job; export/crop gates remain');
 
-// A thumbnail can finish after a new import or clear. It must neither refresh
-// that queue nor continue traversing its files on the old import's behalf.
-const t=harness();let resolveThumb,refreshes=0;const names=[];
-t.run(`chooseFrame=async()=>true;refreshRollUI=()=>{};`);
-t.context.makeThumb=async file=>{names.push(file.name);return await new Promise(r=>resolveThumb=r);};
-const old=t.run(`importRoll([{name:'old.ARW'},{name:'old2.ARW'}])`);
-await new Promise(r=>setImmediate(r));assert.deepEqual(names,['old.ARW']);
-t.run(`roll=[{file:{name:'new.ARW'}},{file:{name:'new2.ARW'}}]`);
-t.context.refreshRollUI=()=>refreshes++;
-resolveThumb('old-thumbnail');await old;
-assert.equal(refreshes,0);assert.deepEqual(names,['old.ARW']);
-assert.equal(t.run('roll[0].thumb'),undefined);
-console.log('PASS late thumbnails do not refresh or traverse a replacement queue');
+// Queue decoration now reuses a rendered positive canvas, synchronously.
+// No unopened file may be read just to make a thumbnail.
+const t=harness();let reads=0,refreshes=0;
+const files=['old.ARW','old2.ARW'].map(name=>({name,arrayBuffer(){reads++;throw Error('Unexpected thumbnail decode');}}));
+t.run('chooseFrame=async()=>true;refreshRollUI=()=>{};');t.set('files',files);await t.run('importRoll(files)');assert.equal(reads,0);
+const create=t.context.document.createElement;t.context.document.createElement=tag=>{const el=create(tag);if(tag==='canvas')el.toDataURL=()=> 'data:image/jpeg;base64,positive-fixture';return el;};t.context.refreshRollUI=()=>refreshes++;
+t.set('painted',{width:160,height:110});t.run('activeFrame=0;working=null;updateFrameThumb(painted);');assert.equal(t.run('roll[0].thumb'),null);
+t.run('working={width:1,height:1};display="negative";updateFrameThumb(painted);');assert.equal(t.run('roll[0].thumb'),null);
+t.run('display="positive";updateFrameThumb(painted);');assert.equal(t.run('roll[0].thumbPositive'),true);assert.equal(t.run('roll[1].thumb'),null);assert.equal(refreshes,1);assert.equal(reads,0);
+t.run('roll=[{file:{name:"new.ARW"}}];working=null;activeFrame=-1;updateFrameThumb(painted);');assert.equal(t.run('roll[0].thumb'),undefined);assert.equal(refreshes,1);
+console.log('PASS positive thumbnails reuse the current ready preview; negative/missing/stale images and unopened files cannot populate a replacement queue');
 
 // Onload failures used to resolve the import promise. Callers need rejection
 // so the real selection path can clear the source and report failure.

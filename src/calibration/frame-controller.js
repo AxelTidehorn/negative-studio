@@ -33,7 +33,7 @@ function normalizeIccTiff(raw){const profile=NSColorManagement.parseICC(raw.icc)
 function prepareTiff(raw){
  if(state.tiffEncoding==='linear-rec2020'){
   if(raw.icc)throw Error('Verifierad linjär Rec.2020 kräver TIFF utan ICC.');
-  raw={...raw,data:Float32Array.from(raw.data,v=>v/65535),channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};
+  raw={...raw,data:NSColorEngine.unitFloat32(raw.data),channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'};
   sourceInfo={encoding:'linear',colorSpace:'rec2020',gain:1,domain:'verified-linear-rec2020-tiff',label:'Verifierad linjär Rec.2020-TIFF'};return raw;
  }
  if(state.engine==='v2')throw Error('V2 kräver verifierad linjär Rec.2020-TIFF.');
@@ -66,14 +66,16 @@ function setFrameLoading(visible,name=''){
  picture.setAttribute('aria-busy',String(visible));
 }
 chooseFrame=async function(i,{force=false,full=false}={}){
- if(i<0||i>=roll.length||rollLoading||exportBusy||cropDrag||(!force&&i===activeFrame))return;
- const loadId=++frameLoadSequence;
+ if(i<0||i>=roll.length||rollLoading||exportBusy||cropDrag||(!force&&i===activeFrame&&working))return;
+ const loadId=++frameLoadSequence,frame=roll[i],fields=['settings','base','levels','crop','geometry','sourceMetadata','thumb','thumbPositive'];
  setFrameLoading(true,roll[i].file.name);
- saveCurrentFrame();rollLoading=true;
+ saveCurrentFrame();
+ const saved=NSProjectSettings.clone(Object.fromEntries(fields.filter(k=>Object.hasOwn(frame,k)).map(k=>[k,frame[k]])));
+ rollLoading=true;
  cropDisplayDismissed=false;$('frameOptions').open=false;const f=roll[i];activeFrame=i;state={...defaultState(),...f.settings};cropRegion=f.crop?CE.rect(f.crop):{x:0,y:0,w:1,h:1};syncControls();
- src=null;hires=null;previewSrc=null;working=null;workingPreview=null;calibration=null;legacyLevels=null;beta3Base=null;beta3Levels=null;zoom=1;panX=0;panY=0;applyView();
+ src=null;hires=null;previewSrc=null;working=null;workingPreview=null;calibration=null;legacyLevels=null;beta3Base=null;beta3Levels=null;base=[255,255,255];levels=null;zoom=1;panX=0;panY=0;applyView();
  try{(typeof requestAnimationFrame==='function'?await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve))):null);await readFile(f.file,{isCurrent:()=>loadId===frameLoadSequence,force:full});if(loadId!==frameLoadSequence)return false;if(!working)throw Error('Ingen bild avkodades.');$('qualityInfo').textContent=sourceInfo.label+' · samma färgkedja i förhandsvisning och export';saveCurrentFrame();return true;}
- catch(e){if(loadId!==frameLoadSequence)return false;src=null;hires=null;previewSrc=null;working=null;workingPreview=null;$('preview').classList.add('hidden');$('cropOverlay').classList.add('hidden');for(const id of ['export'])$(id).disabled=true;setStatus('Importfel: '+e.message);return false;}
+ catch(e){if(loadId!==frameLoadSequence)return false;for(const key of fields)delete frame[key];Object.assign(frame,saved);src=null;hires=null;previewSrc=null;working=null;workingPreview=null;calibration=null;legacyLevels=null;beta3Base=null;beta3Levels=null;base=[255,255,255];levels=null;stopPreviewWork();$('empty').classList.remove('hidden');$('gpuPreview')?.classList.add('hidden');$('preview').classList.add('hidden');$('cropOverlay').classList.add('hidden');for(const id of ['export'])$(id).disabled=true;setStatus('Importfel: '+e.message);return false;}
  finally{if(loadId===frameLoadSequence){rollLoading=false;refreshRollUI();if(typeof requestAnimationFrame==='function')requestAnimationFrame(()=>{if(loadId===frameLoadSequence)setFrameLoading(false);});else if(loadId===frameLoadSequence)setFrameLoading(false);}}
 };
 
