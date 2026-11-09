@@ -19,7 +19,13 @@ function restore(state,region,im){
  return create(compatible?d.quad:rectangle(region),{origin:compatible?'detector':'manual',status:state.cropConfirmed||state.cropLocked?'confirmed':'pending',analysisQuad:compatible?d.analysisQuad:rectangle(region),sourceDimensions:{width:im.width,height:im.height}});
 }
 function area(state,region,im){const s=state.frameSelection;
- if(matches(s,region,im))return {region:{...region},status:s.status==='pending'?'unconfirmed':'confirmed',...(s.status==='pending'?{}:{polygon:copy(s.analysisQuad)})};
+ if(matches(s,region,im)){
+  // Preserve the established rectangular sampling contract for older manual
+  // projects. An identical rectangle does not need an additional pixel-centre
+  // polygon test (which could otherwise exclude a boundary sample).
+  const rectangular=rectangle(region).every(p=>s.analysisQuad.some(q=>Math.abs(p.x-q.x)<1e-12&&Math.abs(p.y-q.y)<1e-12));
+  return {region:{...region},status:s.status==='pending'?'unconfirmed':'confirmed',...(s.status==='pending'||rectangular?{}:{polygon:copy(s.analysisQuad)})};
+ }
  if(s)return {region:{...region},status:'unconfirmed'};
  // Compatibility for earlier callers/projects; no pending new selection may
  // inherit a stale high detector confidence after a manual move.

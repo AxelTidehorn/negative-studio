@@ -52,6 +52,8 @@ hålls innanför bildfönstret även när fotografiets hörn ligger nära dess k
 - Bildkön och projekt sparar det valfria fältet genom sin befintliga kopiering.
   Manuella och låsta val bevaras. Äldre projekt utan fältet behåller godkända
   rektanglar; ett sparat osäkert #96-förslag återanvänds utan ny detektering.
+  En analysfyrhörning som exakt motsvarar den äldre rektangeln använder fortsatt
+  rektangelns befintliga provtagning, så att migrering inte ändrar randprov.
 - Projektvalideringen avvisar felaktiga polygoner och motstridiga godkännanden
   innan kön ändras. Automatisk acceptans måste motsvara säker detektorevidens.
 - Att öppna, zooma, rotera, bekräfta eller återvisa ett sparat förslag startar
@@ -75,7 +77,8 @@ pan-x`, vilket reserverade fel skrollriktning för ett horisontellt reglage.
    avbrott och interaktion med andra kontroller bryter sekvensen.
 2. Inga `touchend`/`pointerup` avbryts. Pekägaren rensas före eventuell release av
    implicit capture, även vid `pointercancel`, `lostpointercapture`, fönsterblur
-   och dold sida. Ingen generell `blur()` av reglaget införs.
+   och dold sida. Ingen generell `blur()` av reglaget införs. Inaktiverade reglage får
+   varken en pekägare eller dubbeltrycksåterställning.
 3. `pan-y` tillåter vertikal skrollning. Om det naturliga reglaget hinner hoppa
    vid kontakt före ett skrollavbrott återställs startvärdet genom samma
    `input`/`change`-bindningar. En avsiktlig horisontell justering behålls.

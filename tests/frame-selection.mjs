@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';import fs from 'node:fs';import zlib from 'node:zlib';
 import '../src/image/image-model.js';import '../src/calibration/frame-detector.js';import '../src/calibration/frame-selection.js';
-import {harness} from './helpers/app-harness.mjs';
+import {harness} from './helpers/app-harness.mjs';import {negativeFrame} from './helpers/negative-frame.mjs';
+for(const f of ['core','render','fast','platform'])await import('../src/conversion-v2/'+f+'.js');
 const S=NSFrameSelection,D=NSFrameDetector,full={x:0,y:0,w:1,h:1},im={width:480,height:321};
 for(const [w,h]of [[.5,.5],[.85,.13],[.1,.86],[.72,.43]]){
  const region={x:.04,y:.04,w,h},quad=S.rectangle(region),d={version:1,coordinateSpace:'normalized-source',quad,analysisQuad:D.inset(quad,.5,im.width,im.height),analysisSafe:false,confidence:.55,region:full,proposal:region};
@@ -11,6 +12,12 @@ for(const [w,h]of [[.5,.5],[.85,.13],[.1,.86],[.72,.43]]){
 }
 const no=S.detected({version:1,coordinateSpace:'normalized-source',quad:null,analysisQuad:null,analysisSafe:false,confidence:0},im);assert.equal(no.origin,'full');assert.equal(no.status,'pending');assert.deepEqual(D.bounds(no.quad),full);
 for(const change of [s=>s.status='unknown',s=>s.quad[0].x=-1,s=>s.analysisQuad[0].x=-1,s=>s.sourceDimensions.width=0,s=>s.quad.reverse()]){const s=structuredClone(no);change(s);assert.equal(S.valid(s),false);}
+// A legacy rectangle between source pixel centres must not acquire a new
+// polygon-boundary filter merely because acceptance metadata was migrated.
+const legacyImage=negativeFrame({width:240,height:192}).image,legacyRegion={x:.2525,y:.2,w:.5,h:.6},legacySelection=S.restore({cropMethod:'manual',cropConfirmed:true},legacyRegion,legacyImage),legacyArea={region:legacyRegion,status:'confirmed'},migratedArea=S.area({frameSelection:legacySelection},legacyRegion,legacyImage);
+assert.deepEqual(migratedArea,legacyArea);
+const prepare=area=>NSV2Platform.prepare(legacyImage,{sourceKey:'legacy-rectangle',capture:{session:'test',recipe:{decoder:'synthetic'}},area}),oldRecipe=prepare(legacyArea),migratedRecipe=prepare(migratedArea);
+assert.equal(oldRecipe.intent.analysis.maskId,migratedRecipe.intent.analysis.maskId);assert.equal(oldRecipe.intent.exposure,migratedRecipe.intent.exposure);assert.deepEqual(oldRecipe.intent.colorCorrection,migratedRecipe.intent.colorCorrection);
 const h=harness({initialEngine:'v2'});h.context.crypto=globalThis.crypto;
 const meta=JSON.parse(fs.readFileSync('tests/fixtures/frame-real/dsf8983.json')),b=zlib.gunzipSync(fs.readFileSync('tests/fixtures/frame-real/dsf8983.f32.gz')),data=new Float32Array(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength));h.set('fixture',{...meta,data});
 h.run(`render=()=>{};scheduleRender=()=>{};working=fixture;workingPreview=fixture;sourceInfo={encoding:'linear',colorSpace:'rec2020',label:'bounded source'};src=new ImageData(working.width,working.height);previewSrc=src;state={...defaultState(),engine:'v2'};const d=CE.detectFrame(working);state.frameDetection=d;state.cropMethod='auto';state.cropConfidence=d.confidence;applyFrameSelection(NSFrameSelection.detected(d,working));roll=[{file:{name:'_DSF8983.dng'},settings:{...state},crop:{...cropRegion}}];activeFrame=0;preparePlatformV2();`);

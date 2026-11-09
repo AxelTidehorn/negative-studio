@@ -9,6 +9,7 @@ function finish(e){
  if(!active||e.pointerId!==active.id)return;
  const a=active;active=null; // lostpointercapture may be dispatched by release.
  if(a.slider.hasPointerCapture?.(a.id))a.slider.releasePointerCapture(a.id);
+ if(a.slider.disabled){lastTap=null;return;}
  const ended=e.type==='pointerup';
  // Native range may jump on contact before the browser recognizes a vertical
  // scroll. Roll back only an abandoned/non-horizontal sequence, through the
@@ -23,7 +24,7 @@ document.addEventListener('pointerdown',e=>{
  // A later sequence, including a card/button tap, cannot retain an old owner.
  if(active)finish({pointerId:active.id,type:'pointercancel'});
  const slider=e.target.closest?.('input[type="range"]');
- if(!slider||!['touch','pen'].includes(e.pointerType)||e.isPrimary===false){lastTap=null;return;}
+ if(!slider||slider.disabled||!['touch','pen'].includes(e.pointerType)||e.isPrimary===false){lastTap=null;return;}
  active={id:e.pointerId,slider,x:e.clientX,y:e.clientY,time:performance.now(),value:slider.value,moved:false,direction:null};
 },true);
 document.addEventListener('pointermove',e=>{if(active&&active.id===e.pointerId){const dx=e.clientX-active.x,dy=e.clientY-active.y;if(Math.hypot(dx,dy)>8){active.moved=true;if(!active.direction)active.direction=Math.abs(dx)>Math.abs(dy)?'horizontal':'vertical';}}},true);

@@ -126,7 +126,8 @@
   if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);
   mode=value;if(value!=='base')globalThis.FILMLABB_BASE2?.leaveTool();lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
   if(mode!=='frame'){$('frameOptions').open=false;const group=$('frameSettingsGroup');if(group)group.open=false;}
-  $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Dra i filmrutans hörn eller kanter. Bekräfta när bildytan stämmer.':'Komposition ändrar inte färgkalibreringen.';
+  const hint=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Dra i filmrutans hörn eller kanter. Bekräfta när bildytan stämmer.':'Komposition ändrar inte färgkalibreringen.';
+  if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('geometryHint'),hint);else $('geometryHint').textContent=hint;
   controls();queue();
   // Direct manipulation needs the photograph in view on the page-scrolling phone layout.
   if(mode&&working&&matchMedia('(max-width:760px)').matches)picture.closest('.image-panel')?.scrollIntoView({block:'start',behavior:'auto'});
