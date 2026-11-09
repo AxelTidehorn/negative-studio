@@ -1,26 +1,30 @@
 import assert from 'node:assert/strict';
 import {harness} from './helpers/app-harness.mjs';
 
-// Hold the real queue's decode boundary open: a second import must not replace
-// the frames/settings underneath the in-flight readFile/finishImport chain.
+// Replacing an in-flight import cancels its ownership. A deliberately
+// non-cancellable decoder must not clear the new queue or its loading flag.
 const h=harness();
-h.run(`readFile=async()=>{await new Promise(r=>globalThis.releaseDecode=r);};`);
-const pending=h.run(`importRoll([{name:'first.ARW'}])`);await Promise.resolve();
-await h.run(`importRoll([{name:'replacement.ARW'}])`);
-assert.equal(h.run('roll[0].file.name'),'first.ARW');
-h.run('releaseDecode()');await pending;
+h.run(`globalThis.decodeGates=new Map();readFile=async file=>{await new Promise(r=>decodeGates.set(file.name,r));};`);
+const first=h.run(`importRoll([{name:'first.ARW'}])`);await new Promise(r=>setImmediate(r));
+const replacement=h.run(`importRoll([{name:'replacement.ARW'}])`);await new Promise(r=>setImmediate(r));
+assert.equal(h.run('roll[0].file.name'),'replacement.ARW');
+assert.equal(h.run('rollLoading'),true);
+h.run(`decodeGates.get('first.ARW')()`);await first;
+assert.equal(h.run('roll[0].file.name'),'replacement.ARW');
+assert.equal(h.run('rollLoading'),true,'stale finally must not unlock the current job');
+h.run(`decodeGates.get('replacement.ARW')()`);await replacement;
 for(const flag of ['exportBusy','rollingExport']){
  h.run(`${flag}=true`);await h.run(`importRoll([{name:'blocked.ARW'}])`);
- assert.equal(h.run('roll[0].file.name'),'first.ARW');h.run(`${flag}=false`);
+ assert.equal(h.run('roll[0].file.name'),'replacement.ARW');h.run(`${flag}=false`);
 }
 h.run('cropDrag={pointerId:1}');await h.run(`importRoll([{name:'blocked.ARW'}])`);
-assert.equal(h.run('roll[0].file.name'),'first.ARW');h.run('cropDrag=null');
-console.log('PASS import cannot replace the queue during decoding or export');
+assert.equal(h.run('roll[0].file.name'),'replacement.ARW');h.run('cropDrag=null');
+console.log('PASS new import cancels old ownership; stale completion cannot clear new job; export/crop gates remain');
 
 // A thumbnail can finish after a new import or clear. It must neither refresh
 // that queue nor continue traversing its files on the old import's behalf.
 const t=harness();let resolveThumb,refreshes=0;const names=[];
-t.run(`readFile=async()=>{};refreshRollUI=()=>{};`);
+t.run(`chooseFrame=async()=>true;refreshRollUI=()=>{};`);
 t.context.makeThumb=async file=>{names.push(file.name);return await new Promise(r=>resolveThumb=r);};
 const old=t.run(`importRoll([{name:'old.ARW'},{name:'old2.ARW'}])`);
 await new Promise(r=>setImmediate(r));assert.deepEqual(names,['old.ARW']);
