@@ -100,6 +100,12 @@ inställningsfält, inte ett nytt projektformat. Projektläsningen validerar hö
 analysområde och koppling till filmrutan före tillståndsändring; fel avvisas
 transaktionellt. Äldre appversioner saknar stöd för den nya analysfyrhörningen.
 
+Den synliga automatiska fyrhörningens kanter är även klickytor. En verklig
+pekardragning verifierar detta vid lutning; annars kunde klickytan felaktigt
+ligga kvar på den omslutande rektangeln. Första manuella dragningen övergår till
+det befintliga rektangulära filmruteverktyget. Ett separat manuellt fyrhörnings-
+eller perspektivverktyg införs inte.
+
 ## Resultat på verkliga bilder
 
 Samtliga elva unika RAF-original i Fotolab har importerats genom appens

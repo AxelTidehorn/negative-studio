@@ -52,7 +52,12 @@
   if(mode==='frame'&&state.cropVisible!==false){
    const r=cropRegion,W=working.width,H=working.height,ps=[[r.x*W,r.y*H],[(r.x+r.w)*W,r.y*H],[(r.x+r.w)*W,(r.y+r.h)*H],[r.x*W,(r.y+r.h)*H]].map(([x,y])=>v.toView({x,y}));
    const d=state.frameDetection,detected=state.cropMethod==='auto'&&NSFrameDetector.matches(d,cropRegion,working)&&d.quad;
-   svg('polygon',{points:points(detected?d.quad.map(q=>v.toView({x:q.x*W,y:q.y*H})):ps),...(detected&&!d.analysisSafe?{'stroke-dasharray':'6 4'}:{})},'frame-line');if(!state.cropLocked)for(const [side,a,b]of [['top',0,1],['right',1,2],['bottom',3,2],['left',0,3]])svg('line',{x1:ps[a].x,y1:ps[a].y,x2:ps[b].x,y2:ps[b].y,'data-side':side},'hit');
+   const framePoints=detected?d.quad.map(q=>v.toView({x:q.x*W,y:q.y*H})):ps;
+   // A convex contour may start at any corner. Match edge labels to SOURCE
+   // axes, independent of winding start, film proportions and display rotation.
+   let topEdge=0,bestAlignment=-Infinity;
+   if(detected)for(let start=0;start<4;start++){let alignment=0;for(let j=0;j<4;j++){const a=d.quad[(start+j)%4],b=d.quad[(start+j+1)%4],dx=(b.x-a.x)*W,dy=(b.y-a.y)*H,l=Math.hypot(dx,dy),axis=[[0,-1],[1,0],[0,1],[-1,0]][j];alignment+=(dy*axis[0]-dx*axis[1])/l;}if(alignment>bestAlignment){topEdge=start;bestAlignment=alignment;}}
+   svg('polygon',{points:points(framePoints),...(detected&&!d.analysisSafe?{'stroke-dasharray':'6 4'}:{})},'frame-line');if(!state.cropLocked)for(const [j,side]of ['top','right','bottom','left'].entries()){const a=(topEdge+j)%4,b=(a+1)%4;svg('line',{x1:framePoints[a].x,y1:framePoints[a].y,x2:framePoints[b].x,y2:framePoints[b].y,'data-side':side},'hit');}
   }
   if(mode==='composition'){
    const body=svg('polygon',{points:points(corners),'data-composition':'move',fill:'transparent','pointer-events':'all'},'composition-line');body.style.cursor='move';
