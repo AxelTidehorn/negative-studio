@@ -37,27 +37,28 @@
   for(const c of [baseCanvas,gpuCanvas,canvas,fallback]){c.style.setProperty('width',p.area.width*v.fit+'px','important');c.style.setProperty('height',p.area.height*v.fit+'px','important');c.style.transform=css;c.style.top=viewportMotion?(v.oy-panY)+'px':'';}
   $('cropOverlay').classList.add('hidden');return v;
  }
- function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);(klass==='composition-touch'||klass==='composition-handle'?handles:overlay).append(e);return e;}
+ function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);(['composition-touch','composition-handle','frame-touch','frame-handle'].includes(klass)?handles:overlay).append(e);return e;}
  // Keep exact-edge handles hittable without changing source/crop coordinates.
  function edgeHandle(value,extent){const inset=Math.min(1,extent/2);return Math.abs(value)<1e-6?inset:Math.abs(value-extent)<1e-6?extent-inset:value;}
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
-  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.frameDetection,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
+  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.frameSelection,state.frameDetection,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
   if(key===overlayKey)return;overlayKey=key;
   handles.replaceChildren();handles.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
   const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
   const corners=rectPoints(p,effective).map(s=>v.toView(s));
   if(grid){for(const f of [1/3,2/3]){const lerp=(a,b)=>({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f});for(const [a,b]of [[lerp(corners[0],corners[1]),lerp(corners[3],corners[2])],[lerp(corners[0],corners[3]),lerp(corners[1],corners[2])]])svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'grid-line');}}
   if(mode==='frame'&&state.cropVisible!==false){
-   const r=cropRegion,W=working.width,H=working.height,ps=[[r.x*W,r.y*H],[(r.x+r.w)*W,r.y*H],[(r.x+r.w)*W,(r.y+r.h)*H],[r.x*W,(r.y+r.h)*H]].map(([x,y])=>v.toView({x,y}));
-   const d=state.frameDetection,detected=state.cropMethod==='auto'&&NSFrameDetector.matches(d,cropRegion,working)&&d.quad;
-   const framePoints=detected?d.quad.map(q=>v.toView({x:q.x*W,y:q.y*H})):ps;
-   // A convex contour may start at any corner. Match edge labels to SOURCE
-   // axes, independent of winding start, film proportions and display rotation.
+   const W=working.width,H=working.height,s=currentFrameSelection(),quad=s.quad,framePoints=quad.map(q=>v.toView({x:q.x*W,y:q.y*H}));
+   // Edge labels remain in source axes, independent of winding start/rotation.
    let topEdge=0,bestAlignment=-Infinity;
-   if(detected)for(let start=0;start<4;start++){let alignment=0;for(let j=0;j<4;j++){const a=d.quad[(start+j)%4],b=d.quad[(start+j+1)%4],dx=(b.x-a.x)*W,dy=(b.y-a.y)*H,l=Math.hypot(dx,dy),axis=[[0,-1],[1,0],[0,1],[-1,0]][j];alignment+=(dy*axis[0]-dx*axis[1])/l;}if(alignment>bestAlignment){topEdge=start;bestAlignment=alignment;}}
-   svg('polygon',{points:points(framePoints),...(detected&&!d.analysisSafe?{'stroke-dasharray':'6 4'}:{})},'frame-line');if(!state.cropLocked)for(const [j,side]of ['top','right','bottom','left'].entries()){const a=(topEdge+j)%4,b=(a+1)%4;svg('line',{x1:framePoints[a].x,y1:framePoints[a].y,x2:framePoints[b].x,y2:framePoints[b].y,'data-side':side},'hit');}
+   for(let start=0;start<4;start++){let alignment=0;for(let j=0;j<4;j++){const a=quad[(start+j)%4],b=quad[(start+j+1)%4],dx=(b.x-a.x)*W,dy=(b.y-a.y)*H,l=Math.hypot(dx,dy),axis=[[0,-1],[1,0],[0,1],[-1,0]][j];alignment+=(dy*axis[0]-dx*axis[1])/l;}if(alignment>bestAlignment){topEdge=start;bestAlignment=alignment;}}
+   svg('polygon',{points:points(framePoints),...(s.status==='pending'?{'stroke-dasharray':'6 4'}:{})},'frame-line');
+   if(!state.cropLocked){
+    for(const [j,side]of ['top','right','bottom','left'].entries()){const a=(topEdge+j)%4,b=(a+1)%4;svg('line',{x1:framePoints[a].x,y1:framePoints[a].y,x2:framePoints[b].x,y2:framePoints[b].y,'data-side':side,'data-frame-edge':a},'hit');}
+    for(let i=0;i<4;i++){const cx=edgeHandle(framePoints[i].x,v.width),cy=edgeHandle(framePoints[i].y,v.height);svg('circle',{cx:Math.max(22,Math.min(v.width-22,cx)),cy:Math.max(22,Math.min(v.height-22,cy)),r:22,'data-frame-corner':i},'frame-touch');svg('circle',{cx,cy,r:4},'frame-handle');}
+   }
   }
   if(mode==='composition'){
    const body=svg('polygon',{points:points(corners),'data-composition':'move',fill:'transparent','pointer-events':'all'},'composition-line');body.style.cursor='move';
@@ -114,7 +115,7 @@
   $('rotationValue').textContent=fine.toFixed(2)+'°';$('rotationSummary').textContent=total.toFixed(2)+'°';
   $('compositionEnabled').checked=g.compositionCrop!==null;$('cropExport').checked=rollShared.cropExportToFrame;
   for(const id of ['rotateLeft','rotateRight','fineRotation','rotationDegrees','rotationReset','straighten','compositionEnabled','compositionEdit','compositionReset','geometryDone','cropExport'])$(id).disabled=busy();
-  $('geometryDone').hidden=!mode;$('straighten').setAttribute('aria-pressed',String(mode==='straighten'));
+  $('geometryDone').hidden=!mode||mode==='frame';refreshFrameReview();$('straighten').setAttribute('aria-pressed',String(mode==='straighten'));
  }
  function commit(g,interactive=false){if(busy())return;roll[activeFrame].geometry=g;state.rotation=g.rotation.quarterTurns*90;saveCurrentFrame();controls();queue(interactive);}
  function fine(value){if(busy())return;const n=Number(value);if(!Number.isFinite(n)||n< -45||n>45){controls();return;}const g=current();g.rotation.fineDegrees=n;commit(g,true);}
@@ -125,11 +126,27 @@
   if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);
   mode=value;if(value!=='base')globalThis.FILMLABB_BASE2?.leaveTool();lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
   if(mode!=='frame'){$('frameOptions').open=false;const group=$('frameSettingsGroup');if(group)group.open=false;}
-  $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Orange filmruta används för analys. Dra en sida.':'Komposition ändrar inte färgkalibreringen.';
+  $('geometryHint').textContent=mode==='composition'?'Dra utsnittet eller ett hörn. Klar visar exportytan.':mode==='straighten'?'Dra längs en horisontell eller lodrät linje i bilden.':mode==='frame'?'Dra i filmrutans hörn eller kanter. Bekräfta när bildytan stämmer.':'Komposition ändrar inte färgkalibreringen.';
   controls();queue();
   // Direct manipulation needs the photograph in view on the page-scrolling phone layout.
   if(mode&&working&&matchMedia('(max-width:760px)').matches)picture.closest('.image-panel')?.scrollIntoView({block:'start',behavior:'auto'});
  }
+ document.querySelector('.image-controls .toolrow').append($('frameReviewEdit'));
+ function refreshFrameReview(){
+  const visible=!!working&&!rollLoading,editing=mode==='frame',pending=visible&&!state.cropConfirmed;
+  picture.closest('.image-panel').classList.toggle('frame-review-active',visible&&(editing||pending));
+  $('frameReview').hidden=!visible||(!editing&&!pending);$('frameReviewCopy').hidden=!editing&&!pending;
+  $('frameReviewConfirm').hidden=!editing;$('frameReviewFull').hidden=!editing;$('frameReviewFull').disabled=!!state.cropLocked;
+  $('frameReviewEdit').hidden=!visible||editing;
+  if(!visible)return;
+  const message=state.cropLocked?'Filmrutan är låst.':currentFrameSelection().origin==='full'&&pending?'Vi kunde inte hitta bildytan säkert. Markera fotografiet genom att dra i hörnen eller kanterna.':'Vi har föreslagit en bildyta. Dra i hörnen eller kanterna om något behöver justeras.';
+  if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('frameReviewMessage'),message);else $('frameReviewMessage').textContent=message;
+ }
+ function openPendingFrame(){if(working&&!rollLoading&&!state.cropConfirmed){state.cropVisible=true;if(mode!=='frame')setMode('frame');}refreshFrameReview();}
+ $('frameReviewConfirm').onclick=()=>confirmFrameSelection();
+ $('frameReviewFull').onclick=()=>{if(busy()||cropDrag||state.cropLocked)return;delete state.frameDetection;state.cropConfidence=0;state.cropMethod='manual';applyFrameSelection(NSFrameSelection.create(NSFrameSelection.rectangle({x:0,y:0,w:1,h:1}),{origin:'full',sourceDimensions:{width:working.width,height:working.height}}));confirmFrameSelection();};
+ $('frameReviewEdit').onclick=()=>{if(!busy()){state.cropVisible=true;setMode('frame');}};
+ globalThis.FILMLABB_FRAME_REVIEW=Object.freeze({refresh:refreshFrameReview,openPending:openPendingFrame});
  $('geometryDone').onclick=()=>setMode(null);
  $('geometryTools').addEventListener('toggle',()=>{if(!$('geometryTools').open&&(mode==='composition'||mode==='straighten'))setMode(null);});
  $('compositionEnabled').onchange=e=>{if(busy())return;let g=current();const c=e.target.checked?NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop:null;g=NSGeometry.withComposition(g,c);commit(g);setMode(c?'composition':null);};
@@ -178,7 +195,7 @@
  },true);
  for(const type of ['pointerup','pointercancel','lostpointercapture'])picture.addEventListener(type,finishDrag,true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mode){if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);setMode(null);}});
- const oldChoose=chooseFrame;chooseFrame=async function(i,opts={}){if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){setMode(null);colorSource=colorSize=null;cpuImage=negativeImage=null;clearTimeout(cpuIdle);if(presenter)presenter.clear();canvas.hidden=fallback.hidden=true;}const r=await oldChoose(i,opts);controls();queue();return r;};
+ const oldChoose=chooseFrame;chooseFrame=async function(i,opts={}){if(i>=0&&i<roll.length&&!rollLoading&&!exportBusy&&!cropDrag&&(opts.force||i!==activeFrame)){setMode(null);colorSource=colorSize=null;cpuImage=negativeImage=null;clearTimeout(cpuIdle);if(presenter)presenter.clear();canvas.hidden=fallback.hidden=true;}const r=await oldChoose(i,opts);if(r!==false&&working)openPendingFrame();controls();queue();return r;};
  const oldClear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollLoading)return;setMode(null);colorSource=colorSize=null;cpuImage=negativeImage=null;clearTimeout(cpuIdle);canvas.width=canvas.height=fallback.width=fallback.height=1;if(presenter)presenter.clear();const r=oldClear();controls();draw();return r;};
  const oldNextControls=nextControls;nextControls=function(...args){const r=oldNextControls(...args);controls();return r;};
  const oldUI=updateCalibrationUI;updateCalibrationUI=function(...args){const r=oldUI(...args);controls();return r;};

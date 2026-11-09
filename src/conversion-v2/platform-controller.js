@@ -5,9 +5,7 @@ state.v2Recipe=null;
 delete state.rawSourceRecipeV2;
 let v2AnalysisCount=0,v2LastSource=null,v2LastKey=null,v2AutomaticCache=null;
 function v2Area(){
- const a=state.cropConfirmed?{region:{...cropRegion},status:'confirmed'}:{region:{...cropRegion},status:'estimated',method:'application-frame',confidence:Number(state.cropConfidence)||0},d=state.frameDetection;
- if(state.cropMethod==='auto'&&NSFrameDetector.matches(d,cropRegion,working)&&(d.analysisSafe||state.cropConfirmed))a.polygon=d.analysisQuad.map(p=>({...p}));
- return a;
+ return NSFrameSelection.area(state,cropRegion,working);
 }
 function preparePlatformV2(){
  if(state.engine!=='v2'||!working)return;
@@ -15,7 +13,7 @@ function preparePlatformV2(){
  const file=roll[activeFrame]?.file,ctx=capture2(),saved=accepted2(),proposed=effectiveProposal2()?.measurement,explicit=state.filmBaseVersion===2?saved?.measurement:!state.auto?calibrationBase():null;
  // Filmbas 2 owns proposal/acceptance. Its findBase guard must also apply to
  // an automatic result cached before Filmbas 2 was activated.
- const regionKey=JSON.stringify(cropRegion),automaticAllowed=state.filmBaseVersion!==2&&!explicit&&!state.noBase&&NSV2Render.trustedArea(v2Area());
+ const regionKey=JSON.stringify(v2Area()),automaticAllowed=state.filmBaseVersion!==2&&!explicit&&!state.noBase&&NSV2Render.trustedArea(v2Area());
  if(automaticAllowed&&(v2AutomaticCache?.source!==working||v2AutomaticCache.regionKey!==regionKey))v2AutomaticCache={source:working,regionKey,measurement:CE.findBase(working,cropRegion)};
  const automatic=automaticAllowed?v2AutomaticCache?.measurement:null;
  const measurement=!state.noBase?(proposed?{...proposed,preview:true}:explicit||(automatic?{...automatic,acceptance:'automatic-platform'}:null)):null;
@@ -71,8 +69,6 @@ $('engineMode').onchange=async e=>{
 };
 const rawBeforePlatformV2=$('rawMode4').onchange;
 $('rawMode4').onchange=async e=>{if(state.engine==='v2'||rollLoading||exportBusy||rollingExport){e.target.value=state.rawMode4;return;}delete state.rawSourceRecipeV2;return rawBeforePlatformV2(e);};
-const confirmBeforeV2=$('cropConfirm').onclick;
-$('cropConfirm').onclick=()=>{confirmBeforeV2();if(state.engine==='v2'){analyzeLevels();render();}};
 globalThis.FILMLABB_V2=Object.freeze({setRendering(mode,{version=1}={}){if(!['neutral','photographic'].includes(mode)||state.engine!=='v2')throw Error('V2_RENDERING_INVALID');preparePlatformV2();const r=state.v2Recipe;if(r.algorithmVersion!==3)throw Error('V2_RENDERING_REQUIRES_ALGORITHM3');const {photographic,...plain}=r.intent,neutral={...plain,tone:'luminance-reinhard-1',id:'tone-'+NSConversionV2.uuid()},intent=mode==='photographic'?NSV2Render.photographic(neutral,version):NSConversionV2.freeze(neutral);state.v2Recipe=NSConversionV2.freeze({...r,intent,analysisSignature:''});v2LastSource=null;config38=technicalCache38=null;render();saveCurrentFrame();persist();return state.v2Recipe;},snapshot:()=>({recipe:state.v2Recipe,analysisCount:v2AnalysisCount,sourceVersion:sourceVersion38})});
 
 const chooseBeforePlatformV2=chooseFrame;

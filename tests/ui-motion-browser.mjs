@@ -1,3 +1,4 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 /* Native disclosure/hidden-state behavior under real motion and reduced motion.
    Assert interaction and rendered data, not a particular decorative palette. */
 import assert from 'node:assert/strict';
@@ -11,7 +12,7 @@ try{
   const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,reducedMotion:reduced?'reduce':'no-preference',locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage();
   p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
   await p.locator('#imageFile').setInputFiles({name:'motion.png',mimeType:'image/png',buffer:fs.readFileSync('demo-negative.png')});
-  await p.waitForFunction(()=>working&&!rollLoading&&!workerBusy38&&!queued38);await p.waitForTimeout(300);
+  await p.waitForFunction(()=>working&&!rollLoading&&!workerBusy38&&!queued38);await confirmFrameIfNeeded(p);await p.waitForTimeout(300);
   const frozen=()=>p.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),'positive',24);return {pixels:Array.from(r.data),histogram:r.histogram,state:JSON.stringify({state,calibration,rollShared,cropRegion,geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38};});
   const before=await frozen();
   const dimensions=()=>p.locator('#picture').evaluate(e=>{const b=e.getBoundingClientRect();return {width:b.width,height:b.height}});

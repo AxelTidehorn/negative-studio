@@ -13,7 +13,11 @@ $('settingsFile').onchange=async e=>{
  if(queue!==roll)throw Error('Projektimporten avbröts eftersom bildkön ändrades.');
  if(projectBusy())throw Error('Vänta tills inläsning eller export är klar innan du öppnar ett projekt.');
  const parsed=NSProfiles.validateProject(JSON.parse(text));
- for(const f of parsed.frames||[]){const d=f.settings?.frameDetection;if(d&&(!NSFrameDetector.validRecord(d)||d.analysisSafe&&!NSFrameDetector.matches(d,f.crop)))throw Error('Ogiltiga filmgränser i projektet.');}
+ for(const f of parsed.frames||[]){
+  const s=f.settings?.frameSelection,d=f.settings?.frameDetection;
+  if(d&&(!NSFrameDetector.validRecord(d)||d.analysisSafe&&!NSFrameDetector.matches(d,f.crop)))throw Error('Ogiltiga filmgränser i projektet.');
+  if(s&&(!NSFrameSelection.matches(s,f.crop)||f.settings.cropConfirmed!==(s.status!=='pending')||s.status==='automatic'&&(!d?.analysisSafe||['quad','analysisQuad'].some(key=>s[key].some((p,i)=>p.x!==d[key][i].x||p.y!==d[key][i].y)))))throw Error('Ogiltig bekräftelsestatus för filmrutan.');
+ }
  NSV2Platform.validateProject(parsed);
  NSFilmBaseReference.validateProject(parsed);
  NSConversion3.validateProject(parsed);

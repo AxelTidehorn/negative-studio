@@ -839,7 +839,7 @@ input[type=range] {
   -webkit-appearance:none;
   background:transparent;
   cursor:pointer;
-  touch-action:pan-x;
+  touch-action:pan-y;
   accent-color:var(--ui-accent)
 }
 input[type=range]::-webkit-slider-runnable-track {

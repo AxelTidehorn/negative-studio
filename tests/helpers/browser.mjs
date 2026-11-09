@@ -49,3 +49,10 @@ export async function selectAppearance(page,mode){
 export async function selectBackend(page,backend){
  await openSettings(page);await page.locator('#previewBackend').selectOption(backend);await closeSettings(page);
 }
+
+// Unrelated geometry/layout suites explicitly accept their demo fixture before
+// using normal image tools. Frame-review suites exercise pending state directly.
+export async function confirmFrameIfNeeded(page){
+ await page.waitForFunction(()=>working&&!rollLoading);
+ if(await page.locator('#frameReviewConfirm').isVisible())await page.locator('#frameReviewConfirm').click();
+}

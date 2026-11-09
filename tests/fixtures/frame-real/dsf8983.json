@@ -1,0 +1,113 @@
+{
+  "width": 480,
+  "height": 321,
+  "channels": 3,
+  "scale": 1,
+  "encoding": "linear",
+  "colorSpace": "rec2020",
+  "sourceDimensions": {
+    "width": 6032,
+    "height": 4032
+  },
+  "decoder": {
+    "decoder": "libraw-wasm",
+    "version": "1.6.0",
+    "format": "raf",
+    "mode": "wide",
+    "options": {
+      "outputBps": 16,
+      "outputColor": 8,
+      "useCameraWb": true,
+      "noAutoBright": true,
+      "gamm": [
+        1,
+        1,
+        0,
+        0,
+        0,
+        0
+      ],
+      "bright": 1,
+      "useAutoWb": false,
+      "noInterpolation": false,
+      "halfSize": false,
+      "userQual": 3,
+      "useCameraMatrix": 3,
+      "highlight": 0,
+      "threshold": 0
+    }
+  },
+  "previous": {
+    "region": {
+      "x": 0,
+      "y": 0,
+      "w": 1,
+      "h": 1
+    },
+    "proposal": {
+      "x": 0.24144108280254778,
+      "y": 0.06546173164807115,
+      "w": 0.571657102015934,
+      "h": 0.9345382683519289
+    },
+    "confidence": 0.44999999999999996,
+    "method": "film-boundary-traces-1",
+    "reason": "incomplete-boundaries",
+    "edges": {
+      "left": {
+        "position": 0.24144108280254778,
+        "slope": -0.01910828025477707,
+        "residual": 0.5350318471337516,
+        "coverage": 1,
+        "marginPixels": 1
+      },
+      "right": {
+        "position": 0.8130981848184818,
+        "slope": -0.019801980198019802,
+        "residual": 0.44554455445546637,
+        "coverage": 0.7560975609756098,
+        "marginPixels": 1
+      },
+      "top": {
+        "position": 0.06546173164807115,
+        "slope": 0.022026431718061675,
+        "residual": 0.4977973568281939,
+        "coverage": 0.8292682926829268,
+        "marginPixels": 1
+      },
+      "bottom": null
+    },
+    "analysisSafe": false
+  },
+  "filename": "_DSF8983.RAF",
+  "sourceSHA256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+  "sourceBytes": 50229760,
+  "kind": "bounded technical preview from actual FILMLABB libraw-wasm import; not full-resolution RAW/export",
+  "build": {
+    "schema": "filmlabb.build",
+    "schemaVersion": 1,
+    "sourceCommit": "0ac89dccf585edd6c84268e08ef52eba45799a62",
+    "sourceBranch": "fix/contour-frame-import-preview",
+    "dirty": true,
+    "version": "3.0.0-beta.50.dev.g0ac89dccf585.dirty",
+    "contentHash": "7ca85d247e9f1cdbe92aa577d58472c489072e304300a3f07986845560d2ffa5"
+  },
+  "referenceQuad": [
+    {
+      "x": 0.23541666666666666,
+      "y": 0.037383177570093455
+    },
+    {
+      "x": 0.8270833333333333,
+      "y": 0.056074766355140186
+    },
+    {
+      "x": 0.8208333333333333,
+      "y": 0.940809968847352
+    },
+    {
+      "x": 0.225,
+      "y": 0.9283489096573209
+    }
+  ]
+}

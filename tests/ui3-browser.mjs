@@ -1,6 +1,7 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 import {selectLanguage} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';import {ensureBuild} from '../tools/build-artifact.mjs';import {browserHarness,selectEngine} from './helpers/browser.mjs';
-ensureBuild();const app=await browserHarness();try{const p=await app.browser.newPage({locale:'sv-SE',viewport:{width:1360,height:950},serviceWorkers:'block'}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(app.url);await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading);
+ensureBuild();const app=await browserHarness();try{const p=await app.browser.newPage({locale:'sv-SE',viewport:{width:1360,height:950},serviceWorkers:'block'}),errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto(app.url);await p.locator('#imageFile').setInputFiles('demo-negative.png');await p.waitForFunction(()=>working&&!rollLoading);await confirmFrameIfNeeded(p);
 const oldStatus=await p.evaluate(()=>{const original=calibration.base;calibration.base={kind:'auto-edge',measured:[.8,.5,.25]};updateCalibrationUI();const automatic=$('baseSummary3').textContent;calibration.base={kind:'manual',measured:[.8,.5,.25]};updateCalibrationUI();const manual=$('baseSummary3').textContent;calibration.base=original;updateCalibrationUI();return {automatic,manual};});assert.deepEqual(oldStatus,{automatic:'Automatisk referens',manual:'Manuellt godkänd'});
 // Idle Filmbas 2 must not show inactive proposal controls or technical status.
 const idle=await p.evaluate(()=>({proposal:!!FILMLABB_BASE2.snapshot().proposal,reviewHidden:$('sampleDetails3').hidden,statusHidden:$('base2Status').hidden,autoHidden:$('base2Auto').hidden}));
