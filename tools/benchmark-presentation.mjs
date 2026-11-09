@@ -1,29 +1,22 @@
-import {sourcePath} from '../tests/helpers/source.mjs';
-// Reproducible bounded CPU sampling benchmark, not a timing assertion in CI.
-// Default: samples <=~0.3 MP across each 24/40 MP source; --full processes all rows.
-import {performance} from 'node:perf_hooks';
-import {harness} from '../tests/helpers/app-harness.mjs';
-for(const file of ['profile-catalog.js','profile-engine.js','editing-engine.js','raw-input.js','flat-field.js','image-model.js','geometry.js','color-parameters.js','render-core.js','export-plan.js','presentation-sampler.js'])await import('../'+sourcePath(file));
-const h=harness();h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),cropConfirmed:true};sourceInfo={encoding:'linear'};cropRegion={x:0,y:0,w:1,h:1};working={width:31,height:23,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:31*23*3},(_,i)=>2000+(i*137)%50000)};workingPreview=CE.preview(working);analyzeLevels();`);
-const config=JSON.parse(h.run('JSON.stringify(configuration38())')),full=process.argv.includes('--full'),results=[];
-for(const [width,height] of [[6000,4000],[8000,5000]]){
- const im={width,height,channels:3,scale:65535,encoding:'linear',data:new Uint16Array(width*height*3)};
- for(let i=0;i<im.data.length;i++)im.data[i]=2000+(i*137)%50000;
- const start=performance.now(),prepared=NSPixelKernel.prepare(im,config),prepareMs=performance.now()-start;
- for(const fine of [0,2,15]){
-  const model=NSGeometry.create();model.rotation.fineDegrees=fine;const g=NSPresentation.plan(im,model,false,null);
-  const times=[];let pixels=0,maxStripeBytes=0,checksum=0;
-  for(let repeat=0;repeat<3;repeat++){
-   pixels=0;const t=performance.now(),step=full?0:Math.max(1,Math.floor(g.height/8));
-   for(let y=0;y<g.height;){
-    const rows=full?NSPresentation.rows(im,g,g,g.height-y):Math.min(4,g.height-y);
-    const out=NSPresentation.tiff(im,config,g,y,rows,prepared);checksum+=out[0];pixels+=g.width*rows;maxStripeBytes=Math.max(maxStripeBytes,out.byteLength);
-    y+=full?rows:step;
-   }
-   times.push(performance.now()-t);
+/* Reproducible Node microbenchmark, not a browser/26-MP time prediction. */
+import fs from 'node:fs';import vm from 'node:vm';import {performance} from 'node:perf_hooks';import {createHash} from 'node:crypto';import assert from 'node:assert/strict';import {harness} from '../tests/helpers/app-harness.mjs';
+const width=Number(process.argv[2]||640),height=Number(process.argv[3]||480),repeats=Number(process.argv[4]||3),h=harness();
+h.run(`render=()=>{};scheduleRender=()=>{};working={width:40,height:30,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:3600},(_,i)=>3000+(i*173)%55000)};workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'synthetic benchmark'};state={...defaultState(),engine:'log39',cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};analyzeLevels();rollShared.look={id:'film.kodak-gold-200',strength:1};`);
+const current=h.context.NSPresentation;vm.runInContext(fs.readFileSync('tests/fixtures/presentation-sampler-before-optimization.js','utf8'),h.context);const before=h.context.NSPresentation;h.context.NSPresentation=current;
+const K=h.context.NSPixelKernel,G=h.context.NSGeometry,config=h.run('configuration38()'),im={width,height,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:width*height*3},(_,i)=>3000+(i*173)%55000)},frame={x:.025,y:.035,w:.94,h:.92};
+const report={kind:'Node microbenchmark, synthetic linear RGB; exact full Gold P/operator; no native file/encoder',node:process.version,width,height,repeats,cacheBytes:current.CACHE_BYTES??0,cases:[]};
+for(const [name,quarter,fine,crop,composition] of [['direct',0,0,false,false],['quarter-crop',1,0,true,false],['fine',0,2.3,false,false],['fine-composition-quarter',1,-3.4,true,true]]){
+ const model=G.create(quarter*90);model.rotation.fineDegrees=fine;if(composition)model.compositionCrop={cx:.02,cy:-.03,w:.65,h:.48};const g=current.plan(im,model,crop,frame),rows=[];let expected;
+ for(const [label,P] of [['before',before],['after',current]]){
+  const times=[];let digest,stats;
+  for(let run=0;run<repeats;run++){
+   const prepared=K.prepare(im,config),sha=createHash('sha256'),began=performance.now();
+   for(let y=0;y<g.height;y+=16){const out=P.tiff(im,config,g,y,Math.min(16,g.height-y),prepared);sha.update(Buffer.from(out.buffer,out.byteOffset,out.byteLength));}
+   times.push(performance.now()-began);digest=sha.digest('hex');stats=P.cacheStats?.(prepared);P.release?.(prepared);
+   if(expected)assert.equal(digest,expected);else expected=digest;
   }
-  const medianMs=times.sort((a,b)=>a-b)[1];
-  results.push({sourceMP:width*height/1e6,fine,output:[g.width,g.height],sampledPixels:pixels,medianMs:+medianMs.toFixed(2),msPerMP:+(medianMs/pixels*1e6).toFixed(2),prepareMs:+prepareMs.toFixed(2),maxOutputStripeBytes:maxStripeBytes,sourceBytes:im.data.byteLength,checksum});
+  const sorted=[...times].sort((a,b)=>a-b);rows.push({label,ms:times,min:sorted[0],median:sorted[Math.floor(sorted.length/2)],max:sorted.at(-1),sha256:digest,cache:stats});
  }
+ report.cases.push({name,output:[g.width,g.height],results:rows,speedup:rows[0].median/rows[1].median});
 }
-console.log(JSON.stringify({mode:full?'full rows, three repetitions':'bounded rows distributed across source, three repetitions; excludes encoding/download',node:process.version,stripeBudget:NSPresentation.STRIPE_BYTES,results},null,2));
+console.log(JSON.stringify(report,null,2));

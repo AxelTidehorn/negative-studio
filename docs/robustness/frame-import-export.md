@@ -70,3 +70,20 @@ på nytt; oförändrad bild väljs bara bort om en verklig arbetsbild finns.
 jämför nästa lyckade analys exakt mot ett separat rent importförlopp.
 Browserregressionen klickar samma köbild efter fel och kontrollerar att sena
 ersatta/avbrutna jobb fortfarande inte kan påverka nästa bild.
+
+## C. Sammansatt exportsampling
+
+Fryst före-operator finns endast i testfixturen
+`presentation-sampler-before-optimization.js`. `benchmark-presentation.mjs`
+kör samma bild/config/geometri mot båda och kräver identisk SHA256 över samtliga
+RGB16-pixlar. Första avgränsade ändringen tar bort grannlistor, underarrayer och
+sum.map per utpixel; beräkningsordningen behålls. 576 geometri-/datatyp-/flat-field-
+fall matchar dessutom ett separat skalärt facit.
+
+Node v24.22.1, syntetisk 320×240, Gold P100, tre körningar per fall: direkt
+median 1153 ms före / 1142 efter; finrotation 4115 / 3840 ms. Sammansatt kvart+
+finrotation 1723 / 1810 ms. Spridning och råa tider sparas i mätfilerna. Enbart
+allokeringsändringen ger alltså ingen konsekvent stor vinst. I denna mätning
+kostar finrotation cirka 3,6 gånger direktvägen, inte ett generellt sexgångslöfte.
+Det motiverar att utvärdera återanvändning av de upp till fyra återkommande
+färg-/tonberäkningarna per utpixel.

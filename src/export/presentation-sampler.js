@@ -38,32 +38,38 @@ function rows(im,g,target,remaining,pixels=65536){
  const bytes=12*im.data.BYTES_PER_ELEMENT+6;
  return Math.min(remaining,32,Math.max(1,Math.floor(Math.min(pixels,Math.floor(STRIPE_BYTES/bytes))/target.width)));
 }
+function coordinates(g,target,x,y,out){
+ const s=g.point(x,y,target),b=g.bounds,u=Math.max(b.x0,Math.min(b.x1-1,s.x-.5)),v=Math.max(b.y0,Math.min(b.y1-1,s.y-.5));
+ out[0]=Math.floor(u);out[1]=Math.floor(v);out[2]=Math.min(b.x1-1,out[0]+1);out[3]=Math.min(b.y1-1,out[1]+1);out[4]=u-out[0];out[5]=v-out[1];
+}
 function pack(im,g,target,y,count){
  if(!g.presentation)return NSExportPlan.pack(im,g,target,y,count);
- const data=new im.data.constructor(target.width*count*12);
+ const data=new im.data.constructor(target.width*count*12),q=new Float64Array(6);
  for(let dy=0;dy<count;dy++)for(let x=0;x<target.width;x++){
-  const ns=neighbors(g,target,x,y+dy),base=(dy*target.width+x)*12;
-  for(let n=0;n<4;n++){const j=(ns[n][1]*im.width+ns[n][0])*im.channels;for(let k=0;k<3;k++)data[base+n*3+k]=im.data[j+k];}
+  coordinates(g,target,x,y+dy,q);const base=(dy*target.width+x)*12;
+  for(let n=0;n<4;n++){const sx=n%2?q[2]:q[0],sy=n<2?q[1]:q[3],j=(sy*im.width+sx)*im.channels;for(let k=0;k<3;k++)data[base+n*3+k]=im.data[j+k];}
  }
  return data;
 }
-function pixel(im,prepared,g,target,x,y,packedIndex){
+function sample(im,prepared,g,target,x,y,packedIndex,q,out){
  if(!g.presentation){
   const [sx,sy]=NSExportPlan.at(g,target,x,y);
   return prepared.pixel(packedIndex===undefined?(sy*im.width+sx)*im.channels:packedIndex*3,sx,sy);
  }
- const ns=neighbors(g,target,x,y),sum=[0,0,0];
+ coordinates(g,target,x,y,q);let r=0,green=0,b=0;
  for(let n=0;n<4;n++){
-  const [sx,sy,weight]=ns[n];if(weight===0)continue;
-  const i=packedIndex===undefined?(sy*im.width+sx)*im.channels:packedIndex*12+n*3;
-  const p=prepared.pixel(i,sx,sy);
-  for(let k=0;k<3;k++)sum[k]+=decode(p[k])*weight;
+  const sx=n%2?q[2]:q[0],sy=n<2?q[1]:q[3],weight=(n%2?q[4]:1-q[4])*(n<2?1-q[5]:q[5]);if(weight===0)continue;
+  const i=packedIndex===undefined?(sy*im.width+sx)*im.channels:packedIndex*12+n*3,p=prepared.pixel(i,sx,sy);
+  // Same neighbor order, transfer functions and addition order as before.
+  r+=decode(p[0])*weight;green+=decode(p[1])*weight;b+=decode(p[2])*weight;
  }
- return sum.map(encode);
+ out[0]=encode(r);out[1]=encode(green);out[2]=encode(b);return out;
 }
+function pixel(im,prepared,g,target,x,y,packedIndex){return sample(im,prepared,g,target,x,y,packedIndex,new Float64Array(6),new Array(3));}
 function rgba(im,prepared,g,target,y,count,packed=false,out=new Uint8ClampedArray(target.width*count*4)){
+ const q=new Float64Array(6),rgb=new Array(3);
  for(let dy=0;dy<count;dy++)for(let x=0;x<target.width;x++){
-  const n=dy*target.width+x,p=pixel(im,prepared,g,target,x,y+dy,packed?n:undefined);
+  const n=dy*target.width+x,p=sample(im,prepared,g,target,x,y+dy,packed?n:undefined,q,rgb);
   for(let k=0;k<3;k++)out[n*4+k]=Math.round(p[k]*255);out[n*4+3]=255;
  }
  return out;
@@ -71,9 +77,9 @@ function rgba(im,prepared,g,target,y,count,packed=false,out=new Uint8ClampedArra
 function tiff(im,config,g,y,count,prepared){
  // Preserve exact integer permutation, lookup order and quantization for legacy.
  if(!g.presentation)return NSPixelKernel.exportRows(im,config,g,y,count,null,false,prepared);
- const out=new Uint16Array(g.width*count*3);
+ const out=new Uint16Array(g.width*count*3),q=new Float64Array(6),rgb=new Array(3);
  for(let dy=0;dy<count;dy++)for(let x=0;x<g.width;x++){
-  const p=pixel(im,prepared,g,g,x,y+dy),i=(dy*g.width+x)*3;
+  const p=sample(im,prepared,g,g,x,y+dy,undefined,q,rgb),i=(dy*g.width+x)*3;
   for(let k=0;k<3;k++)out[i+k]=Math.round(p[k]*65535);
  }
  return out;
