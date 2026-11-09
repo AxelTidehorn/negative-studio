@@ -25,10 +25,10 @@ for(const dir of ['overview','detail-crops'])for(const name of fs.readdirSync(pa
  const source=fs.readFileSync(path.join(input,dir,name)),im=decodePng(source),scale=im.bits===16?65535:255,record={source:dir+'/'+name,sourceSHA256:sha(source),width:im.width,height:im.height,bits:im.bits,variants:[]};
  assert.ok(im.srgb);if(dir==='detail-crops')assert.equal(im.bits,16);
  for(const [label,id,strength] of variants){
-  const kernel=id.endsWith('@1')?prior:NSProfiles.compile({id,strength}),rgb=im.bits===16?new Uint16Array(im.data.length):new Uint8Array(im.data.length);let delta=0,endpoints=0;const began=performance.now();
-  for(let i=0;i<rgb.length;i+=3){const p=Array.from(im.data.subarray(i,i+3),v=>v/scale),q=kernel.pixel(p);for(let c=0;c<3;c++){assert.ok(Number.isFinite(q[c])&&q[c]>=0&&q[c]<=1);rgb[i+c]=Math.round(q[c]*scale);delta+=Math.abs(q[c]-p[c]);}if(rgb.subarray(i,i+3).some(v=>v===scale))endpoints++;}
+  const kernel=id.endsWith('@1')?prior:NSProfiles.compile({id,strength}),rgb=im.bits===16?new Uint16Array(im.data.length):new Uint8Array(im.data.length);let delta=0,endpoints=0,minimums=0,newMinimums=0,newMaximums=0;const began=performance.now();
+  for(let i=0;i<rgb.length;i+=3){const p=Array.from(im.data.subarray(i,i+3),v=>v/scale),q=kernel.pixel(p);for(let c=0;c<3;c++){assert.ok(Number.isFinite(q[c])&&q[c]>=0&&q[c]<=1);rgb[i+c]=Math.round(q[c]*scale);delta+=Math.abs(q[c]-p[c]);}const maximum=rgb.subarray(i,i+3).some(v=>v===scale),minimum=rgb.subarray(i,i+3).some(v=>v===0);if(maximum){endpoints++;if(p.every(v=>v<1))newMaximums++;}if(minimum){minimums++;if(p.every(v=>v>0))newMinimums++;}}
   const operatorMs=performance.now()-began,encoder=NSPng.create(im.width,im.height,im.bits);await encoder.write(rgb,im.height);const bytes=Buffer.from(await(await encoder.finish()).arrayBuffer()),filename=name.replace('_neutral.png','_'+label+'.png');fs.writeFileSync(path.join(out,filename),bytes);const decoded=decodePng(bytes);assert.deepEqual(decoded.data,rgb);if(id==='neutral')assert.deepEqual(rgb,im.data);
-  record.variants.push({label,id,strength,file:filename,sha256:sha(bytes),meanAbsoluteEncodedDelta:delta/rgb.length,anyMaximumCode:endpoints,operatorMs});
+  record.variants.push({label,id,strength,file:filename,sha256:sha(bytes),meanAbsoluteEncodedDelta:delta/rgb.length,anyMaximumCode:endpoints,anyMinimumCode:minimums,newAnyMinimumCode:newMinimums,newAnyMaximumCode:newMaximums,operatorMs});
  }
  manifest.files.push(record);console.log('PROOF',dir,name);
 }

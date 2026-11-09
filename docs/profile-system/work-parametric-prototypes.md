@@ -144,3 +144,19 @@ Neutral-utsnitten har inte heller sådana. Översikternas maximala koder minskar
 med de avsiktliga högdagertaken. Det återskapar inte redan bortklippt struktur.
 Monoton gråramp och 16-bitars lågbitar verifieras; en full fotografisk
 bandnings-/klippningsinventering på nya RAW-motiv återstår till praktisk användning.
+
+**Dokumenterad skuggrisk:** vid omkvantisering av RGB8-översikterna får Gold P70
+2 695 / 491 / 8 ytterligare pixlar med minst en kanal vid kod 0 i 05/09/11
+(tidigare Gold70: 96 / 42 / 1). Dessa räknas över hela översikten inklusive
+filmkant, utan ny ROI. Portra P70 ger inga nya nollkoder. Blandningen vid 70 %
+behåller positiva floatkanaler för positiva indata; nollorna uppkommer vid
+RGB8-kvantiseringen av de tätare skuggorna. Alla fem RGB16-utsnitten har **noll**
+nya min-/maxkodspixlar för båda profilerna. Det utesluter inte mörk detaljförlust
+på andra motiv eller vid 100 %; Golds täthet lämnas ändå exakt enligt Work.
+
+Fullständig GitHub CI körs på PR:n. I denna Linuxmiljö fallerar det befintliga
+`ui-motion-d2-browser.mjs` på statusradens geometri även på **oförändrad main
+f33aea7**; samma påstående vid rad 60. Det separata vanliga animationstestet
+passerar isolerat i alla tio viewport-/reduced-motion-fall. Inga UI-regler eller
+animationstester ändras för att dölja miljöskillnaden. Slutlig CI-status redovisas
+i PR:n, separat från dessa lokala resultat.
