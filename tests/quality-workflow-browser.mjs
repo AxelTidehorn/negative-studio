@@ -1,10 +1,11 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';import fs from 'node:fs';import path from 'node:path';
 import {browserHarness} from './helpers/browser.mjs';
 const {browser,url,close}=await browserHarness();
 try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  await page.evaluate(()=>{const create=NSGpuPreview.create;NSGpuPreview.create=c=>{const r=create(c),draw=r.draw;r.draw=(im,config,mode,limit,version)=>draw(im,config,mode,Math.min(limit,240),version);return r;};setQueueCropExportToFrame(false);});
- const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'quality-a.png',mimeType:'image/png',buffer},{name:'quality-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
+ const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'quality-a.png',mimeType:'image/png',buffer},{name:'quality-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);await confirmFrameIfNeeded(page);
  // UI 2.1 calibration starts collapsed; open it to inspect the nested frame order.
  await page.locator('#calibration3 > summary').click();
  await page.waitForFunction(()=>!$('calibration3').getAnimations({subtree:true}).some(a=>a.playState==='running'));
@@ -19,7 +20,7 @@ try{
    for(let y=0;y<d.height;y++)for(let x=0;x<d.width;x++){const [sx,sy]=g.at(x,y);for(let k=0;k<4;k++)max=Math.max(max,Math.abs(out[((d.height-1-y)*d.width+x)*4+k]-im.data[(sy*9+sx)*4+k]),Math.abs(cpu.data[(y*d.width+x)*4+k]-im.data[(sy*9+sx)*4+k]));}
   }r.destroy();return max;
  });assert.equal(pixels,0);console.log('PASS neutral GPU/CPU cache pixels and all quarter-turn permutations remain bit-exact without extra filtering');
- const border=await page.evaluate(async()=>{cropRegion={x:.15,y:.2,w:.7,h:.6};state.cropMethod='manual';state.cropConfirmed=true;analyzeLevels();saveCurrentFrame();const analysis=JSON.stringify({base,calibration,cropRegion});let blob;downloadBlob=b=>blob=b;
+ const border=await page.evaluate(async()=>{cropRegion={x:.15,y:.2,w:.7,h:.6};state.cropMethod='manual';cropChanged();confirmFrameSelection();saveCurrentFrame();const analysis=JSON.stringify({base,calibration,cropRegion});let blob;downloadBlob=b=>blob=b;
   setQueueCropExportToFrame(false);await exportTiff();const full=await NSTiff.decode(await blob.arrayBuffer());setQueueCropExportToFrame(true);await exportTiff();const frame=await NSTiff.decode(await blob.arrayBuffer());return {full:[full.width,full.height],frame:[frame.width,frame.height],unchanged:analysis===JSON.stringify({base,calibration,cropRegion})};});assert.deepEqual(border.full,[900,600]);assert.deepEqual(border.frame,[630,360]);assert.equal(border.unchanged,true);
  console.log('PASS visible film borders can be retained or trimmed for the whole queue without changing technical analysis');
  // Geometry choices are independent, and project reload must retain explicit edits.

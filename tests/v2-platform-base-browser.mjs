@@ -27,7 +27,7 @@ try{
   await open(page.locator('#tiffEncoding'));await page.locator('#tiffEncoding').selectOption('linear-rec2020');
   await page.waitForFunction(()=>working&&!rollLoading&&working.colorSpace==='rec2020');
   await open(page.locator('#cropInset'));await page.locator('#cropInset').evaluate(e=>{e.value='14';e.dispatchEvent(new Event('input',{bubbles:true}));});
-  await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe);
+  await selectEngine(page,'v2');await page.waitForFunction(()=>state.engine==='v2'&&state.v2Recipe);await page.locator('#frameReviewConfirm').click();
   await open(page.locator('#base2Panel'));
  }
  await selectV2();

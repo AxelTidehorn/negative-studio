@@ -1,3 +1,4 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 import {launchBrowser} from './helpers/browser-runtime.mjs';
 import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import path from 'node:path';import http from 'node:http';import {chromium} from 'playwright';
@@ -8,7 +9,7 @@ const browser=await launchBrowser({headless:true,executablePath:process.env.FILM
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900},serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(60000);
  await page.goto(url);const buffer=readSource('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'a.png',mimeType:'image/png',buffer},{name:'b.png',mimeType:'image/png',buffer}]);
- await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);
+ await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GEOMETRY.snapshot().draws>0);await confirmFrameIfNeeded(page);
  assert.deepEqual(errors,[]);console.log('PASS Beta 6 imports and presents cached GPU color');
  const parity=await page.evaluate(()=>{
   const source=document.createElement('canvas');source.width=9;source.height=7;const cx=source.getContext('2d'),data=new ImageData(9,7);for(let i=0;i<data.data.length;i++)data.data[i]=i%4===3?255:(i*37+17)%256;cx.putImageData(data,0,0);
@@ -46,7 +47,7 @@ try{
 
  await page.locator('#frameSettingsGroup').evaluate(el=>{for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='frame');
  const line=page.locator('#geometryOverlay [data-side="left"]');await line.waitFor({state:'visible'});const lb=await line.evaluate(e=>{const b=e.getBoundingClientRect();return {x:b.x,y:b.y,width:b.width,height:b.height};});assert.ok(lb);await page.mouse.move(lb.x+lb.width/2,lb.y+lb.height/2);await page.mouse.down();await page.mouse.move(lb.x+lb.width/2+15,lb.y+lb.height/2,{steps:4});await page.mouse.up();
- assert.equal(await page.evaluate(()=>state.cropMethod),'manual');const frame=await page.evaluate(()=>JSON.stringify(cropRegion));await page.locator('#frameSettingsGroup').evaluate(el=>el.open=false);await page.evaluate(async()=>{await chooseFrame(1,{force:true});await chooseFrame(0,{force:true});});assert.equal(await page.evaluate(()=>JSON.stringify(cropRegion)),frame);
+ assert.equal(await page.evaluate(()=>state.cropMethod),'manual');await page.locator('#frameReviewConfirm').click();const frame=await page.evaluate(()=>JSON.stringify(cropRegion));await page.locator('#frameSettingsGroup').evaluate(el=>el.open=false);await page.evaluate(async()=>{await chooseFrame(1,{force:true});await chooseFrame(0,{force:true});});assert.equal(await page.evaluate(()=>JSON.stringify(cropRegion)),frame);
  await page.locator('#frameSettingsGroup').evaluate(el=>{for(let p=el;p;p=p.parentElement)if(p.tagName==='DETAILS')p.open=true;});await page.locator('#cropExport').check();assert.equal(await page.evaluate(()=>rollShared.cropExportToFrame),true);await page.locator('#frameSettingsGroup').evaluate(el=>el.open=false);
  const project=await page.evaluate(async()=>{let b;downloadBlob=v=>b=v;$('saveSettings').onclick();return JSON.parse(await b.text());});assert.equal(project.roll.cropExportToFrame,true);assert.equal(project.frames[0].settings.cropMethod,'manual');assert.equal(project.frames[0].geometry.rotation.fineDegrees,-15);assert.ok(project.frames[0].geometry.compositionCrop);
  await page.locator('#settingsFile').setInputFiles({name:'beta6.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));
@@ -80,7 +81,7 @@ try{
  assert.equal(await page.evaluate(()=>roll[0].settings.cropExport),false);await page.evaluate(()=>setQueueCropExportToFrame(true));await page.locator('#imageFile').setInputFiles([{name:'new-a.png',mimeType:'image/png',buffer},{name:'new-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>!rollLoading&&working?.width===900);assert.equal(await page.evaluate(()=>roll.every(f=>f.settings.cropExport&&f.geometry.compositionCrop===null)),true);
  assert.deepEqual(errors,[]);
  // Touch editing on a mobile viewport, with actual browser-generated pointer capture.
- const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block',locale:'sv-SE'});await mobile.goto(url);await mobile.locator('#imageFile').setInputFiles({name:'touch.png',mimeType:'image/png',buffer});await mobile.waitForFunction(()=>!rollLoading&&working&&FILMLABB_GEOMETRY.snapshot().draws>0);
+ const mobile=await browser.newPage({viewport:{width:390,height:844},isMobile:true,hasTouch:true,serviceWorkers:'block',locale:'sv-SE'});await mobile.goto(url);await mobile.locator('#imageFile').setInputFiles({name:'touch.png',mimeType:'image/png',buffer});await mobile.waitForFunction(()=>!rollLoading&&working&&FILMLABB_GEOMETRY.snapshot().draws>0);await confirmFrameIfNeeded(mobile);
  await mobile.locator('#advancedSettings').evaluate(el=>el.open=true);await mobile.locator('#geometryTools').evaluate(el=>el.open=true);await mobile.locator('#compositionEdit').click();await mobile.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='composition');
  await mobile.locator('[data-composition="2"]').waitFor({state:'visible'});const circle=await mobile.locator('[data-composition="2"]').boundingBox(),session=await mobile.context().newCDPSession(mobile),x=circle.x+circle.width/2,y=circle.y+circle.height/2,old=await mobile.evaluate(()=>roll[0].geometry.compositionCrop.w);
  await session.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x,y}]});await session.send('Input.dispatchTouchEvent',{type:'touchMove',touchPoints:[{x:x-20,y:y-15}]});await session.send('Input.dispatchTouchEvent',{type:'touchEnd',touchPoints:[]});assert.ok(await mobile.evaluate(()=>roll[0].geometry.compositionCrop.w)<old);

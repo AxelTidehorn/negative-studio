@@ -1,3 +1,4 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 import {selectBackend} from './helpers/browser.mjs';
 import {selectLanguage} from './helpers/browser.mjs';
 /* Exercise the real CPU worker/GPU histogram lifecycle and existing editor bindings. */
@@ -7,7 +8,7 @@ try{
  const c=await h.browser.newContext({viewport:{width:1024,height:768},hasTouch:true,locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage(),errors=[];p.setDefaultTimeout(45000);p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
  await p.evaluate(()=>{const draw=drawHistogram38;window.histogramRevision=0;window.currentHistogram=null;drawHistogram38=function(hist){window.currentHistogram=hist;histogramRevision++;return draw(hist);};});
  await p.locator('#imageFile').setInputFiles(['demo-negative.png','icon-192.png']);
- await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu'&&currentHistogram?.red&&!$('histogramInfo').textContent.includes('…'));
+ await p.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu'&&currentHistogram?.red&&!$('histogramInfo').textContent.includes('…'));await confirmFrameIfNeeded(p);
  const hiddenState=await p.evaluate(()=>JSON.stringify({state,rollShared,calibration}));
  for(const id of ['colorMode4','toneMode4','rawMode4']){
   assert.equal(await p.locator('#'+id).isVisible(),false,id+' must not appear in the normal editor');
@@ -46,7 +47,7 @@ try{
  // Keep the same controls, reset semantics, footer and two-column tablet layout.
  await p.evaluate(()=>{setDisplay('positive');$('reset').click();});assert.equal(await p.evaluate(()=>state.exposure),0);
  const advancedWasOpen=await p.locator('#advancedSettings').evaluate(e=>e.open);
- await p.locator('#straighten').click();await p.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='straighten'&&$('geometryTools').open);
+ await confirmFrameIfNeeded(p);await p.locator('#straighten').click();await p.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='straighten'&&$('geometryTools').open);
  assert.equal(await p.locator('#imageTools3 #geometryDone').isVisible(),true,'finish stays reachable beside the photograph');
  assert.equal(await p.locator('#advancedSettings').evaluate(e=>e.open),advancedWasOpen,'floating image tools preserve advanced panel state');
  await p.locator('#geometryDone').click();

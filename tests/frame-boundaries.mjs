@@ -38,5 +38,5 @@ console.log('PASS actual manual frame change reanalyzes V2; locked frame is not 
 // Uncertain geometry must not silently choose a film-base sample outside it.
 h.run(`state.cropConfirmed=false;state.cropConfidence=.6;state.noBase=false;state.auto=true;delete state.filmBaseVersion;v2AutomaticCache=null;v2LastSource=null;globalThis.baseCalls=0;CE.findBase=()=>{baseCalls++;return {measured:[.82,.30,.11],kind:'auto-region'};};preparePlatformV2();`);
 assert.equal(h.run('baseCalls'),0);assert.equal(h.run('state.v2Recipe.base.origin'),'prior');
-h.run('state.cropConfirmed=true;preparePlatformV2();');assert.equal(h.run('baseCalls'),1);assert.equal(h.run('state.v2Recipe.base.origin'),'measured');assert.equal(h.run('state.v2Recipe.base.source'),'automatic-platform');
+h.run('confirmFrameSelection();');assert.ok(h.run('baseCalls')>0);assert.equal(h.run('state.v2Recipe.base.origin'),'measured');assert.equal(h.run('state.v2Recipe.base.source'),'automatic-platform');
 console.log('PASS uncertain area cannot auto-select film base; confirmed geometry still enables the existing automatic base path');

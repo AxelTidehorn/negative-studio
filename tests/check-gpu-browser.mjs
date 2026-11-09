@@ -1,3 +1,4 @@
+import {confirmFrameIfNeeded} from './helpers/browser.mjs';
 import {openSettings,selectBackend} from './helpers/browser.mjs';
 import {selectEngine} from './helpers/browser.mjs';
 import {launchBrowser} from './helpers/browser-runtime.mjs';
@@ -17,7 +18,7 @@ try{
  const page=await browser.newPage({viewport:{width:1280,height:900},locale:'sv-SE'}),errors=[];page.setDefaultTimeout(90000);
  page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port+'/',{waitUntil:'domcontentloaded',timeout:90000});
  await page.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));
- await page.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().backend==='gpu');
+ await page.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().backend==='gpu');await confirmFrameIfNeeded(page);
  assert.deepEqual(errors,[]);check('Actual app PNG import uses GPU with no page errors');
  const parity=await page.evaluate(()=>{
   const canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas),gl=gpu.context,ext=gl.getExtension('WEBGL_debug_renderer_info'),renderer=ext?gl.getParameter(ext.UNMASKED_RENDERER_WEBGL):gl.getParameter(gl.RENDERER);

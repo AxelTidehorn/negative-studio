@@ -1,0 +1,721 @@
+{
+  "kind": "actual RAF import and UI workflow; screenshots are previews, not full-resolution exports",
+  "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+  "physicalIPad": false,
+  "rows": [
+    {
+      "filename": "_DSF8983.RAF",
+      "sourceSHA256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+      "before": {
+        "dimensions": [
+          6032,
+          4032
+        ],
+        "previewSHA256": "8f81afee1a94a62e6deecaa375f8d09d2085fd69cde78609315fd4ebccb011d3",
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "pending",
+          "quad": [
+            {
+              "x": 0.2391734582024085,
+              "y": 0.0379968596514346
+            },
+            {
+              "x": 0.8360552834991274,
+              "y": 0.05674887752528595
+            },
+            {
+              "x": 0.8419122016999007,
+              "y": 0.941737697114769
+            },
+            {
+              "x": 0.22731611995289666,
+              "y": 0.9303913409306137
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.24325643885714315,
+              "y": 0.04435703772778596
+            },
+            {
+              "x": 0.8319287980213701,
+              "y": 0.06285114180844259
+            },
+            {
+              "x": 0.8377035795761623,
+              "y": 0.9354289952754276
+            },
+            {
+              "x": 0.23156535862174002,
+              "y": 0.9242387837592239
+            }
+          ],
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "detection": {
+          "confidence": 0.55,
+          "reason": "scale-disagreement",
+          "analysisSafe": false
+        },
+        "region": {
+          "x": 0.22731611995289666,
+          "y": 0.0379968596514346,
+          "w": 0.614596081747004,
+          "h": 0.9037408374633343
+        },
+        "mode": "frame",
+        "area": {
+          "region": {
+            "x": 0.22731611995289666,
+            "y": 0.0379968596514346,
+            "w": 0.614596081747004,
+            "h": 0.9037408374633343
+          },
+          "status": "unconfirmed"
+        },
+        "sourceVersion": 1,
+        "import": {
+          "id": 1,
+          "started": 2813,
+          "phase": "ready",
+          "stages": {
+            "preview": 497,
+            "frameAnalysis": 3795,
+            "baseAnalysis": 61,
+            "v2Analysis": 382,
+            "renderSubmit": 364,
+            "finishImport": 5762
+          },
+          "sourceVersion": 0,
+          "cancelled": false,
+          "preliminaryTransformMs": 194,
+          "jpegPrepareMs": 474,
+          "preliminaryKind": "approximate-positive",
+          "preliminaryPaintMs": 4234,
+          "firstVisibleMs": 4234,
+          "readyMs": 96517,
+          "success": true,
+          "decoder": {
+            "cacheHit": false,
+            "totalMs": 86320,
+            "stages": {
+              "librawInit": 398,
+              "fileRead": 293,
+              "rawOpen": 181,
+              "metadata": 22,
+              "rawImageData": 84692,
+              "rgbConvert": 630
+            },
+            "memory": {
+              "fileBytes": 50229760,
+              "rgb16Bytes": 145926144,
+              "sourceBytes": 291852288,
+              "wasmHeapBytes": null
+            },
+            "activeWorkers": 0,
+            "cacheBytes": 291852288
+          },
+          "renderMetrics": {
+            "cpuRenderMs": 0,
+            "gpu": {
+              "backend": "gpu",
+              "frames": 1,
+              "sourceUploads": 1,
+              "validationError": 0,
+              "lastSubmitMs": 180,
+              "lastGpuMs": null,
+              "reason": null,
+              "contextLosses": 0,
+              "positiveRequests": 1,
+              "positiveReconstructions": 1,
+              "positiveDiscards": 0,
+              "positiveCancelled": 0,
+              "positiveCacheBytes": 20966400,
+              "positivePreparationMs": 15,
+              "positiveReconstructionMs": 0,
+              "positiveCopyMs": 0,
+              "positiveStartedAt": 99126,
+              "positiveReadyAt": 99306,
+              "histogramReconstructions": 0,
+              "histogramSourceBytes": 0,
+              "preference": "auto",
+              "interactiveLimit": 700,
+              "sourceVersion": 1,
+              "sourceMatches": true,
+              "positivePending": false,
+              "positiveKey": "602b0360",
+              "reconstructionBackend": "gpu",
+              "positiveUploads": 0,
+              "validationUploads": 4,
+              "positiveUploadSubmitMs": 0,
+              "gpuReconstructionSubmitMs": 15,
+              "gpuReconstructionMs": null,
+              "sourcePreparationMs": 0,
+              "sourceUploadSubmitMs": 5,
+              "positiveFloatError": 0.000003300607204437256,
+              "technicalRelativeError": 0.0000014876280973474477,
+              "capabilities": {
+                "floatColor": true
+              },
+              "textureBytes": 36691200,
+              "mainPositive": {
+                "conversions": 0,
+                "adoptions": 0,
+                "reconstructionMs": 0,
+                "bytes": 0
+              }
+            }
+          },
+          "memory": {
+            "sourceBytes": 291852288,
+            "previewBytes": 15724800,
+            "legacyPreviewBytes": 5241600
+          },
+          "technicalPaintMs": 97741,
+          "usableMs": 97741,
+          "elapsedMs": 97741,
+          "heap": null
+        },
+        "sameBoundedSourceAsPR96": true
+      },
+      "after": {
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "confirmed",
+          "quad": [
+            {
+              "x": 0.2391734582024085,
+              "y": 0.0379968596514346
+            },
+            {
+              "x": 0.8360552834991274,
+              "y": 0.05674887752528595
+            },
+            {
+              "x": 0.8419122016999007,
+              "y": 0.941737697114769
+            },
+            {
+              "x": 0.22731611995289666,
+              "y": 0.9303913409306137
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.24325643885714315,
+              "y": 0.04435703772778596
+            },
+            {
+              "x": 0.8319287980213701,
+              "y": 0.06285114180844259
+            },
+            {
+              "x": 0.8377035795761623,
+              "y": 0.9354289952754276
+            },
+            {
+              "x": 0.23156535862174002,
+              "y": 0.9242387837592239
+            }
+          ],
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "area": {
+          "region": {
+            "x": 0.22731611995289666,
+            "y": 0.0379968596514346,
+            "w": 0.614596081747004,
+            "h": 0.9037408374633343
+          },
+          "status": "confirmed",
+          "polygon": [
+            {
+              "x": 0.24325643885714315,
+              "y": 0.04435703772778596
+            },
+            {
+              "x": 0.8319287980213701,
+              "y": 0.06285114180844259
+            },
+            {
+              "x": 0.8377035795761623,
+              "y": 0.9354289952754276
+            },
+            {
+              "x": 0.23156535862174002,
+              "y": 0.9242387837592239
+            }
+          ]
+        },
+        "base": "measured",
+        "analysis": {
+          "version": 3,
+          "key": "analysis-2bb5c14a",
+          "area": {
+            "region": {
+              "x": 0.22731611995289666,
+              "y": 0.0379968596514346,
+              "w": 0.614596081747004,
+              "h": 0.9037408374633343
+            },
+            "status": "confirmed",
+            "method": "manual-frame",
+            "confidence": 1,
+            "polygon": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ]
+          },
+          "exposure": {
+            "recipe": {
+              "version": "robust-p60-highlight-2",
+              "target": 0.8,
+              "highlightCeiling": 16,
+              "minSamples": 16,
+              "minValidFraction": 0.05,
+              "maxAbsEV": 16
+            },
+            "percentiles": {
+              "p50": 0.013378225183554643,
+              "p60": 0.01976006344364753,
+              "p99": 0.2970178028811207
+            },
+            "requestedEV": 5.339340515895504,
+            "highlightEV": 5.751378687906596,
+            "softEV": 5.01633122596956,
+            "appliedEV": 5.01633122596956,
+            "highlightReductionEV": 0.32300928992594446,
+            "highlightLimited": true,
+            "fallback": null,
+            "candidateVersion": "scene-distribution-1",
+            "baselineEV": 5.01633122596956,
+            "correctionEV": 0,
+            "inference": {
+              "lowerEV": 4.110294435072471,
+              "upperEV": 1.8881046368100542,
+              "rangeEV": 5.998399071882526,
+              "highSupport": 0,
+              "lowSupport": 0,
+              "assumption": "Distribution shape only; no measured scene exposure or semantic classification"
+            },
+            "candidateFallback": null
+          },
+          "mode": "frame-edge-connected-content-3",
+          "status": "estimated",
+          "sourceRevision": "v2-82748b99",
+          "baseId": "base-1f43705e-bee1-4d38-b5aa-e69d200ef6ba",
+          "cols": 160,
+          "rows": 150,
+          "samples": 24000,
+          "counts": {
+            "invalid": 0,
+            "clipped": 0,
+            "logFloor": 0,
+            "edgeBase": 302,
+            "edgeHolder": 0,
+            "edgeClear": 0,
+            "outsideArea": 11429,
+            "kept": 12269
+          },
+          "keptFraction": 0.5112083333333334,
+          "maskId": "mask-d234f03c",
+          "baseEvidence": "measured",
+          "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+          "fullSourceMedian": 0.03771137662990122,
+          "fullSourceRequestedEV": 2.2549251853334247
+        }
+      }
+    },
+    {
+      "filename": "_DSF9235.RAF",
+      "sourceSHA256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+      "before": {
+        "dimensions": [
+          6032,
+          4032
+        ],
+        "previewSHA256": "2104eee77e5836aa5affd025989798c85d4b9d48c5985d58ea2f19e352a47dd9",
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "automatic",
+          "quad": [
+            {
+              "x": 0.16943937782705065,
+              "y": 0.04167667828363725
+            },
+            {
+              "x": 0.7911928022774377,
+              "y": 0.035505912516159185
+            },
+            {
+              "x": 0.7881438906829775,
+              "y": 0.9633914455630118
+            },
+            {
+              "x": 0.17356428127347245,
+              "y": 0.9540344200577515
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.1777031574578409,
+              "y": 0.9478665822492393
+            }
+          ],
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "detection": {
+          "confidence": 0.84,
+          "reason": "coherent-quadrilateral",
+          "analysisSafe": true
+        },
+        "region": {
+          "x": 0.16943937782705065,
+          "y": 0.035505912516159185,
+          "w": 0.6217534244503871,
+          "h": 0.9278855330468526
+        },
+        "mode": null,
+        "area": {
+          "region": {
+            "x": 0.16943937782705065,
+            "y": 0.035505912516159185,
+            "w": 0.6217534244503871,
+            "h": 0.9278855330468526
+          },
+          "status": "confirmed",
+          "polygon": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.1777031574578409,
+              "y": 0.9478665822492393
+            }
+          ]
+        },
+        "sourceVersion": 1,
+        "import": {
+          "id": 1,
+          "started": 1694,
+          "phase": "ready",
+          "stages": {
+            "preview": 530,
+            "frameAnalysis": 4962,
+            "baseAnalysis": 25,
+            "v2Analysis": 803,
+            "renderSubmit": 468,
+            "finishImport": 7354
+          },
+          "sourceVersion": 0,
+          "cancelled": false,
+          "preliminaryTransformMs": 129,
+          "jpegPrepareMs": 634,
+          "preliminaryKind": "approximate-positive",
+          "preliminaryPaintMs": 1932,
+          "firstVisibleMs": 1932,
+          "readyMs": 67299,
+          "success": true,
+          "decoder": {
+            "cacheHit": false,
+            "totalMs": 58082,
+            "stages": {
+              "librawInit": 371,
+              "fileRead": 210,
+              "rawOpen": 113,
+              "metadata": 62,
+              "rawImageData": 56392,
+              "rgbConvert": 856
+            },
+            "memory": {
+              "fileBytes": 50245120,
+              "rgb16Bytes": 145926144,
+              "sourceBytes": 291852288,
+              "wasmHeapBytes": null
+            },
+            "activeWorkers": 0,
+            "cacheBytes": 291852288
+          },
+          "renderMetrics": {
+            "cpuRenderMs": 0,
+            "gpu": {
+              "backend": "gpu",
+              "frames": 1,
+              "sourceUploads": 1,
+              "validationError": 0,
+              "lastSubmitMs": 224,
+              "lastGpuMs": null,
+              "reason": null,
+              "contextLosses": 0,
+              "positiveRequests": 1,
+              "positiveReconstructions": 1,
+              "positiveDiscards": 0,
+              "positiveCancelled": 0,
+              "positiveCacheBytes": 20966400,
+              "positivePreparationMs": 25,
+              "positiveReconstructionMs": 0,
+              "positiveCopyMs": 0,
+              "positiveStartedAt": 68727,
+              "positiveReadyAt": 68951,
+              "histogramReconstructions": 0,
+              "histogramSourceBytes": 0,
+              "preference": "auto",
+              "interactiveLimit": 700,
+              "sourceVersion": 1,
+              "sourceMatches": true,
+              "positivePending": false,
+              "positiveKey": "6893b9f0",
+              "reconstructionBackend": "gpu",
+              "positiveUploads": 0,
+              "validationUploads": 4,
+              "positiveUploadSubmitMs": 0,
+              "gpuReconstructionSubmitMs": 25,
+              "gpuReconstructionMs": null,
+              "sourcePreparationMs": 0,
+              "sourceUploadSubmitMs": 8,
+              "positiveFloatError": 6.556510925292969e-7,
+              "technicalRelativeError": 0.0000014097529500556431,
+              "capabilities": {
+                "floatColor": true
+              },
+              "textureBytes": 36691200,
+              "mainPositive": {
+                "conversions": 0,
+                "adoptions": 0,
+                "reconstructionMs": 0,
+                "bytes": 0
+              }
+            }
+          },
+          "memory": {
+            "sourceBytes": 291852288,
+            "previewBytes": 15724800,
+            "legacyPreviewBytes": 5241600
+          },
+          "technicalPaintMs": 68407,
+          "usableMs": 68407,
+          "elapsedMs": 68407,
+          "heap": null
+        },
+        "sameBoundedSourceAsPR96": true
+      },
+      "after": {
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "automatic",
+          "quad": [
+            {
+              "x": 0.16943937782705065,
+              "y": 0.04167667828363725
+            },
+            {
+              "x": 0.7911928022774377,
+              "y": 0.035505912516159185
+            },
+            {
+              "x": 0.7881438906829775,
+              "y": 0.9633914455630118
+            },
+            {
+              "x": 0.17356428127347245,
+              "y": 0.9540344200577515
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.1777031574578409,
+              "y": 0.9478665822492393
+            }
+          ],
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "area": {
+          "region": {
+            "x": 0.16943937782705065,
+            "y": 0.035505912516159185,
+            "w": 0.6217534244503871,
+            "h": 0.9278855330468526
+          },
+          "status": "confirmed",
+          "polygon": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.1777031574578409,
+              "y": 0.9478665822492393
+            }
+          ]
+        },
+        "base": "measured",
+        "analysis": {
+          "version": 3,
+          "key": "analysis-37df0caf",
+          "area": {
+            "region": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "status": "confirmed",
+            "method": "manual-frame",
+            "confidence": 1,
+            "polygon": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.1777031574578409,
+                "y": 0.9478665822492393
+              }
+            ]
+          },
+          "exposure": {
+            "recipe": {
+              "version": "robust-p60-highlight-2",
+              "target": 0.8,
+              "highlightCeiling": 16,
+              "minSamples": 16,
+              "minValidFraction": 0.05,
+              "maxAbsEV": 16
+            },
+            "percentiles": {
+              "p50": 0.013285291493128184,
+              "p60": 0.01758173664095625,
+              "p99": 0.04898294939980155
+            },
+            "requestedEV": 5.507850514761371,
+            "highlightEV": 8.351576544571088,
+            "softEV": 5.49398707880264,
+            "appliedEV": 5.49398707880264,
+            "highlightReductionEV": 0.013863435958731074,
+            "highlightLimited": true,
+            "fallback": null,
+            "candidateVersion": "scene-distribution-1",
+            "baselineEV": 5.49398707880264,
+            "correctionEV": 0,
+            "inference": {
+              "lowerEV": 4.93037495069241,
+              "upperEV": 1.1019794267529281,
+              "rangeEV": 6.032354377445338,
+              "highSupport": 0,
+              "lowSupport": 0,
+              "assumption": "Distribution shape only; no measured scene exposure or semantic classification"
+            },
+            "candidateFallback": null
+          },
+          "mode": "frame-edge-connected-content-3",
+          "status": "estimated",
+          "sourceRevision": "v2-9c5429a9",
+          "baseId": "base-18f7e239-3ff2-4d27-95c1-040c465d28c0",
+          "cols": 160,
+          "rows": 150,
+          "samples": 24000,
+          "counts": {
+            "invalid": 0,
+            "clipped": 0,
+            "logFloor": 0,
+            "edgeBase": 1,
+            "edgeHolder": 0,
+            "edgeClear": 0,
+            "outsideArea": 10685,
+            "kept": 13314
+          },
+          "keptFraction": 0.55475,
+          "maskId": "mask-4c840209",
+          "baseEvidence": "measured",
+          "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+          "fullSourceMedian": 0.026496490165726264,
+          "fullSourceRequestedEV": 2.764123734440448
+        }
+      }
+    }
+  ]
+}

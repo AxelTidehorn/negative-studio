@@ -20,8 +20,10 @@ finishImport=function(message){
  $('preview').width=workingPreview.width;$('preview').height=workingPreview.height;$('preview').classList.remove('hidden');$('empty').classList.add('hidden');
  for(const id of ['export','sample','recalc','analyzeLevels'])$(id).disabled=false;
  sampleMode=false;
- const f=roll[activeFrame];if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropMethod='auto';state.cropConfirmed=d.confidence>=.7;}
- $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera gärna före export.')+(f&&!NSFileFormats.isRaw(f.file.name)&&state.engine==='calibrated4'&&!NSV2Platform.validSource(working)?' · Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.':''));
+ const f=roll[activeFrame];
+ if(!f?.crop&&state.cropMethod!=='manual'&&!state.cropLocked){const d=CE.detectFrame(workingPreview);state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropMethod='auto';applyFrameSelection(NSFrameSelection.detected(state.frameDetection,working));}
+ else applyFrameSelection(NSFrameSelection.restore(state,cropRegion,working),{preserveBounds:true});
+ $('cropInset').value=1;updateCropUI();updateBase();analyzeLevels();render();setStatus(message+(state.cropConfirmed?'':' · Filmrutan är osäker – kontrollera och bekräfta bildytan.')+(f&&!NSFileFormats.isRaw(f.file.name)&&state.engine==='calibrated4'&&!NSV2Platform.validSource(working)?' · Standard: V2 kräver RAW eller verifierad linjär Rec.2020-TIFF.':''));
 };
 const importRawOriginal=importRawRGB16;
 importRawRGB16=async function(im,name,meta){sourceInfo={rawMetadata:im.decoderRecipe||null,v2Decoded:!!im.v2Decoded,encoding:'linear',gain:im.linearGain4||1,whiteBalance:meta?.color_data?.cam_mul||null,decoder:'libraw-wasm@1.6.0',domain:'raw-'+(im.v2Decoded?'wide-v2-1':im.rawMode4||'reference')+':'+(meta?.camera_model||'unknown'),rawMode4:im.rawMode4||'reference',colorSpace:im.colorSpace||'srgb',diagnostics4:im.inputDiagnostics4,label:im.rawMode4==='wide'?'Experimentell RAW · Rec.2020 · flyttal · inversion före sRGB':im.rawMode4==='protected'?'Avkodad RAW · linjär sRGB · Beta 4-färgmarginal (Rec.2020 → sRGB, gemensam ½-skala)':'Avkodad RAW · 16 bit · linjär sRGB · 3.9-import'};await importRawOriginal(im,name,meta);};
@@ -80,12 +82,31 @@ chooseFrame=async function(i,{force=false,full=false}={}){
 };
 
 $('frameOptions').addEventListener('toggle',()=>{if($('frameOptions').open)cropDisplayDismissed=false;drawCrop();});
-function updateCropUI(){$('cropStatus').textContent=(state.cropMethod==='manual'?'Manuell filmruta':'Automatisk filmruta')+(state.cropConfirmed?' · bekräftad':' · osäker, kontrollera rektangeln');$('cropConfirm').hidden=!!state.cropConfirmed&&cropDisplayDismissed;$('cropLock').textContent=state.cropLocked?'Lås upp filmruta':'Lås filmruta';$('cropVisible').checked=state.cropVisible!==false;$('cropExport').checked=!!state.cropExport;drawCrop();}
-function cropChanged(method='manual'){if(method==='manual')delete state.frameDetection;state.cropMethod=method;state.cropConfirmed=method==='manual';saveCrop();updateCropUI();updateBase();analyzeLevels();scheduleRender(true);}
+function applyFrameSelection(selection,{preserveBounds=false}={}){const keep=preserveBounds&&NSFrameSelection.matches(selection,cropRegion,working);state.frameSelection=selection;if(!keep)cropRegion=NSFrameDetector.bounds(selection.quad);state.cropConfirmed=selection.status!=='pending';}
+function currentFrameSelection(){return NSFrameSelection.matches(state.frameSelection,cropRegion,working)?state.frameSelection:NSFrameSelection.restore(state,cropRegion,working);}
+function updateCropUI(){$('cropStatus').textContent=(state.cropMethod==='manual'?'Manuell filmruta':'Automatisk filmruta')+(state.cropConfirmed?' · bekräftad':' · osäker, kontrollera rektangeln');$('cropConfirm').hidden=!!state.cropConfirmed&&cropDisplayDismissed;$('cropLock').textContent=state.cropLocked?'Lås upp filmruta':'Lås filmruta';$('cropVisible').checked=state.cropVisible!==false;$('cropExport').checked=!!state.cropExport;drawCrop();globalThis.FILMLABB_FRAME_REVIEW?.refresh();}
+function cropChanged(method='manual',{keepQuad=false}={}){
+ if(method==='manual'){
+  delete state.frameDetection;state.cropConfidence=0;
+  const quad=keepQuad?currentFrameSelection().quad:NSFrameSelection.rectangle(cropRegion);
+  applyFrameSelection(NSFrameSelection.create(quad,{sourceDimensions:working?{width:working.width,height:working.height}:undefined}),{preserveBounds:!keepQuad});
+ }
+ state.cropMethod=method;saveCrop();updateCropUI();updateBase();analyzeLevels();scheduleRender(true);saveCurrentFrame();setStatus('Filmrutan har ändrats. Bekräfta bildytan för automatisk analys.');globalThis.FILMLABB_FRAME_REVIEW?.openPending();
+}
 setCropByInset=function(v){if(state.cropLocked)return;const n=Number(v)/100;cropRegion={x:n,y:n,w:1-2*n,h:1-2*n};updateCropLabel();cropChanged();};
-$('cropAuto').onclick=()=>{if(!workingPreview||cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före automatisk detektering.');return;}const d=CE.detectFrame(workingPreview);cropRegion=d.region;state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropConfirmed=d.confidence>=.7;state.cropMethod='auto';saveCrop();updateCropUI();updateBase();analyzeLevels();};
+$('cropAuto').onclick=()=>{if(!workingPreview||cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före automatisk detektering.');return;}const d=CE.detectFrame(workingPreview);state.frameDetection={...d,sourceDimensions:{width:working.width,height:working.height}};state.cropConfidence=d.confidence;state.cropMethod='auto';applyFrameSelection(NSFrameSelection.detected(state.frameDetection,working));saveCrop();updateCropUI();updateBase();analyzeLevels();render();saveCurrentFrame();globalThis.FILMLABB_FRAME_REVIEW?.openPending();};
 $('cropReset').onclick=()=>{if(cropDrag)return;if(state.cropLocked){setStatus('Lås upp filmrutan före återställning.');return;}cropRegion={x:0,y:0,w:1,h:1};cropChanged();};
-$('cropConfirm').onclick=()=>{cropDisplayDismissed=true;state.cropConfirmed=true;$('frameOptions').open=false;updateCropUI();saveCurrentFrame();render();};
+function confirmFrameSelection(){
+ if(!working||cropDrag||rollLoading||exportBusy)return;
+ const s=currentFrameSelection();applyFrameSelection({...s,status:'confirmed'},{preserveBounds:true});cropDisplayDismissed=true;
+ // A confirmed detector proposal retains its quad; this records consent rather
+ // than changing detector evidence/confidence or composition/export geometry.
+ saveCrop();updateBase();analyzeLevels();saveCurrentFrame();$('frameOptions').open=false;
+ globalThis.FILMLABB_GEOMETRY?.setTool(null);updateCropUI();render();
+ setStatus(s.origin==='full'?'Hela bilden har valts. Bildanalysen har uppdaterats.':'Filmrutan är bekräftad. Bildanalysen har uppdaterats.');
+ if(['frameReviewConfirm','frameReviewFull','cropConfirm'].includes(document.activeElement?.id))$('frameReviewEdit')?.focus?.({preventScroll:true});
+}
+$('cropConfirm').onclick=confirmFrameSelection;
 $('cropLock').onclick=()=>{state.cropLocked=!state.cropLocked;updateCropUI();saveCurrentFrame();};
 $('cropVisible').onchange=e=>{state.cropVisible=e.target.checked;drawCrop();saveCurrentFrame();};
 $('cropExport').onchange=e=>setLegacyCropExport(e.target.checked);
@@ -122,27 +143,37 @@ function finishCropDrag(e){
  e.stopImmediatePropagation();const id=cropDrag.pointerId;cropDrag=null;
  const picture=$('picture');if(picture.hasPointerCapture(id))picture.releasePointerCapture(id);
  // Cancellation/lost capture keeps the last user-selected coordinates too.
- cropChanged();
+ cropChanged('manual',{keepQuad:true});
 }
 $('picture').addEventListener('pointerdown',e=>{
- const side=e.target.dataset?.side;
- if(!['left','right','top','bottom'].includes(side)||state.cropLocked||sampleMode||!workingPreview||cropDrag||rollLoading||exportBusy)return;
+ const side=e.target.dataset?.side,corner=e.target.dataset?.frameCorner;
+ if((!['left','right','top','bottom'].includes(side)&&corner===undefined)||state.cropLocked||sampleMode||!workingPreview||cropDrag||rollLoading||exportBusy||e.isPrimary===false||(e.pointerType==='mouse'&&e.button!==0))return;
  e.preventDefault();e.stopImmediatePropagation();dragPoint=null;
- const p=imagePoint(e),r=cropRegion,edge=side==='left'?r.x:side==='right'?r.x+r.w:side==='top'?r.y:r.y+r.h;
- cropDrag={side,pointerId:e.pointerId,offset:(side==='left'||side==='right'?p.x:p.y)-edge};
- delete state.frameDetection;state.cropMethod='manual';state.cropConfirmed=true;saveCurrentFrame();updateCropUI();
+ const s=currentFrameSelection(),quad=s.quad.map(p=>({...p})),p=imagePoint(e);
+ // The visible polygon supplies the exact source edge index; legacy rectangle
+ // handles keep their established top/right/bottom/left correspondence.
+ const edge=e.target.dataset?.frameEdge===undefined?['top','right','bottom','left'].indexOf(side):Number(e.target.dataset.frameEdge);
+ cropDrag={pointerId:e.pointerId,start:p,quad,corner:corner===undefined?null:Number(corner),edge};
+ delete state.frameDetection;state.cropConfidence=0;state.cropMethod='manual';applyFrameSelection(NSFrameSelection.create(quad,{sourceDimensions:{width:working.width,height:working.height}}));saveCurrentFrame();updateCropUI();
  $('picture').setPointerCapture(e.pointerId);
 },true);
 $('picture').addEventListener('pointermove',e=>{
  if(!cropDrag||e.pointerId!==cropDrag.pointerId)return;
  e.preventDefault();e.stopImmediatePropagation();
- const p=imagePoint(e),r={...cropRegion},right=r.x+r.w,bottom=r.y+r.h;
- const minW=Math.min(r.w,1/working.width),minH=Math.min(r.h,1/working.height);
- if(cropDrag.side==='left'){r.x=CE.clamp(p.x-cropDrag.offset,0,right-minW);r.w=right-r.x;}
- if(cropDrag.side==='right')r.w=CE.clamp(p.x-cropDrag.offset-r.x,minW,1-r.x);
- if(cropDrag.side==='top'){r.y=CE.clamp(p.y-cropDrag.offset,0,bottom-minH);r.h=bottom-r.y;}
- if(cropDrag.side==='bottom')r.h=CE.clamp(p.y-cropDrag.offset-r.y,minH,1-r.y);
- cropRegion=r;saveCurrentFrame();updateCropUI();
+ const p=imagePoint(e),d=cropDrag,W=working.width,H=working.height,quad=d.quad.map(v=>({...v}));
+ let dx=p.x-d.start.x,dy=p.y-d.start.y,indices;
+ if(d.corner!==null)indices=[d.corner];
+ else{
+  indices=[d.edge,(d.edge+1)%4];const a=quad[indices[0]],b=quad[indices[1]],nx=(b.y-a.y)*H,ny=-(b.x-a.x)*W,l2=nx*nx+ny*ny,t=(dx*W*nx+dy*H*ny)/l2;dx=t*nx/W;dy=t*ny/H;
+ }
+ // Clamp the translation as a unit, preserving straight sides and grab offset.
+ // Stop before a corner crosses another side; no format/aspect prior is used.
+ let fraction=1;
+ for(const i of indices){const q=quad[i];if(dx<0)fraction=Math.min(fraction,-q.x/dx);if(dx>0)fraction=Math.min(fraction,(1-q.x)/dx);if(dy<0)fraction=Math.min(fraction,-q.y/dy);if(dy>0)fraction=Math.min(fraction,(1-q.y)/dy);}
+ const at=t=>quad.map((q,i)=>indices.includes(i)?{x:CE.clamp(q.x+dx*t),y:CE.clamp(q.y+dy*t)}:{...q});
+ const valid=q=>{const r=NSFrameDetector.bounds(q);return NSFrameDetector.validQuad(q)&&r.w>=1/W-1e-12&&r.h>=1/H-1e-12;};
+ if(!valid(at(fraction))){let lo=0,hi=fraction;for(let i=0;i<40;i++){const mid=(lo+hi)/2;if(valid(at(mid)))lo=mid;else hi=mid;}fraction=lo;}
+ applyFrameSelection(NSFrameSelection.create(at(fraction),{sourceDimensions:{width:W,height:H}}));saveCurrentFrame();updateCropUI();
 },true);
 for(const type of ['pointerup','pointercancel','lostpointercapture'])$('picture').addEventListener(type,finishCropDrag,true);
 const applyViewOriginal=applyView;applyView=function(){applyViewOriginal();drawCrop();};

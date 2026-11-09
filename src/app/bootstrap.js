@@ -32,12 +32,7 @@ for(const id of [...controls.map(c=>c[0]),'profileStrength','cropInset']){
  const slider=$(id);if(!slider)continue;
  slider.title=(slider.title?slider.title+' · ':'')+'Dubbelklicka eller dubbeltryck för att återställa';
  slider.addEventListener('dblclick',e=>{e.preventDefault();restoreSliderDefault(slider,id)});
- let previousTap=0;
- slider.addEventListener('touchend',e=>{
-  const now=Date.now();
-  if(now-previousTap<350){e.preventDefault();previousTap=0;restoreSliderDefault(slider,id)}
-  else previousTap=now;
- },{passive:false});
+ globalThis.NSRangeInteraction?.resetOnDoubleTap(slider,()=>restoreSliderDefault(slider,id));
 }
 $('auto').checked=!!state.auto;$('noBase').checked=!!state.noBase;$('autoLevels').checked=!!state.autoLevels;
 function updateValues(){for(const [id,,min,max,step,,unit] of controls){const v=Number(state[id]);$(id+'Value').textContent=(id==='exposure'&&v>0?'+':'')+v.toFixed(Math.max(step<1?2:0,(String(step).split('.')[1]||'').length))+unit}}

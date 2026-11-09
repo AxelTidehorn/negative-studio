@@ -114,3 +114,20 @@
 }
 
 #geometryHandles{z-index:16}
+
+/* Frame acceptance sits outside the photograph; it never covers its corners. */
+.frame-review{display:flex;flex:none;align-items:center;justify-content:space-between;gap:8px;padding:4px 6px;font-size:12px}
+.frame-review[hidden],.frame-review [hidden]{display:none!important}
+.frame-review p{margin:3px 0 0;max-width:58ch;line-height:1.35;color:var(--ui-muted)}
+.frame-review-actions{display:flex;flex-wrap:wrap;gap:6px;flex-shrink:0}
+.frame-review .btn{min-height:36px}
+:is(#geometryOverlay,#geometryHandles) .frame-touch{fill:transparent;pointer-events:all;touch-action:none;cursor:move}
+:is(#geometryOverlay,#geometryHandles) .frame-handle{fill:var(--ui-frame);stroke:var(--ui-guide-edge);stroke-width:1;pointer-events:none}
+@media(max-width:900px){.frame-review{flex-wrap:wrap;gap:4px}.frame-review-actions{flex-shrink:1}.frame-review p{font-size:11px}.frame-review .btn{min-height:40px}}
+
+@media(max-height:600px){
+ .frame-review-active #originalDetail{display:none}
+ .frame-review-active .image-footer:has(.image-status:not([data-level="error"])){display:none}
+ .frame-review-active .image-controls{justify-content:center}
+ .frame-review-active #frameReviewTitle{display:none}
+}
