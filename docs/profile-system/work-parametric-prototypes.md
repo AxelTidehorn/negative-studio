@@ -154,9 +154,15 @@ RGB8-kvantiseringen av de tätare skuggorna. Alla fem RGB16-utsnitten har **noll
 nya min-/maxkodspixlar för båda profilerna. Det utesluter inte mörk detaljförlust
 på andra motiv eller vid 100 %; Golds täthet lämnas ändå exakt enligt Work.
 
-Fullständig GitHub CI körs på PR:n. I denna Linuxmiljö fallerar det befintliga
-`ui-motion-d2-browser.mjs` på statusradens geometri även på **oförändrad main
-f33aea7**; samma påstående vid rad 60. Det separata vanliga animationstestet
-passerar isolerat i alla tio viewport-/reduced-motion-fall. Inga UI-regler eller
-animationstester ändras för att dölja miljöskillnaden. Slutlig CI-status redovisas
-i PR:n, separat från dessa lokala resultat.
+Fullständig GitHub CI körs på PR:n. I inledande lokala körningar fallerade det befintliga
+`ui-motion-d2-browser.mjs` intermittent på statusradens geometri, även på
+**oförändrad main f33aea7** (rad 60). Slutlig full lokal körning på `3f70886`
+passerade sedan **131/131 grupper**, 0 fel, **897,39 s**, inklusive båda
+animationstesterna. Slutlig CI-status redovisas i PR:n.
+
+Första fullständiga GitHub-körningen gav 130/131: endast `ui-202-browser.mjs`
+fallerade när bildhöjd jämfördes efter mobil/desktop-byte och fokusändring.
+Testet mätte före avslutad layout och antog att scrollen började på 0. Det
+återställer nu scrollen, väntar på layoutens RAF och väntar på faktisk höjd
+i stället för 150 ms. Samma krav på minst 50 px ökning samt header-/footerläge
+behålls. Ingen produktions-UI, konvertering eller profilparameter ändras.
