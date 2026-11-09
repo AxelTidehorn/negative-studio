@@ -1,0 +1,168 @@
+{
+  "baselineCommit": "22b641818c1836548dc3ca335f39054073148dbb",
+  "status": "Observed local candidate measurements before executor became unavailable. Summary transcribed from captured tool outputs; full local trace files are inaccessible. Final recovered revision requires CI and future timing repeat.",
+  "sample": {
+    "provider": "raw.pixls.us",
+    "id": 1178,
+    "camera": "Fujifilm X-T20",
+    "format": "14-bit compressed RAF",
+    "fileBytes": 25017216,
+    "referenceFileSHA256": "a23045101b2912e64f154100d646c228c0d16585d21e95e0d1a006e537f7784c",
+    "decoded": {
+      "width": 6032,
+      "height": 4028,
+      "sourceBytes": 291562752,
+      "rgb16Bytes": 145781376,
+      "previewBytes": 15708000
+    }
+  },
+  "method": "Linux headless Chromium, 1440x900, auto/GPU (software environment). Starts at file-input change, excludes automation upload transfer. First technical paint is a double-rAF proxy, not physical display latency. Fresh runs include cold page then same-page new File objects; reselect reuses the active File. No forced GC. Same V2 locked decode, Neutral, default editing. No CPU baseline comparison claimed.",
+  "before": {
+    "fresh": [
+      {
+        "sourceReadyMs": 32531.6,
+        "technicalPaintMs": 32772.3
+      },
+      {
+        "sourceReadyMs": 32081.2,
+        "technicalPaintMs": 32129.1
+      },
+      {
+        "sourceReadyMs": 31866.2,
+        "technicalPaintMs": 31926
+      }
+    ],
+    "activeFileReselect": {
+      "sourceReadyMs": 28968.8,
+      "technicalPaintMs": 29025.3
+    },
+    "stagesFreshMs": {
+      "fileRead": [
+        1763.5,
+        1909.8,
+        1743.5
+      ],
+      "openIncludingInit": [
+        61.3,
+        73.2,
+        185.4
+      ],
+      "rawImageDataIncludingRetrieval": [
+        21131.8,
+        21419,
+        23795.7
+      ],
+      "rgbConvert": [
+        8134.4,
+        7932.7,
+        5469.8
+      ],
+      "preview": [
+        150.2,
+        150.3,
+        151.3
+      ],
+      "frameAnalysis": [
+        28.1,
+        25.6,
+        18.2
+      ],
+      "v2Analysis": [
+        82.1,
+        160.4,
+        185.3
+      ]
+    }
+  },
+  "afterCameraPreview": {
+    "fresh": [
+      {
+        "sourceReadyObservedMs": 24658.8,
+        "technicalPaintObservedMs": 24841.3,
+        "preliminaryPaintMs": 205.8,
+        "importReadyMs": 22889.5
+      },
+      {
+        "sourceReadyObservedMs": 24806.5,
+        "technicalPaintObservedMs": 24887.6,
+        "preliminaryPaintMs": 349.6,
+        "importReadyMs": 23334
+      },
+      {
+        "sourceReadyObservedMs": 24173.6,
+        "technicalPaintObservedMs": 24279.7,
+        "preliminaryPaintMs": 251.6,
+        "importReadyMs": 22753.8
+      }
+    ],
+    "activeFileReselect": {
+      "sourceReadyObservedMs": 3167.4,
+      "technicalPaintObservedMs": 3191.7,
+      "cacheHit": true
+    },
+    "stagesFreshMs": {
+      "librawInit": [
+        66.1,
+        99.5,
+        91.3
+      ],
+      "fileRead": [
+        41.1,
+        89,
+        64.8
+      ],
+      "rawOpen": [
+        44.3,
+        81.5,
+        41.1
+      ],
+      "metadata": [
+        8,
+        21.5,
+        5.6
+      ],
+      "rawImageData": [
+        20991.5,
+        21905.2,
+        21520.4
+      ],
+      "rgbConvert": [
+        181.4,
+        173.7,
+        179.8
+      ]
+    }
+  },
+  "afterNoCameraProof": {
+    "freshTechnicalPaintMs": [
+      24191.6,
+      24839.1,
+      26016.6
+    ],
+    "activeFileReselectTechnicalPaintMs": 3956.7,
+    "method": "RAF extraction disabled in harness, also suppressing subsequent queue thumbnails."
+  },
+  "cpu6mp": {
+    "firstTechnicalPaintMs": [
+      3133.4,
+      3590.9
+    ],
+    "activeFileReselectTechnicalPaintMs": 1834.1,
+    "sourceReadyObservedMs": [
+      1488.8,
+      2075
+    ],
+    "note": "Synthetic CFA DNG, not the RAF; no paired CPU baseline survived the environment interruption."
+  },
+  "sourceParity": {
+    "samples": 72890688,
+    "mismatches": 0,
+    "sourceFloat32SHA256": "55b469ee14257b524d28413e13a9745d4caeb0fc186c01f2a1434a670b9e69e8",
+    "method": "Every recovered Float32 sample compared with original independent LibRaw worker uint16 / 65535 rounded to Float32."
+  },
+  "pilotHeap": {
+    "beforeColdMainUsedBytes": 1185517221,
+    "afterColdMainUsedBytes": 324456561,
+    "scope": "Illustrative unforced main JS heap snapshots from earlier pilot runs on the same RAF/settings, not total process memory or peak. Worker/WASM/GPU heap not measured."
+  }
+}

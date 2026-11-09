@@ -1125,3 +1125,9 @@ input[type=range]:disabled::-moz-range-thumb {
     background:var(--ui-scroll-track)
   }
 }
+
+/* Camera proof is presentation-only and cannot receive source-coordinate tools. */
+.import-camera-proof{position:absolute;inset:0;z-index:13;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--ui-overlay);color:var(--ui-overlay-text);pointer-events:none}
+.import-camera-proof canvas{max-width:85%;max-height:70%;object-fit:contain}
+.import-camera-proof p{padding:8px;text-align:center;font-size:12px}
+.import-cancel{position:absolute;z-index:50;top:16px;bottom:auto;left:50%;transform:translateX(-50%);pointer-events:auto}

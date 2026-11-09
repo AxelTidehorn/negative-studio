@@ -35,6 +35,8 @@ export const assets = {
  "i18n-messages.js": "src/ui/i18n-messages.js",
  "appearance.js": "src/ui/appearance.js",
  "file-formats.js": "src/import/file-formats.js",
+ "raw-worker.js": "src/import/raw-worker.js",
+ "import-lifecycle.js": "src/import/import-lifecycle.js",
  "raw-decoder.js": "src/import/raw-decoder.js",
  "raw-input.js": "src/import/raw-input.js",
  "tiff-codec.js": "src/import/tiff-codec.js",
@@ -160,6 +162,7 @@ export const scripts = [
  {"file":"diagnostics-controller.js","harness":false,"defer":true},
  {"file":"build-info.js","harness":false,"defer":true},
  {"file":"register-offline.js","harness":false,"defer":false},
+ {"file":"import-lifecycle.js","harness":true,"defer":true},
 ].map(asset=>({...asset,source:assets[asset.file]}));
 export function sourcePath(file){
  if(typeof file!=='string')return file;

@@ -1,0 +1,8 @@
+/* Optional real RAW parity; output hashes, never source pixels.
+   node tools/check-import-source.mjs FILE OUTPUT */
+import fs from 'node:fs';import crypto from 'node:crypto';import {ensureBuild} from './build-artifact.mjs';import {browserHarness} from '../tests/helpers/browser.mjs';
+const [file,out]=process.argv.slice(2);if(!out)throw Error('FILE OUTPUT required');ensureBuild();const h=await browserHarness();
+try{const p=await h.browser.newPage({serviceWorkers:'block'});p.setDefaultTimeout(600000);await p.goto(h.url);await p.locator('#imageFile').setInputFiles(file);await p.waitForFunction(()=>working&&!rollLoading);
+ const result=await p.evaluate(async()=>{const D=(await import('./libraw/dist/index.js')).default,d=new D(),file=roll[activeFrame].file,options=NSV2Platform.decoderOptions();try{await d.open(new Uint8Array(await file.arrayBuffer()),options);const raw=await d.imageData();let mismatches=0;for(let i=0;i<raw.data.length;i++)if(Math.fround(raw.data[i]/65535)!==working.data[i])mismatches++;const hash=await crypto.subtle.digest('SHA-256',working.data);return {width:working.width,height:working.height,samples:raw.data.length,mismatches,sourceSHA256:Array.from(new Uint8Array(hash),v=>v.toString(16).padStart(2,'0')).join(''),options,method:'Every Float32 channel compared against original libraw-wasm worker RGB16 divided by 65535 and rounded to Float32. Same full-resolution options; no JPEG source.'};}finally{d.dispose();}});
+ if(result.mismatches)throw Error(JSON.stringify(result));fs.writeFileSync(out,JSON.stringify({...result,fileSHA256:crypto.createHash('sha256').update(fs.readFileSync(file)).digest('hex')},null,2));console.log('PASS',JSON.stringify(result));
+}finally{await h.close();}

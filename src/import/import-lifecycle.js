@@ -1,0 +1,47 @@
+/* Import ownership and diagnostics. Preliminary camera JPEG is a separate DOM
+   canvas: never a source, recipe, histogram, geometry or export input. */
+'use strict';
+(()=>{
+ const clock=()=>performance.now();let trace=null,next=0,proof=null,cancelButton=null;
+ const painted=fn=>typeof requestAnimationFrame==='function'?requestAnimationFrame(()=>requestAnimationFrame(fn)):fn();
+ const stageText={initialise:'Initierar RAW-avkodare…',read:'Läser fil…',decode:'Avkodar RAW…',convert:'Förbereder bild…',prepare:'Analyserar negativ…'};
+ function phase(stage){if(!trace||trace.cancelled||trace.usableMs!==undefined)return;trace.phase=stage;const text=stageText[stage];if(text)setStatus(text);}
+ function removeProof(){if(proof){proof.remove();proof=null;}if(cancelButton){cancelButton.remove();cancelButton=null;}}
+ function cancel(){if(!rollLoading)return;frameLoadSequence++;NSRawDecoder.cancel();if(trace){trace.cancelled=true;trace.elapsedMs=clock()-trace.started;}rollLoading=false;activeFrame=-1;working=workingPreview=hires=src=previewSrc=null;stopPreviewWork();setFrameLoading(false);removeProof();$('preview').classList.add('hidden');$('gpuPreview')?.classList.add('hidden');$('empty').classList.remove('hidden');$('export').disabled=true;refreshRollUI();setStatus('Import avbruten.');}
+ function rawPaint(t){if(t!==trace||t.cancelled||t.technicalPaintMs!==undefined)return;painted(()=>{if(t!==trace||t.cancelled)return;t.technicalPaintMs=clock()-t.started;if(t.firstVisibleMs===undefined)t.firstVisibleMs=t.technicalPaintMs;removeProof();if(t.readyMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}});}
+ async function preliminary(file,t,force=false){
+  const locked=NSV2Platform.usesLockedSource(state);if(!force&&NSRawDecoder.isCached(file,locked?'wide':state.rawMode4,locked?NSV2Platform.decoderOptions():undefined))return;
+  if(!/\.raf$/i.test(file.name)||typeof createImageBitmap!=='function')return;
+  let bitmap;
+  try{
+   const began=clock(),jpeg=await readRafJpeg(file);
+   if(!jpeg||jpeg.size>4*1024*1024||t!==trace||!rollLoading)return;
+   bitmap=await createImageBitmap(jpeg,{resizeWidth:640});
+   if(t!==trace||t.cancelled||!rollLoading)return;
+   const box=document.createElement('div');box.className='import-camera-proof';box.setAttribute('role','status');
+   const c=document.createElement('canvas');c.width=bitmap.width;c.height=bitmap.height;c.getContext('2d').drawImage(bitmap,0,0);box.append(c);
+   const label=document.createElement('p'),text='Kameraförhandsvisning · preliminär · inte FILMLABB-resultat';if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source(label,text);else label.textContent=text;box.append(label);$('picture').append(box);proof=box;t.jpegPrepareMs=clock()-began;
+   painted(()=>{if(t===trace&&!t.cancelled&&proof===box){t.preliminaryPaintMs=clock()-t.started;if(t.firstVisibleMs===undefined)t.firstVisibleMs=t.preliminaryPaintMs;}});
+  }catch{}finally{bitmap?.close();}
+ }
+ const choose=chooseFrame;
+ chooseFrame=async function(i,opts={}){
+  if(i<0||i>=roll.length||exportBusy||cropDrag||(!opts.force&&i===activeFrame))return choose(i,opts);
+  if(rollLoading)cancel();removeProof();
+  const t=trace={id:++next,started:clock(),phase:'read',stages:{},sourceVersion:sourceVersion38,cancelled:false};
+  cancelButton=document.createElement('button');cancelButton.className='import-cancel';cancelButton.type='button';cancelButton.textContent='Avbryt import';cancelButton.onclick=cancel;$('picture').append(cancelButton);
+  phase('read');$('export').disabled=true;
+  const promise=choose(i,opts);void preliminary(roll[i].file,t,opts.full===true);
+  const ok=await promise;if(t!==trace||t.cancelled)return false;
+  t.readyMs=clock()-t.started;t.success=ok===true;t.decoder=NSFileFormats.isRaw(roll[i]?.file.name)?NSRawDecoder.metrics():null;
+  if(ok){t.renderMetrics={cpuRenderMs:stats38.lastRenderMs,gpu:globalThis.FILMLABB_GPU?.snapshot()||null};t.memory={sourceBytes:working.data.byteLength,previewBytes:workingPreview.data.byteLength,legacyPreviewBytes:previewSrc?.data.byteLength||0};if(t.technicalPaintMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}}
+  else removeProof();return ok;
+ };
+ const clear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollingExport)return;if(rollLoading)cancel();removeProof();NSRawDecoder.clearCache();clear();};
+ const importFiles=importRoll;importRoll=async function(files,options){if(exportBusy||rollingExport||cropDrag)return;if(rollLoading)cancel();NSRawDecoder.clearCache();return importFiles(files,options);};
+ const finish=finishImport;finishImport=function(...args){phase('prepare');const t=clock();try{return finish(...args);}finally{if(trace&&trace.usableMs===undefined)trace.stages.finishImport=clock()-t;}};
+ const renderImport=render;render=function(...args){const t=trace,start=clock(),before=globalThis.FILMLABB_GPU?.snapshot().frames,result=renderImport(...args);if(t===trace&&t&&t.usableMs===undefined&&sourceVersion38!==t.sourceVersion){t.stages.renderSubmit=(t.stages.renderSubmit||0)+clock()-start;if(globalThis.FILMLABB_GPU?.snapshot().frames>before)rawPaint(t);}return result;};
+ const show=showPreview38;showPreview38=function(...args){const start=clock(),result=show(...args);if(trace&&trace.usableMs===undefined)trace.stages.canvasPresentation=(trace.stages.canvasPresentation||0)+clock()-start;if(trace&&sourceVersion38!==trace.sourceVersion)rawPaint(trace);return result;};
+ for(const [owner,key,name]of [[NSV2Platform,'preview','preview'],[NSV2Platform,'prepare','v2Analysis'],[CE,'detectFrame','frameAnalysis'],[CE,'findBase','baseAnalysis']]){const original=owner[key];owner[key]=function(...args){const t=clock();try{return original.apply(this,args);}finally{if(trace&&trace.usableMs===undefined)trace.stages[name]=(trace.stages[name]||0)+clock()-t;}};}
+ globalThis.FILMLABB_IMPORT={phase,cancel,snapshot:()=>trace?JSON.parse(JSON.stringify({...trace,elapsedMs:trace.usableMs??trace.readyMs??(clock()-trace.started),heap:performance.memory?{used:performance.memory.usedJSHeapSize,total:performance.memory.totalJSHeapSize}:null})):null};
+})();
