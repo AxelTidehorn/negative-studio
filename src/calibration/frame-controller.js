@@ -67,7 +67,7 @@ function setFrameLoading(visible,name=''){
 }
 chooseFrame=async function(i,{force=false,full=false}={}){
  if(i<0||i>=roll.length||rollLoading||exportBusy||cropDrag||(!force&&i===activeFrame&&working))return;
- const loadId=++frameLoadSequence,frame=roll[i],fields=['settings','base','levels','crop','geometry','sourceMetadata'];
+ const loadId=++frameLoadSequence,frame=roll[i],fields=['settings','base','levels','crop','geometry','sourceMetadata','thumb','thumbPositive'];
  setFrameLoading(true,roll[i].file.name);
  saveCurrentFrame();
  const saved=NSProjectSettings.clone(Object.fromEntries(fields.filter(k=>Object.hasOwn(frame,k)).map(k=>[k,frame[k]])));
