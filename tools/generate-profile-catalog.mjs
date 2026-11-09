@@ -1,7 +1,7 @@
-/* Deliberately small launch catalog. Research entries are never auto-enabled. */
+/* Explicitly reviewed film catalog. Research entries are never auto-enabled. */
 import fs from 'node:fs';import crypto from 'node:crypto';
 const path='docs/profile-system/work/FILMLABB_3_Profile_Library.json',bytes=fs.readFileSync(path),work=JSON.parse(bytes),profiles={};
-for(const id of ['film.kodak-gold-200','film.kodak-ektar-100']){
+for(const id of ['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400']){
  const p=work.profiles.find(p=>p.id===id);if(!p)throw Error('Work profile missing: '+id);const start=a=>a.map(x=>x.start);
  profiles[id]={id,label:p.display_name,category:'film',presentation:'color',revision:p.revision,status:'prototype',operator:work.operator.id,tone:start(p.tone_L),hue:p.hue.map(x=>[x.h_deg,x.delta_h_deg.start,x.delta_C_fraction.start,x.delta_L.start]),chroma:start(p.chroma_by_L_fraction),shadow:start(p.shadow_ab),highlight:start(p.highlight_ab),skinPass:p.skin_colour_pass.start};
 }

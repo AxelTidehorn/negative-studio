@@ -1,7 +1,10 @@
-import assert from 'node:assert/strict';import fs from 'node:fs';import {execFileSync} from 'node:child_process';
+import assert from 'node:assert/strict';import fs from 'node:fs';import {execFileSync} from 'node:child_process';import {createHash} from 'node:crypto';
 import '../src/editing/editing-engine.js';import '../src/editing/profile-catalog.js';import '../src/editing/profile-engine.js';
 execFileSync(process.execPath,['tools/generate-profile-catalog.mjs','--check']);
 const P=NSProfiles,E=NSEditing2,library=JSON.parse(fs.readFileSync('docs/profile-system/work/FILMLABB_3_Profile_Library.json')),colors=library.tests.synthetic_patch_input;let maxError=0,cases=0;
+assert.deepEqual(Object.keys(NSProfileCatalog.profiles),['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400']);
+// Frozen merged #90 definitions: extending the catalog must not retune Gold/Ektar.
+for(const [id,hash] of [['film.kodak-gold-200','38698e5ba9f9757455de67c0080b04047b2fa3a3e4a11a92152a40efd31ec3a4'],['film.kodak-ektar-100','548759f66a382783ec9b0cd0ff0be08a030e12492c0195a9a9c4f5ed01bdd6cf']])assert.equal(createHash('sha256').update(JSON.stringify(NSProfileCatalog.profiles[id])).digest('hex'),hash);
 for(const id of Object.keys(NSProfileCatalog.profiles))for(const strength of [0,.35,.7,1]){
  const k=P.compile({id,strength});
  for(const sample of colors){const q=k.pixel(sample.sRGB),expected=library.tests.synthetic_result[id][String(strength)][sample.id].sRGB;maxError=Math.max(maxError,...q.map((v,c)=>Math.abs(v-expected[c])));if(strength===0)assert.equal(q,sample.sRGB);cases++;}
@@ -11,6 +14,13 @@ for(const id of Object.keys(NSProfileCatalog.profiles))for(const strength of [0,
  for(let n=0;n<=3600;n++){const lin=E.rgb([.6,.08*Math.cos(n*Math.PI/1800),.08*Math.sin(n*Math.PI/1800)]),input=lin.map(E.encode),a=k.pixel(input);assert.ok(a.every(Number.isFinite));}
 }
 assert.ok(maxError<1e-7,JSON.stringify({maxError}));
+// Work P-SKIN/F-WHITE safety limits on synthetic regions, not a photographic verdict.
+const lab=rgb=>E.lab(rgb.map(E.decode)),chroma=q=>Math.hypot(q[1],q[2]),hue=q=>Math.atan2(q[2],q[1])*180/Math.PI;
+for(const id of ['film.fuji-pro-400h','film.kodak-portra-400']){
+ const k=P.compile({id,strength:.7});
+ for(const sample of colors.filter(p=>p.id.startsWith('skin_'))){const a=lab(sample.sRGB),b=lab(k.pixel(sample.sRGB));assert.ok(Math.abs(hue(b)-hue(a))<=3);assert.ok(Math.abs(chroma(b)-chroma(a))<=.008);}
+ const cloud=colors.find(p=>p.id==='cloud_high'),a=lab(cloud.sRGB),b=lab(k.pixel(cloud.sRGB));assert.ok(Math.abs(chroma(b)-chroma(a))<=.004);assert.ok(Math.abs(b[0]-a[0])<=.015);
+}
 const color=[.2,.4,.8];assert.equal(P.compile({id:'neutral',strength:1}).pixel(color),color);
 const mono=P.compile({id:'film.kodak-gold-200',strength:0},true).pixel(color),Y=E.W.reduce((s,v,k)=>s+v*E.decode(color[k]),0);assert.deepEqual(mono,[E.encode(Y),E.encode(Y),E.encode(Y)]);assert.notEqual(mono[0],E.W.reduce((s,v,k)=>s+v*color[k],0));
 for(const strength of [-1,2,NaN,Infinity])assert.throws(()=>P.compile({id:'neutral',strength}));for(const id of ['gold','__proto__','constructor','toString',null])assert.throws(()=>P.compile({id,strength:.7}));
