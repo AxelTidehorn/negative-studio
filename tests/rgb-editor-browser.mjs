@@ -47,7 +47,7 @@ try{
  // Keep the same controls, reset semantics, footer and two-column tablet layout.
  await p.evaluate(()=>{setDisplay('positive');$('reset').click();});assert.equal(await p.evaluate(()=>state.exposure),0);
  const advancedWasOpen=await p.locator('#advancedSettings').evaluate(e=>e.open);
- await p.locator('#straighten').click();await p.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='straighten'&&$('geometryTools').open);
+ await confirmFrameIfNeeded(p);await p.locator('#straighten').click();await p.waitForFunction(()=>FILMLABB_GEOMETRY.mode()==='straighten'&&$('geometryTools').open);
  assert.equal(await p.locator('#imageTools3 #geometryDone').isVisible(),true,'finish stays reachable beside the photograph');
  assert.equal(await p.locator('#advancedSettings').evaluate(e=>e.open),advancedWasOpen,'floating image tools preserve advanced panel state');
  await p.locator('#geometryDone').click();
