@@ -105,3 +105,35 @@ ingen visad hastighetsvinst (1055 → 1070 respektive 880 → 929 ms i denna kö
 Råa tider, miljö, indata-/config-/kodhashar och cachetal finns i
 `measurements/node-cache.json`; allokeringssteget i `node-allocation.json`.
 Ingen extrapolering till 26 eller 40 MP görs.
+
+## D. Responsiv RGB16-export
+
+TIFF16/PNG16 använder nu samma befintliga exportworker som JPEG/PNG8, med
+samma färgkärna och presentation-sampler. Endast begränsade, nyallokerade
+källstripes skickas; originalbufferten överförs aldrig och det skapas ingen
+fullstor arbetskopia. Workergrenen behöver ingen OffscreenCanvas för RGB16.
+PNG-kodaren, TIFF-headern, ICC och pixelkvantiseringen återanvänds.
+
+Utan Worker eller vid initieringsfel används huvudtråden: 256 pixlar per
+arbetsdel och cirka 20 ms arbetsbudget, även inne i en mycket bred rad.
+Bakgrundsprioriterad postTask används där API:t finns, annars timer-yield.
+Enbart scheduler.yield prövades och förkastades eftersom timers/automatiserade
+avbrott kunde svältas i Chromium. Det är alltså inte en tillräcklig garanti för
+responsivitet. Avbrytning kontrolleras före/efter yield, kodning och före
+nedladdning. Ett avbrutet workerjobb termineras direkt. Cache, PNG-stream och
+busy-/låstillstånd frigörs utan delvis hämtad fil.
+
+`export-responsive-browser.mjs` jämför riktiga TIFF16/PNG16-exporter mot den
+frysta före-samplern, testar breda rader, kvart-/finrotation och komposition,
+levande heartbeat samt avbrott efter påbörjad beräkning. En väg tvingar bort
+Worker och postTask för att testa timerfallbacken. Det är inte en fysisk
+Safari-/iPad-verifiering. CPU/GPU-preview lämnas oförändrad.
+
+TIFF-utmatningen behåller delar → Blob. Färre JS-referenser i en inkrementell
+Blobkedja bevisar inte mindre inbyggt minne och kan skapa fler sammanslagningar.
+Ingen sådan ändring införs utan en visad fördel. Det färdiga filinnehållet måste
+fortfarande lagras. Browsermätningen registrerar JS-heap/backing storage och
+sammanlagd process-RSS där Linux/CDP tillåter det; RSS summerar delat minne och
+är en grov indikator, inte unik appallokering eller Safari-minnesprofil.
+Cachen kan tillföra högst 4 MiB pixeldata plus metadata och en begränsad stripe.
+Det görs inget generellt löfte om lägre total minnesanvändning.

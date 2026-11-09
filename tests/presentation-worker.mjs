@@ -11,7 +11,7 @@ async function worker(im,g,target,corrupt=false,legacy={},colorConfig=config){
   getContext(){return {createImageData:(w,h)=>{allocations++;return {width:w,height:h,data:new Uint8ClampedArray(w*h*4)};},putImageData:(out,x,y)=>stripes.push({y,data:out.data.slice()})};}
   async convertToBlob(){return new Blob([new Uint8Array([255,216,255,217])],{type:'image/jpeg'});}
  }
- const c={console,Blob,Uint8Array,Uint8ClampedArray,Uint16Array,Float32Array,Float64Array,OffscreenCanvas:Canvas,postMessage:m=>messages.push(m)};c.self=c;
+ const c={performance,atob,console,Blob,Uint8Array,Uint8ClampedArray,Uint16Array,Float32Array,Float64Array,OffscreenCanvas:Canvas,postMessage:m=>messages.push(m)};c.self=c;
  vm.createContext(c);c.importScripts=(...files)=>{for(const f of files)vm.runInContext(readSource(f.replace('./',''),'utf8'),c);};vm.runInContext(readSource('export-worker.js','utf8'),c);
  await c.onmessage({data:{type:'start',id:1,source:E.metadata(im),config:colorConfig,region:legacy.region||{x:0,y:0,w:1,h:1},crop:legacy.crop||false,rotation:legacy.rotation||0,target,presentation:g.spec||null}});
  let transferred=0;

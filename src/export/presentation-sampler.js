@@ -103,6 +103,9 @@ function tiff(im,config,g,y,count,prepared){
 // Bounded horizontal work for responsive RGB16 fallback, including 16k rows.
 // Interpolation still uses the ORIGINAL output domain, never the chunk width.
 function rgb16Span(im,prepared,g,x,y,count,out,offset=0){
+ if(!g.presentation){
+  for(let dx=0;dx<count;dx++){const [sx,sy]=g.at(x+dx,y),p=prepared.pixel((sy*im.width+sx)*im.channels),i=offset+dx*3;for(let k=0;k<3;k++)out[i+k]=Math.round(p[k]*65535);}return out;
+ }
  const q=new Float64Array(6),rgb=new Array(3),cache=g.presentation?cacheFor(prepared,im):null;
  for(let dx=0;dx<count;dx++){
   const p=sample(im,prepared,g,g,x+dx,y,undefined,q,rgb,cache),i=offset+dx*3;
@@ -110,5 +113,12 @@ function rgb16Span(im,prepared,g,x,y,count,out,offset=0){
  }
  return out;
 }
-root.NSPresentation=Object.freeze({STRIPE_BYTES,CACHE_BYTES,cacheStats,release,rgb16Span,plan,restore,neighbors,rows,pack,pixel,rgba,tiff});
+function rgb16Packed(im,prepared,g,y,rows){
+ const out=new Uint16Array(g.width*rows*3);
+ if(!g.presentation){for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x++){const n=dy*g.width+x,[sx,sy]=g.at(x,y+dy),p=prepared.pixel(n*3,sx,sy);for(let k=0;k<3;k++)out[n*3+k]=Math.round(p[k]*65535);}return out;}
+ const q=new Float64Array(6),rgb=new Array(3),cache=cacheFor(prepared,im);
+ for(let dy=0;dy<rows;dy++)for(let x=0;x<g.width;x++){const n=dy*g.width+x,p=sample(im,prepared,g,g,x,y+dy,n,q,rgb,cache);for(let k=0;k<3;k++)out[n*3+k]=Math.round(p[k]*65535);}
+ return out;
+}
+root.NSPresentation=Object.freeze({STRIPE_BYTES,CACHE_BYTES,cacheStats,release,rgb16Span,rgb16Packed,plan,restore,neighbors,rows,pack,pixel,rgba,tiff});
 })(globalThis);

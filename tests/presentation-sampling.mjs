@@ -42,7 +42,7 @@ for(const encoding of ['linear','srgb'])for(const scale of [1,255,65535])for(con
  for(const t of [g,target])for(let y=0;y<t.height;y+=2){
   const n=Math.min(2,t.height-y),remote={...E.metadata(im),data:new Type(0)},rp=K.prepare(remote,config);remote.data=P.pack(im,g,t,y,n);
   const rgba=P.rgba(im,prepared,g,t,y,n),packed=P.rgba(remote,rp,g,t,y,n,true);
-  assert.deepEqual(packed,rgba);
+  assert.deepEqual(packed,rgba);if(t===g)assert.deepEqual(P.rgb16Packed(remote,rp,g,y,n),P.tiff(im,config,g,y,n,prepared));
   for(let dy=0;dy<n;dy++)for(let x=0;x<t.width;x++){
    const expected=reference(im,model,crop,frame,t,x,y+dy).pixel,actual=P.pixel(im,prepared,g,t,x,y+dy);
    for(let k=0;k<3;k++)assert.ok(Math.abs(actual[k]-expected[k])<2e-12,`${encoding}/${scale}/${flat}/${crop}/${q}/${fine}: ${actual[k]} != ${expected[k]}`);
