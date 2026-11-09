@@ -16,8 +16,12 @@ Teknisk negativkonvertering → befintlig positiv balans/ton/gamut/finish →
 kalibrering eller V2:s RenderIntent. Profilbyte återanvänder positivcachen;
 slutrendering/export nycklas på look och monokrom presentation.
 
-Katalogen genereras med `node tools/generate-profile-catalog.mjs` från den
-bifogade Work-JSON:ens **start**-värden. `--check` kontrolleras i test. En explicit
+Katalogen genereras med `node tools/generate-profile-catalog.mjs` från de
+aktiva definitionerna i `film-profile-designs.json` och
+`creative-profile-designs.json`. Gold och Portra använder nu Work P revision 2;
+övriga definitioner är oförändrade. Se [implementerade värden, verifiering och
+begränsningar](work-parametric-prototypes.md). Historiska forskningsstarter
+finns kvar under `work/` men är inte aktiv katalogkälla. `--check` kontrolleras i test. En explicit
 aktiveringslista innehåller Gold 200, Ektar 100, Fujifilm Pro 400H och Kodak
 Portra 400 samt de egna Backstreet, Afterglow, Pale Static och Redline.
 Filmkaraktärerna är fotografiska

@@ -24,8 +24,13 @@ try {
   }
  }
  await p.setViewportSize({width:1440,height:900});await p.locator('#toggleFocus').click();
+ // Mobile auto-scroll and the focus transition may still be pending. Measure
+ // the baseline with the header visible, after the layout's scroll RAF runs.
+ await settled();
+ await p.evaluate(async()=>{window.scrollTo(0,0);await new Promise(requestAnimationFrame);await new Promise(requestAnimationFrame);});
  const before=await p.locator('#picture').evaluate(e=>e.clientHeight);
- await p.evaluate(()=>window.scrollTo(0,52));await p.waitForTimeout(150);
+ await p.evaluate(()=>window.scrollTo(0,52));
+ await p.waitForFunction(before=>$('picture').clientHeight>=before+50,before);
  assert.ok(await p.locator('#picture').evaluate(e=>e.clientHeight)>=before+50);
  assert.ok(await p.locator('header').evaluate(e=>e.getBoundingClientRect().bottom)<=0);
  assert.ok(await p.locator('footer').evaluate(e=>e.getBoundingClientRect().top)>=900);
