@@ -38,6 +38,8 @@
   $('cropOverlay').classList.add('hidden');return v;
  }
  function svg(tag,attrs,klass){const e=document.createElementNS(ns,tag);for(const [k,v]of Object.entries(attrs))e.setAttribute(k,v);if(klass)e.setAttribute('class',klass);(klass==='composition-touch'||klass==='composition-handle'?handles:overlay).append(e);return e;}
+ // Keep exact-edge handles hittable without changing source/crop coordinates.
+ function edgeHandle(value,extent){const inset=Math.min(1,extent/2);return Math.abs(value)<1e-6?inset:Math.abs(value-extent)<1e-6?extent-inset:value;}
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
@@ -53,7 +55,7 @@
   }
   if(mode==='composition'){
    const body=svg('polygon',{points:points(corners),'data-composition':'move',fill:'transparent','pointer-events':'all'},'composition-line');body.style.cursor='move';
-   for(let i=0;i<4;i++){svg('circle',{cx:corners[i].x,cy:corners[i].y,r:18,'data-composition':String(i)},'composition-touch');svg('circle',{cx:corners[i].x,cy:corners[i].y,r:5},'composition-handle');}
+   for(let i=0;i<4;i++){const cx=edgeHandle(corners[i].x,v.width),cy=edgeHandle(corners[i].y,v.height);svg('circle',{cx,cy,r:18,'data-composition':String(i)},'composition-touch');svg('circle',{cx,cy,r:5},'composition-handle');}
   }
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }

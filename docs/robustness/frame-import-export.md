@@ -63,7 +63,7 @@ activeFrame trots working=null, och `saveCurrentFrame` skrev global bas/nivåer
 senare sparanrop kunde skriva föregående/halvfärdig analys till fel köpost.
 
 Vid fel återställs nu köpostens ursprungliga bildspecifika fält transaktionellt,
-activeFrame blir -1, arbetsbuffertar/analys rensas och tomt bildläge kan inte
+valt bildindex behålls för RAW-återladdning, arbetsbuffertar/analys rensas och tomt bildläge kan inte
 sparas. Gemensamma köval och markeringsstatus behålls. Samma bild kan väljas
 på nytt; oförändrad bild väljs bara bort om en verklig arbetsbild finns.
 `import-recovery.mjs` injicerar fel efter en avsiktlig partiell skrivning och
@@ -187,9 +187,9 @@ syntetiska linjära Rec.2020-indata. Det är inte kamera-/RAW-import eller nya
 fotografiska nativeexporter. 640×480 har tre körningar, 3000×2000 två.
 Före är ren main 3a672b0, efter byggd arbetsversion 0f80b38. Byggidentitet och
 råa körningar finns i `measurements/browser-before.json` och `browser-after.json`.
-Slutlig återanvändning av evikterade cachebuffertar berör inte dessa mätningar
-(direktvägen har ingen cache; små finrotationsprov ryms i cachen). Ingen ytterligare
-hastighetsvinst anges för den ändringen.
+Efter mätningen lades återanvändning av evikterade cachebuffertar till.
+Pixelidentiteten verifieras mot samma före-kod, men ingen ytterligare hastighets-
+eller total minnesvinst anges utan en egen mätning.
 
 Alla färdiga bilder avkodas till RGB16 och samtliga pixelhashar, dimensioner,
 färgdjup, lågbitar och färgmetadata överensstämmer före/efter. Tid inkluderar
@@ -236,3 +236,21 @@ filmbasmätningar behålls. App-controller-testet injicerar en automatisk bas oc
 verifierar att den inte läses vid osäker ruta, men används efter bekräftelse.
 Cachen återanvänder evikterade tilebuffertar och nollställer validitetsmasken;
 forced-eviction-testet kräver fortsatt exakt överensstämmelse med före-koden.
+
+Återhämtningskontrollerna behåller även full-RAW-knappens väg efter fel.
+Samma-bild-gaten kräver en faktisk arbetsbild; indexet får peka ut den misslyckade
+bilden utan att gamla bas-/nivåvärden kan sparas till den. Ett asynkront motorbyte
+kontrollerar både köpost och importsekvens före rollback och återställer enbart
+den ägande bildens inställningar. Ersatt kö/bild kan inte få föregående motors
+eller RAW-domäns inställningar från ett sent importresultat.
+
+En fullbreddsruta blottlade också ett befintligt kantfall i kompositionsverktyget:
+ett SVG-handtags centrum exakt på visningsytans kant kunde inte träffas. Bara
+handtagens skärmcentrum flyttas en CSS-pixel inåt när de ligger exakt på kanten.
+Källkoordinater, polygon, dragdelta och exportgeometri ändras inte. Den befintliga
+mobile/touch-regressionen för åtkomliga handtag behålls utan svagare krav.
+
+Detektorn ger fortfarande en axelparallell rektangel. Vid lutande negativ kan
+den inskrivna rektangeln utesluta motivhörn: i den syntetiska −4°-fixturen
+behålls ungefär 82 % av den roterade motivrektangelns area. Detta är en verklig
+begränsning; perspektiv-/rotationsföljande filmrutor införs inte i denna PR.
