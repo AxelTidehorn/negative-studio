@@ -1,0 +1,8 @@
+{
+  "schema": "filmlabb.v2-preview-deployment",
+  "version": 1,
+  "sourceRepository": "AxelTidehorn/negative-studio",
+  "sourceBranch": "feat/filmlabb-v2-prototype",
+  "sourceCommit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+  "offlineCache": false
+}

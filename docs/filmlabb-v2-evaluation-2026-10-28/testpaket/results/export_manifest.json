@@ -1,0 +1,353 @@
+[
+  {
+    "file": "00_full_E3_frozen.tif",
+    "width": 3694,
+    "height": 3679,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81542108,
+    "sha256": "19a2211d48cfcc5d3d3d6d7428c0f05a26c2ff8ac635c0d744c0b04b13838f6f"
+  },
+  {
+    "file": "00_full_auto.tif",
+    "width": 3694,
+    "height": 3679,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81542108,
+    "sha256": "2c2cb025f6a23b82f6470aa619698e5b9f7e780bd0fa18ffe9a6081238d78a48"
+  },
+  {
+    "file": "00_full_fixed.tif",
+    "width": 3694,
+    "height": 3679,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81542108,
+    "sha256": "232b18a5baa83060a86ba756409a6a006beda05ca55ae6a69c049bcb8d19f087"
+  },
+  {
+    "file": "00_full_technical.tif",
+    "width": 3694,
+    "height": 3679,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81542108,
+    "sha256": "7d099d9ddc87b328af7114186589e2562513f4a82d67a929958ed9e31c6680c4"
+  },
+  {
+    "file": "04_full_E3_frozen.tif",
+    "width": 3719,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 82071644,
+    "sha256": "5dde5f455bd799023d96044527aa9adcc6b054500907e24189a0bfb88fdb375e"
+  },
+  {
+    "file": "04_full_auto.tif",
+    "width": 3719,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 82071644,
+    "sha256": "530c1bb33f8817a3cee33972cc609f097abf47e52fc9fd74679ecfc7decdd3f8"
+  },
+  {
+    "file": "04_full_fixed.tif",
+    "width": 3719,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 82071644,
+    "sha256": "8c0c705bae7f91ed9c576d92abae92a8fe284def0dee5e1a44ebbab05fc67c57"
+  },
+  {
+    "file": "04_full_technical.tif",
+    "width": 3719,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 82071644,
+    "sha256": "b880cc10d945c89e974a9258c4b8378d88e20e79f2364b9f4f3c55818eeb6e1d"
+  },
+  {
+    "file": "09_full_E3_frozen.tif",
+    "width": 3752,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79963376,
+    "sha256": "c458c7c1c0690f9382eeac9b4adf9751aee09d68b4bf46739895fdc3c4c45182"
+  },
+  {
+    "file": "09_full_auto.tif",
+    "width": 3752,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79963376,
+    "sha256": "9160eaf76254200c75e0b6e7751e75727cc3e3119dbc6bb80e28533e9da58a93"
+  },
+  {
+    "file": "09_full_fixed.tif",
+    "width": 3752,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79963376,
+    "sha256": "80878a554b6efcd27ad3ced556cfffd54778536fd50e06a0d78127c875493d54"
+  },
+  {
+    "file": "09_full_technical.tif",
+    "width": 3752,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79963376,
+    "sha256": "d5508c1c738ba4489eb0dfbf74330ac64390e83485a8b688720d3128162e3f22"
+  },
+  {
+    "file": "10_full_E3_frozen.tif",
+    "width": 3669,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80417894,
+    "sha256": "817615ef2be1b1446329cbd8c1bd558aaf6406d41bf111f0ed0dd748e127d96e"
+  },
+  {
+    "file": "10_full_auto.tif",
+    "width": 3669,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80417894,
+    "sha256": "88a8d6193112082be238cfa2d010dde2c3604bb828d03d9b3001a677ef7d841f"
+  },
+  {
+    "file": "10_full_fixed.tif",
+    "width": 3669,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80417894,
+    "sha256": "f77f303cdf24d77501551cc5bb6f5b85d6c18593eb857dee648649b689c3015b"
+  },
+  {
+    "file": "10_full_technical.tif",
+    "width": 3669,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80417894,
+    "sha256": "af093377db3033606b25482fc78364cda4a13e35b7c95ccf8938d1b283f1c638"
+  },
+  {
+    "file": "00_A.tif",
+    "width": 3694,
+    "height": 3679,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81542108,
+    "sha256": "1d747efaab02b423db4a884de02a1042b1b19f22ae6d78f8b166cc48edde397f"
+  },
+  {
+    "file": "01_A.tif",
+    "width": 3694,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80965844,
+    "sha256": "f4f0f617e16cd1e0ec5fd0c548ef434479b0e9d53fa881cc3b1090008f500d41"
+  },
+  {
+    "file": "02_A.tif",
+    "width": 3618,
+    "height": 3561,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 61734912,
+    "sha256": "9c512ecab3d1a7618e20a1053d8e691832d8a18df0b7e91cb825ba692f0e18ae"
+  },
+  {
+    "file": "03_A.tif",
+    "width": 3786,
+    "height": 3578,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 81278600,
+    "sha256": "444616b8bf807b68d591cfd921f5b41d04b66630b09650f633dfa38ab8273a72"
+  },
+  {
+    "file": "04_A.tif",
+    "width": 3719,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 82071644,
+    "sha256": "532bb43aaeb29351429935a65179573dd2c4fcd17caa584f679f12321f807bee"
+  },
+  {
+    "file": "05_A.tif",
+    "width": 3719,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79260080,
+    "sha256": "de560e21c26e1511aded299e347caf1b1b35f14cdbe5f119b63d4ed1899c5a11"
+  },
+  {
+    "file": "06_A.tif",
+    "width": 3618,
+    "height": 3678,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 79842776,
+    "sha256": "c3b69687da7d66757c7f74fe056176deb673bd6cd92e0623d69c5d8c07e8feb8"
+  },
+  {
+    "file": "08_A.tif",
+    "width": 3786,
+    "height": 3527,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80120084,
+    "sha256": "f187a29b952d2be6fbbe543504db7de103f9c72b8d6f1587f92e8b6157d6e522"
+  },
+  {
+    "file": "09_A.tif",
+    "width": 3752,
+    "height": 3552,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 77397444,
+    "sha256": "7e4f677d7f09771841045707c727960f5f1389c7ab9ab3e69f2ac6c2dc31a9f0"
+  },
+  {
+    "file": "10_A.tif",
+    "width": 3669,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80417894,
+    "sha256": "6a4ffedc2a5161d2ffd147314b1f1b1315b05378d099d704759dda406ac86521"
+  },
+  {
+    "file": "11_A.tif",
+    "width": 3694,
+    "height": 3653,
+    "bits": [
+      16,
+      16,
+      16
+    ],
+    "icc": true,
+    "bytes": 80965844,
+    "sha256": "7c9870e11e8aa6f4b2ab7610c03904449d4e2f295eb78a2381a69a7fe6627181"
+  }
+]
