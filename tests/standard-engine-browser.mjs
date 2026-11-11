@@ -4,6 +4,9 @@ const {browser,url,close}=await browserHarness();
 try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  await page.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');
+ // Every tone option offered by the Standard selector must be kept in state, not normalized to smooth.
+ const toneChoices=await page.evaluate(()=>{const select=$('toneMode4'),seen={};for(const option of select.options){select.value=option.value;select.dispatchEvent(new Event('change'));seen[option.value]=[state.toneMode4,select.value];}select.value='smooth';select.dispatchEvent(new Event('change'));return seen;});
+ for(const [value,[stored,shown]] of Object.entries(toneChoices)){assert.equal(stored,value,'toneMode4 state for '+value);assert.equal(shown,value,'toneMode4 selector for '+value);}
  const report=await page.evaluate(async()=>{
   const before=JSON.stringify({state,calibration,cropRegion,sharedResponse4,analysisCount38}),canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas),base=structuredClone(configuration38()),cases=[];
   Object.assign(base.cal.beta4,{lo:.08,span:1.1,base:[.7,.4,.2],light:[.8,1.2,1.1],response:{offset:[.1,-.2,.15],span:[2.5,3.2,4.8]}});
