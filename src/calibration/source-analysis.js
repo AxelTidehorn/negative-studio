@@ -5,7 +5,7 @@ exportFrameTiff=async function(i){await chooseFrame(i,{force:true});if(!working)
 
 /* Exactly one engine analysis per request, always from the authoritative source.
    Profiles, image adjustments and presentation never re-run this function. */
-analyzeLevels=function(){
+analyzeLevels=function({redraw=true}={}){
  if(!working)return;
  const start=now38();
  if(state.engine==='v2'){
@@ -18,5 +18,5 @@ analyzeLevels=function(){
   analyzeStandardLevels(working);
  }else throw Error('UNSUPPORTED_CONVERSION_ENGINE');
  analysisCount38++;config38=null;stats38.analysisMs=now38()-start;
- updateCalibrationUI();globalThis.FILMLABB_BASE2?.refresh();saveCurrentFrame();scheduleRender();
+ updateCalibrationUI();globalThis.FILMLABB_BASE2?.refresh();saveCurrentFrame();if(redraw)scheduleRender();
 };

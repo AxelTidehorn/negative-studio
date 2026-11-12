@@ -57,7 +57,7 @@ try{
   rollShared.cropExportToFrame=false;state.rotation=0;saveCurrentFrame();
   roll[0].geometry=NSGeometry.create();roll[0].geometry.rotation.fineDegrees=2;
   setCompositionCrop(0,{cx:0,cy:0,w:.6,h:.4});
-  const before={analyses:FILMLABB_PERFORMANCE.snapshot().analyses,gpu:FILMLABB_GPU.snapshot(),preview:$('preview').toDataURL()},color=JSON.stringify({state,calibration,base,sharedResponse4,frameRegion()});
+  const before={analyses:FILMLABB_PERFORMANCE.snapshot().analyses,gpu:FILMLABB_GPU.snapshot(),preview:$('preview').toDataURL()},color=JSON.stringify({state,calibration,sharedResponse4 ,region:frameRegion()});
   const a=await jpegBytes(),worker=FILMLABB_EXPORT.snapshot(),NativeWorker=Worker;
   globalThis.Worker=class{constructor(){throw Error('forced export worker unavailable');}};
   let b;try{b=await jpegBytes();}finally{globalThis.Worker=NativeWorker;}
@@ -65,7 +65,7 @@ try{
   let blob;downloadBlob=b=>blob=b;await exportTiff();const tiff=await NSTiff.decode(await blob.arrayBuffer());
   const same=a.length===b.length&&a.every((v,i)=>v===b[i]),after=FILMLABB_GPU.snapshot();
   return {same,worker:worker.lastBackend,fallback:fallback.lastBackend,jpeg:[jpeg.width,jpeg.height],tiff:[tiff.width,tiff.height],
-   analysis:before.analyses===FILMLABB_PERFORMANCE.snapshot().analyses,color:color===JSON.stringify({state,calibration,base,sharedResponse4,frameRegion()}),
+   analysis:before.analyses===FILMLABB_PERFORMANCE.snapshot().analyses,color:color===JSON.stringify({state,calibration,sharedResponse4 ,region:frameRegion()}),
    preview:before.preview===$('preview').toDataURL(),gpu:before.gpu.frames===after.frames&&before.gpu.sourceUploads===after.sourceUploads};
  });
  assert.equal(parity.same,true);assert.equal(parity.worker,'worker');assert.equal(parity.fallback,'main');assert.deepEqual(parity.jpeg,parity.tiff);assert.ok(parity.analysis&&parity.color&&parity.preview&&parity.gpu,JSON.stringify(parity));

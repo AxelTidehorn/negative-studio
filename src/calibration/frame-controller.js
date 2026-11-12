@@ -11,7 +11,7 @@ function calibrationBase(){
 function lightCompatible(){return !!sharedLight&&sharedLight.encoding===sourceInfo.encoding&&(!sourceInfo.domain||sharedLight.domain===sourceInfo.domain);}
 function currentLight(){return lightCompatible()?sharedLight.gains:[1,1,1];}
 
-function updateCalibrationUI(){syncEngineSelector();$('referenceStatus').textContent=sharedLight?(lightCompatible()?'Gemensam ljuskälla aktiv · ':'Ljuskälla pausad: annan källkodning · ')+sharedLight.name:'Ingen ljuskällereferens';$('rollBaseStatus').textContent=sharedBase?'Gemensam filmbas tillgänglig · '+sharedBase.sourceEncoding:'Ingen gemensam filmbas';$('useRollBase').checked=!!state.useRollBase;$('useRollBase').disabled=!sharedBase;$('sourceStatus').textContent=sourceInfo.label;$('engineMode').value=state.engine;}
+function updateCalibrationUI(){syncEngineSelector();$('referenceStatus').textContent=sharedLight?(lightCompatible()?'Gemensam ljuskälla aktiv · ':'Ljuskälla pausad: annan källkodning · ')+sharedLight.name:'Ingen ljuskällereferens';$('rollBaseStatus').textContent=sharedBase?'Gemensam filmbas tillgänglig · '+sharedBase.sourceEncoding:'Ingen gemensam filmbas';$('useRollBase').checked=!!state.useRollBase;$('useRollBase').disabled=!sharedBase;$('sourceStatus').textContent=sourceInfo.label;$('engineMode').value=state.engine;if(typeof updateBasePanel2==='function')updateBasePanel2();}
 finishImport=function(message){
  resetBaseSession();cropDisplayDismissed=false;sourceVersion38++;lastPreview38=null;config38=null;
  working=workingSource();workingPreview=state.engine==='v2'?NSV2Platform.preview(working):CE.preview(working,1400,state.previewSampling);
@@ -226,5 +226,11 @@ $('clearQueue').addEventListener('click',()=>{frameLoadSequence++;setFrameLoadin
 
 function resetImageSession(){
  cancelPair4();neutralSample39=false;$('neutralSample').textContent='Neutralpipett';
- if(typeof closeDetailNext==='function')closeDetailNext();cancelProposal2();resetBaseSession();v2LastSource=null;v2LastKey=null;v2AutomaticCache=null;
+ if(typeof closeDetailNext==='function')closeDetailNext();
+ const restore=previewBase2;resetBaseSession();
+ // Restore any temporary base preview before saving the outgoing image, but
+ // do not repaint/re-upload a source that the preview owner just released.
+ if(restore&&working)analyzeLevels({redraw:false});
+ stopPreviewWork();lastPreview38=null;config38=null;
+ v2LastSource=null;v2LastKey=null;v2AutomaticCache=null;
 }

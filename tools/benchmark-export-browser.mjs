@@ -19,12 +19,12 @@ try{
   const original=globalThis.benchOriginalPresentation??=NSPresentation;NSPresentation={...original,tiff(...args){const began=performance.now(),result=original.tiff(...args);globalThis.benchStripeMax=Math.max(globalThis.benchStripeMax||0,performance.now()-began);return result;}};
  },{W,H});
  for(const [name,format,fine,quarter,crop,large,cancel]of [['tiff-direct','tiff',0,0,false,false,false],['tiff-fine','tiff',2.3,0,false,false,false],['tiff-composed','tiff',-3.4,1,true,false,false],['png16-fine','png16',2.3,0,false,false,false],['tiff-large','tiff',0,0,false,true,false],['cancel-fine','tiff',2.3,0,false,true,true]]){
-  if(report.cases.some(c=>c.name===name))continue;const W=large?Math.max(3000,width*2):width,H=large?Math.max(2000,height*2):height;await init(W,H);const runs=[];
+  const selected=process.argv.find(a=>a.startsWith('--cases='))?.slice(8).split(',');if(selected&&!selected.includes(name)||report.cases.some(c=>c.name===name))continue;const W=large?Math.max(3000,width*2):width,H=large?Math.max(2000,height*2):height;await init(W,H);const runs=[];
   for(let run=0;run<(cancel?2:large?2:repeats);run++){
    await cdp.send('HeapProfiler.collectGarbage');const heapBefore=await cdp.send('Runtime.getHeapUsage'),rssBefore=await rss();let rssPeak=rssBefore;const timer=setInterval(()=>{rss().then(v=>rssPeak=Math.max(v,rssPeak)).catch(()=>{});},50);
    let result;
    try{result=await p.evaluate(async({format,fine,quarter,crop,cancel})=>{
-    state.rotation=quarter*90;state.cropExport=crop;rollShared.cropExportToFrame=crop;cropRegion=crop?{x:.03,y:.04,w:.93,h:.91}:{x:0,y:0,w:1,h:1};roll[0].geometry=NSGeometry.create(quarter*90);roll[0].geometry.rotation.fineDegrees=fine;if(crop)roll[0].geometry.compositionCrop={cx:.02,cy:-.03,w:.65,h:.48};analyzeLevels();
+    state.rotation=quarter*90;setQueueCropExportToFrame(crop);applyFrameSelection(NSFrameSelection.create(NSFrameSelection.rectangle(crop?{x:.03,y:.04,w:.93,h:.91}:{x:0,y:0,w:1,h:1}),{status:'confirmed'}));roll[0].geometry=NSGeometry.create(quarter*90);roll[0].geometry.rotation.fineDegrees=fine;if(crop)roll[0].geometry.compositionCrop={cx:.02,cy:-.03,w:.65,h:.48};analyzeLevels();
     benchBlob=null;benchStripeMax=0;const gaps=[];let last=performance.now(),ticks=0,cancelAt=null;const pulse=setInterval(()=>{const now=performance.now();gaps.push(now-last);last=now;ticks++;},10),started=performance.now();let t;
     if(cancel)t=setTimeout(()=>{cancelAt=performance.now();$('cancelExport').click();},50);
     $('exportFormat').value=format;await $('export').onclick();const ms=performance.now()-started;clearInterval(pulse);clearTimeout(t);gaps.push(performance.now()-last);

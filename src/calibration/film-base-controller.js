@@ -42,10 +42,11 @@ function updateBasePanel2(){
  $('base2Stats').textContent=m?.measured?`Linjär RGB (${m.domain}): ${m.measured.map(v=>v.toFixed(5)).join(' / ')} · median · MAD ${m.mad.map(v=>v.toFixed(5)).join(' / ')} · spridning ${m.spread.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · ${m.samples} prov · klippning ${m.clipped.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · låg signal ${m.dark.map(v=>(v*100).toFixed(1)+' %').join(' / ')}`:'';
  const auto=autoProposal2?.measurement;$('base2Compare').textContent=auto?.measured&&m?.measured?'Automatisk RGB: '+auto.measured.map(v=>v.toFixed(5)).join(' / ')+' · skillnad från aktivt prov: '+m.measured.map((v,c)=>(v-auto.measured[c]).toFixed(5)).join(' / '):'';
 }
-function endBaseTool2(){
+function endBaseTool2({redraw=true}={}){
+ const previousDisplay=baseDisplay2;baseDisplay2=null;
  cancelBaseFeedback2();loupeSource2=null;loupeKey2=null;baseTool2=false;baseDrag2=null;drawBaseRegion2();$('base2Loupe').hidden=true;
  if(globalThis.FILMLABB_GEOMETRY?.mode()==='base')FILMLABB_GEOMETRY.setTool(null);
- if(baseDisplay2){const old=baseDisplay2;baseDisplay2=null;$(old==='negative'?'tabNeg':old==='split'?'tabSplit':'tabPos').click();}
+ if(previousDisplay)setDisplay(previousDisplay,{redraw});
  $('base2Region').textContent='Rita / flytta provområde';
 }
 function cancelProposal2(){const restore=previewBase2;previewBase2=false;proposal2=null;++revision2;endBaseTool2();if(restore&&working)analyzeLevels();updateBasePanel2();if(working)render();}
@@ -152,7 +153,7 @@ $('picture').addEventListener('click',e=>{
  const x=Math.floor(p.x*working.width),y=Math.floor(p.y*working.height);setProposal2(FM2.measure(working,{x:Math.max(0,x-3)/working.width,y:Math.max(0,y-3)/working.height,w:Math.min(7,working.width)/working.width,h:Math.min(7,working.height)/working.height},{kind:'manual-7x7'}));sampleMode=false;$('sample').textContent='Välj filmbas med pipett';
 },true);
 const oldRecalc2=$('recalc').onclick;$('recalc').onclick=()=>state.filmBaseVersion===2?detectBase2():oldRecalc2();
-function resetBaseSession(){++revision2;previewBase2=false;proposal2=autoProposal2=null;undoBase2=null;baseRegion2=null;endBaseTool2();}
+function resetBaseSession(){++revision2;previewBase2=false;proposal2=autoProposal2=null;undoBase2=null;baseRegion2=null;endBaseTool2({redraw:false});}
 const oldView2=applyView;applyView=function(...args){const r=oldView2(...args);drawBaseRegion2();return r;};
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(drawBaseRegion2).observe($('picture'));
 globalThis.FILMLABB_BASE2={leaveTool:endBaseTool2,detect:detectBase2,accept:acceptBase2,cancel:cancelProposal2,refresh:drawBaseRegion2,snapshot:()=>({version:state.filmBaseVersion,proposal:proposal2?FB2.clone(proposal2):null,accepted:working&&state.filmBaseVersion===2?FB2.clone(accepted2()):null,preview:previewBase2,tool:baseTool2,revision:revision2})};

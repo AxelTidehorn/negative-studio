@@ -4,6 +4,7 @@ import {ensureBuild,inputHash} from './build-artifact.mjs';
 import {contentIdentity} from './build-identity.mjs';
 const level=process.argv[2]||'fast';if(!['fast','integration','full','browser','style'].includes(level))throw Error('Unknown test level: '+level);
 const engineIndex=process.argv.indexOf('--engine'),engine=engineIndex<0?'all':process.argv[engineIndex+1];if(!['all','v2','calibrated4'].includes(engine))throw Error('Unknown engine: '+engine);
+if(['fast','integration','full'].includes(level))await(await import('./consolidation-reference.mjs')).baselineReference();
 const start=performance.now(),rows=[],env={...process.env,FILMLABB_TEST_ENGINE:engine},report={level,engine,node:process.version,jobs:level==='full'?Math.min(2,os.availableParallelism()):1,tests:rows};let failures=0;
 fs.mkdirSync('.cache',{recursive:true});
 function run(file){return new Promise(resolve=>{const began=performance.now(),log=fs.openSync('.cache/'+file.replaceAll('/','_')+'.log','w'),child=spawn(process.execPath,[file],{env,stdio:['ignore',log,log]});let error;child.on('error',e=>error=e.message);child.on('close',code=>{fs.closeSync(log);const row={file,ms:performance.now()-began,status:code,error};rows.push(row);if(code!==0){failures++;console.error('FAIL',file,fs.readFileSync('.cache/'+file.replaceAll('/','_')+'.log','utf8'));}else console.log('PASS',file,Math.round(row.ms)+'ms');resolve();});});}

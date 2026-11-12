@@ -1,7 +1,7 @@
 /* Directly tracked tests, grouped by responsibility. Optional real-photo checks
    remain explicit check-real-*/
 export const nodeSuites={
- application:['analysis-consolidation.mjs','rgb-histogram.mjs','ui-controls.mjs','check-smoke.mjs','architecture.mjs','maintenance-lifecycle.mjs'],
+ application:['source-lifecycle.mjs','analysis-consolidation.mjs','rgb-histogram.mjs','ui-controls.mjs','check-smoke.mjs','architecture.mjs','maintenance-lifecycle.mjs'],
  projects:['v2-default.mjs','cleanup-project.mjs'],
  color:['profile-system.mjs','conversion-v2-photographic-color.mjs','conversion-v2-photographic-tone.mjs','conversion-v2-render3.mjs','conversion-v2-balance.mjs','conversion-v2-tone.mjs','conversion-v2-reconstruction.mjs','v2-presentation-review.mjs','v2-scene-tone-review.mjs','v2-approved-d.mjs','v2-gpu-cache.mjs','editing-vibrance.mjs','v2-presentation.mjs','v2-response-versioning.mjs','v2-platform-numeric.mjs','release-version.mjs','conversion-v2-fast.mjs','editing-engine.mjs','standard-calibration.mjs','export-snapshot.mjs'],
  calibration:['frame-selection.mjs','frame-contours.mjs','frame-analysis-polygon.mjs','frame-boundaries.mjs','image-diagnostics.mjs','film-base2.mjs','film-base2-detection.mjs','film-base2-roll.mjs','check-manual-frame.mjs'],

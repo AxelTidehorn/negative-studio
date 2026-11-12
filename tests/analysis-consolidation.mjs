@@ -1,7 +1,8 @@
 /* Fresh active-engine analysis compared with configs captured from main #97.
    The separate 2,241-case oracle freezes the rendering/export contract. */
 import assert from 'node:assert/strict';import fs from 'node:fs';import zlib from 'node:zlib';import {harness} from './helpers/app-harness.mjs';
-const setups=JSON.parse(fs.readFileSync('tests/fixtures/consolidation/oracle.json')).setups,h=harness();h.context.crypto=globalThis.crypto;
+const {baselineReference}=await import('../tools/consolidation-reference.mjs');
+const setups=(await baselineReference()).setups,h=harness();h.context.crypto=globalThis.crypto;
 const images={};
 for(const id of ['8983','9235']){const meta=JSON.parse(fs.readFileSync(`tests/fixtures/frame-real/dsf${id}.json`)),b=zlib.gunzipSync(fs.readFileSync(`tests/fixtures/frame-real/dsf${id}.f32.gz`));images[id]={...meta,data:new Float32Array(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength))};}
 for(const space of ['srgb','rec2020'])images[space]={width:67,height:45,data:Float32Array.from({length:67*45*3},(_,i)=>i<36?[0,1/65535,.0001,.001,.01,.18,.5,1,.9999,1e-8,.7,.07][i%12]:.005+((i*673+71)%65536)/65535*.89),channels:3,encoding:'linear',scale:1,colorSpace:space};

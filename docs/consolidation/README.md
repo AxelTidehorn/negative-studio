@@ -16,15 +16,17 @@ Only V2/D and Standard (`calibrated4`) can be selected or loaded. Fresh compatib
 
 `settings.frame` owns normalized-source quad/analysis quad, detector evidence, origin, acceptance and lock. Bounding region and V2 analysis descriptor are derived. An exact rectangle descriptor can preserve scalar extents at ceil/floor boundaries; it is created/validated atomically, not synchronized by controllers. Composition remains separate, and the queue owns crop-to-frame export preference. Pending candidates still open directly for correction and never silently authorize V2 analysis.
 
-Import metadata/TIFF preparation belong to the source owner. Source/calibration lifecycle resets replace several generations of choose/finish wrappers. RAW/TIFF retain the original high-precision source and bounded Float32 preview, without two extra RGBA thumbnails. Browser-decoded 8-bit sources retain their needed source data. Device-level appearance/language/backend preferences remain separate from per-image metadata.
+Import metadata/TIFF preparation belong to the source owner. Source/calibration lifecycle resets replace several generations of choose/finish wrappers. Outgoing base previews are restored without painting/uploading the old source; workers and completed results are explicitly released. Base-reference controls refresh through the same UI owner as calibration status. RAW/TIFF retain the original high-precision source and bounded Float32 preview, without two extra RGBA thumbnails. Browser-decoded 8-bit sources retain their needed source data. Device-level appearance/language/backend preferences remain separate from per-image metadata.
 
 ## Preserved and checked so far
 
-- 2,241 frozen Float64 rendering / Uint16 export cases from main: exact hashes, including all active profiles at 0/35/70/100%, edits and direct/90°/fine-rotation exports.
+- 2,241 Float64 rendering / Uint16 export cases against immutable main in the same JS runtime: exact hashes, including all active profiles at 0/35/70/100%, edits and direct/90°/fine-rotation exports.
 - 27 newly computed Standard/V2 analyses, 1,053 exact output samples and repeated V2 recipe reuse against pre-consolidation configurations.
 - 32 pre-encoder RGB8 / TIFF16 historical pixel hashes for retained Standard/V2 modes, plus cache/sampler/worker protocol oracles.
 - Current profile catalog definitions and independent Work P numeric tests. No photographic parameters were changed.
 - Chromium frame workflow at five viewports, touch range regression, preliminary preview, encoder/cancellation and profile export tests.
+
+Reference generation executes main `42a9d33dd91a3c93cf736e693a86390bef80c61b` in a temporary checkout under the same Node runtime as the candidate, without npm installation. Checked-in Node 24 hashes remain reviewable evidence. This avoids treating Node 22/24 transcendental last-bit differences as refactor changes; no numeric tolerance is introduced. Expected conversion values come from frozen main, never candidate color code.
 
 The final complete-suite, browser and measurement records will be recorded below after the frozen run. Interim exploratory runs are not release evidence.
 

@@ -41,7 +41,7 @@ updateValues();
 for(const id of ['imageFile','referenceFile'])$(id).accept=NSFileFormats.accept;
 function setStatus(s){if(globalThis.FILMLABB_I18N)FILMLABB_I18N.status($('status'),s);else $('status').textContent=s}
 
-function setDisplay(mode){display=mode;for(const [id,value] of [['tabPos','positive'],['tabNeg','negative'],['tabSplit','split']])$(id).classList.toggle('active',mode===value);render()}
+function setDisplay(mode,{redraw=true}={}){display=mode;for(const [id,value] of [['tabPos','positive'],['tabNeg','negative'],['tabSplit','split']])$(id).classList.toggle('active',mode===value);if(redraw)render()}
 $('tabPos').onclick=()=>setDisplay('positive');$('tabNeg').onclick=()=>setDisplay('negative');$('tabSplit').onclick=()=>setDisplay('split');
 $('auto').onchange=()=>{state.auto=$('auto').checked;analyzeLevels();persist();render()};$('noBase').onchange=()=>{state.noBase=$('noBase').checked;analyzeLevels();persist();render()};$('autoLevels').onchange=()=>{state.autoLevels=$('autoLevels').checked;persist();render()};$('analyzeLevels').onclick=()=>analyzeLevels();$('recalc').onclick=()=>{state.auto=true;$('auto').checked=true;analyzeLevels();persist();render()};
 $('sample').onclick=()=>{sampleMode=!sampleMode;$('sample').textContent=sampleMode?'Tryck på en oexponerad filmkant…':'Välj filmbas med pipett';setStatus(sampleMode?'Tryck på en tydligt oexponerad filmkant i bilden för att välja basfärg.':'Pipetten avbruten.')};

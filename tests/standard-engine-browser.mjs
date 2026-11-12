@@ -32,6 +32,6 @@ try{
   const uploads=gpu.metrics.uploads;for(let i=0;i<8;i++)gpu.draw(im,{...c,opts:{...c.opts,exposure:i/10}},'positive',width,1);const reused=gpu.metrics.uploads===uploads;gpu.destroy();
   return {worst,failures:cases.filter(v=>v.max>2),cases:cases.length,workerExact,fallbackExact,jpegValid,jpegWorkerValid,reused,unchanged:before===JSON.stringify({state,calibration,region:frameRegion(),sharedResponse4,analysisCount38})};
  });
- console.log('Low-signal GPU/worker/export report',JSON.stringify(report));assert.ok(report.worst<=2,JSON.stringify(report.failures));assert.equal(report.cases,36);for(const key of ['workerExact','fallbackExact','jpegValid','jpegWorkerValid','reused','unchanged'])assert.equal(report[key],true,key);assert.deepEqual(errors,[]);
+ console.log('Low-signal GPU/worker/export report',JSON.stringify(report));assert.ok(report.worst<=2,JSON.stringify(report.failures));assert.equal(report.cases,24);for(const key of ['workerExact','fallbackExact','jpegValid','jpegWorkerValid','reused','unchanged'])assert.equal(report[key],true,key);assert.deepEqual(errors,[]);
  console.log('PASS low-signal shader parity, actual CPU/JPEG workers and fallback encoding, source texture reuse and unchanged analysis');
 }finally{await close();}

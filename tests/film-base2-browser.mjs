@@ -31,7 +31,7 @@ try{
   if(name==='desktop'){
    const parity=await page.evaluate(async()=>{
     const saved=state.engine,results=[];downloadBlob=()=>{};
-    for(const engine of ['calibrated4','curve3','density3','matrix3']){
+    for(const engine of ['calibrated4']){
      state.engine=engine;analyzeLevels();const c=configuration38(),kernel=NSPixelKernel.compile(c);let max=0,gpuTested=false;
      if(NSGpuPreview.supports(c)){const canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas);gpu.draw(working,c,'positive',480,sourceVersion38);const pixels=gpu.read();for(let y=0;y<working.height;y+=7)for(let x=0;x<working.width;x+=7){const p=kernel.pixel(CE.pixel(working,x,y));for(let k=0;k<3;k++)max=Math.max(max,Math.abs(pixels.data[(y*working.width+x)*4+k]-Math.round(p[k]*255)));}gpu.destroy();gpuTested=true;}
      let output;downloadBlob=b=>output=b;await exportTiff();const tiff=await NSTiff.decode(await output.arrayBuffer());const jpeg=await jpegBytes();results.push({engine,max,gpuTested,tiffValid:tiff.width>0&&tiff.height>0,jpegValid:jpeg[0]===255&&jpeg[1]===216});
