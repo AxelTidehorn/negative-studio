@@ -3,30 +3,37 @@
 const CC4=NSColorCalibration;
 let sharedResponse4=null,neutralPair4=null;
 function domain4(){return sourceInfo.domain||sourceInfo.label||sourceInfo.encoding;}
-function explicitBase4(){return !state.noBase&&(state.useRollBase||!state.auto)?calibrationBase()?.measured:null;}
-function response4(){const saved=state.useRollResponse4?sharedResponse4:state.response4;return CC4.valid(saved)&&saved.domain===domain4()?saved:null;}
+function explicitBase4(){return !state.noBase&&(state.filmBaseVersion===2||state.useRollBase||!state.auto)?calibrationBase()?.measured:null;}
+function response4(){
+ const saved=state.useRollResponse4?sharedResponse4:state.response4;
+ const ordinary=CC4.valid(saved)&&saved.domain===domain4()?saved:null;
+ if(state.filmBaseVersion!==2||!working)return ordinary;
+ const a=accepted2();return a?(a.responseLocked?a.response:ordinary):null;
+}
 function cancelPair4(){neutralPair4=null;$('neutralPair4').textContent='Kalibrera två neutrala ytor';}
 function controls4(){
  syncEngineSelector();
+ $('rawMode4').disabled=state.engine==='v2'||rollLoading||exportBusy;
  const enabled=!!working&&state.engine==='calibrated4';
  for(const id of ['neutralPair4','resetResponse4','saveResponse4'])$(id).disabled=!enabled;
  $('useResponse4').checked=!!state.useRollResponse4;$('useResponse4').disabled=!sharedResponse4;
  $('rawMode4').value=state.rawMode4||'protected';$('toneMode4').value=state.toneMode4||'smooth';$('toneMode4').disabled=state.engine!=='calibrated4';
  $('colorMode4').value=NSPixelKernel.colorVariant4(state.colorMode4);$('colorMode4').disabled=!enabled||rollLoading||exportBusy;
- $('balanceStrength').disabled=state.engine==='calibrated4'||$('balanceStrength').disabled;
- if(sharedLight&&sourceInfo.domain&&sharedLight.domain!==sourceInfo.domain&&!(!sharedLight.domain&&sourceInfo.rawMode4==='reference'))$('referenceStatus').textContent='Ljuskälla pausad · annan kamera eller RAW-import';
- if(state.useRollBase&&sharedBase&&sourceInfo.domain&&sharedBase.sourceDomain!==sourceInfo.domain&&!(!sharedBase.sourceDomain&&sourceInfo.rawMode4==='reference'))$('rollBaseStatus').textContent='Filmbas pausad · annan kamera eller RAW-import';
+
+ if(sharedLight&&sourceInfo.domain&&sharedLight.domain!==sourceInfo.domain)$('referenceStatus').textContent='Ljuskälla pausad · annan kamera eller RAW-import';
+ if(state.useRollBase&&sharedBase&&sourceInfo.domain&&sharedBase.sourceDomain!==sourceInfo.domain)$('rollBaseStatus').textContent='Filmbas pausad · annan kamera eller RAW-import';
  const diag=sourceInfo.diagnostics4;if(diag)$('sourceStatus').textContent=sourceInfo.label+' · klippt i Rec.2020 (hela bilden): '+diag.clipped.map(v=>(100*v/diag.pixels).toFixed(2)+' %').join(' / ');
- const r=response4()||calibration?.beta4?.response;$('calibrationStatus4').textContent=!working?'Ingen bild inläst':state.engine!=='calibrated4'?'Jämförelseläge · Beta 4-kalibrering pausad':r?(state.useRollResponse4?'Gemensam rullkalibrering · ':'')+(r.kind==='two-neutral'?'Två neutrala ytor uppmätta':'Motivbaserad uppskattning · ingen uppmätt färgreferens')+(state.cropConfirmed?' · färgkurvor sparade':' · kontrollera filmrutan'):'Kalibrering saknas eller tillhör annan källa';
+ const r=response4()||calibration?.beta4?.response;$('calibrationStatus4').textContent=!working?'Ingen bild inläst':state.engine!=='calibrated4'?'Jämförelseläge · Beta 4-kalibrering pausad':r?(state.useRollResponse4?'Gemensam rullkalibrering · ':'')+(r.kind==='two-neutral'?'Två neutrala ytor uppmätta':'Motivbaserad uppskattning · ingen uppmätt färgreferens')+((state.frame?.status!=='pending'&&!!state.frame)?' · färgkurvor sparade':' · kontrollera filmrutan'):'Kalibrering saknas eller tillhör annan källa';
+ if(state.engine==='v2'){const r=state.v2Recipe;$('calibrationStatus4').textContent='V2 · '+(r?(r.base.origin==='prior'?'Filmbas saknas – mät och godkänn filmkant':'Uppmätt filmbas')+' · '+(r.intent.analysis.exposure.fallback?'Ton: fallback':'Ton: aktiv')+' · '+(r.intent.colorCorrection.kind==='identity'?'Färg: avstår':'Färg: aktiv'):'Väntar på linjär källa');}
 }
-function analyzeStandardLevels(){
-if(!workingPreview||!calibration)return;
+function analyzeStandardLevels(im=working){
+if(!im||!calibration)return;
  if(state.engine!=='calibrated4'){controls4();return;}
  let r=response4();
- if(!r){state.useRollResponse4=false;const measured=!state.noBase&&calibration.base?.measured;r=CC4.estimate(workingPreview,cropRegion,{base:measured||[1,1,1],light:measured?[1,1,1]:currentLight(),domain:domain4()});r.hasBase=!!measured;if(state.cropConfirmed)state.response4=r;}
+ if(!r){state.useRollResponse4=false;const measured=!state.noBase&&calibration.base?.measured;r=CC4.estimate(im,frameRegion(),{base:measured||[1,1,1],light:measured?[1,1,1]:currentLight(),domain:domain4()});r.hasBase=!!measured;if((state.frame?.status!=='pending'&&!!state.frame))state.response4=r;}
  const explicit=explicitBase4(),rollMeasured=state.useRollResponse4&&calibration.base?.measured,b=state.noBase?[1,1,1]:explicit||rollMeasured||r.base;
- calibration.beta4=CC4.analyze(workingPreview,cropRegion,r,{base:b,light:!state.noBase&&(explicit||rollMeasured||r.hasBase)?[1,1,1]:currentLight()});
- config38=null;technicalCache38=null;controls4();saveCurrentFrame();
+ calibration.beta4=CC4.analyze(im,frameRegion(),r,{base:b,light:!state.noBase&&(explicit||rollMeasured||r.hasBase)?[1,1,1]:currentLight()});
+ config38=null;controls4();saveCurrentFrame();
  $('levelsInfo').textContent=`${calibration.beta4.count} motivprov · gemensamt tonomfång${calibration.beta4.weak?' · lågt omfång':''} · `+(calibration.beta4.clipped.some(v=>v>.005)?'klippta källkanaler':'ingen tydlig kanalklippning');
 };
 $('colorMode4').onchange=e=>{if(state.engine!=='calibrated4'||rollLoading||exportBusy){controls4();return;}state.colorMode4=NSPixelKernel.colorVariant4(e.target.value);config38=null;saveCurrentFrame();persist();controls4();render();};
@@ -37,7 +44,7 @@ $('useResponse4').onchange=e=>{if(e.target.checked&&(!CC4.valid(sharedResponse4)
 $('neutralPair4').onclick=()=>{if(!working||state.engine!=='calibrated4')return;if(neutralPair4){cancelPair4();return;}neutralSample39=false;sampleMode=false;neutralPair4=[];$('neutralPair4').textContent='Välj första neutrala ytan · klicka för att avbryta';setStatus('Välj en känd neutral yta. Välj sedan en annan neutral yta med tydligt annan ljushet.');};
 $('preview').addEventListener('click',e=>{
  if(!neutralPair4||!working)return;e.stopImmediatePropagation();
- try{const p=imagePoint(e),r=cropRegion;if(p.x<r.x||p.x>r.x+r.w||p.y<r.y||p.y>r.y+r.h)throw Error('Välj neutrala ytor innanför filmrutan.');
+ try{const p=imagePoint(e),r=frameRegion();if(p.x<r.x||p.x>r.x+r.w||p.y<r.y||p.y>r.y+r.h)throw Error('Välj neutrala ytor innanför filmrutan.');
  const ps=[],cx=Math.min(working.width-1,Math.floor(p.x*working.width)),cy=Math.min(working.height-1,Math.floor(p.y*working.height));
  for(let y=Math.max(0,cy-2);y<=Math.min(working.height-1,cy+2);y++)for(let x=Math.max(0,cx-2);x<=Math.min(working.width-1,cx+2);x++)ps.push(sourcePixel(working,x,y));
  const q=[0,1,2].map(k=>CE.quantile(ps.map(v=>v[k]),.5));
@@ -47,14 +54,3 @@ $('preview').addEventListener('click',e=>{
  }catch(err){setStatus(err.message);}
 },true);
 for(const id of ['sample','neutralSample'])$(id).addEventListener('click',cancelPair4);
-const chooseBefore4=chooseFrame;
-chooseFrame=async function(i,opts){cancelPair4();try{return await chooseBefore4(i,opts);}finally{controls4();}};
-const clearBefore4=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(rollLoading||exportBusy)return;cancelPair4();sharedResponse4=null;clearBefore4();controls4();};
-const confirmBefore4=$('cropConfirm').onclick;$('cropConfirm').onclick=()=>{confirmBefore4();if(state.engine==='calibrated4'){analyzeLevels();render();}};
-const engineBefore4=$('engineMode').onchange;$('engineMode').onchange=e=>{cancelPair4();engineBefore4(e);controls4();};
-// Global preferences must not seed a different imported image with an old response.
-state.response4=null;state.useRollResponse4=false;
-try{if(!localStorage.getItem('filmlabb-default-engine4')){state.engine='calibrated4';localStorage.setItem('filmlabb-default-engine4','1');persist();}}catch{}
-$('engineMode').value=state.engine;controls4();
-
-$('rawMode4').onchange=async e=>{const mode=['reference','wide'].includes(e.target.value)?e.target.value:'protected';if(rollLoading||exportBusy){e.target.value=state.rawMode4;return;}state.rawMode4=mode;const raw=activeFrame>=0&&NSFileFormats.isRaw(roll[activeFrame].file.name);if(raw){state.response4=null;state.useRollResponse4=false;state.manualCalibration=null;state.manualBase=null;state.useRollBase=false;state.auto=true;}saveCurrentFrame();persist();if(raw)await chooseFrame(activeFrame,{force:true});else controls4();};

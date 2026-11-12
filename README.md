@@ -1,158 +1,64 @@
 # FILMLABB
 
-**A browser-based negative converter for analog photography.** FILMLABB turns camera captures and scans of film negatives into editable positive images, with film-frame detection, film-base calibration and JPEG or 16-bit TIFF export.
+FILMLABB converts photographed negatives locally in the browser. Source images are not uploaded to a processing service or modified. The current development line is FILMLABB 3.0 beta.
 
-Processing runs locally in your browser. Original images are not uploaded to a processing service or modified. The workflow is built around photographing and converting negatives: technical film analysis comes first, followed by photographic adjustments and composition. FILMLABB is not a general-purpose RAW editor.
+## Current workflow
 
-[Open the web app](https://axeltidehorn.github.io/negative-studio/) · [Report a problem](https://github.com/AxelTidehorn/negative-studio/issues) · [Architecture](docs/ARCHITECTURE.md) · [Feature backlog](docs/FEATURE_BACKLOG.md)
+1. Import up to five RAW, browser-readable images or TIFF files. **V2/D is the default for new compatible RAW images**, through `NSProjectSettings.newImageDefaults()`. Browser images and ordinary TIFF use **Standard** (`calibrated4`). V2 also accepts explicitly verified linear Rec.2020 TIFF without ICC.
+2. A confident photographic-frame detection is used automatically. An uncertain but credible quadrilateral opens directly for correction; no candidate starts with the whole image. Drag corners or edges, then confirm. Pending proposals do not authorize V2's automatic scene analysis. Manual confirmations and locks survive queue/project changes.
+3. Measure and approve a separate film-base reference when available. A frame boundary, subject-analysis region, base reference and composition crop have different responsibilities.
+4. Apply Editing 2.0 and a presentation profile. The active color profiles are Gold 200, Ektar 100, Pro 400H, Portra 400, Backstreet, Afterglow, Pale Static and Redline, alongside Neutral and Neutral black-and-white. Profile parameters are unchanged by the architecture consolidation.
+5. Adjust composition/rotation and export JPEG8, PNG8, PNG16 or TIFF16. Batch JPEG ZIP and selected TIFF export retain progress and cancellation.
 
-## Status
+**V2/D and Standard are the only conversion engines.** Standard remains a manually selectable fallback/comparison. Switching between engines reuses a compatible decoded source; entering V2 from a different RAW recipe requires its locked linear Rec.2020 decode. Neither profile changes nor image adjustments decode RAW again.
 
-The current development line is **FILMLABB 2.0 beta**, with V2 available as an experimental conversion engine in the main application. Standard remains the default. This is beta software; camera compatibility and image quality still need wider validation with real negatives and physical devices.
+The Amber Glass two-column interface includes the queue, histogram, original-detail view, image adjustments and direct frame tools. GPU preview uses WebGL2 where supported, with CPU/worker fallback. V2's approved D tonal model and Standard's conversion formulas are retained. Standard's color-response variants are settings within that engine, not separate engines.
 
-The existing footer shows the application version, branch and short commit SHA. The central beta policy in `package.json` generates a unique `2.0.0-beta.N` for each new main commit; rerunning the same commit keeps its version. Development builds include their commit and local-change status. See [versioning and active-code identification](docs/VERSIONS.md). App versions are separate from project and algorithm versions. Existing project formats remain supported; V2 projects use `negative-studio-roll-v2` (geometry version 1). Older script/settings names remain for compatibility. A hosted deployment may lag `main`; PR changes become public only after merge and successful deployment.
+## Import, precision and projects
 
-Free rotation and composition are integrated into preview and export. The optional **robust density** color mode, wide-gamut RAW import and flat-field correction remain experiments. Conversion Engine 3.0 adds **Curve, Density and Matrix** alongside unchanged **Original** and **Standard** references. These are bounded experiments requiring photographic evaluation, not proven improvements. **Editing 2.0 is the default for new images**, with a shared monotone tone curve, OKLab saturation and soft gamut limiting. Older projects retain their saved editing version; missing versions keep original editing.
+RAW uses LibRaw/WASM in a worker with the existing demosaicing settings and one active-image decoded cache. RAF may show a clearly labelled approximate positive made from its embedded JPEG while RAW decodes. That disposable preview is never a source for technical analysis or export. Cancellation, replacement and failure guards prevent late jobs from owning a newer image.
 
-## Features
+TIFF supports the existing codec/ICC paths. Undeclared TIFF requires an explicit encoding assumption. Protected sRGB and linear Rec.2020 are the two RAW import modes. Native browser image decoding and JPEG encoding have device size/memory limits; JPEG may reduce size after encoder failure. PNG/TIFF preserve original working-source output dimensions. A 16-bit file cannot restore precision absent from an 8-bit source.
 
-| Area | Available behavior |
-| --- | --- |
-| Import | Local RAW, RGB/grayscale TIFF, JPEG, PNG and WebP; LibRaw/WASM decodes RAW in a worker. |
-| Technical analysis | Automatic film-frame detection, manual edge correction and locking, film-base sampling, automatic calibration, optional two-neutral-patch and shared roll calibration. |
-| Color conversion | Six choices: Original (`log39`), Standard (`calibrated4`), Curve, Density, Matrix and experimental V2. Standard remains the default; older algorithms remain for compatible projects. |
-| Editing | Editing 2.0 for new images, original editing retained for older projects; exposure, contrast, gamma, black/white points, shadows/highlights, temperature, tint, saturation, creative color/monochrome profiles and print styles. |
-| Preview | WebGL 2 acceleration for supported configurations; worker-based CPU rendering and a bounded main-thread fallback. V2 currently uses CPU with a bounded point-sampled preview; full-resolution export uses the original source. |
-| Original detail | A separate 100%/200% view samples a small region of the working original, before presentation rotation. It does not change calibration. |
-| Composition | Quarter turns plus fine rotation, straighten by drawing a line, optional composition crop and thirds grid. Rotation limits output to a valid area without empty corners. |
-| Queue | Up to **five images**; only the active image is decoded. Per-image edits and geometry coexist with roll-wide profile, print and frame-crop settings. |
-| Export | JPEG with worker/main-thread fallback and size limits; RGB 16-bit TIFF with embedded sRGB profile; JPEG ZIP and selected-image TIFF batch export, progress, cancellation and error reporting. |
-| Projects | JSON settings/metadata save and restore, including supported older project formats. Original image files are not embedded. |
-| Preferences | Theme, preview backend, grid and interface language: Swedish, English, French, Spanish and German. |
-| Offline | A service worker caches the built app and decoder assets on HTTPS/localhost. After a complete online installation, the cached version can reopen offline. Browser storage eviction can remove it. |
+Projects now use **`filmlabb-roll-4`** with geometry version 2 and Editing 2.0. They store settings, references and geometry, not original image bytes. Re-import matching originals to reopen a project. Older project schemas, retired engine IDs and device-local image recipes are deliberately unsupported; import originals and create a new project. Appearance, language and preview-backend preferences remain device-local.
 
-### File and camera compatibility
+## Run locally
 
-An accepted extension is a routing decision, **not a camera compatibility guarantee**. Actual RAW support depends on the camera, compression, bundled LibRaw build and available browser memory.
-
-| Input | Current status and evidence |
-| --- | --- |
-| DNG | Active RAW route. Automated tests decode the included synthetic DNG with actual LibRaw/WASM and check known linear samples. This does not validate every DNG variant. |
-| Fujifilm RAF, Sony ARW | Active RAW routes. RAF embedded-JPEG thumbnail/fallback handling is tested separately. The fixture set is not a validated list of Fujifilm or Sony camera models. |
-| Nikon NEF, Canon CR2/CR3, Panasonic RW2 | Accepted through LibRaw but marked experimental by the file policy; camera-specific validation remains necessary. |
-| TIFF | Tests cover 8-/16-bit RGB and grayscale, strip/tile and planar layouts, supported orientation, uncompressed/LZW/PackBits/Deflate paths, and ICC handling. Unsupported layouts or profiles can still fail. |
-| JPEG, PNG, WebP | Browser decoding and color management; rendered 8-bit sources rather than RAW sensor data. |
-
-No comprehensive camera-model certification is maintained. The reported blue/violet artifacts in two original RAF files have **not** been verified as fixed: those originals were unavailable for the recorded investigation. See [the evidence and limitations](docs/BETA6_QUALITY_WORKFLOW.md) and [the Standard-engine A/B experiment](docs/STANDARD_COLOR_AB.md).
-
-RAF embedded JPEG is used for thumbnails or as an explicit fallback after legacy RAW decoding fails; it is not presented as a full-quality RAW decode. V2 rejects that fallback as a technical negative source. TIFF without ICC needs a correct input declaration; V2 requires explicitly verified linear Rec.2020. RAW import has separate compatibility, protected sRGB and experimental Rec.2020 modes. Selecting V2 decodes the same original with its locked Rec.2020 recipe when necessary; incompatible source-domain calibration is not silently reused.
-
-## How it works
-
-**Import → Film frame detection → Negative conversion → Editing → Composition → Export**
-
-1. Import up to five files. Only the selected image is decoded; inactive entries retain their files, settings and small thumbnails.
-2. Check the detected film frame. Correct its edges if needed and confirm an uncertain detection. This rectangle defines the technical analysis region.
-3. Use Standard conversion, or compare Original, Curve, Density, Matrix and experimental V2. Refine film-base measurements with the ordinary film-base tools. V2 requires its locked linear Rec.2020 source and a compatible base; its frozen technical response is separate from positive tone/color analysis. Roll calibration assumes consistent film and capture conditions.
-4. Adjust the positive and optionally apply a creative profile. Creative edits do not feed back into technical film-base analysis.
-5. Rotate, straighten or choose a composition. These operations do not recalibrate color. The queue-wide frame-crop choice determines whether the technical frame also limits export; each image keeps its own rotation and composition.
-6. Export JPEG/TIFF or a batch. Save a project to resume the edits. To restore it later, first import the same original files, then load the JSON. Projects containing Editing 2.0 or the new conversion engines use versioned file tags that earlier builds reject safely.
-
-## Getting started
-
-### Hosted application
-
-Open [FILMLABB on GitHub Pages](https://axeltidehorn.github.io/negative-studio/) in a current browser with WebAssembly support. iPad Safari and Windows/Edge are target environments. Chromium automation is part of development; it does not replace physical-device testing. CPU fallback remains available without usable WebGL 2. Large images can exceed browser memory or canvas limits even on a supported device.
-
-Keep originals and downloaded projects separately. A cached offline app or local preferences are not an image/project backup.
-
-### Run locally
-
-Use Node.js **22** (the CI version), npm and a static HTTP server:
+Use Node.js 22 (CI), npm and a static server:
 
 ```sh
-git clone https://github.com/AxelTidehorn/negative-studio.git
-cd negative-studio
 npm ci
 npm run build
 python3 -m http.server 8000 --directory site
 ```
 
-Open `http://localhost:8000`. **`site/` is the built web application. Do not serve the source root directly:** public script/worker filenames are assembled from `src/` by the build. The build recreates `site/`, copies decoder assets and generates a content-versioned offline cache. No application server or bundler is required. Publish the complete `site/` directory over HTTPS; the existing GitHub Actions workflows build the same output for GitHub Pages.
+Open `http://localhost:8000`. Serve **`site/`**, not the source root: `app-manifest.mjs` maps source files to public scripts/workers and defines startup order. The build recreates the complete app and its versioned offline cache. The visible beta/development version follows [the existing release policy](docs/VERSIONS.md).
 
-## Architecture overview
-
-`app-manifest.mjs` defines the source-to-public-asset mapping and actual startup order. The app uses classic browser scripts and existing shared session bindings; the source directories group responsibilities without introducing a framework.
-
-| Source area | Responsibility |
-| --- | --- |
-| `src/import/`, `src/image/` | File routing, RAW/TIFF decoding, source pixels and flat-field data. |
-| `src/calibration/`, `src/color/` | Film-frame analysis, versioned conversion engines, color configuration and shared CPU/GPU parameters. |
-| `src/conversion-v2/` | Existing density-based V2 core and main-platform binding, source/base/response/intent contracts, diagnostics and retained reference lab. |
-| `src/editing/` | Versioned editing operators, creative profiles and print settings. |
-| `src/render/`, `src/geometry/` | Preview scheduling/backends, coordinate transforms, composition and display presentation. |
-| `src/export/` | Frozen geometry/color, bounded sampling stripes, encoding, filenames, batches and cancellation. |
-| `src/app/`, `src/ui/`, `src/platform/` | Queue/projects, controls/layout/languages and offline lifecycle. |
-| `tests/`, `tools/` | Regression fixtures, automated tests and explicit diagnostic/benchmark tools. |
-
-Technical conversion and creative editing are distinct responsibilities within the existing pixel pipeline. Editing 2.0 runs after a frozen positive; its version is independent of negative conversion. Preview/export share color configuration and CPU definitions. Supported legacy GPU formulas are checked against CPU output; V2 currently uses the CPU/worker fallback. Geometry has its own shared coordinate model.
-
-See [ARCHITECTURE.md](docs/ARCHITECTURE.md) for the call chain, state scope, resources and project compatibility, and [REFACTORING.md](docs/REFACTORING.md) for the cleanup inventory and deliberately retained legacy behavior.
-
-### Comparing conversion engines
-
-Choose **Original, Standard, Curve, Density, Matrix or V2 · experimental** with the image adjustments. Switching retains film frame and composition. Curve, Density and Matrix test bounded nonlinear channel curves, shared density presentation and a restrained color-channel transform. None is selected as a photographic winner. Use protected sRGB import for the existing five-way comparison.
-
-V2 uses the existing density core, robust P60/P99 placement and bounded positive color balance. Its first selection may explicitly decode the same RAW again into linear Rec.2020; a base measured in protected sRGB must then be measured again. Standard/Curve/Density/Matrix can reuse that wide source, while Original requires sRGB re-decoding. V2 uses the ordinary base, editing, geometry, queue/project and export controls. See the [integration protocol and CPU-preview limitations](docs/V2_PLATFORM_INTEGRATION.md). The separate `v2.html` remains a reference and diagnostic tool.
-
-Editing 2.0 runs after conversion for new images. The former editing selector is hidden; existing projects retain their own version and exact settings. Neutral 2.0 controls preserve the neutral adapter output; positive Shadows lifts and positive Highlights compresses. See [conversion algorithms, limitations and reference generation](docs/CONVERSION_3_EXPERIMENT.md) and [Editing 2.0](docs/EDITING2.md).
-
-## Image quality and limitations
-
-Film-base removal and channel calibration estimate a useful positive. They cannot exactly reconstruct the original scene: film response, development, exposure and the capture system all affect the result. Automatic calibration without measured neutral references is an estimate. Creative profiles are rendering choices, not certified reproductions of named film stocks.
-
-Capture quality matters: use even, stable illumination, avoid clipped source channels, keep the film flat and in focus, and use consistent camera settings. Very low transmission, noise and clipped channels can produce unstable color. Robust density has synthetic regression coverage, but its benefit on the reported RAF photographs remains unverified.
-
-Preview is bounded and can temporarily use lower resolution while adjusting controls. Use the original-detail panel to inspect source detail. Supported CPU/GPU implementations are tested within documented display precision; V2 has no GPU port yet. Its point-sampled preview can alias, while export processes the original with the existing geometric filter. An 8-bit preview and native JPEG encoding are not a 16-bit TIFF reference. Free rotation interpolates processed colors in linear display light; unchanged quarter turns preserve exact direct export. Existing preview/downscale aliasing and real-photo validation remain areas for investigation.
-
-JPEG may reduce dimensions to fit browser/device limits or after encoder failure. TIFF uses working-source resolution and 16-bit output; it cannot recover precision lost in an 8-bit input. Large browser-decoded images may also be limited at import. Striped export bounds intermediate buffers, but final TIFF/ZIP data and the native JPEG canvas/encoder still require memory.
-
-## Development and testing
+## Development and verification
 
 ```sh
-npm run test:fast                # small numerical/reference checks
-npm run test:integration         # engines, projects, CPU/GPU and exports
-npm run test:full                # complete regression + build + browsers
-npm test                         # historical sequential Node command
-npm test -- --group color        # focused tests
-npm test -- --group projects
-npm run build
-npm run test:build               # clean output, asset/cache consistency
-npx playwright install chromium
-npm run test:browser             # verified build, shared Chromium process
-npm run test:benchmark           # explicit measurements, separate from tests
+npm run test:fast
+npm run test:integration
+npm run test:full
+npm test -- --group color
+npm run test:browser
+npm run test:build
+npm run test:benchmark
 ```
 
-Set `FILMLABB_CHROMIUM_BIN=/path/to/chromium` to reuse an installed browser. Node fixtures cover historical color output, project migrations, calibration, RAW/TIFF import, geometry and export sampling. Browser suites exercise the actual UI, CPU/GPU, detail view, workers, export errors/cancellation, batch/ZIP and service-worker updates. Expected pixels are not changed to accommodate accidental regressions. Real-camera diagnostics require external files and are separate from the self-contained suite.
+Set `FILMLABB_CHROMIUM_BIN` to an installed Chromium-family executable. The complete suite covers V2/D, Standard, current projects/queue, calibration, frame interaction, profiles, Editing 2.0, GPU/CPU, RAW/TIFF import and all export formats. Numeric oracles retain pre-consolidation Float64 output and 16-bit export hashes; expected pixels must not be regenerated to hide a cleanup regression.
 
-See [test levels and process/build reuse](docs/TESTING.md). For comparable conversion measurements, run the same driver against frozen and candidate checkouts sequentially:
+[Architecture](docs/ARCHITECTURE.md), [testing](docs/TESTING.md), [settings/export](docs/SETTINGS_AND_EXPORT.md), [backlog](docs/FEATURE_BACKLOG.md) and [consolidation evidence](docs/consolidation/README.md) describe the active implementation. Earlier reports explicitly marked archival describe their own historical commits.
 
-```sh
-FILMLABB_CHROMIUM_BIN=/path/to/chromium \
-  node tools/benchmark-conversion3.mjs /path/to/checkout /tmp/results.json 7
-```
+**Documentation rule:** a PR changing user behavior, defaults, architecture or features updates relevant documentation in the same PR. Review records documentation status. Trivial internal edits do not require unrelated documentation changes.
 
-[Maintenance measurements and findings](docs/MAINTENANCE.md) distinguish elapsed times, deterministic work/allocation counts and device-validation limits.
+## Limitations
 
-Bug reports should include the commit/deployment, browser/OS/device, format and camera/compression if relevant, import mode, engine/A-B choice, reproduction steps and expected/actual behavior. A reproducible fixture and project JSON help; share photographs only with permission. Use existing module owners and the manifest for changes, add a targeted regression and run relevant tests/build. Preserve older project results and keep intentional algorithm changes separate from maintenance.
+Automatic base/color estimates are not a spectral reconstruction of a film stock. Capture quality, clipping, low transmission and lighting remain important. Profiles are photographic prototypes, not certified emulsion matches. Preview is bounded; inspect original detail and final exports when judging precision. Fine rotation interpolates processed colors in linear display light; direct quarter turns retain exact source sampling.
 
-## Roadmap
+Large images can exceed browser memory/canvas limits. The bounded Float64 export tile cache is retained; final blobs/ZIPs and native encoders still consume memory. The documented tests distinguish bounded RAW-derived previews from full-resolution RAW runs, Node timings from browser timings, and Linux WebKit/Edge from physical iPad Safari/Windows. Physical iPad verification of the range-interaction protections remains required.
 
-- **Current work:** evaluate V2 alongside the five retained engines in the main application using real negatives and physical devices, while preserving legacy results. Known V2 blue/cyan color and highlight limitations remain; integration is not a new photographic-quality validation.
-- **Further development:** use photographic evaluation to decide which conversion and editing refinements are justified. No experimental conversion winner or next release is promised.
-- **Ideas requiring investigation:** broader camera/device reference coverage and improved downscale filtering. These are not promised release features.
-
-No version or delivery date is committed here for future editing features.
+Open [FILMLABB](https://axeltidehorn.github.io/negative-studio/) in a current WebAssembly-capable browser. Keep originals/projects separately; offline caching is not a backup. Report reproducible issues with commit, browser/device, input format, engine, settings and steps at [GitHub Issues](https://github.com/AxelTidehorn/negative-studio/issues).
 
 ## Licensing
 
@@ -168,11 +74,3 @@ Dependency licenses are separate:
 | [Playwright](https://github.com/microsoft/playwright/blob/main/LICENSE), development only | Apache 2.0; the installed browser has its own terms/notices. |
 
 The repository includes a vendored decoder fallback as well as the npm dependency. Its existing binary distribution does not contain a complete third-party license inventory. Package metadata alone is not a redistribution audit of the WASM binary and its compiled components; consult applicable upstream source, notices and obligations before redistribution.
-
-### V2 reference lab
-
-After build, `v2.html` retains the isolated A/B lab, technical/fixed views,
-step diagnostics and JPEG/RGB16-TIFF references. Normal V2 conversion, editing,
-projects and export use the main app; opening the lab is optional. See the
-[lab protocol](docs/CONVERSION_V2.md), [main-platform integration](docs/V2_PLATFORM_INTEGRATION.md)
-and [recorded image-quality evidence](docs/V2_STAGE1_IMAGE_QUALITY.md).

@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # Lyster / Vibrance i Editing 2.0
 
 Utgångspunkt: main `6fcdff3`, inklusive #60. Ett nytt manuellt reglage direkt

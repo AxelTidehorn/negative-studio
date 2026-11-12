@@ -14,7 +14,7 @@ try{
  await p.locator('#flInfoMenu>summary').click();assert.equal(await p.locator('#flInfoContent').evaluate(e=>e.inert),true);const exit=await p.locator('#flInfoContent').evaluate(e=>e.getAnimations()[0]?.effect.getTiming().duration);assert.equal(exit,150);
  await p.locator('#flInfoMenu>summary').click();await p.waitForFunction(()=>$('flInfoMenu').open&&!$('flInfoContent').inert);await p.locator('#picture').click({position:{x:30,y:30}});await p.waitForFunction(()=>!$('flInfoMenu').open);
  await p.locator('#imageFile').setInputFiles('tests/fixtures/synthetic-negative.dng');await p.waitForFunction(()=>working&&!rollLoading&&!workerBusy38&&!queued38);await selectEngine(p,'v2');
- const freeze=()=>p.evaluate(()=>({state:JSON.stringify({state,rollShared,calibration,cropRegion}),analysis:analysisCount38,source:sourceVersion38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));
+ const freeze=()=>p.evaluate(()=>({state:JSON.stringify({state,rollShared,calibration,region:frameRegion()}),analysis:analysisCount38,source:sourceVersion38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));
  const frozen=await freeze();await selectAppearance(p,'light');for(const lang of ['en','fr','es','de','sv'])await selectLanguage(p,lang);await p.locator('#exportFormat').selectOption('png16');await selectAppearance(p,'dark');assert.deepEqual(await freeze(),frozen,'UI preferences must not mutate the image recipe, analysis, source or pixel values');
  await p.locator('#exportFormat').selectOption('jpeg');
  const original=await p.evaluate(()=>{setQueueCropExportToFrame(false);return {w:working.width,h:working.height};});

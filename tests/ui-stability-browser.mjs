@@ -11,7 +11,7 @@ const h=await browserHarness();try{
  for(const id of ['tabNeg','tabSplit','tabPos']){await p.locator('#'+id).click();assert.equal(await p.locator('#'+id).getAttribute('aria-pressed'),'true');}
  await p.waitForFunction(()=>!$('histogramInfo').textContent.includes('…'));
  console.log('PASS real reset, keyboard/double tap, queue retention and display modes');
- const frozen=await p.evaluate(()=>({settings:JSON.stringify({state,rollShared,calibration,cropRegion,geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));
+ const frozen=await p.evaluate(()=>({settings:JSON.stringify({state,rollShared,calibration,region:frameRegion(),geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));
  for(const mode of ['light','dark']){await p.evaluate(mode=>FILMLABB_APPEARANCE.set(mode),mode);}
  for(const viewport of [{width:1440,height:900},{width:1280,height:600},{width:1024,height:768},{width:820,height:1180}]){
   await p.setViewportSize(viewport);await p.evaluate(()=>window.scrollTo(0,0));await p.waitForFunction(()=>Math.abs($('workspace').getBoundingClientRect().bottom-innerHeight)<2);
@@ -19,7 +19,7 @@ const h=await browserHarness();try{
  }
  await p.evaluate(()=>$('geometryTools').open=true);assert.equal(await p.locator('label[for="fineRotation"]').evaluate(e=>getComputedStyle(e).display),'flex');await p.evaluate(()=>$('geometryTools').open=false);
  await p.locator('#flInfoMenu > summary').click();assert.equal(await p.locator('footer.foot').isVisible(),true);const height=await p.locator('#workspace').evaluate(e=>e.getBoundingClientRect().height);await p.locator('#flInfoMenu > summary').click();assert.equal(await p.locator('#workspace').evaluate(e=>e.getBoundingClientRect().height),height,'opening settings must not shrink the workspace');
- const current=await p.evaluate(()=>({settings:JSON.stringify({state,rollShared,calibration,cropRegion,geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));assert.deepEqual(current,frozen);
+ const current=await p.evaluate(()=>({settings:JSON.stringify({state,rollShared,calibration,region:frameRegion(),geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38,pixels:Array.from(NSPixelKernel.render(workingPreview,configuration38(),'positive',24).data)}));assert.deepEqual(current,frozen);
  console.log('PASS desktop/tablet workspace height, settings/footer access, alignment and unchanged pixels/state');
  for(const touch of [false,true]){const context=await h.browser.newContext({hasTouch:touch,viewport:{width:390,height:844},locale:'sv-SE',serviceWorkers:'block'}),page=await context.newPage();await page.goto(h.url);await page.locator('#imageFile').setInputFiles({name:'phone.png',mimeType:'image/png',buffer});await page.waitForFunction(()=>working&&!rollLoading);
   await page.locator('#geometryTools').evaluate(e=>e.open=true);if(await page.locator('#frameReviewConfirm').isVisible())await page.locator('#frameReviewConfirm').click();await page.locator('#compositionEdit').click();

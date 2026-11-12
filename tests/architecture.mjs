@@ -1,4 +1,3 @@
-import {neutralReference} from './helpers/neutral-reference.mjs';
 /* Refactor contract: actual boot graph and exact pre-refactor color behavior. */
 import assert from 'node:assert/strict';import fs from 'node:fs';import vm from 'node:vm';
 import {assets,scripts,sourcePath} from '../app-manifest.mjs';
@@ -13,25 +12,12 @@ for(const name of ['preview-worker.js','export-worker.js','sw.js']){
 }
 for(const asset of scripts)assert.equal(tags.find(m=>m[2]===asset.file)[1].includes('defer'),asset.defer,asset.file);
 console.log('PASS HTML/build/harness share explicit startup order; worker dependencies resolved; no inline application logic');
-const h=harness({editingVersion:1}),K=h.context.NSPixelKernel;
-h.run(`render=()=>{};scheduleRender=()=>{};working={width:48,height:32,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:48*32*3},(_,i)=>1000+(i*137)%55000)};workingPreview=CE.preview(working);src=new ImageData(48,32);previewSrc=src;cropRegion={x:.1,y:.1,w:.8,h:.8};sourceInfo={encoding:'linear'};`);
-const old={NSRawInput:h.context.NSRawInput,NSColorEngine:h.context.NSColorEngine};vm.createContext(old);vm.runInContext(fs.readFileSync(new URL('./fixtures/render-core-before-refactor.js',import.meta.url),'utf8'),old);
-let cases=0;const samples=[[0,0,0],[.002,.001,0],[1/65535,4/65535,64/65535],[.01,.1,.7],[.3,.2,.1],[1,1,1]];
-for(const engine of ['legacy','beta2','beta3','density38','reference','log39','calibrated4'])for(const space of (engine==='calibrated4'?['srgb','rec2020']:['srgb'])){
- h.run(`state={...defaultState(),engine:'${engine}',cropConfirmed:true};sourceInfo={encoding:'linear',colorSpace:'${space}'};analyzeLevels();`);
- for(const version of [1,2])for(const profile of ['neutral'])for(const edit of [false,true])for(const variant of (engine==='calibrated4'?['legacy','original','robust']:['legacy'])){
-  h.run(`rollShared.look={id:'neutral',strength:.7};rollShared.monochrome=false;`);
-  const c=h.run('configuration38()');Object.assign(c.opts,{colorMode4:variant,...(edit?{exposure:.7,gamma:.8,contrast:1.2,saturation:1.3,temperature:20,tint:-8,shadows:24,highlights:-31}:{})});
-  const current=K.compile(c),reference=old.NSPixelKernel.compile(neutralReference(c));
-  for(const p of samples)assert.deepEqual(Array.from(current.pixel(p)),Array.from(reference.pixel(p)),[engine,space,profile,version,edit,variant].join('/'));cases++;
- }
-}
-// Analysis boundaries are explicit: exactly one ordered pass, restored on failure.
-const stages=[];h.context.stages=stages;
-h.run(`analyzeSharedLevels=()=>stages.push('shared');analyzeComparisonLevels=()=>stages.push('comparison');analyzeStandardLevels=()=>stages.push('standard');analyzeLevels();`);
-assert.deepEqual(stages,['shared','comparison','standard']);const preview=h.run('workingPreview');
-h.run(`analyzeComparisonLevels=()=>{throw Error('stage failure')};`);assert.throws(()=>h.run('analyzeLevels()'),/stage failure/);assert.equal(h.run('workingPreview'),preview);
-// Persisted data never aliases mutable settings; no inactive image buffers kept.
-const S=h.context.NSProjectSettings,a=S.imageDefaults(),b=S.imageDefaults();a.response4={span:[1,2,3]};const cloned=S.clone(a);cloned.response4.span[0]=99;assert.equal(a.response4.span[0],1);assert.equal(b.response4,null);
+const h=harness(),S=h.context.NSProjectSettings;
+assert.equal(S.newImageDefaults().engine,'v2');assert.equal(S.newImageDefaults({v2Compatible:false}).engine,'calibrated4');
+for(const engine of ['log39','curve3','density3','matrix3','beta2','legacy','reference'])assert.throws(()=>S.newImageDefaults({engine}));
+assert.equal(html.match(/<select id="engineMode">([\s\S]*?)<\/select>/)[1].match(/<option/g).length,2);
+const manifest=JSON.stringify(assets);for(const module of ['conversion3.js','legacy-analysis.js','v2-lab.js','v2-worker.js','editing-controller.js'])assert.ok(!manifest.includes(module));
+const a=S.imageDefaults(),b=S.imageDefaults();a.response4={span:[1,2,3]};const copied=S.clone(a);copied.response4.span[0]=99;assert.equal(a.response4.span[0],1);assert.equal(b.response4,null);
 assert.deepEqual(Object.keys(S.rollDefaults()).sort(),['cropExportToFrame','look','monochrome']);
-console.log('PASS',cases,'exact pre-refactor engine/profile/variant configurations, explicit analysis order/failure restoration and settings isolation');
+console.log('PASS only V2/Standard production graph, current defaults and independent settings');
+await import('../tools/consolidation-oracle.mjs');

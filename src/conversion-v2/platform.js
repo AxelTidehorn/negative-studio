@@ -1,7 +1,7 @@
 /* Main-platform contract. Reuses core/render/fast; owns no image buffers. */
 (function(root){
 'use strict';
-const V=root.NSConversionV2,R=root.NSV2Render,PROJECT_FORMAT='negative-studio-roll-v2',ALGORITHM=3;
+const V=root.NSConversionV2,R=root.NSV2Render,ALGORITHM=3;
 // Historical mapping remains the identity for intents saved before rendering v3.
 const algorithmForCalibration=calibration=>calibration.version===3?2:1;
 function selectAlgorithm(calibration,version=calibration.version===2?1:ALGORITHM){if(!(calibration.version===2&&version===1||calibration.version===3&&[2,3].includes(version)))throw Error('V2_RECIPE_INCONSISTENT');return version;}
@@ -45,7 +45,7 @@ function validate(r){
  return r;
 }
 function validateProject(p){
- const modern=p.format===PROJECT_FORMAT||p.format===root.NSProfiles?.FORMAT;
+ const modern=p.format===root.NSProjectSettings?.FORMAT;
  if(modern&&(p.v2SchemaVersion!==1||p.conversionSchemaVersion!==1))throw Error('V2_PROJECT_VERSION');
  for(const f of p.frames||[]){const s=f.settings||{};if(s.rawSourceRecipeV2!==undefined&&(s.rawSourceRecipeV2!==1||s.rawMode4!=='wide'))throw Error('V2_SOURCE_RECIPE_VERSION');if(s.engine==='v2'||s.v2Recipe||s.rawSourceRecipeV2){if(!modern)throw Error('V2_PROJECT_FORMAT');if(s.v2Recipe)validate(s.v2Recipe);if(s.engine==='v2'&&(s.conversionVersion!==2||s.editVersion!==2))throw Error('V2_PROJECT_SETTINGS');}}
 }
@@ -62,5 +62,5 @@ function diagnostic(im,config){
  if(im.flatField)report.capture.flatField={status:'measured',value:{id:im.flatField.id,appliedOnce:true},methodVersion:'main-source-read-1'};
  return report;
 }
-root.NSV2Platform={PROJECT_FORMAT,ALGORITHM,algorithmForCalibration,selectAlgorithm,decoderOptions,usesLockedSource,signature,fingerprint,read,validSource,preview,region,prepare,validate,validateProject,diagnostic};
+root.NSV2Platform={ALGORITHM,algorithmForCalibration,selectAlgorithm,decoderOptions,usesLockedSource,signature,fingerprint,read,validSource,preview,region,prepare,validate,validateProject,diagnostic};
 })(globalThis);

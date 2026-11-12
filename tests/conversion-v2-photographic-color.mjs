@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-for(const n of ['core','render','fast','output','diagnostics','platform'])await import('../src/conversion-v2/'+n+'.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2Output,P=NSV2Platform;
+for(const n of ['core','render','fast','diagnostics','platform'])await import('../src/conversion-v2/'+n+'.js');
+await import('./helpers/v2-output-oracle.js');
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle,P=NSV2Platform;
 const close=(a,b)=>assert.ok(Math.abs(a-b)<=1e-12*Math.max(1,Math.abs(b)),`${a} != ${b}`);
 const im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(48*36*3)},rgb=[.8,.45,.2];
 for(let i=0;i<im.data.length;i++)im.data[i]=rgb[i%3]*10**(-.1-(i%113)/65);

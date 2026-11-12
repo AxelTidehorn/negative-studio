@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # Standardmotor: separat A/B-experiment
 
 Bas: `main` **b2b7f87**. **Både #21 och #22 är mergade.** Nytt läge ersätter

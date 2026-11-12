@@ -66,7 +66,7 @@ Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kv
 
 ## 3. Konverteringsmotor och fotografisk kvalitet
 
-- [x] Standard och Original som referenser; Curve, Density, Matrix och experimentell V2 finns i huvudplattformen.
+- [x] V2/D som huvudmotor och standard för kompatibel RAW; Standard som reserv. Övriga separata motorer och jämförelselabbet avvecklade (se konsolideringsrapport).
 - [x] Editing 2.0 för nya bilder, med äldre redigering bevarad för kompatibla projekt.
 - [x] Separata tekniska kalibreringsdata och kreativa redigeringssteg.
 - [ ] **P0** Skapa ett reproducerbart bibliotek med verkliga negativ (filmtyp, ljus, exponering, motiv, original-RAW och accepterade referensrenderingar).
@@ -83,11 +83,11 @@ Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kv
 ## 4. Redigeringsfunktioner
 
 - [x] Exponering, kontrast, gamma, ändpunkter, högdagrar/skuggor, temperatur, tint och mättnad finns.
-- [x] Kreativa färg-/monokromprofiler och kopiestilar finns.
+- [x] Aktuella filmkaraktärer, fyra kreativa färgprofiler och Neutral svartvit finns i den gemensamma profilkatalogen.
 - [x] Positiv/Negativ/Jämför, zoom och originaldetalj finns.
 - [ ] **P1** Inventera och besluta hur ångra/gör om ska fungera för både redigering, kalibrering och geometri; implementera och verifiera historik.
 - [ ] **P1** Inventera befintliga kortkommandon; komplettera en sammanhängande, dokumenterad tangentbordsuppsättning.
-- [ ] **P2** Utred ett redigerbart kurvverktyg (global tonkurva och eventuellt separata RGB-kanaler) utan att blanda ihop med experimentmotorn ”Curve”.
+- [ ] **P2** Utred ett redigerbart kurvverktyg (global tonkurva och eventuellt separata RGB-kanaler) inom Editing 2.0; den gamla separata Curve-motorn är borttagen.
 - [ ] **P2** Förfina och verifiera de fyra kreativa profilerna Backstreet, Afterglow, Pale Static och Redline ([#92](https://github.com/AxelTidehorn/negative-studio/pull/92)) mot verkliga fotografier. Nya profiler kräver separat behovsprövning.
 - [ ] **P2** Förbättra fokusläge, zoom, jämförelse och detaljgranskning utifrån faktiskt arbetsflöde.
 
@@ -95,11 +95,11 @@ Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kv
 
 - [x] Kö om högst fem bilder; endast aktiv bild avkodas fullt.
 - [x] Bildspecifika redigeringar/geometrier och rullgemensamma profil-/exportval.
-- [x] Projekt kan sparas/återläsas som JSON med bakåtkompatibilitet; originalbilder bäddas inte in.
+- [x] Aktuella `filmlabb-roll-4`-projekt kan sparas/återläsas; originalbilder bäddas inte in. Äldre scheman har avvecklats.
 - [ ] **P1** Verifiera helflödet för rullgemensam kalibrering och individuella bildkorrigeringar på flera riktiga negativ.
 - [ ] **P1** Förbättra kö-/rullupplevelsen inklusive aktiv bild, batchval, ordning och trygg hantering av osparat arbete.
 - [ ] **P1** Utred fler än fem köbilder med tydlig minnesbudget och tillförlitlig avkodnings-/frigöringsstrategi; höj inte gränsen utan mätning.
-- [ ] **P1** Testa återöppning och migrationsfall för äldre projekt, saknade original och olika motor-/redigeringsversioner.
+- [ ] **P1** Verifiera aktuella projekts återöppning med saknade original och bildspecifik/gemensam kalibrering på fysisk enhet. Äldre projektmigrering är avsiktligt borttagen.
 - [ ] **P2** Utvärdera en smidigare projekt-/rullorganisation och återanvändbara kalibreringsmallar.
 
 ## 6. Export och leverans
@@ -120,7 +120,7 @@ Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kv
 - [ ] **P0** Kör hela import → kalibrering → konvertering → redigering → export med riktiga original på fysisk iPad Safari och Windows Edge.
 - [ ] **P1** Profilera minne, GPU/CPU-växling, cachefrigöring och långlivade sessioner; sätt mätbara resursgränser.
 - [ ] **P1** Verifiera offlineinstallation, uppdatering, cacheinvalidering och återöppning i faktiska webbläsare.
-- [ ] **P1** Utred separat dokumenterat problem med offline-navigation till V2-labbet (se [motiondokumentation](AMBER_GLASS_MOTION.md)).
+- [x] Fristående V2-labb och dess dubbla import-/exportkedja borttagna; huvudappen äger hela arbetsflödet.
 - [ ] **P1** Sätt tydliga acceptanskriterier för en stabil beta och genomför full regressions- och användarverifiering.
 - [ ] **P2** Dokumentera funktioner och kamerastöd som faktiskt är verifierade samt kända begränsningar.
 - [ ] **Framtid** Undersök native/installerbara iPad-, Android- och desktopappar först efter att webbflödet är stabilt.
@@ -135,6 +135,8 @@ Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kv
 5. **Slutverifiera bildkvalitet, stora exporter, iPad/Edge, minne och offline** innan beslut om stabil beta.
 
 ## Ändringslogg
+
+- **2026-11-12:** Två motorer, en filmrutepost, aktuellt projektformat och uppdaterad dokumentation i samma konsoliderings-PR. Numerisk/prestandaevidens: [rapport](consolidation/README.md).
 
 - **2026-11-06:** Första samlade checklistan. Redan dokumenterad implementation avprickad; otestad kvalitet och nya önskemål lämnade öppna.
 - **2026-11-09:** Avstämd mot mergade #90–#97, särskilt #93–#97. Implementerad funktion skiljs från fotografisk/fysisk verifiering; befintliga profiler prioriteras för förbättring och PNG16 är inte längre en framtidsidé.

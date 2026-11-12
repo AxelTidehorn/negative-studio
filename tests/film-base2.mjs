@@ -7,21 +7,17 @@ for(const base of [[.8,.5,.25],[.3,.65,.5],[.6,.6,.6]]){const im=image({base}),m
 for(const opts of [{holder:true},{clipped:true},{texture:true}])assert.equal(M.detect(image(opts),frame).status,'missing');
 const im=image(),region={x:.01,y:.02,w:.08,h:.07},m=M.measure(im,region);assert.equal(m.status,'safe');assert.ok(m.samples>=16);assert.equal(M.measure(image({clipped:true}),region).status,'missing');assert.equal(M.measure(image({texture:true}),region).status,'missing');assert.equal(M.measure(im,{x:0,y:0,w:1/240,h:1/192}).status,'missing');
 console.log('PASS source-region medians/MAD/spread, nonorange masks, neutral review, clipping/low signal/texture abstention');
-h.set('working',im);h.set('cropRegion',frame);h.run(`render=()=>{};scheduleRender=()=>{};workingPreview=working;src=new ImageData(working.width,working.height);previewSrc=src;sourceInfo={encoding:'linear',colorSpace:'srgb',domain:'fixture'};state={...defaultState(),filmBaseVersion:2,cropConfirmed:true};roll=[{file:{name:'a.tif'},settings:{...state},geometry:NSGeometry.create(),crop:{...cropRegion}}];activeFrame=0;analyzeLevels();`);
-h.set('measurement',m);h.run('setProposal2(measurement)');const before=h.run('JSON.stringify({base,calibration})');assert.equal(h.run('state.acceptedCalibration2'),undefined);assert.equal(h.run('JSON.stringify({base,calibration})'),before);
+h.set('working',im);h.set('testRegion',frame);h.run(`render=()=>{};scheduleRender=()=>{};workingPreview=working;src=new ImageData(working.width,working.height);sourceInfo={encoding:'linear',colorSpace:'srgb',domain:'fixture'};state={...defaultState(),filmBaseVersion:2,frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed})};roll=[{file:{name:'a.tif'},settings:{...state},geometry:NSGeometry.create()}];activeFrame=0;analyzeLevels();`);
+h.set('measurement',m);h.run('setProposal2(measurement)');const before=h.run('JSON.stringify({calibration})');assert.equal(h.run('state.acceptedCalibration2'),undefined);assert.equal(h.run('JSON.stringify({calibration})'),before);
 h.run('acceptBase2()');assert.ok(h.run('state.acceptedCalibration2'));assert.equal(h.run('state.acceptedCalibration2.baseLocked'),true);const accepted=h.run('JSON.stringify(state.acceptedCalibration2)');
-for(const id of ['log39','calibrated4','curve3','density3','matrix3']){
+for(const id of ['calibrated4']){
  h.run(`state.engine='${id}';analyzeLevels();`);const snapshot=h.run('configuration38()');
- h.run('cropRegion={x:.25,y:.3,w:.5,h:.4};analyzeLevels();');assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),accepted);
+ h.run('applyFrameSelection(NSFrameSelection.rectangular({x:.25,y:.3,w:.5,h:.4},{status:NSFrameSelection.status.confirmed}));analyzeLevels();');assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),accepted);
  const next=h.run('configuration38()');assert.deepEqual(next.base,snapshot.base);
- if(id==='log39')assert.deepEqual(next.cal.log39,snapshot.cal.log39);
  if(id==='calibrated4')assert.deepEqual(next.cal.beta4.response,snapshot.cal.beta4.response);
- if(id.endsWith('3')&&id!=='log39')assert.deepEqual(next.conversion3,snapshot.conversion3);
  const K=h.context.NSPixelKernel,prepared=K.prepare(im,next),pixel=K.compile(next).pixel([.3,.2,.1]);assert.ok(pixel.every(Number.isFinite));assert.deepEqual(Array.from(prepared.pixel(0)),Array.from(K.compile(next).pixel(Array.from(im.data.subarray(0,3)))));
- h.run('cropRegion={x:.14,y:.14,w:.72,h:.72};');
+ h.run('applyFrameSelection(NSFrameSelection.rectangular({x:.14,y:.14,w:.72,h:.72},{status:NSFrameSelection.status.confirmed}));');
 }
-h.run(`state.engine='curve3';analyzeLevels();globalThis.frozen=configuration38();state.acceptedCalibration2.adapters.conversions.curve3.reference.base[0]=.123;`);assert.notEqual(h.run('frozen.conversion3.reference.base[0]'),.123);
-h.run(`state.acceptedCalibration2=JSON.parse(${JSON.stringify(accepted)});`);
 h.set('measurement',M.measure(image({base:[.7,.4,.2]}),region));h.run('setProposal2(measurement);acceptBase2()');assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),accepted);
 await h.run('Promise.all([detectBase2(),detectBase2()])');assert.equal(h.run('proposal2.revision'),h.run('revision2'));assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),accepted);
 const pending=h.run('detectBase2()');h.run('cancelProposal2()');await pending;assert.equal(h.run('proposal2'),null);

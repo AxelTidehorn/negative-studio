@@ -7,7 +7,7 @@ const previewConfigKey38=config=>globalThis.NSV2Platform?.fingerprint(JSON.strin
 let workerVersion38=-1,workerDisabled38=false;
 let dragTimer38=null,previewTick38=null;
 let ensureWorker38,sendPreview38;
-convertImage=function(image,mode,params){const im=image===previewSrc?workingPreview:working;if(!im)return new ImageData(1,1);const r=NSPixelKernel.render(im,configuration38(params),mode,Math.max(im.width,im.height));const out=new ImageData(r.width,r.height);out.data.set(r.data);return out;};
+
 function showPreview38(r){const c=$('preview');c.width=r.width;c.height=r.height;const out=new ImageData(r.width,r.height);out.data.set(r.data);c.getContext('2d').putImageData(out,0,0);lastPreview38=r;updateFrameThumb(c);drawHistogram38(r.histogram||r.bins);drawCrop();}
 // The luminance trace retains the existing display-referred weighted sRGB bins.
 // RGB is counted at those same bounded preview sample points, after all edits.

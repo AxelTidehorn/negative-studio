@@ -1,4 +1,4 @@
-importScripts('./raw-input.js','./profile-catalog.js','./profile-engine.js','./color-parameters.js','./editing-engine.js','./conversion3.js','./v2-core.js','./v2-render.js','./v2-fast.js','./v2-platform.js','./render-core.js');
+importScripts('./raw-input.js','./profile-catalog.js','./profile-engine.js','./color-parameters.js','./editing-engine.js','./v2-core.js','./v2-render.js','./v2-fast.js','./v2-platform.js','./render-core.js');
 let source=null;
 self.onmessage=({data:m})=>{try{
  if(m.type==='source'){source=m.image;NSPixelKernel.clearV2Positive();return;}if(!source)throw Error('Missing preview source');

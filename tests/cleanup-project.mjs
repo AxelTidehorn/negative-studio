@@ -6,14 +6,14 @@ function setup(){
  const h=harness();
  h.run(`render=()=>{};scheduleRender=()=>{};
  working={width:48,height:32,channels:3,data:Uint16Array.from({length:48*32*3},(_,i)=>3000+(i*73)%42000),scale:65535,encoding:'linear'};
- workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'fixture'};src=new ImageData(48,32);previewSrc=src;
- state={...defaultState(),cropConfirmed:true};cropRegion={x:.1,y:.1,w:.8,h:.8};analyzeLevels();
- roll=[{file:{name:'same.tif'},settings:{...state},geometry:NSGeometry.create(),crop:{...cropRegion},selected:true}];activeFrame=0;
- chooseFrame=async i=>{if(rollLoading||exportBusy)return;activeFrame=i;state={...roll[i].settings};cropRegion={...roll[i].crop};};
+ workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'fixture'};src=new ImageData(48,32);
+ state={...defaultState(),frame:NSFrameSelection.rectangular({x:.1,y:.1,w:.8,h:.8},{status:NSFrameSelection.status.confirmed})};analyzeLevels();
+ roll=[{file:{name:'same.tif'},settings:{...state},geometry:NSGeometry.create(),selected:true}];activeFrame=0;
+ chooseFrame=async i=>{if(rollLoading||exportBusy)return;activeFrame=i;state={...roll[i].settings};return true;};
  downloadBlob=b=>globalThis.savedProject=b;`);
  return h;
 }
-const snapshot=h=>h.run('JSON.stringify({state,roll,rollShared,activeFrame,cropRegion,sourceInfo,sharedLight,sharedBase2})');
+const snapshot=h=>h.run('JSON.stringify({state,roll,rollShared,activeFrame,sourceInfo,sharedLight,sharedBase2})');
 async function project(h,exposure){
  h.elements.get('saveSettings').onclick();const p=JSON.parse(await h.context.savedProject.text());
  p.frames[0].settings.exposure=exposure;return p;

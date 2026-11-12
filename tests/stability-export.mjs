@@ -9,8 +9,8 @@ function setup(){
  const h=harness();h.context.DOMException=DOMException;
  h.run(`render=()=>{};scheduleRender=()=>{};
  working={width:4,height:3,channels:3,data:new Uint16Array(36).fill(20000),scale:65535,encoding:'linear'};
- workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'fixture'};src=new ImageData(4,3);previewSrc=src;
- state={...defaultState(),cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};
+ workingPreview=CE.preview(working);sourceInfo={encoding:'linear',label:'fixture'};src=new ImageData(4,3);
+ state={...defaultState(),frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed})};applyFrameSelection(NSFrameSelection.rectangular({x:0,y:0,w:1,h:1},{status:NSFrameSelection.status.confirmed}));
  roll=[{file:{name:'one.tif'},settings:{...state},selected:true},{file:{name:'two.tif'},settings:{...state},selected:true}];activeFrame=0;analyzeLevels();
  globalThis.downloads=[];downloadBlob=(blob,name)=>downloads.push({blob,name});
  $('exportName').value='Sommarö';$('exportDigits').value='2';`);
@@ -19,12 +19,12 @@ function setup(){
 await test('TIFF uses sanitized prefix and keeps exact 16-bit samples',async()=>{
  const h=setup();await h.run('exportTiff()');assert.equal(h.context.downloads[0].name,'Sommarö.tif');
  const bytes=await h.context.downloads[0].blob.arrayBuffer();h.set('__bytes',bytes);
- assert.ok(h.run('parseTiff16(__bytes).icc.length>0'));
- assert.deepEqual(Array.from(h.run('parseTiff16(__bytes).data')),Array.from(h.run('NSPixelKernel.exportRows(working,configuration38(),CE.exportGeometry(working,cropRegion,false,0),0,working.height)')));
+ assert.ok(h.run('NSTiff.decodeSync(__bytes).icc.length>0'));
+ assert.deepEqual(Array.from(h.run('NSTiff.decodeSync(__bytes).data')),Array.from(h.run('NSPixelKernel.exportRows(working,configuration38(),CE.exportGeometry(working,frameRegion(),false,0),0,working.height)')));
  for(const rotation of [0,90,180,270]){
-  h.run(`state.cropExport=true;state.rotation=${rotation};cropRegion={x:.25,y:0,w:.5,h:1};`);
+  h.run(`rollShared.cropExportToFrame=true;state.rotation=${rotation};applyFrameSelection(NSFrameSelection.rectangular({x:.25,y:0,w:.5,h:1},{status:NSFrameSelection.status.confirmed}));`);
   await h.run('exportTiff()');h.set('__bytes',await h.context.downloads.at(-1).blob.arrayBuffer());
-  assert.deepEqual(Array.from(h.run('parseTiff16(__bytes).data')),Array.from(h.run('(()=>{const g=CE.exportGeometry(working,cropRegion,true,state.rotation);return NSPixelKernel.exportRows(working,configuration38(),g,0,g.height);})()')));
+  assert.deepEqual(Array.from(h.run('NSTiff.decodeSync(__bytes).data')),Array.from(h.run('(()=>{const g=CE.exportGeometry(working,frameRegion(),true,state.rotation);return NSPixelKernel.exportRows(working,configuration38(),g,0,g.height);})()')));
  }
  h.context.downloads.length=1;
  h.run("$('exportName').value='bad/name. ';rollingExport=true;activeFrame=1;");await h.run('exportTiff()');assert.equal(h.context.downloads[1].name,'bad_name_02.tif');

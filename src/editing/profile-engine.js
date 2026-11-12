@@ -1,7 +1,7 @@
 /* One positive-sRGB presentation operator; no negative/source analysis. */
 (function(root){
 'use strict';
-const VERSION='profile-oklch-display-1',FORMAT='filmlabb-roll-3',clamp=x=>Math.max(0,Math.min(1,x)),X=[0,.18,.38,.6,.8,.92,1];
+const VERSION='profile-oklch-display-1',clamp=x=>Math.max(0,Math.min(1,x)),X=[0,.18,.38,.6,.8,.92,1];
 const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t);};
 const band=(x,a,b,c,d)=>smooth(a,b,x)*(1-smooth(c,d,x));
 function validate(selection={id:'neutral',strength:.7},monochrome=false){
@@ -30,8 +30,6 @@ function compile(selection={id:'neutral',strength:.7},monochrome=false){
  }
  return {id,strength:chosen.strength,monochrome,identity,operator:monochrome?root.NSProfileCatalog.monochrome.operator:VERSION,revision:p?.revision||1,tone,pixel,parameters:p};
 }
-function validateProject(data){if(data?.format!==FORMAT)throw Error('Unsupported project: FILMLABB 3 profile format required.');if(!data.look||typeof data.monochrome!=='boolean')throw Error('PROFILE_PROJECT_INVALID');validate(data.look,data.monochrome);for(const f of data.frames||[]){const v=f.settings?.vibrance;if(v!==undefined&&(!Number.isFinite(v)||v< -100||v>100))throw Error('Invalid vibrance setting.');}
- if(['profile','print','strength','creativeProfileVersion'].some(k=>Object.hasOwn(data,k)))throw Error('Retired creative project fields.');return data;}
 // Reuses the Editing 2.0 GLSL matrices and transfer functions in the same pass.
 const glsl=`
 uniform bool uLookActive,uMonochrome;
@@ -67,5 +65,5 @@ vec3 lookPositive(vec3 encoded){
  return encoded+uLookStrength*(q-encoded);
 }
 `;
-root.NSProfiles={VERSION,FORMAT,validate,validateDefinition,validateProject,compile,hueValue,chromaValue,glsl};
+root.NSProfiles={VERSION,validate,validateDefinition,compile,hueValue,chromaValue,glsl};
 })(globalThis);

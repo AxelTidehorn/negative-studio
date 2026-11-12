@@ -10,9 +10,9 @@ try{
  fs.writeFileSync(path.join(site,'index.html'),'verified shell');write();
  assert.equal(verify(root,commit,{release:true}).version,info.version);
  assert.throws(()=>verify(root,'b'.repeat(40)),/identity/);
- for(const edit of [r=>r.level='fast',r=>r.engine='log39',r=>r.failures=1,r=>r.tests[0].status=1,r=>r.tests.pop(),r=>r.tests.push(r.tests[0]),r=>r.tests[1]=r.tests[0]]){const r=structuredClone(report);edit(r);assert.throws(()=>completeSuite(r),/complete successful/);}
+ for(const edit of [r=>r.level='fast',r=>r.engine='v2',r=>r.failures=1,r=>r.tests[0].status=1,r=>r.tests.pop(),r=>r.tests.push(r.tests[0]),r=>r.tests[1]=r.tests[0]]){const r=structuredClone(report);edit(r);assert.throws(()=>completeSuite(r),/complete successful/);}
  // Catch a silent omission of any GPU/export/compatibility/browser check.
- for(const file of ['tests/v2-gpu-browser.mjs','tests/check-workflow-browser.mjs','tests/check-compatibility-next.mjs']){const r=structuredClone(report);r.tests=r.tests.filter(t=>t.file!==file);assert.throws(()=>completeSuite(r));}
+ for(const file of ['tests/v2-gpu-browser.mjs','tests/frame-review-browser.mjs','tests/profile-system-browser.mjs']){const r=structuredClone(report);r.tests=r.tests.filter(t=>t.file!==file);assert.throws(()=>completeSuite(r));}
  fs.writeFileSync(path.join(site,'index.html'),'unverified mutation');assert.throws(()=>verify(root,commit),/bytes/);write();
  fs.writeFileSync(path.join(site,'extra.js'),'added after tests');assert.throws(()=>verify(root,commit),/bytes/);fs.unlinkSync(path.join(site,'extra.js'));assert.equal(verify(root,commit).commit,commit);
  for(const edit of [()=>info.dirty=true,()=>{info.dirty=false;info.sourceBranch='feature';},()=>{info.sourceBranch='main';info.version='2.0.0-beta.99.dev.gaaaaaaaaaaaa';}]){edit();write();assert.throws(()=>verify(root,commit,{release:true}));}

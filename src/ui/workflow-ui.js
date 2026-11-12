@@ -74,8 +74,8 @@ const rollDetails=details('rollCalibration3','Filmrullens referens',$('base2Pane
 field('base2Session',rollDetails);for(const id of ['shareBase','clearRollBase','rollBaseStatus'])move(id,rollDetails);rollDetails.append($('useRollBase').closest('label'));
 oldTechnical.hidden=true;move('base2ResponseLock',technical);move('base2Lock',$('base2Panel'));
 move('advanced',advanced);t($('advanced').querySelector('summary'),'Äldre kalibrering och nivåer');
-const legacy=details('legacyBase3','Äldre filmbasverktyg',$('advanced'));
-for(const id of ['auto','sample','recalc','noBase','baseInfo']){const el=$(id);legacy.append(el.closest('label')||el);}
+const basicBase=details('basicBase','Filmbas',$('advanced'));
+for(const id of ['auto','sample','recalc','noBase','baseInfo']){const el=$(id);basicBase.append(el.closest('label')||el);}
 // Primary image tools remain visible; exact angle/reset controls retain their IDs.
 const toolbar=document.createElement('div');toolbar.id='imageTools3';toolbar.className='toolrow';toolbar.setAttribute('role','toolbar');t(toolbar,'Bildverktyg');toolbar.textContent='';toolbar.setAttribute('aria-label',FILMLABB_I18N.fromSource('Bildverktyg'));
 $('picture').append(toolbar);
@@ -87,19 +87,8 @@ const hideTools=document.createElement('button');hideTools.id='hideImageTools';h
 const showTools=document.createElement('button');showTools.id='showImageTools';showTools.className='btn';showTools.type='button';showTools.setAttribute('aria-controls','imageTools3');$('picture').append(showTools);toolbar.prepend(hideTools);
 function toolsVisibility3(){toolbar.hidden=toolbar.inert=toolsHidden3;showTools.hidden=showTools.inert=!toolsHidden3;showTools.setAttribute('aria-expanded',String(!toolsHidden3));t(hideTools,'Dölj');hideTools.setAttribute('aria-label',FILMLABB_I18N.fromSource('Dölj bildverktyg'));hideTools.title=FILMLABB_I18N.fromSource('Dölj bildverktyg');t(showTools,'Visa bildverktyg');}
 hideTools.onclick=()=>{toolsHidden3=true;toolsVisibility3();showTools.focus();};showTools.onclick=()=>{toolsHidden3=false;toolsVisibility3();hideTools.focus();};
-// Keep retired engine options only while an older project's frame uses one.
-// The render/export recipes remain untouched; regular users see three choices.
 const engineSelect=$('engineMode');
-const retiredEngines=new Map(['curve3','density3','matrix3'].map(id=>[id,engineSelect.querySelector('option[value="'+id+'"]')]));
-function syncRetiredEngineOptions(){
- for(const [id,option] of retiredEngines){
-  if(!option)continue;
-  if(state.engine===id){if(!option.isConnected)engineSelect.insertBefore(option,engineSelect.querySelector('option[value="v2"]'));}
-  else option.remove();
- }
- if(retiredEngines.has(state.engine))engineSelect.value=state.engine;
-}
-const methods={log39:'Original · tidigare kanalnormalisering',calibrated4:'Standard · sparad färgrespons och separat tonomfång',curve3:'Curve · mjuk kurvform',density3:'Density · gemensam densitetston',matrix3:'Matrix · begränsad statistisk färgtransform',v2:'V2 · fryst filmrespons och separat positiv återgivning'};
+const methods={calibrated4:'Standard · sparad färgrespons och separat tonomfång',v2:'V2 · fryst filmrespons och separat positiv återgivning'};
 const description=document.createElement('p');description.id='methodDescription3';description.className='hint';description.setAttribute('aria-live','polite');$('engineMode').closest('.field').after(description);
 const labels={rotateLeft:'Rotera 90° åt vänster',rotateRight:'Rotera 90° åt höger',compositionEdit:'Beskär komposition',compositionReset:'Återställ kompositionsbeskärning',cropReset:'Återställ teknisk filmruta'};
 const shortNames={rotateLeft:'90° vänster',rotateRight:'90° höger',compositionEdit:'Beskär',compositionReset:'Återställ komposition'};t($('straighten'),'Räta upp');$('straighten').setAttribute('aria-label',FILMLABB_I18N.fromSource('Räta upp med linje'));
@@ -133,7 +122,7 @@ function cardSummaries(){
  const number=(v,d=0)=>new Intl.NumberFormat(FILMLABB_I18N.get(),{maximumFractionDigits:d}).format(v);
  const signed=(v,d=0)=>(v>0?'+':'')+number(v,d);
  const changes=controls.filter(([id,,,,,neutral])=>Number.isFinite(state[id])&&Math.abs(state[id]-neutral)>1e-8&&
-  !['balanceStrength','redSlope','blueSlope'].includes(id)&&!(id==='vibrance'&&NSEditing2.version(state.editVersion)!==2))
+  !(id==='vibrance'&&NSEditing2.version(state.editVersion)!==2))
   .map(([id,label,,,,,unit])=>tr(label)+' '+signed(state[id],unit==='×'?2:id==='exposure'?2:unit===''&&['shadow','highlight'].includes(id)?3:0)+unit);
  function write(id,items,fallback){
   const all=items.length?items:[tr(fallback)],el=cardStatus.get(id),text=all.slice(0,3).join(' · ')+(all.length>3?' …':'');
@@ -152,7 +141,7 @@ function cardSummaries(){
  if(working&&state.engine==='v2'&&state.v2Recipe?.base?.origin==='prior')baseItems.splice(0,baseItems.length,tr('Antagen filmbas · ej uppmätt'));
  write('calibration3',baseItems,'Filmbas saknas');
  const advancedItems=[];
- if(state.engine!=='v2')advancedItems.push(tr('Konverteringsmotor')+': '+tr(({calibrated4:'Standard',log39:'Original'})[state.engine]||engineSelect.selectedOptions[0]?.textContent||state.engine));
+ if(state.engine!=='v2')advancedItems.push(tr('Konverteringsmotor')+': '+tr(({calibrated4:'Standard'})[state.engine]||engineSelect.selectedOptions[0]?.textContent||state.engine));
  const fine=roll[activeFrame]?.geometry?.rotation?.fineDegrees||0;
  if(fine)advancedItems.push(tr('Finrotation')+' '+signed(fine,2)+'°');
  if(state.rotation)advancedItems.push(tr('Rotation')+' '+number(state.rotation)+'°');
@@ -184,10 +173,10 @@ function baseState(){
  t(baseSummary,label);return snap;
 }
 function refresh(){
- syncRetiredEngineOptions();
+
  const snap=baseState();
- for(const option of $('engineMode').options)if(methods[option.value])t(option,({log39:'Original · historisk referens',calibrated4:'Standard · referens',curve3:'Curve',density3:'Density',matrix3:'Matrix',v2:'V2 · standard'})[option.value]);
- t(description,(retiredEngines.has(state.engine)?'Äldre projektmotor · ':'')+(methods[state.engine]||'Äldre projekt'));
+ for(const option of $('engineMode').options)if(methods[option.value])t(option,({calibrated4:'Standard · referens',v2:'V2 · standard'})[option.value]);
+ t(description,methods[state.engine]);
  const model=roll[activeFrame]?.geometry;$('rotationReset').hidden=!(state.rotation||model?.rotation?.fineDegrees);$('compositionReset').hidden=!model?.compositionCrop;
  const active=globalThis.FILMLABB_GEOMETRY?.mode();toolbar.dataset.mode=active||'view';showTools.dataset.mode=active||'view';toolsVisibility3();
  for(const [id,mode]of [['straighten','straighten'],['compositionEdit','composition']])$(id).setAttribute('aria-pressed',String(active===mode));
@@ -198,7 +187,7 @@ function refresh(){
  }lastTool3=active;}
  $('geometryTools').hidden=active==='base';
  $('base2Lock').hidden=!snap?.accepted;
- const v2=state.filmBaseVersion===2;legacy.hidden=v2;
+ const v2=state.filmBaseVersion===2;basicBase.hidden=v2;
  t($('base2Enable'),'Analysera automatiskt');t($('base2Region'),snap?.tool?'Avsluta provverktyg':'Välj filmbas manuellt');
  // A review panel is useful only for an actual proposal, active sample tool or undo.
  // Keep all original controls/bindings intact; this is presentation only.

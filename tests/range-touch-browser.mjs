@@ -11,9 +11,9 @@ try{if(process.env.FILMLABB_TEST_WEBKIT){const {webkit}=await import('playwright
  // Cancelled tentative inputs must not round a saved physical value or invoke
  // another owner's side effects (the frame inset is a geometry operation).
  const tentative=await p.evaluate(()=>{
-  state.exposure=.123;setSliderPosition('exposure');const original=$('exposure').value,frame=JSON.stringify(cropRegion);
+  state.exposure=.123;setSliderPosition('exposure');const original=$('exposure').value,frame=JSON.stringify(frameRegion());
   for(const id of ['exposure','cropInset']){const el=$(id),start=el.value,send=(type,x,y)=>el.dispatchEvent(new PointerEvent(type,{bubbles:true,cancelable:true,pointerType:'touch',pointerId:19,isPrimary:true,clientX:x,clientY:y}));send('pointerdown',80,80);el.value=id==='exposure'?'750':'12';el.dispatchEvent(new Event('input',{bubbles:true}));send('pointermove',80,110);send('pointercancel',80,110);if(el.value!==start)throw Error('Tentative thumb not restored');}
-  return {physical:state.exposure,thumb:$('exposure').value,original,frameUnchanged:JSON.stringify(cropRegion)===frame};
+  return {physical:state.exposure,thumb:$('exposure').value,original,frameUnchanged:JSON.stringify(frameRegion())===frame};
  });assert.equal(tentative.physical,.123);assert.equal(tentative.thumb,tentative.original);assert.equal(tentative.frameUnchanged,true);
  // Two drag endings are not double taps, and every termination releases owner.
  await set('exposure',700);await sequence('exposure',{move:true});await sequence('exposure',{move:true});assert.equal(await p.locator('#exposure').inputValue(),'700');assert.equal(await p.evaluate(()=>NSRangeInteraction.snapshot().active),null);

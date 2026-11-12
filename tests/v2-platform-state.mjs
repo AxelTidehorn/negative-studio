@@ -9,11 +9,11 @@ h.run(`
   const edge=x<30||x>=210||y<24||y>=168,t=edge?1:.1+.55*(x+y)/432;
   for(let c=0;c<3;c++)working.data[(y*240+x)*3+c]=[.8,.5,.25][c]*t;
  }
- workingPreview=working;src=new ImageData(240,192);previewSrc=src;
+ workingPreview=working;src=new ImageData(240,192);
  sourceInfo={encoding:'linear',colorSpace:'rec2020',domain:'verified-linear-rec2020-tiff'};
- state={...defaultState(),engine:'v2',conversionVersion:2,editVersion:2,cropConfirmed:true,captureSession2:'test-session'};
- cropRegion={x:.14,y:.14,w:.72,h:.72};
- roll=[{file:{name:'a.tif',size:276480,lastModified:1},settings:{...state},geometry:NSGeometry.create(),crop:{...cropRegion}}];activeFrame=0;
+ state={...defaultState(),engine:'v2',conversionVersion:2,editVersion:2,frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed}),captureSession2:'test-session'};
+ applyFrameSelection(NSFrameSelection.rectangular({x:.14,y:.14,w:.72,h:.72},{status:NSFrameSelection.status.confirmed}));
+ roll=[{file:{name:'a.tif',size:276480,lastModified:1},settings:{...state},geometry:NSGeometry.create()}];activeFrame=0;
  analyzeLevels();
 `);
 const json=js=>JSON.parse(h.run('JSON.stringify('+js+')'));
@@ -24,7 +24,7 @@ assert.deepEqual(initial.recipe.base.rgb,[Math.fround(.8),.5,.25]);
 await h.run('detectBase2()');
 assert.equal(h.run('proposal2.measurement.status'),'safe');
 assert.equal(h.run('accepted2()'),null);
-assert.equal(h.run('CE.findBase(working,cropRegion)'),null);
+assert.ok(h.run('CE.findBase(working,frameRegion())')); // Pure sampler is policy-free; V2 gates automatic use below.
 assert.equal(h.run('state.v2Recipe.base.origin'),'prior','activating Filmbas 2 must discard the unapproved cached automatic base');
 assert.deepEqual(json('state.v2Recipe.base.rgb'),[1,1,1]);
 assert.deepEqual(json('state.v2Recipe.calibration'),initial.recipe.calibration);

@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # Beta 6 – kvalitetskorrigering och arbetsflöde
 
 Bas: main `51f9d77`, inklusive PR #16–19. Ingen redigeringsmotor 2.0, ny

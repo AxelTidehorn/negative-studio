@@ -59,7 +59,6 @@ const color=[.2,.4,.8];assert.equal(P.compile({id:'neutral',strength:1}).pixel(c
 const mono=P.compile({id:'film.kodak-gold-200',strength:0},true).pixel(color),Y=E.W.reduce((s,v,k)=>s+v*E.decode(color[k]),0);assert.deepEqual(mono,[E.encode(Y),E.encode(Y),E.encode(Y)]);assert.notEqual(mono[0],E.W.reduce((s,v,k)=>s+v*color[k],0));
 for(const strength of [-1,2,NaN,Infinity])assert.throws(()=>P.compile({id:'neutral',strength}));for(const id of ['gold','__proto__','constructor','toString',null])assert.throws(()=>P.compile({id,strength:.7}));
 for(const mutate of [p=>p.tone[3]=-.1,p=>p.hue[2][0]=1,p=>p.chroma[2]=NaN,p=>p.skinPass=2,p=>p.tone[0]=-.001,p=>p.tone[8]=1.001,p=>p.tone[3]=p.tone[4]+.001]){const d=structuredClone(NSProfileCatalog.profiles['film.kodak-gold-200']);mutate(d);assert.throws(()=>P.validateDefinition(d));}
-for(const doc of [{format:'old'},{format:P.FORMAT},{format:P.FORMAT,look:{id:'gold',strength:.7},monochrome:false}])assert.throws(()=>P.validateProject(doc));
 // A neutral-density negative under an uneven capture/base keeps its technical
 // RGB information until positive luminance. This is synthetic, not a real B&W scan.
 for(const file of ['conversion-v2/core','conversion-v2/render','conversion-v2/fast','conversion-v2/platform','color/parameters','color/render-core'])await import('../src/'+file+'.js');

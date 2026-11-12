@@ -2,7 +2,7 @@
 let roll=[],activeFrame=-1,rollLoading=false,rollingExport=false;
 const rollShared=NSProjectSettings.rollDefaults();
 const copyState=()=>NSProjectSettings.clone(state);
-function saveCurrentFrame(){if(working&&activeFrame>=0&&roll[activeFrame]){reconcileLegacyCrop(activeFrame,!!state.cropExport);roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,cropRegion);state.cropExport=NSGeometry.effectiveCrop(roll[activeFrame].geometry,rollShared.cropExportToFrame);roll[activeFrame].settings=copyState();roll[activeFrame].base=[...base];roll[activeFrame].levels=levels?JSON.parse(JSON.stringify(levels)):null;roll[activeFrame].crop={...cropRegion};}}
+function saveCurrentFrame(){if(working&&activeFrame>=0&&roll[activeFrame]){roll[activeFrame].geometry=geometryForFrame(roll[activeFrame],state,frameRegion());roll[activeFrame].settings=copyState();}}
 function refreshRollUI(){
  if(roll.length&&activeFrame<0){if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('rollStatus'),'Välj en bild i arbetskön.');else $('rollStatus').textContent='Välj en bild i arbetskön.';}
  else if(globalThis.FILMLABB_I18N?.message&&roll.length)FILMLABB_I18N.message($('rollStatus'),'queue.status',{count:roll.length,index:activeFrame+1,profile:profileLabel()});
@@ -30,18 +30,18 @@ async function importRoll(files,{engine}={}){
  if(acceptable.length>5){setStatus('Max fem bilder åt gången. Välj fem filer eller färre.');return}
  if(!acceptable.length){setStatus(NSFileFormats.error(rejected[0]));return;}
  roll=[];activeFrame=-1;src=null;hires=null;
- for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...NSProjectSettings.newImageDefaults({v2Compatible:NSFileFormats.isRaw(file.name),engine}),cropExport:rollShared.cropExportToFrame,noBase:false,autoLevels:true},base:null,levels:null,selected:true,thumb:null,crop:null})}
+ for(const file of acceptable){roll.push({file,geometry:NSGeometry.create(),settings:{...NSProjectSettings.newImageDefaults({v2Compatible:NSFileFormats.isRaw(file.name),engine}),noBase:false,autoLevels:true},selected:true,thumb:null})}
  refreshRollUI();
  const imported=roll;
  const ready=await chooseFrame(0);if(!ready||roll!==imported)return;
  if(rejected.length)setStatus(rejected.map(NSFileFormats.error).join(' '));
 }
 $('loadFullRaw').onclick=async()=>{if(activeFrame<0)return;await chooseFrame(activeFrame,{full:true,force:true})};
-$('clearQueue').onclick=()=>{roll=[];activeFrame=-1;src=null;hires=null;previewSrc=null;working=null;workingPreview=null;cropRegion=null;$('preview').classList.add('hidden');$('empty').classList.remove('hidden');refreshRollUI();$('export').disabled=true;setStatus('Arbetskön tömd.');};
+$('clearQueue').onclick=()=>{if(rollLoading||exportBusy||rollingExport)return;resetImageSession();sharedResponse4=null;roll=[];activeFrame=-1;src=null;hires=null;working=null;workingPreview=null;$('preview').classList.add('hidden');$('empty').classList.remove('hidden');refreshRollUI();$('export').disabled=true;setStatus('Arbetskön tömd.');};
 $('imageFile').addEventListener('change',async e=>{const files=Array.from(e.target.files);try{await importRoll(files)}catch(err){setStatus(err.message)}finally{e.target.value=''}});
 $('filmProfile').onchange=e=>{const id=e.target.value;rollShared.monochrome=id==='mono.neutral';rollShared.look={id:rollShared.monochrome?'neutral':id,strength:rollShared.look.strength};NSProfiles.validate(rollShared.look,rollShared.monochrome);refreshProfileInfo();scheduleRender(true);refreshRollUI()};
 $('profileStrength').oninput=e=>{rollShared.look={...rollShared.look,strength:Number(e.target.value)/100};$('profileStrengthValue').textContent=e.target.value+' %';scheduleRender()};$('profileStrength').onchange=()=>scheduleRender(true);
-$('applyRoll').onclick=()=>{if(!roll.length)return;saveCurrentFrame();const mode=$('copyMode').value;const color=['temperature','tint','saturation','vibrance'],tone=['contrast','gamma','shadow','highlight','balanceStrength'];const keys=mode==='color'?color:mode==='tone'?tone:[...color,...tone];let count=0;for(const f of roll){if(!f.selected)continue;for(const k of keys)f.settings[k]=state[k];count++}setStatus(`${mode==='color'?'Färg':mode==='tone'?'Ton':'Alla inställningar utom exponering'} kopierades till ${count} markerade bilder. Individuell exponering bevarad.`);refreshRollUI()};
+$('applyRoll').onclick=()=>{if(!roll.length)return;saveCurrentFrame();const mode=$('copyMode').value;const color=['temperature','tint','saturation','vibrance'],tone=['contrast','gamma','shadow','highlight'];const keys=mode==='color'?color:mode==='tone'?tone:[...color,...tone];let count=0;for(const f of roll){if(!f.selected)continue;for(const k of keys)f.settings[k]=state[k];count++}setStatus(`${mode==='color'?'Färg':mode==='tone'?'Ton':'Alla inställningar utom exponering'} kopierades till ${count} markerade bilder. Individuell exponering bevarad.`);refreshRollUI()};
 refreshProfileInfo();
 // Commit per-image settings after slider debounce/change without affecting UI responsiveness
 for(const [id] of controls){$(id).addEventListener('change',saveCurrentFrame)}

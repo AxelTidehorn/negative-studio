@@ -10,7 +10,7 @@ for(let i=0;i<values[0].length;i+=31)assert.ok(Math.abs(values[1][i]*2-values[0]
 console.log('PASS RAW gamma setting takes effect: known sample and half-exposure linearity');
 
 await import('../src/import/raw-input.js');
-const outputs=[];for(const mode of ['reference','protected']){const decoder=new m.LibRaw();try{decoder.open(fixture,NSRawInput.options(mode));outputs.push(Uint16Array.from(NSRawInput.convert(decoder.imageData(),mode).data));}finally{decoder.delete();}}
+const outputs=[];for(const mode of ['reference','protected']){const decoder=new m.LibRaw();try{decoder.open(fixture,mode==='reference'?{outputBps:16,outputColor:1,useCameraWb:true,noAutoBright:true,gamm:[1,1,0,0,0,0],bright:1}:NSRawInput.options(mode));outputs.push(Uint16Array.from((mode==='reference'?decoder.imageData():NSRawInput.convert(decoder.imageData(),mode)).data));}finally{decoder.delete();}}
 let delta=[];for(let i=0;i<outputs[0].length;i+=17)if(outputs[0][i]>500&&outputs[0][i]<50000)delta.push(Math.abs(outputs[0][i]-outputs[1][i]*2));
 delta.sort((a,b)=>a-b);assert.ok(delta[Math.floor(delta.length*.95)]<20,'Rec2020-to-sRGB must reproduce unclipped synthetic RAW within matrix/rounding precision');
 console.log('PASS protected RAW actually decodes through Rec2020 and matches unclipped sRGB, p95 difference',delta[Math.floor(delta.length*.95)]);

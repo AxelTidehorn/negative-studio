@@ -5,9 +5,9 @@ try{
  const page=await browser.newPage({serviceWorkers:'block',locale:'en-US'}),errors=[];page.setDefaultTimeout(120000);page.on('pageerror',e=>errors.push(e.message));await page.goto(url);
  const buffer=fs.readFileSync('demo-negative.png');await page.locator('#imageFile').setInputFiles([{name:'edit-a.png',mimeType:'image/png',buffer},{name:'edit-b.png',mimeType:'image/png',buffer}]);await page.waitForFunction(()=>working&&!rollLoading&&FILMLABB_GPU.snapshot().backend==='gpu');await confirmFrameIfNeeded(page);
  await page.evaluate(()=>{roll[1].settings.editVersion=1;});assert.equal(await page.evaluate(()=>state.editVersion),2);assert.equal(await page.locator('#editVersion').isVisible(),false);
- const frozen=await page.evaluate(()=>({cal:JSON.stringify({calibration,base,cropRegion,response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));
+ const frozen=await page.evaluate(()=>({cal:JSON.stringify({calibration,region:frameRegion(),response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));
  await page.locator('#editVersion').selectOption('2',{force:true});await page.waitForFunction(()=>state.editVersion===2&&FILMLABB_GPU.snapshot().backend==='gpu');
- const after=await page.evaluate(()=>({cal:JSON.stringify({calibration,base,cropRegion,response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));assert.equal(after.cal,frozen.cal);assert.equal(after.analyses,frozen.analyses);assert.ok(after.uploads<=frozen.uploads+2);
+ const after=await page.evaluate(()=>({cal:JSON.stringify({calibration,region:frameRegion(),response:state.response4,geometry:roll[0].geometry,engine:state.engine}),analyses:analysisCount38,uploads:FILMLABB_GPU.snapshot().sourceUploads}));assert.equal(after.cal,frozen.cal);assert.equal(after.analyses,frozen.analyses);assert.ok(after.uploads<=frozen.uploads+2);
  console.log('PASS real editing A/B selector changes no conversion, calibration, geometry, analysis; only bounded precision validation uploads');
  const parity=await page.evaluate(()=>{
   const canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas),width=53,height=37,data=new Float32Array(width*height*3);
@@ -32,7 +32,7 @@ try{
  const result=await page.evaluate(async()=>{
   const download=downloadBlob;let blob;downloadBlob=b=>blob=b;
   try{
-   roll[0].geometry.rotation.fineDegrees=2;state.cropConfirmed=true;const snapshot=exportGeometrySnapshot(working),c=configuration38();await exportTiff();const decoded=await NSTiff.decode(await blob.arrayBuffer()),expected=NSPresentation.tiff(working,c,snapshot.g,0,snapshot.g.height,NSPixelKernel.prepare(working,c));
+   roll[0].geometry.rotation.fineDegrees=2;state.frame={...state.frame,status:NSFrameSelection.status.confirmed};const snapshot=exportGeometrySnapshot(working),c=configuration38();await exportTiff();const decoded=await NSTiff.decode(await blob.arrayBuffer()),expected=NSPresentation.tiff(working,c,snapshot.g,0,snapshot.g.height,NSPixelKernel.prepare(working,c));
    const tiffExact=decoded.data.every((v,i)=>v===expected[i]),dimensions=[decoded.width,decoded.height];
    const worker=await jpegBytes(),WorkerBefore=globalThis.Worker;let fallback;
    try{globalThis.Worker=undefined;fallback=await jpegBytes();}finally{globalThis.Worker=WorkerBefore;}

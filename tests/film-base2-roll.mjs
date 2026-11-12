@@ -23,7 +23,7 @@ for(const field of ['gain','whiteBalance','domain']){
 }
 // Known common exposure cancels only after explicit source normalization. A
 // different normalization context is paused until the new reference is accepted.
-const outputsBefore={};for(const engine of ['log39','calibrated4','curve3','density3','matrix3']){h.set('engine2',engine);outputsBefore[engine]=h.run('state.engine=engine2;analyzeLevels();NSPixelKernel.compile(configuration38()).pixel(CE.pixel(working,70,40))');}
+const outputsBefore={};for(const engine of ['calibrated4']){h.set('engine2',engine);outputsBefore[engine]=h.run('state.engine=engine2;analyzeLevels();NSPixelKernel.compile(configuration38()).pixel(CE.pixel(working,70,40))');}
 const normalized=source([.72,.43,.21],2,2);h.set('newSource2',normalized);
 h.run(`hires=newSource2;working=workingSource();workingPreview=CE.preview(working);analyzeLevels();`);
 assert.equal(h.run('accepted2()'),null);assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),override);

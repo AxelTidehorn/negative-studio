@@ -7,14 +7,13 @@ function context(im,info,settings,light,flatField){
 }
 const compatible=(a,b)=>!!a&&!!b&&JSON.stringify(a)===JSON.stringify(b);
 function valid(a){
- const stats=x=>x&&x.version===39&&['lo','hi','spans'].every(k=>Array.isArray(x[k])&&x[k].length===3&&x[k].every(Number.isFinite))&&x.spans.every(v=>v>0);
- return !!(a&&a.version===2&&typeof a.id==='string'&&a.context?.version===2&&vector(a.measurement?.measured)&&['auto-region','manual-region','manual-7x7'].includes(a.measurement.kind)&&['safe','review'].includes(a.measurement.status)&&a.measurement.measured.every(v=>v<=1)&&vector(a.light)&&typeof a.baseLocked==='boolean'&&typeof a.responseLocked==='boolean'&&stats(a.adapters?.comparison)&&root.NSColorCalibration?.valid(a.response)&&root.NSConversion3.ids.every(k=>root.NSConversion3.valid(a.adapters.conversions?.[k]))&&a.adapters.legacy&&['lo','hi'].every(k=>a.adapters.legacy[k]?.length===3&&a.adapters.legacy[k].every(Number.isFinite)));
+ return !!(a&&a.version===2&&typeof a.id==='string'&&a.context?.version===2&&vector(a.measurement?.measured)&&['auto-region','manual-region','manual-7x7'].includes(a.measurement.kind)&&['safe','review'].includes(a.measurement.status)&&a.measurement.measured.every(v=>v<=1)&&vector(a.light)&&typeof a.baseLocked==='boolean'&&typeof a.responseLocked==='boolean'&&root.NSColorCalibration?.valid(a.response));
 }
 function proposal(measurement,capture,revision){return {version:2,revision,context:clone(capture),measurement:clone(measurement)};}
-function accept(p,current,previous,adapters,response){
+function accept(p,current,previous,response){
  if(!p||p.version!==2||!compatible(p.context,current)||!vector(p.measurement?.measured)||p.measurement.status==='missing')throw Error('Provet saknas eller tillhör en annan källa.');
  if(previous?.baseLocked)throw Error('Lås upp filmbasen före godkännande.');
- return {version:2,id:'fb2-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9),context:clone(current),measurement:clone(p.measurement),light:clone(current.light),response:clone(response||null),adapters:clone(adapters||{}),baseLocked:true,responseLocked:true,provenance:{method:p.measurement.kind,revision:p.revision,acceptedAt:new Date().toISOString()}};
+ return {version:2,id:'fb2-'+Date.now().toString(36)+'-'+Math.random().toString(36).slice(2,9),context:clone(current),measurement:clone(p.measurement),light:clone(current.light),response:clone(response||null),baseLocked:true,responseLocked:true,provenance:{method:p.measurement.kind,revision:p.revision,acceptedAt:new Date().toISOString()}};
 }
 function validateProject(data){
  if(data.filmBaseVersion!==undefined&&data.filmBaseVersion!==2)throw Error('Okänd filmbasversion.');

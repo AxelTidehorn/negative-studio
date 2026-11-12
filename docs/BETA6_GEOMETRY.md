@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # FILMLABB Beta 6 – steg 1: geometri och projekt
 
 För den färdiga UI-/previewintegrationen, se [BETA6_COMPLETE.md](BETA6_COMPLETE.md).

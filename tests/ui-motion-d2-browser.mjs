@@ -28,7 +28,7 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
   }
  }
  await p.evaluate(()=>{const g=NSGeometry.create();roll[activeFrame].geometry=NSGeometry.withComposition(g,{cx:.5,cy:.5,w:.72,h:.68});saveCurrentFrame();zoom=2;panX=12;panY=8;applyView();});await p.waitForTimeout(200);
- const frozen=()=>p.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),'positive',24);return {source:sourceVersion38,analysis:analysisCount38,state:JSON.stringify({state,rollShared,calibration,cropRegion,geometry:roll[activeFrame].geometry}),pixels:Array.from(r.data),histogram:r.histogram,request:request38,zoom,panX,panY};});
+ const frozen=()=>p.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),'positive',24);return {source:sourceVersion38,analysis:analysisCount38,state:JSON.stringify({state,rollShared,calibration,region:frameRegion(),geometry:roll[activeFrame].geometry}),pixels:Array.from(r.data),histogram:r.histogram,request:request38,zoom,panX,panY};});
  const before=await frozen(),prefs=await p.evaluate(()=>JSON.parse(localStorage.getItem('filmlabb-workspace-1')));
  const traces=[];
  for(const [button,key,panel]of [['toggleQueue','queue','queuePanel'],['toggleAdjustments','adjust','adjustmentPanel'],['toggleFocus','both',null]]){

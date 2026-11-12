@@ -13,7 +13,7 @@ try{
   p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
   await p.locator('#imageFile').setInputFiles({name:'motion.png',mimeType:'image/png',buffer:fs.readFileSync('demo-negative.png')});
   await p.waitForFunction(()=>working&&!rollLoading&&!workerBusy38&&!queued38);await confirmFrameIfNeeded(p);await p.waitForTimeout(300);
-  const frozen=()=>p.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),'positive',24);return {pixels:Array.from(r.data),histogram:r.histogram,state:JSON.stringify({state,calibration,rollShared,cropRegion,geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38};});
+  const frozen=()=>p.evaluate(()=>{const r=NSPixelKernel.render(workingPreview,configuration38(),'positive',24);return {pixels:Array.from(r.data),histogram:r.histogram,state:JSON.stringify({state,calibration,rollShared,region:frameRegion(),geometry:roll[activeFrame].geometry}),source:sourceVersion38,analyses:analysisCount38};});
   const before=await frozen();
   const dimensions=()=>p.locator('#picture').evaluate(e=>{const b=e.getBoundingClientRect();return {width:b.width,height:b.height}});
   const picture=await dimensions();

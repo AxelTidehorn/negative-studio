@@ -17,7 +17,7 @@
   for(let i=0;i<p.length;i+=4)for(let c=0;c<3;c++)p[i+c]=tables[c][p[i+c]];
   cx.putImageData(image,0,0);return true;
  }
- function cancel(){if(!rollLoading||!trace||trace.cancelled||trace.readyMs!==undefined)return false;frameLoadSequence++;NSRawDecoder.cancel();if(trace){trace.cancelled=true;trace.elapsedMs=clock()-trace.started;}rollLoading=false;activeFrame=-1;working=workingPreview=hires=src=previewSrc=null;stopPreviewWork();setFrameLoading(false);removeProof();$('preview').classList.add('hidden');$('gpuPreview')?.classList.add('hidden');$('empty').classList.remove('hidden');$('export').disabled=true;refreshRollUI();setStatus('Import avbruten.');return true;}
+ function cancel(){if(!rollLoading||!trace||trace.cancelled||trace.readyMs!==undefined)return false;frameLoadSequence++;NSRawDecoder.cancel();if(trace){trace.cancelled=true;trace.elapsedMs=clock()-trace.started;}rollLoading=false;activeFrame=-1;working=workingPreview=hires=src=null;stopPreviewWork();setFrameLoading(false);removeProof();$('preview').classList.add('hidden');$('gpuPreview')?.classList.add('hidden');$('empty').classList.remove('hidden');$('export').disabled=true;refreshRollUI();setStatus('Import avbruten.');return true;}
  function rawPaint(t){if(t!==trace||t.cancelled||t.technicalPaintMs!==undefined)return;painted(()=>{if(t!==trace||t.cancelled)return;t.technicalPaintMs=clock()-t.started;if(t.firstVisibleMs===undefined)t.firstVisibleMs=t.technicalPaintMs;removeProof();if(t.readyMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}});}
  async function preliminary(file,t,force=false){
   const locked=NSV2Platform.usesLockedSource(state);if(!force&&NSRawDecoder.isCached(file,locked?'wide':state.rawMode4,locked?NSV2Platform.decoderOptions():undefined))return;
@@ -45,7 +45,7 @@
   const promise=choose(i,opts);void preliminary(roll[i].file,t,opts.full===true);
   const ok=await promise;if(t!==trace||t.cancelled)return false;
   t.readyMs=clock()-t.started;t.success=ok===true;t.decoder=NSFileFormats.isRaw(roll[i]?.file.name)?NSRawDecoder.metrics():null;
-  if(ok){t.renderMetrics={cpuRenderMs:stats38.lastRenderMs,gpu:globalThis.FILMLABB_GPU?.snapshot()||null};t.memory={sourceBytes:working.data.byteLength,previewBytes:workingPreview.data.byteLength,legacyPreviewBytes:previewSrc?.data.byteLength||0};if(t.technicalPaintMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}}
+  if(ok){t.renderMetrics={cpuRenderMs:stats38.lastRenderMs,gpu:globalThis.FILMLABB_GPU?.snapshot()||null};t.memory={sourceBytes:working.data.byteLength,previewBytes:workingPreview.data.byteLength,browserSourceBytes:src?.data.byteLength||0};if(t.technicalPaintMs!==undefined){t.usableMs=Math.max(t.readyMs,t.technicalPaintMs);t.phase='ready';}}
   else removeProof();return ok;
  };
  const clear=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollingExport)return;if(rollLoading&&!cancel())return;removeProof();NSRawDecoder.clearCache();clear();};

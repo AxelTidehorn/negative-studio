@@ -30,7 +30,6 @@ vec3 displayWide(vec3 p){
 vec3 softDensity(vec3 p,vec3 start,vec3 range){vec3 d=max(vec3(0.0),p-start);return p-d+range*(vec3(1.0)-exp(-d/range));}
 ${NSEditing2.glsl}
 ${NSProfiles.glsl}
-${NSConversion3.glsl}
 vec3 finishPositive(vec3 p){
  p=lookPositive(p);
  return uEdit2?editPositive(p):p;
@@ -42,7 +41,6 @@ void main(){
  vec3 p=texelFetch(uSource,at,0).rgb;
  if(uMode==1||(uMode==2&&floor(pos.x)<uOutputSize.x/2.0)){color=vec4(encode3(uWide==1?displayWide(p):p),1.0);return;}
  if(uV2Positive==1){color=vec4(finishPositive(p),1.0);return;}
- if(uConversion3!=0){color=vec4(finishConversion3(conversion3(p)),1.0);return;}
  p=(-log(max(vec3(1.0/65535.0),p)*uLight/uBase)/log(10.0)-uOffset)/uResponseSpan;
  vec3 density=p;
  p=max(vec3(0.0),uAuto==1?(p-vec3(uLo))/uSpan:p);
@@ -73,12 +71,6 @@ void main(){
  float peak=max(p.r,max(p.g,p.b));
  float mapped=uShoulder==0?min(1.0,peak):peak<=.8?peak:.8+.2*(1.0-exp(-min(100.0,(peak-.8)/.2)));
  if(peak>0.0)p=p*mapped/peak;
- // Mirror the calibrated4 CPU highlight-chroma experiment exactly.
- // uShoulder == 0 is the reference mode, left unchanged.
- if(uColorVariant==0&&uShoulder==2&&peak>.85){
-  float t=sat((peak-.85)/.45),fade=t*t*(3.0-2.0*t);
-  p=mix(p,vec3(mapped),fade);
- }
  p=encode3(p);
  color=vec4(finishPositive(p),1.0);
 }`;
@@ -93,7 +85,7 @@ ${NSV2GpuMath.glsl}
 void main(){color=vec4(v2positive(texelFetch(uSource,ivec2(gl_FragCoord.xy),0).rgb),1.0);}`;
 function supports(c){
  if(c?.kind==='v2')return !!c.v2&&NSEditing2.version(c.opts.editVersion)===2;
- return c?.kind==='calibrated4'?!!c.cal?.beta4:NSConversion3.is(c?.kind)&&NSConversion3.valid(c.conversion3);
+ return c?.kind==='calibrated4'&&!!c.cal?.beta4;
 }
 function create(canvas){
  const gl=canvas.getContext('webgl2',{alpha:false,antialias:false,depth:false,stencil:false,preserveDrawingBuffer:false,powerPreference:'default'});
@@ -211,20 +203,17 @@ function create(canvas){
   gl.bindFramebuffer(gl.FRAMEBUFFER,null);gl.viewport(0,0,width,height);gl.useProgram(program);gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,v2&&mode!=='negative'?positiveTexture:texture);
   gl.uniform2f(location('uSourceSize'),im.width,im.height);gl.uniform2f(location('uOutputSize'),width,height);i('uSource',0);
   const edit=NSEditing2.version(c.opts.editVersion)===2?NSEditing2.prepare(c.opts,!!c.monochrome):null;
-  const conversion=NSConversion3.is(c.kind)?c.conversion3:null;
-  const a=v2?{light:[1,1,1],base:[1,1,1],response:{offset:[0,0,0],span:[1,1,1]},lo:0,span:1}:conversion?{...conversion.reference,response:{offset:conversion.reference.lo,span:conversion.reference.spans},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),look=NSProfiles.compile(c.look,!!c.monochrome);
+  const a=v2?{light:[1,1,1],base:[1,1,1],response:{offset:[0,0,0],span:[1,1,1]},lo:0,span:1}:c.cal.beta4,o=edit?{...c.opts,...NSEditing2.neutral}:c.opts,parameters=NSColorParameters.prepare(edit?{...c,opts:o}:c),look=NSProfiles.compile(c.look,!!c.monochrome);
   i('uEdit2',edit?1:0);i('uV2Positive',v2&&mode!=='negative'?1:0);
   if(edit){i('uEditIdentity',edit.identity?1:0);v('uEditGains',edit.gains);f('uEditSaturation',edit.saturation);f('uEditVibrance',edit.vibrance);f('uEditKnee',edit.knee);gl.uniform4fv(location('uEditCurve[0]'),edit.tone.coefficients.flat());}
-  i('uConversion3',conversion?NSConversion3.ids.indexOf(c.kind)+1:0);
-  if(conversion){i('uCurveIdentity3',conversion.curve.kind==='identity'?1:0);i('uMatrixIdentity3',conversion.matrix.kind==='identity'?1:0);i('uNoBase3',conversion.reference.noBase?1:0);gl.uniform4fv(location('uFilmCurve3[0]'),conversion.curve.channels.flatMap(c=>c.coefficients.flat()));const m=conversion.matrix.matrix;gl.uniformMatrix3fv(location('uConversionMatrix3'),false,[0,1,2].flatMap(col=>m.map(row=>row[col])));f('uLegacyBlack3',o.shadow);f('uLegacyRange3',parameters.displayRange);}
   v('uLight',a.light);v('uBase',a.base);v('uOffset',a.response.offset);v('uResponseSpan',a.response.span);
-  const confidence=conversion||v2?{start:[0,0,0],invRange:[1,1,1],strength:0,robustStrength:0}:NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
+  const confidence=v2?{start:[0,0,0],invRange:[1,1,1],strength:0,robustStrength:0}:NSPixelKernel.lowSignal4(c);v('uChromaStart',confidence.start);v('uChromaInvRange',confidence.invRange);f('uChromaLimit',confidence.strength);
   const variant=NSPixelKernel.colorVariant4(o.colorMode4);i('uColorVariant',variant==='original'?1:variant==='robust'?2:0);f('uRobustStrength',confidence.robustStrength);
   v('uGains',parameters.gains);
   f('uLo',a.lo);f('uSpan',a.span);f('uExposure',parameters.exposureGain);f('uBlack',parameters.black);f('uWhiteRange',parameters.whiteRange);
   f('uInvGamma',parameters.inverseGamma);f('uContrast',o.contrast);f('uSaturation',parameters.saturation);
   f('uShadows',(Number(o.shadows)||0)/100);f('uHighlights',(Number(o.highlights)||0)/100);
-  i('uWide',v2||c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:o.toneMode4==='experimental'?2:1);i('uLookActive',look.identity||look.monochrome?0:1);i('uMonochrome',look.monochrome?1:0);f('uLookStrength',look.strength);
+  i('uWide',v2||c.workingSpace==='rec2020'?1:0);i('uMode',mode==='negative'?1:mode==='split'?2:0);i('uAuto',o.autoLevels?1:0);i('uShoulder',o.toneMode4==='reference'?0:1);i('uLookActive',look.identity||look.monochrome?0:1);i('uMonochrome',look.monochrome?1:0);f('uLookStrength',look.strength);
   if(look.parameters){const p=look.parameters;gl.uniform4fv(location('uLookCurve[0]'),look.tone.coefficients.flat());gl.uniform4fv(location('uLookHue[0]'),p.hue.flatMap(v=>[v[1],v[2],v[3],0]));gl.uniform1fv(location('uLookChroma[0]'),p.chroma);gl.uniform2fv(location('uLookShadow'),p.shadow);gl.uniform2fv(location('uLookHighlight'),p.highlight);f('uLookSkinPass',p.skinPass);}
   let measuring=false;if(timer&&!query&&!validating){query=gl.createQuery();gl.beginQuery(timer.TIME_ELAPSED_EXT,query);queryStarted=performance.now();measuring=true;}
   gl.drawArrays(gl.TRIANGLES,0,3);if(measuring)gl.endQuery(timer.TIME_ELAPSED_EXT);

@@ -70,3 +70,7 @@ stored-deflate fallback is verified, but its files can be considerably larger
 than compressed PNGs. PNG8 canvas limits remain browser-dependent; PNG16/TIFF
 avoid canvas limits but encoded output still needs memory proportional to file
 size.
+
+## Current project contract
+
+Projects use `filmlabb-roll-4`, geometry version 2 and Editing 2.0. Only V2/D and Standard are accepted. `settings.frame` owns source-frame geometry/consent; queue-wide `cropExportToFrame` and per-frame composition geometry own export cropping. Older schemas, per-image legacy crop plans and image-recipe localStorage restoration are deliberately removed. Original files are still imported separately. See [architecture](ARCHITECTURE.md).
