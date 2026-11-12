@@ -1,8 +1,9 @@
 /* Capture a pre-refactor oracle, or verify it with current production kernels.
    Uses synthetic transmission and actual bounded linear RAW previews; no mocks
    of color math. Output files record every config and full uint16 export hash. */
-import fs from 'node:fs';import crypto from 'node:crypto';import zlib from 'node:zlib';import {harness} from '../tests/helpers/app-harness.mjs';
+import {execFileSync} from 'node:child_process';import fs from 'node:fs';import crypto from 'node:crypto';import zlib from 'node:zlib';import {harness} from '../tests/helpers/app-harness.mjs';
 const file='tests/fixtures/consolidation/oracle.json',capture=process.argv.includes('--capture'),h=harness({initialEngine:'calibrated4'});h.context.crypto=globalThis.crypto;
+if(capture&&!execFileSync('git',['rev-parse','HEAD'],{encoding:'utf8'}).startsWith('42a9d33'))throw Error('Capture requires frozen pre-consolidation main 42a9d33');
 const digest=v=>crypto.createHash('sha256').update(Buffer.from(v.buffer,v.byteOffset,v.byteLength)).digest('hex'),rows=[];
 function synthetic(space){const width=67,height=45,data=Float32Array.from({length:width*height*3},(_,i)=>i<36?[0,1/65535,.0001,.001,.01,.18,.5,1,.9999,1e-8,.7,.07][i%12]:.005+((i*673+71)%65536)/65535*.89);return {width,height,data,channels:3,encoding:'linear',scale:1,colorSpace:space};}
 const images={srgb:synthetic('srgb'),rec2020:synthetic('rec2020')};for(const id of ['8983','9235']){const meta=JSON.parse(fs.readFileSync(`tests/fixtures/frame-real/dsf${id}.json`)),b=zlib.gunzipSync(fs.readFileSync(`tests/fixtures/frame-real/dsf${id}.f32.gz`));images[id]={...meta,data:new Float32Array(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength))};}
