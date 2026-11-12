@@ -34,13 +34,15 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
  for(const [button,key,panel]of [['toggleQueue','queue','queuePanel'],['toggleAdjustments','adjust','adjustmentPanel'],['toggleFocus','both',null]]){
   for(const open of [false,true]){
    const trace=await p.evaluate(async({button,panel})=>{
-    const samples=[],controlled=[],start=performance.now(),before=FILMLABB_GEOMETRY.snapshot(),frames=FILMLABB_GPU.snapshot().frames,initial={w:$('picture').clientWidth,h:$('picture').clientHeight};
+    const samples=[],controlled=[],start=performance.now(),before=FILMLABB_GEOMETRY.snapshot(),frames=FILMLABB_GPU.snapshot().frames,initial={w:$('picture').clientWidth,h:$('picture').clientHeight,pressed:$(button).getAttribute('aria-pressed')};
     const box=e=>{const r=e.getBoundingClientRect();return {x:r.x,right:r.right,w:r.width,shown:getComputedStyle(e).display!=='none'}};
-    const sample=()=>{const s=panel?getComputedStyle($(panel)):null;return {t:performance.now()-start,centerY:FILMLABB_GEOMETRY.sourceToView(FILMLABB_GEOMETRY.view().inverse({x:.5,y:.5})).y,w:$('picture').clientWidth,h:$('picture').clientHeight,overflow:document.documentElement.scrollWidth>innerWidth+1,bitmap:[$('presentationPreview').width,$('presentationPreview').height,$('presentationFallback').width,$('presentationFallback').height],q:box($('queuePanel')),a:box($('adjustmentPanel')),image:box(document.querySelector('.image-panel')),tracks:getComputedStyle($('workspace')).gridTemplateColumns.split(' ').map(parseFloat),opacity:s?.opacity,translate:s?.translate};};
+    const sample=()=>{const s=panel?getComputedStyle($(panel)):null;return {t:performance.now()-start,classes:$('workspace').className,pressed:$(button).getAttribute('aria-pressed'),centerY:FILMLABB_GEOMETRY.sourceToView(FILMLABB_GEOMETRY.view().inverse({x:.5,y:.5})).y,w:$('picture').clientWidth,h:$('picture').clientHeight,overflow:document.documentElement.scrollWidth>innerWidth+1,bitmap:[$('presentationPreview').width,$('presentationPreview').height,$('presentationFallback').width,$('presentationFallback').height],q:box($('queuePanel')),a:box($('adjustmentPanel')),image:box(document.querySelector('.image-panel')),tracks:getComputedStyle($('workspace')).gridTemplateColumns.split(' ').map(parseFloat),opacity:s?.opacity,translate:s?.translate};};
     $(button).click();const animation=$('workspace').getAnimations().find(a=>a.transitionProperty==='grid-template-columns');
     // Test actual native interpolation, not a minimum FPS on a shared CI host.
-    // Then restore time zero and observe the unmodified real-time playback too.
-    if(animation){animation.pause();for(const f of [0,.3,.6]){animation.currentTime=animation.effect.getTiming().duration*f;controlled.push(sample());}animation.currentTime=0;animation.play();}
+    // Wait for pending pause/play tasks before rewinding; otherwise Chromium can
+    // retain a hold time at zero and the test itself freezes the transition.
+    // Then observe the unmodified real-time playback too.
+    if(animation){animation.pause();await animation.ready;for(const f of [0,.3,.6]){animation.currentTime=animation.effect.getTiming().duration*f;controlled.push(sample());}animation.currentTime=0;animation.play();await animation.ready;}
     const playbackStart=performance.now();do{await new Promise(requestAnimationFrame);samples.push(sample());}while(performance.now()-playbackStart<400);
     const end=FILMLABB_GEOMETRY.snapshot();return {samples,controlled,initial,panY,draws:end.draws-before.draws,cpuPasses:end.cpuPasses-before.cpuPasses,colorUploads:end.colorUploads-before.colorUploads,colorFrames:FILMLABB_GPU.snapshot().frames-frames};
    },{button,panel});
@@ -57,7 +59,7 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
     const last=trace.samples.at(-1);
     for(const x of all){
      const t=(x.w-trace.initial.w)/(last.w-trace.initial.w),height=trace.initial.h+(last.h-trace.initial.h)*t;
-     assert.ok(Math.abs(x.centerY-height/2-trace.panY)<1,'responsive status wrapping must not jump the photograph');
+     assert.ok(Math.abs(x.centerY-height/2-trace.panY)<1,'responsive status wrapping must not jump the photograph '+JSON.stringify({width,height,reduced,button,open,x,initial:trace.initial,last,panY:trace.panY,expectedHeight:height,controlled:trace.controlled}));
      if(x.q.shown)assert.ok(Math.abs(x.image.x-x.q.right-x.tracks[1])<.2,'left picture edge follows queue edge');
      if(x.a.shown)assert.ok(Math.abs(x.a.x-x.image.right-x.tracks[3])<.2,'right picture edge follows editor edge');
      if(panel&&(panel==='queuePanel'?x.q:x.a).shown){assert.equal(x.opacity,'1','no separate fade');assert.equal(x.translate,'none');}

@@ -1,0 +1,2431 @@
+{
+  "kind": "Actual full RAF Chromium imports; new browser context per file, then three active-file cached reloads. Browser process/OS file cache are not reset between files. Owned array bytes are not total browser memory.",
+  "commit": "f7a6a3d94aee04830a66314842295ea41eb23048",
+  "runtime": {
+    "node": "v22.23.5",
+    "browser": "156.0.8078.79",
+    "cpu": "AMD EPYC 9V74 80-Core Processor",
+    "platform": "linux"
+  },
+  "physicalIPad": false,
+  "rows": [
+    {
+      "filename": "_DSF8983.RAF",
+      "fileSHA256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+      "cold": {
+        "import": {
+          "id": 1,
+          "started": 718.6000000000931,
+          "phase": "ready",
+          "stages": {
+            "preview": 198.19999999995343,
+            "frameAnalysis": 1032.3000000000466,
+            "v2Analysis": 79,
+            "renderSubmit": 1350.8000000000466,
+            "finishImport": 2668.399999999907
+          },
+          "sourceVersion": 0,
+          "cancelled": false,
+          "preliminaryTransformMs": 15.900000000139698,
+          "jpegPrepareMs": 79.30000000004657,
+          "preliminaryKind": "approximate-positive",
+          "preliminaryPaintMs": 216.5999999998603,
+          "firstVisibleMs": 216.5999999998603,
+          "readyMs": 23449.5,
+          "success": true,
+          "decoder": {
+            "cacheHit": false,
+            "totalMs": 20686.699999999953,
+            "stages": {
+              "librawInit": 55.89999999990687,
+              "fileRead": 65.10000000009313,
+              "rawOpen": 115.9000000001397,
+              "metadata": 15.199999999953434,
+              "rawImageData": 20023,
+              "rgbConvert": 364.19999999995343
+            },
+            "memory": {
+              "fileBytes": 50229760,
+              "rgb16Bytes": 145926144,
+              "sourceBytes": 291852288,
+              "wasmHeapBytes": null
+            },
+            "activeWorkers": 0,
+            "cacheBytes": 291852288
+          },
+          "renderMetrics": {
+            "cpuRenderMs": 0,
+            "gpu": {
+              "backend": "gpu",
+              "frames": 1,
+              "sourceUploads": 1,
+              "validationError": 0,
+              "lastSubmitMs": 931,
+              "lastGpuMs": null,
+              "reason": null,
+              "contextLosses": 0,
+              "positiveRequests": 1,
+              "positiveReconstructions": 1,
+              "positiveDiscards": 0,
+              "positiveCancelled": 0,
+              "positiveCacheBytes": 20966400,
+              "positivePreparationMs": 38,
+              "positiveReconstructionMs": 0,
+              "positiveCopyMs": 0,
+              "positiveStartedAt": 23227.40000000014,
+              "positiveReadyAt": 24158.40000000014,
+              "histogramReconstructions": 0,
+              "histogramSourceBytes": 0,
+              "preference": "auto",
+              "interactiveLimit": 700,
+              "sourceVersion": 1,
+              "sourceMatches": true,
+              "positivePending": false,
+              "positiveKey": "d7669883",
+              "reconstructionBackend": "gpu",
+              "positiveUploads": 0,
+              "validationUploads": 4,
+              "positiveUploadSubmitMs": 0,
+              "gpuReconstructionSubmitMs": 38,
+              "gpuReconstructionMs": null,
+              "sourcePreparationMs": 0,
+              "sourceUploadSubmitMs": 15.799999999813735,
+              "positiveFloatError": 0.0000035017728805541992,
+              "technicalRelativeError": 0.0000026559516600311078,
+              "capabilities": {
+                "floatColor": true
+              },
+              "textureBytes": 36691200,
+              "mainPositive": {
+                "conversions": 0,
+                "adoptions": 0,
+                "reconstructionMs": 0,
+                "bytes": 0
+              }
+            }
+          },
+          "memory": {
+            "sourceBytes": 291852288,
+            "previewBytes": 15724800,
+            "browserSourceBytes": 0
+          },
+          "technicalPaintMs": 23685.59999999986,
+          "usableMs": 23685.59999999986,
+          "elapsedMs": 23685.59999999986,
+          "heap": {
+            "used": 315410048,
+            "total": 395823612
+          }
+        },
+        "dimensions": [
+          6032,
+          4032
+        ],
+        "ownedBuffers": {
+          "source": 291852288,
+          "preview": 15724800,
+          "browserSource": 0,
+          "legacyPreview": 0
+        },
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "pending",
+          "locked": false,
+          "quad": [
+            {
+              "x": 0.2391734582024085,
+              "y": 0.0379968596514346
+            },
+            {
+              "x": 0.8360552834991274,
+              "y": 0.05674887752528595
+            },
+            {
+              "x": 0.8419122016999007,
+              "y": 0.941737697114769
+            },
+            {
+              "x": 0.22731611995289666,
+              "y": 0.9303913409306137
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.24325643885714315,
+              "y": 0.04435703772778596
+            },
+            {
+              "x": 0.8319287980213701,
+              "y": 0.06285114180844259
+            },
+            {
+              "x": 0.8377035795761623,
+              "y": 0.9354289952754276
+            },
+            {
+              "x": 0.23156535862174002,
+              "y": 0.9242387837592239
+            }
+          ],
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "proposal": {
+              "x": 0.22731611995289666,
+              "y": 0.0379968596514346,
+              "w": 0.614596081747004,
+              "h": 0.9037408374633343
+            },
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "analysisSafe": false,
+            "confidence": 0.55,
+            "reason": "scale-disagreement",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                0.8709677419354839,
+                1
+              ],
+              "thresholds": 3,
+              "score": 0.9295665992187387,
+              "backgroundModes": 2,
+              "scaleAgreement": false
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "detection": {
+          "version": 1,
+          "method": "frame-contours-1",
+          "region": {
+            "x": 0,
+            "y": 0,
+            "w": 1,
+            "h": 1
+          },
+          "proposal": {
+            "x": 0.22731611995289666,
+            "y": 0.0379968596514346,
+            "w": 0.614596081747004,
+            "h": 0.9037408374633343
+          },
+          "quad": [
+            {
+              "x": 0.2391734582024085,
+              "y": 0.0379968596514346
+            },
+            {
+              "x": 0.8360552834991274,
+              "y": 0.05674887752528595
+            },
+            {
+              "x": 0.8419122016999007,
+              "y": 0.941737697114769
+            },
+            {
+              "x": 0.22731611995289666,
+              "y": 0.9303913409306137
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.24325643885714315,
+              "y": 0.04435703772778596
+            },
+            {
+              "x": 0.8319287980213701,
+              "y": 0.06285114180844259
+            },
+            {
+              "x": 0.8377035795761623,
+              "y": 0.9354289952754276
+            },
+            {
+              "x": 0.23156535862174002,
+              "y": 0.9242387837592239
+            }
+          ],
+          "analysisSafe": false,
+          "confidence": 0.55,
+          "reason": "scale-disagreement",
+          "coordinateSpace": "normalized-source",
+          "evidence": {
+            "sides": [
+              1,
+              1,
+              0.8709677419354839,
+              1
+            ],
+            "thresholds": 3,
+            "score": 0.9295665992187387,
+            "backgroundModes": 2,
+            "scaleAgreement": false
+          },
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        }
+      },
+      "warm": [
+        {
+          "import": {
+            "id": 2,
+            "started": 24523.90000000014,
+            "phase": "ready",
+            "stages": {
+              "preview": 242.5,
+              "v2Analysis": 0.4000000001396984,
+              "renderSubmit": 41.60000000009313,
+              "finishImport": 286.5
+            },
+            "sourceVersion": 1,
+            "cancelled": false,
+            "readyMs": 313.79999999981374,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50229760,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 2,
+                "sourceUploads": 2,
+                "validationError": 0,
+                "lastSubmitMs": 22.4000000001397,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 2,
+                "positiveReconstructions": 2,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 20.5,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 24804.5,
+                "positiveReadyAt": 24826.800000000047,
+                "histogramReconstructions": 0,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 2,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "2d4240d7",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 8,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 20.5,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.3000000000465661,
+                "positiveFloatError": 0.0000035017728805541992,
+                "technicalRelativeError": 0.0000026559516600311078,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1397.6999999999534,
+            "firstVisibleMs": 1397.6999999999534,
+            "usableMs": 1397.6999999999534,
+            "elapsedMs": 1397.6999999999534,
+            "heap": {
+              "used": 328745676,
+              "total": 408799664
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "pending",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "proposal": {
+                "x": 0.22731611995289666,
+                "y": 0.0379968596514346,
+                "w": 0.614596081747004,
+                "h": 0.9037408374633343
+              },
+              "quad": [
+                {
+                  "x": 0.2391734582024085,
+                  "y": 0.0379968596514346
+                },
+                {
+                  "x": 0.8360552834991274,
+                  "y": 0.05674887752528595
+                },
+                {
+                  "x": 0.8419122016999007,
+                  "y": 0.941737697114769
+                },
+                {
+                  "x": 0.22731611995289666,
+                  "y": 0.9303913409306137
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.24325643885714315,
+                  "y": 0.04435703772778596
+                },
+                {
+                  "x": 0.8319287980213701,
+                  "y": 0.06285114180844259
+                },
+                {
+                  "x": 0.8377035795761623,
+                  "y": 0.9354289952754276
+                },
+                {
+                  "x": 0.23156535862174002,
+                  "y": 0.9242387837592239
+                }
+              ],
+              "analysisSafe": false,
+              "confidence": 0.55,
+              "reason": "scale-disagreement",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  0.8709677419354839,
+                  1
+                ],
+                "thresholds": 3,
+                "score": 0.9295665992187387,
+                "backgroundModes": 2,
+                "scaleAgreement": false
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "proposal": {
+              "x": 0.22731611995289666,
+              "y": 0.0379968596514346,
+              "w": 0.614596081747004,
+              "h": 0.9037408374633343
+            },
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "analysisSafe": false,
+            "confidence": 0.55,
+            "reason": "scale-disagreement",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                0.8709677419354839,
+                1
+              ],
+              "thresholds": 3,
+              "score": 0.9295665992187387,
+              "backgroundModes": 2,
+              "scaleAgreement": false
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        },
+        {
+          "import": {
+            "id": 3,
+            "started": 25946.199999999953,
+            "phase": "ready",
+            "stages": {
+              "preview": 133.30000000004657,
+              "v2Analysis": 0.30000000004656613,
+              "renderSubmit": 41,
+              "finishImport": 180.69999999995343
+            },
+            "sourceVersion": 2,
+            "cancelled": false,
+            "readyMs": 261.20000000018626,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50229760,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 3,
+                "sourceUploads": 3,
+                "validationError": 0,
+                "lastSubmitMs": 25,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 3,
+                "positiveReconstructions": 3,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 19.799999999813735,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 26172.800000000047,
+                "positiveReadyAt": 26197.800000000047,
+                "histogramReconstructions": 0,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 3,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "7023d10f",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 12,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 19.799999999813735,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.1000000000931323,
+                "positiveFloatError": 0.0000035017728805541992,
+                "technicalRelativeError": 0.0000026559516600311078,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1270.2000000001863,
+            "firstVisibleMs": 1270.2000000001863,
+            "usableMs": 1270.2000000001863,
+            "elapsedMs": 1270.2000000001863,
+            "heap": {
+              "used": 344718056,
+              "total": 424561364
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "pending",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "proposal": {
+                "x": 0.22731611995289666,
+                "y": 0.0379968596514346,
+                "w": 0.614596081747004,
+                "h": 0.9037408374633343
+              },
+              "quad": [
+                {
+                  "x": 0.2391734582024085,
+                  "y": 0.0379968596514346
+                },
+                {
+                  "x": 0.8360552834991274,
+                  "y": 0.05674887752528595
+                },
+                {
+                  "x": 0.8419122016999007,
+                  "y": 0.941737697114769
+                },
+                {
+                  "x": 0.22731611995289666,
+                  "y": 0.9303913409306137
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.24325643885714315,
+                  "y": 0.04435703772778596
+                },
+                {
+                  "x": 0.8319287980213701,
+                  "y": 0.06285114180844259
+                },
+                {
+                  "x": 0.8377035795761623,
+                  "y": 0.9354289952754276
+                },
+                {
+                  "x": 0.23156535862174002,
+                  "y": 0.9242387837592239
+                }
+              ],
+              "analysisSafe": false,
+              "confidence": 0.55,
+              "reason": "scale-disagreement",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  0.8709677419354839,
+                  1
+                ],
+                "thresholds": 3,
+                "score": 0.9295665992187387,
+                "backgroundModes": 2,
+                "scaleAgreement": false
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "proposal": {
+              "x": 0.22731611995289666,
+              "y": 0.0379968596514346,
+              "w": 0.614596081747004,
+              "h": 0.9037408374633343
+            },
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "analysisSafe": false,
+            "confidence": 0.55,
+            "reason": "scale-disagreement",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                0.8709677419354839,
+                1
+              ],
+              "thresholds": 3,
+              "score": 0.9295665992187387,
+              "backgroundModes": 2,
+              "scaleAgreement": false
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        },
+        {
+          "import": {
+            "id": 4,
+            "started": 27234.300000000047,
+            "phase": "ready",
+            "stages": {
+              "preview": 134.80000000004657,
+              "v2Analysis": 1.9000000001396984,
+              "renderSubmit": 41.39999999990687,
+              "finishImport": 180.10000000009313
+            },
+            "sourceVersion": 3,
+            "cancelled": false,
+            "readyMs": 247,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0.10000000009313226,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50229760,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 4,
+                "sourceUploads": 4,
+                "validationError": 0,
+                "lastSubmitMs": 23.100000000093132,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 4,
+                "positiveReconstructions": 4,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 19.699999999953434,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 27451,
+                "positiveReadyAt": 27474.100000000093,
+                "histogramReconstructions": 0,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 4,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "484de353",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 16,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 19.699999999953434,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.1000000000931323,
+                "positiveFloatError": 0.0000035017728805541992,
+                "technicalRelativeError": 0.0000026559516600311078,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1355.8999999999069,
+            "firstVisibleMs": 1355.8999999999069,
+            "usableMs": 1355.8999999999069,
+            "elapsedMs": 1355.8999999999069,
+            "heap": {
+              "used": 386864995,
+              "total": 440395803
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "pending",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0,
+                "y": 0,
+                "w": 1,
+                "h": 1
+              },
+              "proposal": {
+                "x": 0.22731611995289666,
+                "y": 0.0379968596514346,
+                "w": 0.614596081747004,
+                "h": 0.9037408374633343
+              },
+              "quad": [
+                {
+                  "x": 0.2391734582024085,
+                  "y": 0.0379968596514346
+                },
+                {
+                  "x": 0.8360552834991274,
+                  "y": 0.05674887752528595
+                },
+                {
+                  "x": 0.8419122016999007,
+                  "y": 0.941737697114769
+                },
+                {
+                  "x": 0.22731611995289666,
+                  "y": 0.9303913409306137
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.24325643885714315,
+                  "y": 0.04435703772778596
+                },
+                {
+                  "x": 0.8319287980213701,
+                  "y": 0.06285114180844259
+                },
+                {
+                  "x": 0.8377035795761623,
+                  "y": 0.9354289952754276
+                },
+                {
+                  "x": 0.23156535862174002,
+                  "y": 0.9242387837592239
+                }
+              ],
+              "analysisSafe": false,
+              "confidence": 0.55,
+              "reason": "scale-disagreement",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  0.8709677419354839,
+                  1
+                ],
+                "thresholds": 3,
+                "score": 0.9295665992187387,
+                "backgroundModes": 2,
+                "scaleAgreement": false
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0,
+              "y": 0,
+              "w": 1,
+              "h": 1
+            },
+            "proposal": {
+              "x": 0.22731611995289666,
+              "y": 0.0379968596514346,
+              "w": 0.614596081747004,
+              "h": 0.9037408374633343
+            },
+            "quad": [
+              {
+                "x": 0.2391734582024085,
+                "y": 0.0379968596514346
+              },
+              {
+                "x": 0.8360552834991274,
+                "y": 0.05674887752528595
+              },
+              {
+                "x": 0.8419122016999007,
+                "y": 0.941737697114769
+              },
+              {
+                "x": 0.22731611995289666,
+                "y": 0.9303913409306137
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.24325643885714315,
+                "y": 0.04435703772778596
+              },
+              {
+                "x": 0.8319287980213701,
+                "y": 0.06285114180844259
+              },
+              {
+                "x": 0.8377035795761623,
+                "y": 0.9354289952754276
+              },
+              {
+                "x": 0.23156535862174002,
+                "y": 0.9242387837592239
+              }
+            ],
+            "analysisSafe": false,
+            "confidence": 0.55,
+            "reason": "scale-disagreement",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                0.8709677419354839,
+                1
+              ],
+              "thresholds": 3,
+              "score": 0.9295665992187387,
+              "backgroundModes": 2,
+              "scaleAgreement": false
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        }
+      ],
+      "checked": {
+        "sourceOverviewSHA256": "8f81afee1a94a62e6deecaa375f8d09d2085fd69cde78609315fd4ebccb011d3",
+        "confirmedSamplesSHA256": "5576087168d3cf3e1669d0b5fbeac3cd44506b73433588519e5e4a350f894d03",
+        "recipe": "luminance-matched-D-1",
+        "confirmed": "confirmed"
+      }
+    },
+    {
+      "filename": "_DSF9235.RAF",
+      "fileSHA256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+      "cold": {
+        "import": {
+          "id": 1,
+          "started": 611.5,
+          "phase": "ready",
+          "stages": {
+            "preview": 163.9000000001397,
+            "frameAnalysis": 1214.8000000000466,
+            "baseAnalysis": 7.2000000001862645,
+            "v2Analysis": 161,
+            "renderSubmit": 1392.7999999998137,
+            "finishImport": 2949.1999999999534
+          },
+          "sourceVersion": 0,
+          "cancelled": false,
+          "preliminaryTransformMs": 19.5999999998603,
+          "jpegPrepareMs": 144.19999999995343,
+          "preliminaryKind": "approximate-positive",
+          "preliminaryPaintMs": 283.30000000004657,
+          "firstVisibleMs": 283.30000000004657,
+          "readyMs": 23841,
+          "success": true,
+          "decoder": {
+            "cacheHit": false,
+            "totalMs": 20832.800000000047,
+            "stages": {
+              "librawInit": 74.9000000001397,
+              "fileRead": 82.19999999995343,
+              "rawOpen": 56.5,
+              "metadata": 12.300000000046566,
+              "rawImageData": 20195.59999999986,
+              "rgbConvert": 381.69999999995343
+            },
+            "memory": {
+              "fileBytes": 50245120,
+              "rgb16Bytes": 145926144,
+              "sourceBytes": 291852288,
+              "wasmHeapBytes": null
+            },
+            "activeWorkers": 0,
+            "cacheBytes": 291852288
+          },
+          "renderMetrics": {
+            "cpuRenderMs": 0,
+            "gpu": {
+              "backend": "gpu",
+              "frames": 1,
+              "sourceUploads": 1,
+              "validationError": 0,
+              "lastSubmitMs": 1040.2000000001863,
+              "lastGpuMs": null,
+              "reason": null,
+              "contextLosses": 0,
+              "positiveRequests": 1,
+              "positiveReconstructions": 1,
+              "positiveDiscards": 0,
+              "positiveCancelled": 0,
+              "positiveCacheBytes": 20966400,
+              "positivePreparationMs": 26,
+              "positiveReconstructionMs": 0,
+              "positiveCopyMs": 0,
+              "positiveStartedAt": 23401.199999999953,
+              "positiveReadyAt": 24441.40000000014,
+              "histogramReconstructions": 0,
+              "histogramSourceBytes": 0,
+              "preference": "auto",
+              "interactiveLimit": 700,
+              "sourceVersion": 1,
+              "sourceMatches": true,
+              "positivePending": false,
+              "positiveKey": "b2041c3",
+              "reconstructionBackend": "gpu",
+              "positiveUploads": 0,
+              "validationUploads": 4,
+              "positiveUploadSubmitMs": 0,
+              "gpuReconstructionSubmitMs": 26,
+              "gpuReconstructionMs": null,
+              "sourcePreparationMs": 0,
+              "sourceUploadSubmitMs": 6.100000000093132,
+              "positiveFloatError": 5.364418029785156e-7,
+              "technicalRelativeError": 0.0000014434279773529408,
+              "capabilities": {
+                "floatColor": true
+              },
+              "textureBytes": 36691200,
+              "mainPositive": {
+                "conversions": 0,
+                "adoptions": 0,
+                "reconstructionMs": 0,
+                "bytes": 0
+              }
+            }
+          },
+          "memory": {
+            "sourceBytes": 291852288,
+            "previewBytes": 15724800,
+            "browserSourceBytes": 0
+          },
+          "technicalPaintMs": 23994.5,
+          "usableMs": 23994.5,
+          "elapsedMs": 23994.5,
+          "heap": {
+            "used": 317248041,
+            "total": 395694357
+          }
+        },
+        "dimensions": [
+          6032,
+          4032
+        ],
+        "ownedBuffers": {
+          "source": 291852288,
+          "preview": 15724800,
+          "browserSource": 0,
+          "legacyPreview": 0
+        },
+        "selection": {
+          "version": 1,
+          "coordinateSpace": "normalized-source",
+          "origin": "detector",
+          "status": "automatic",
+          "locked": false,
+          "quad": [
+            {
+              "x": 0.16943937782705065,
+              "y": 0.04167667828363725
+            },
+            {
+              "x": 0.7911928022774377,
+              "y": 0.035505912516159185
+            },
+            {
+              "x": 0.7881438906829775,
+              "y": 0.9633914455630118
+            },
+            {
+              "x": 0.17356428127347245,
+              "y": 0.9540344200577515
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.17770315745784088,
+              "y": 0.9478665822492393
+            }
+          ],
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "proposal": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "analysisSafe": true,
+            "confidence": 0.84,
+            "reason": "coherent-quadrilateral",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "thresholds": 1,
+              "score": 0.9673237930260254,
+              "backgroundModes": 2,
+              "scaleAgreement": true
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        },
+        "detection": {
+          "version": 1,
+          "method": "frame-contours-1",
+          "region": {
+            "x": 0.16943937782705065,
+            "y": 0.035505912516159185,
+            "w": 0.6217534244503871,
+            "h": 0.9278855330468526
+          },
+          "proposal": {
+            "x": 0.16943937782705065,
+            "y": 0.035505912516159185,
+            "w": 0.6217534244503871,
+            "h": 0.9278855330468526
+          },
+          "quad": [
+            {
+              "x": 0.16943937782705065,
+              "y": 0.04167667828363725
+            },
+            {
+              "x": 0.7911928022774377,
+              "y": 0.035505912516159185
+            },
+            {
+              "x": 0.7881438906829775,
+              "y": 0.9633914455630118
+            },
+            {
+              "x": 0.17356428127347245,
+              "y": 0.9540344200577515
+            }
+          ],
+          "analysisQuad": [
+            {
+              "x": 0.17363412124922212,
+              "y": 0.047865713207581775
+            },
+            {
+              "x": 0.7870054755964534,
+              "y": 0.04177813763933563
+            },
+            {
+              "x": 0.7839978549110458,
+              "y": 0.9570974692831005
+            },
+            {
+              "x": 0.17770315745784088,
+              "y": 0.9478665822492393
+            }
+          ],
+          "analysisSafe": true,
+          "confidence": 0.84,
+          "reason": "coherent-quadrilateral",
+          "coordinateSpace": "normalized-source",
+          "evidence": {
+            "sides": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "thresholds": 1,
+            "score": 0.9673237930260254,
+            "backgroundModes": 2,
+            "scaleAgreement": true
+          },
+          "sourceDimensions": {
+            "width": 6032,
+            "height": 4032
+          }
+        }
+      },
+      "warm": [
+        {
+          "import": {
+            "id": 2,
+            "started": 24679,
+            "phase": "ready",
+            "stages": {
+              "preview": 165.5,
+              "baseAnalysis": 11,
+              "v2Analysis": 0.39999999990686774,
+              "renderSubmit": 50.0999999998603,
+              "finishImport": 226.69999999995343
+            },
+            "sourceVersion": 1,
+            "cancelled": false,
+            "readyMs": 288.10000000009313,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50245120,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 2,
+                "sourceUploads": 2,
+                "validationError": 0,
+                "lastSubmitMs": 24.899999999906868,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 2,
+                "positiveReconstructions": 2,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 19.799999999813735,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 24930.300000000047,
+                "positiveReadyAt": 24955.199999999953,
+                "histogramReconstructions": 0,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 2,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "8f113bcf",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 8,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 19.799999999813735,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.3999999999068677,
+                "positiveFloatError": 5.364418029785156e-7,
+                "technicalRelativeError": 0.0000014434279773529408,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1373.4000000001397,
+            "firstVisibleMs": 1373.4000000001397,
+            "usableMs": 1373.4000000001397,
+            "elapsedMs": 1373.4000000001397,
+            "heap": {
+              "used": 341052787,
+              "total": 411535071
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "automatic",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "proposal": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "quad": [
+                {
+                  "x": 0.16943937782705065,
+                  "y": 0.04167667828363725
+                },
+                {
+                  "x": 0.7911928022774377,
+                  "y": 0.035505912516159185
+                },
+                {
+                  "x": 0.7881438906829775,
+                  "y": 0.9633914455630118
+                },
+                {
+                  "x": 0.17356428127347245,
+                  "y": 0.9540344200577515
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.17363412124922212,
+                  "y": 0.047865713207581775
+                },
+                {
+                  "x": 0.7870054755964534,
+                  "y": 0.04177813763933563
+                },
+                {
+                  "x": 0.7839978549110458,
+                  "y": 0.9570974692831005
+                },
+                {
+                  "x": 0.17770315745784088,
+                  "y": 0.9478665822492393
+                }
+              ],
+              "analysisSafe": true,
+              "confidence": 0.84,
+              "reason": "coherent-quadrilateral",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "thresholds": 1,
+                "score": 0.9673237930260254,
+                "backgroundModes": 2,
+                "scaleAgreement": true
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "proposal": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "analysisSafe": true,
+            "confidence": 0.84,
+            "reason": "coherent-quadrilateral",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "thresholds": 1,
+              "score": 0.9673237930260254,
+              "backgroundModes": 2,
+              "scaleAgreement": true
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        },
+        {
+          "import": {
+            "id": 3,
+            "started": 26075.90000000014,
+            "phase": "ready",
+            "stages": {
+              "preview": 145.5,
+              "baseAnalysis": 5.5,
+              "v2Analysis": 0.30000000004656613,
+              "renderSubmit": 53.300000000046566,
+              "finishImport": 207.10000000009313
+            },
+            "sourceVersion": 2,
+            "cancelled": false,
+            "readyMs": 252.5999999998603,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50245120,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 3,
+                "sourceUploads": 3,
+                "validationError": 0,
+                "lastSubmitMs": 32.4000000001397,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 3,
+                "positiveReconstructions": 3,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 23.199999999953434,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 26289.199999999953,
+                "positiveReadyAt": 26321.600000000093,
+                "histogramReconstructions": 1,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 3,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "3ae5c6f7",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 12,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 23.199999999953434,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.2999999998137355,
+                "positiveFloatError": 5.364418029785156e-7,
+                "technicalRelativeError": 0.0000014434279773529408,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1315.0999999998603,
+            "firstVisibleMs": 1315.0999999998603,
+            "usableMs": 1315.0999999998603,
+            "elapsedMs": 1315.0999999998603,
+            "heap": {
+              "used": 355028039,
+              "total": 427296771
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "automatic",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "proposal": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "quad": [
+                {
+                  "x": 0.16943937782705065,
+                  "y": 0.04167667828363725
+                },
+                {
+                  "x": 0.7911928022774377,
+                  "y": 0.035505912516159185
+                },
+                {
+                  "x": 0.7881438906829775,
+                  "y": 0.9633914455630118
+                },
+                {
+                  "x": 0.17356428127347245,
+                  "y": 0.9540344200577515
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.17363412124922212,
+                  "y": 0.047865713207581775
+                },
+                {
+                  "x": 0.7870054755964534,
+                  "y": 0.04177813763933563
+                },
+                {
+                  "x": 0.7839978549110458,
+                  "y": 0.9570974692831005
+                },
+                {
+                  "x": 0.17770315745784088,
+                  "y": 0.9478665822492393
+                }
+              ],
+              "analysisSafe": true,
+              "confidence": 0.84,
+              "reason": "coherent-quadrilateral",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "thresholds": 1,
+                "score": 0.9673237930260254,
+                "backgroundModes": 2,
+                "scaleAgreement": true
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "proposal": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "analysisSafe": true,
+            "confidence": 0.84,
+            "reason": "coherent-quadrilateral",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "thresholds": 1,
+              "score": 0.9673237930260254,
+              "backgroundModes": 2,
+              "scaleAgreement": true
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        },
+        {
+          "import": {
+            "id": 4,
+            "started": 27443.5,
+            "phase": "ready",
+            "stages": {
+              "preview": 146.4000000001397,
+              "baseAnalysis": 5,
+              "v2Analysis": 0.30000000004656613,
+              "renderSubmit": 37.5999999998603,
+              "finishImport": 191.10000000009313
+            },
+            "sourceVersion": 3,
+            "cancelled": false,
+            "readyMs": 215.4000000001397,
+            "success": true,
+            "decoder": {
+              "cacheHit": true,
+              "totalMs": 0,
+              "stages": {},
+              "memory": {
+                "fileBytes": 50245120,
+                "rgb16Bytes": 145926144,
+                "sourceBytes": 291852288,
+                "wasmHeapBytes": null
+              },
+              "activeWorkers": 0,
+              "cacheBytes": 291852288
+            },
+            "renderMetrics": {
+              "cpuRenderMs": 0,
+              "gpu": {
+                "backend": "gpu",
+                "frames": 4,
+                "sourceUploads": 4,
+                "validationError": 0,
+                "lastSubmitMs": 22.5999999998603,
+                "lastGpuMs": null,
+                "reason": null,
+                "contextLosses": 0,
+                "positiveRequests": 4,
+                "positiveReconstructions": 4,
+                "positiveDiscards": 0,
+                "positiveCancelled": 0,
+                "positiveCacheBytes": 20966400,
+                "positivePreparationMs": 20.700000000186265,
+                "positiveReconstructionMs": 0,
+                "positiveCopyMs": 0,
+                "positiveStartedAt": 27631.100000000093,
+                "positiveReadyAt": 27653.699999999953,
+                "histogramReconstructions": 1,
+                "histogramSourceBytes": 0,
+                "preference": "auto",
+                "interactiveLimit": 700,
+                "sourceVersion": 4,
+                "sourceMatches": true,
+                "positivePending": false,
+                "positiveKey": "5e3e5293",
+                "reconstructionBackend": "gpu",
+                "positiveUploads": 0,
+                "validationUploads": 16,
+                "positiveUploadSubmitMs": 0,
+                "gpuReconstructionSubmitMs": 20.700000000186265,
+                "gpuReconstructionMs": null,
+                "sourcePreparationMs": 0,
+                "sourceUploadSubmitMs": 1.5,
+                "positiveFloatError": 5.364418029785156e-7,
+                "technicalRelativeError": 0.0000014434279773529408,
+                "capabilities": {
+                  "floatColor": true
+                },
+                "textureBytes": 36691200,
+                "mainPositive": {
+                  "conversions": 0,
+                  "adoptions": 0,
+                  "reconstructionMs": 0,
+                  "bytes": 0
+                }
+              }
+            },
+            "memory": {
+              "sourceBytes": 291852288,
+              "previewBytes": 15724800,
+              "browserSourceBytes": 0
+            },
+            "technicalPaintMs": 1200.6999999999534,
+            "firstVisibleMs": 1200.6999999999534,
+            "usableMs": 1200.6999999999534,
+            "elapsedMs": 1200.6999999999534,
+            "heap": {
+              "used": 367931115,
+              "total": 444107047
+            }
+          },
+          "dimensions": [
+            6032,
+            4032
+          ],
+          "ownedBuffers": {
+            "source": 291852288,
+            "preview": 15724800,
+            "browserSource": 0,
+            "legacyPreview": 0
+          },
+          "selection": {
+            "version": 1,
+            "coordinateSpace": "normalized-source",
+            "origin": "detector",
+            "status": "automatic",
+            "locked": false,
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "detection": {
+              "version": 1,
+              "method": "frame-contours-1",
+              "region": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "proposal": {
+                "x": 0.16943937782705065,
+                "y": 0.035505912516159185,
+                "w": 0.6217534244503871,
+                "h": 0.9278855330468526
+              },
+              "quad": [
+                {
+                  "x": 0.16943937782705065,
+                  "y": 0.04167667828363725
+                },
+                {
+                  "x": 0.7911928022774377,
+                  "y": 0.035505912516159185
+                },
+                {
+                  "x": 0.7881438906829775,
+                  "y": 0.9633914455630118
+                },
+                {
+                  "x": 0.17356428127347245,
+                  "y": 0.9540344200577515
+                }
+              ],
+              "analysisQuad": [
+                {
+                  "x": 0.17363412124922212,
+                  "y": 0.047865713207581775
+                },
+                {
+                  "x": 0.7870054755964534,
+                  "y": 0.04177813763933563
+                },
+                {
+                  "x": 0.7839978549110458,
+                  "y": 0.9570974692831005
+                },
+                {
+                  "x": 0.17770315745784088,
+                  "y": 0.9478665822492393
+                }
+              ],
+              "analysisSafe": true,
+              "confidence": 0.84,
+              "reason": "coherent-quadrilateral",
+              "coordinateSpace": "normalized-source",
+              "evidence": {
+                "sides": [
+                  1,
+                  1,
+                  1,
+                  1
+                ],
+                "thresholds": 1,
+                "score": 0.9673237930260254,
+                "backgroundModes": 2,
+                "scaleAgreement": true
+              },
+              "sourceDimensions": {
+                "width": 6032,
+                "height": 4032
+              }
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "detection": {
+            "version": 1,
+            "method": "frame-contours-1",
+            "region": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "proposal": {
+              "x": 0.16943937782705065,
+              "y": 0.035505912516159185,
+              "w": 0.6217534244503871,
+              "h": 0.9278855330468526
+            },
+            "quad": [
+              {
+                "x": 0.16943937782705065,
+                "y": 0.04167667828363725
+              },
+              {
+                "x": 0.7911928022774377,
+                "y": 0.035505912516159185
+              },
+              {
+                "x": 0.7881438906829775,
+                "y": 0.9633914455630118
+              },
+              {
+                "x": 0.17356428127347245,
+                "y": 0.9540344200577515
+              }
+            ],
+            "analysisQuad": [
+              {
+                "x": 0.17363412124922212,
+                "y": 0.047865713207581775
+              },
+              {
+                "x": 0.7870054755964534,
+                "y": 0.04177813763933563
+              },
+              {
+                "x": 0.7839978549110458,
+                "y": 0.9570974692831005
+              },
+              {
+                "x": 0.17770315745784088,
+                "y": 0.9478665822492393
+              }
+            ],
+            "analysisSafe": true,
+            "confidence": 0.84,
+            "reason": "coherent-quadrilateral",
+            "coordinateSpace": "normalized-source",
+            "evidence": {
+              "sides": [
+                1,
+                1,
+                1,
+                1
+              ],
+              "thresholds": 1,
+              "score": 0.9673237930260254,
+              "backgroundModes": 2,
+              "scaleAgreement": true
+            },
+            "sourceDimensions": {
+              "width": 6032,
+              "height": 4032
+            }
+          },
+          "sameSourceBuffer": true
+        }
+      ],
+      "checked": {
+        "sourceOverviewSHA256": "2104eee77e5836aa5affd025989798c85d4b9d48c5985d58ea2f19e352a47dd9",
+        "confirmedSamplesSHA256": "f787351ae306d8d8404db1130eea82a810255fe6f7fd3c5e267eefc4862943de",
+        "recipe": "luminance-matched-D-1",
+        "confirmed": "automatic"
+      }
+    }
+  ]
+}

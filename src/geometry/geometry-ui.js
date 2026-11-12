@@ -67,7 +67,7 @@
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
  function draw(){
-  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working||!working){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();handles.replaceChildren();return;}
+  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();handles.replaceChildren();return;}
   const p=plan(),v=styleView(p);drawOverlay(p,v);controls();
   if(colorSource!==workingPreview||colorVersion!==sourceVersion38)return;
   const t=performance.now(),{width,height}=NSPreviewPresentation.dimensions(p,colorSize,failed?cpuLimit:1400);
@@ -101,7 +101,7 @@
  // Predict only the final available viewport height. Controls/status can wrap
  // mid-slide; interpolate their effect with grid width instead of jumping Fit.
  function beginViewportMotion(targetWidth){
-  if(!working||!working)return;
+  if(!working)return;
   const v=layout(plan()),panel=picture.closest('.image-panel'),old=panel.style.width;
   panel.style.width=targetWidth+'px';const toWidth=picture.clientWidth,toHeight=picture.clientHeight;panel.style.width=old;
   viewportMotion=toWidth===v.width?null:{fromWidth:v.width,fromHeight:2*(v.oy-panY),toWidth,toHeight};

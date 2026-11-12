@@ -1,0 +1,477 @@
+{
+  "baseline": "42a9d33dd91a3c93cf736e693a86390bef80c61b",
+  "candidate": "f7a6a3d94aee04830a66314842295ea41eb23048",
+  "units": "milliseconds unless explicitly bytes",
+  "detector": [
+    {
+      "name": "_DSF8434.RAF.f32.gz",
+      "before": {
+        "median": 1522.3568479999994,
+        "min": 1417.6339290000005,
+        "max": 1686.535605,
+        "runs": 5
+      },
+      "after": {
+        "median": 1220.272358,
+        "min": 1012.1974519999994,
+        "max": 1436.6938,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF8948.RAF.f32.gz",
+      "before": {
+        "median": 1336.7594050000007,
+        "min": 1276.8606689999997,
+        "max": 1423.5283419999996,
+        "runs": 5
+      },
+      "after": {
+        "median": 1188.1282649999994,
+        "min": 1095.1038929999995,
+        "max": 1194.6364560000002,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF8951.RAF.f32.gz",
+      "before": {
+        "median": 1368.892957,
+        "min": 1340.9400760000026,
+        "max": 1455.4488700000002,
+        "runs": 5
+      },
+      "after": {
+        "median": 1254.3174810000019,
+        "min": 1150.4194279999974,
+        "max": 1304.7888239999993,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF8983.RAF.f32.gz",
+      "before": {
+        "median": 1356.2385069999982,
+        "min": 1267.814022999999,
+        "max": 1452.2387820000004,
+        "runs": 5
+      },
+      "after": {
+        "median": 1038.4982810000001,
+        "min": 1024.2833940000019,
+        "max": 1224.6818899999998,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9229.RAF.f32.gz",
+      "before": {
+        "median": 864.3121420000025,
+        "min": 840.143339000002,
+        "max": 907.6616280000017,
+        "runs": 5
+      },
+      "after": {
+        "median": 735.6134649999985,
+        "min": 677.2439179999965,
+        "max": 743.7197859999978,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9231.RAF.f32.gz",
+      "before": {
+        "median": 1544.6414180000065,
+        "min": 1501.1270109999969,
+        "max": 1565.2982740000007,
+        "runs": 5
+      },
+      "after": {
+        "median": 1258.7536000000036,
+        "min": 1215.2754730000015,
+        "max": 1342.0298600000024,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9235.RAF.f32.gz",
+      "before": {
+        "median": 1466.493620000001,
+        "min": 1442.0453990000024,
+        "max": 1518.816558999999,
+        "runs": 5
+      },
+      "after": {
+        "median": 1314.7637520000062,
+        "min": 1219.2528440000024,
+        "max": 1367.0602380000055,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9237.RAF.f32.gz",
+      "before": {
+        "median": 1513.6939439999987,
+        "min": 1403.9595520000003,
+        "max": 1847.7358710000044,
+        "runs": 5
+      },
+      "after": {
+        "median": 1314.8157160000046,
+        "min": 1230.2473249999966,
+        "max": 1441.5771069999973,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9238.RAF.f32.gz",
+      "before": {
+        "median": 1346.7014849999978,
+        "min": 1275.0210030000017,
+        "max": 1473.6992920000048,
+        "runs": 5
+      },
+      "after": {
+        "median": 1181.1143099999972,
+        "min": 1131.9570939999976,
+        "max": 1228.4990160000016,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9239.RAF.f32.gz",
+      "before": {
+        "median": 841.460063999999,
+        "min": 813.1978359999921,
+        "max": 924.8820790000027,
+        "runs": 5
+      },
+      "after": {
+        "median": 669.9157680000062,
+        "min": 660.180889999996,
+        "max": 693.3902690000032,
+        "runs": 5
+      },
+      "resultIdentical": true
+    },
+    {
+      "name": "_DSF9243.RAF.f32.gz",
+      "before": {
+        "median": 1428.472741000005,
+        "min": 1322.910714999991,
+        "max": 1497.008575999993,
+        "runs": 5
+      },
+      "after": {
+        "median": 1022.2809680000064,
+        "min": 975.5716530000063,
+        "max": 1077.4203370000032,
+        "runs": 5
+      },
+      "resultIdentical": true
+    }
+  ],
+  "analysis_export_node": [
+    {
+      "engine": "v2",
+      "workload": "source analysis, same frozen channel response/recipe, one cold + seven repeated calls",
+      "before": {
+        "median": 96.40027600000008,
+        "min": 94.45961499999999,
+        "max": 107.84035899999992,
+        "runs": 7
+      },
+      "after": {
+        "median": 0.30917600000009315,
+        "min": 0.19167800000002444,
+        "max": 0.5543949999999995,
+        "runs": 7
+      },
+      "pixelsIdentical": null,
+      "coldBefore": 524.686266,
+      "coldAfter": 481.339139
+    },
+    {
+      "engine": "v2",
+      "workload": "TIFF16 pixel production, direct",
+      "before": {
+        "median": 721.2953599999992,
+        "min": 718.334656,
+        "max": 749.4347290000005,
+        "runs": 5
+      },
+      "after": {
+        "median": 734.1530130000001,
+        "min": 704.8044639999998,
+        "max": 768.9081230000002,
+        "runs": 5
+      },
+      "pixelsIdentical": true,
+      "coldBefore": null,
+      "coldAfter": null
+    },
+    {
+      "engine": "v2",
+      "workload": "TIFF16 pixel production, fine rotation 2 degrees",
+      "before": {
+        "median": 893.8795929999997,
+        "min": 870.2089520000009,
+        "max": 939.9269180000001,
+        "runs": 5
+      },
+      "after": {
+        "median": 917.5092280000008,
+        "min": 891.3487700000005,
+        "max": 943.6778510000004,
+        "runs": 5
+      },
+      "pixelsIdentical": true,
+      "coldBefore": null,
+      "coldAfter": null
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "source analysis, same frozen channel response/recipe, one cold + seven repeated calls",
+      "before": {
+        "median": 148.74802799999998,
+        "min": 141.79542599999877,
+        "max": 157.36436499999945,
+        "runs": 7
+      },
+      "after": {
+        "median": 68.05294400000093,
+        "min": 62.017438999999285,
+        "max": 82.386348,
+        "runs": 7
+      },
+      "pixelsIdentical": null,
+      "coldBefore": 212.829205,
+      "coldAfter": 142.70372599999973
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "TIFF16 pixel production, direct",
+      "before": {
+        "median": 393.2408579999992,
+        "min": 383.3979419999996,
+        "max": 433.9737499999992,
+        "runs": 5
+      },
+      "after": {
+        "median": 374.5623859999996,
+        "min": 367.1087090000001,
+        "max": 450.6214949999994,
+        "runs": 5
+      },
+      "pixelsIdentical": true,
+      "coldBefore": null,
+      "coldAfter": null
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "TIFF16 pixel production, fine rotation 2 degrees",
+      "before": {
+        "median": 649.3010270000013,
+        "min": 617.5278519999974,
+        "max": 760.6331079999982,
+        "runs": 5
+      },
+      "after": {
+        "median": 642.8902450000023,
+        "min": 626.0524929999992,
+        "max": 657.3390469999995,
+        "runs": 5
+      },
+      "pixelsIdentical": true,
+      "coldBefore": null,
+      "coldAfter": null
+    }
+  ],
+  "browser_export": [
+    {
+      "name": "tiff-direct",
+      "before": {
+        "median": 1096.7999999998137,
+        "min": 1015.1999999999534,
+        "max": 1178.6000000000931,
+        "runs": 3
+      },
+      "after": {
+        "median": 1094.7999999998137,
+        "min": 918.8999999999069,
+        "max": 1135.8999999999069,
+        "runs": 3
+      },
+      "pixelsIdentical": true,
+      "maxTimerGapBefore": 36.5,
+      "maxTimerGapAfter": 40.199999999953434
+    },
+    {
+      "name": "tiff-fine",
+      "before": {
+        "median": 1167.1999999999534,
+        "min": 1005,
+        "max": 1208.9000000001397,
+        "runs": 3
+      },
+      "after": {
+        "median": 1072.7999999998137,
+        "min": 964.3000000000466,
+        "max": 1117.4000000001397,
+        "runs": 3
+      },
+      "pixelsIdentical": true,
+      "maxTimerGapBefore": 27.399999999906868,
+      "maxTimerGapAfter": 20.199999999953434
+    },
+    {
+      "name": "tiff-composed",
+      "before": {
+        "median": 658.2999999998137,
+        "min": 638.1999999999534,
+        "max": 692.2000000001863,
+        "runs": 3
+      },
+      "after": {
+        "median": 652.4000000001397,
+        "min": 574.7999999998137,
+        "max": 721.7000000001863,
+        "runs": 3
+      },
+      "pixelsIdentical": true,
+      "maxTimerGapBefore": 24.199999999953434,
+      "maxTimerGapAfter": 19.600000000093132
+    },
+    {
+      "name": "png16-fine",
+      "before": {
+        "median": 1274.2999999998137,
+        "min": 1125,
+        "max": 1337.6999999999534,
+        "runs": 3
+      },
+      "after": {
+        "median": 1352.3999999999069,
+        "min": 1280,
+        "max": 1379.8999999999069,
+        "runs": 3
+      },
+      "pixelsIdentical": true,
+      "maxTimerGapBefore": 38.300000000046566,
+      "maxTimerGapAfter": 27.5
+    },
+    {
+      "name": "cancel-fine",
+      "before": {
+        "median": 52.40000000002328,
+        "min": 51.60000000009313,
+        "max": 53.199999999953434,
+        "runs": 2
+      },
+      "after": {
+        "median": 55.39999999990687,
+        "min": 51.799999999813735,
+        "max": 59,
+        "runs": 2
+      },
+      "pixelsIdentical": false,
+      "maxTimerGapBefore": 17.299999999813735,
+      "maxTimerGapAfter": 17.399999999906868
+    }
+  ],
+  "png16_repeat": [
+    {
+      "name": "png16-fine",
+      "before": {
+        "median": 1302.6999999999534,
+        "min": 1075.5,
+        "max": 1489.4000000001397,
+        "runs": 7
+      },
+      "after": {
+        "median": 1293,
+        "min": 1149.3000000002794,
+        "max": 1342.3999999999069,
+        "runs": 7
+      },
+      "pixelsIdentical": true,
+      "maxTimerGapBefore": 37.699999999953434,
+      "maxTimerGapAfter": 28.600000000093132
+    }
+  ],
+  "raw_import": [
+    {
+      "name": "_DSF8983.RAF",
+      "coldUsableBefore": 26187.399999999907,
+      "coldUsableAfter": 23685.59999999986,
+      "firstVisibleBefore": 163.5,
+      "firstVisibleAfter": 216.5999999998603,
+      "warmUsableBefore": {
+        "median": 3446.6999999999534,
+        "min": 3393.600000000093,
+        "max": 3505.2000000001863,
+        "runs": 3
+      },
+      "warmUsableAfter": {
+        "median": 1355.8999999999069,
+        "min": 1270.2000000001863,
+        "max": 1397.6999999999534,
+        "runs": 3
+      },
+      "ownedBufferBytesBefore": {
+        "source": 291852288,
+        "preview": 15724800,
+        "browserSource": 6841600,
+        "legacyPreview": 5241600
+      },
+      "ownedBufferBytesAfter": {
+        "source": 291852288,
+        "preview": 15724800,
+        "browserSource": 0,
+        "legacyPreview": 0
+      },
+      "sourceOverviewAndConfirmedSamplesIdentical": true
+    },
+    {
+      "name": "_DSF9235.RAF",
+      "coldUsableBefore": 24695.09999999986,
+      "coldUsableAfter": 23994.5,
+      "firstVisibleBefore": 186.69999999995343,
+      "firstVisibleAfter": 283.30000000004657,
+      "warmUsableBefore": {
+        "median": 3292.8000000000466,
+        "min": 2949.100000000093,
+        "max": 3518.3000000000466,
+        "runs": 3
+      },
+      "warmUsableAfter": {
+        "median": 1315.0999999998603,
+        "min": 1200.6999999999534,
+        "max": 1373.4000000001397,
+        "runs": 3
+      },
+      "ownedBufferBytesBefore": {
+        "source": 291852288,
+        "preview": 15724800,
+        "browserSource": 6841600,
+        "legacyPreview": 5241600
+      },
+      "ownedBufferBytesAfter": {
+        "source": 291852288,
+        "preview": 15724800,
+        "browserSource": 0,
+        "legacyPreview": 0
+      },
+      "sourceOverviewAndConfirmedSamplesIdentical": true
+    }
+  ]
+}
