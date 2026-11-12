@@ -26,6 +26,14 @@ Import metadata/TIFF preparation belong to the source owner. Source/calibration 
 - Current profile catalog definitions and independent Work P numeric tests. No photographic parameters were changed.
 - Chromium frame workflow at five viewports, touch range regression, preliminary preview, encoder/cancellation and profile export tests.
 
+The additional [same-browser GPU comparison](measurements/gpu-before-after.json) covers **2,160 exact final RGBA8 readbacks** and **240 exact V2 Float32 positive readbacks**, before/after on Chromium/ANGLE SwiftShader. It supplies identical frozen-main configurations to both applications, covering every active presentation, strengths 0/35/70/100%, edits, Standard variants/tones and V2. Final readbacks are 67×45; real inputs are bounded technical previews, not original-resolution RAW exports. No mismatch was found. Reproduce after building both checkouts with `node tools/check-consolidation-gpu.mjs BEFORE AFTER OUTPUT`.
+
+[Local complete verification](measurements/verification-local-full.json): **101/101 groups** on production commit `c8ac8be`, Node 22.23.5, comprising 67 Node groups, one build group and 33 Chromium groups. The exact tested artifact identity is recorded. Later verification-only changes make the base-drag fixture confirm its frame, isolate animation from its CPU measurement and use the actual native captured pointer ID. The final PR CI runs the complete suite again.
+
+[Targeted browser verification](measurements/verification-targeted.json): frame review, range interaction and preliminary import layout all pass in **Linux WPE WebKit 27.2** and **Linux Microsoft Edge 157.0.4341.42**. Frame review covers five responsive layouts, pending/automatic/manual/locked states, queue/project round trips and rotation/zoom/pan. Range tests cover native taps/double taps, keyboard/focus and cancellation; trusted horizontal drags/vertical scrolls are Chromium/Edge-specific, while WebKit cancellation is synthetic. Import-proof tests cover five sizes/orientations, inversion, cancel and replacement. These tests use controlled decoders, not complete RAW decoding on those browsers. No physical iPad or Windows Edge claim is made.
+
+Verification also exposed two test assumptions: synchronous pause/play manipulation could freeze a native grid transition at time zero, and the base-drag test assumed mouse pointer ID 1 without establishing a captured drag. Tests now await animation readiness and assert/carry the actual drag ownership. All pixel, coordinate, coalescing and timing-budget assertions remain in place.
+
 Reference generation executes main `42a9d33dd91a3c93cf736e693a86390bef80c61b` in a temporary checkout under the same Node runtime as the candidate, without npm installation. Checked-in Node 24 hashes remain reviewable evidence. This avoids treating Node 22/24 transcendental last-bit differences as refactor changes; no numeric tolerance is introduced. Expected conversion values come from frozen main, never candidate color code.
 
 The complete suite and final CI are recorded in PR #99. Exploratory runs are not release evidence. The frozen numeric reference is checked under both Node 22 and Node 24; its expected values always come from the same runtime as the candidate.
@@ -124,7 +132,7 @@ Use `--cases=png16-fine` and repeat count `7` for the additional PNG trial. Brow
 
 ### Size and complexity
 
-Tracked `src/` production files: **93 → 78**. Production lines: **8,858 → 7,838** (newline count). Production bytes: **816,714 → 669,414**, before the final redundant-guard deletion. Built HTML/CSS/JS (excluding service worker): **1,005,402 → 834,122 bytes**; separately gzip-compressed files: **357,192 → 298,360 bytes**. Build identity strings make final byte counts vary slightly by commit. Unchanged WASM/assets are excluded from this text-size comparison. These are size reductions, separate from the timed results above.
+Tracked `src/` production files: **93 → 78**. Production lines: **8,858 → 7,838** (newline count). Production bytes: **816,714 → 669,394**, after the final redundant-guard deletion. Built HTML/CSS/JS (excluding service worker): **1,005,402 → 834,122 bytes**; separately gzip-compressed files: **357,192 → 298,360 bytes**. Build identity strings make final byte counts vary slightly by commit. Unchanged WASM/assets are excluded from this text-size comparison. These are size reductions, separate from the timed results above.
 
 ## Deliberately retained complexity and limits
 

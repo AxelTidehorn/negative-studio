@@ -2,7 +2,7 @@
 
 **Levande checklista för funktioner, förbättringar, verifiering och framtidsidéer.**
 
-Senast genomgången: 2026-11-09. Ursprungligen sammanställd: 2026-11-06. Detta är en planeringslista, **inte** ett löfte om att en funktion fungerar perfekt eller att en idé är beslutad för nästa release.
+Senast genomgången: 2026-11-12. Ursprungligen sammanställd: 2026-11-06. Detta är en planeringslista, **inte** ett löfte om att en funktion fungerar perfekt eller att en idé är beslutad för nästa release.
 
 ## Så används listan
 
