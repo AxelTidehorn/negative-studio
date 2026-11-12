@@ -1,11 +1,11 @@
-import {browserHarness} from './helpers/browser.mjs';import assert from 'node:assert/strict';
+import {browserHarness,confirmFrameIfNeeded,selectBackend,openSettings} from './helpers/browser.mjs';import assert from 'node:assert/strict';
 const h=await browserHarness(),browser=h.browser;
 const report={environment:'Chromium WebGL 2; renderer recorded below; synthetic image fixtures',checks:[]};
 function check(message){report.checks.push(message);console.log('PASS',message);}
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900},locale:'sv-SE'}),errors=[];page.setDefaultTimeout(90000);
  page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url,{waitUntil:'domcontentloaded',timeout:90000});
- await page.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));
+ await page.locator('#imageFile').setInputFiles('demo-negative.png');
  await page.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().backend==='gpu');await confirmFrameIfNeeded(page);
  assert.deepEqual(errors,[]);check('Actual app PNG import uses GPU with no page errors');
  const parity=await page.evaluate(()=>{
@@ -62,13 +62,13 @@ try{
  assert.deepEqual(errors,[]);
  // Independent mobile viewport, no-WebGL and failed color-check paths.
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true,locale:'sv-SE'});
- await mobile.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await mobile.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await mobile.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ await mobile.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await mobile.locator('#imageFile').setInputFiles('demo-negative.png');await mobile.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  await mobile.locator('#exposure').evaluate(el=>{el.value='.4';el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));});await mobile.waitForTimeout(250);
  assert.equal(await mobile.locator('#gpuPreview').isVisible(),true);check('390px touch viewport imports and adjusts in GPU mode');await mobile.close();
  const fallback=await browser.newPage({locale:'sv-SE'});await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl2'?null:original.call(this,type,...args);};});
- await fallback.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await fallback.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await fallback.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().reason?.includes('WebGL'));
+ await fallback.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await fallback.locator('#imageFile').setInputFiles('demo-negative.png');await fallback.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().reason?.includes('WebGL'));
  assert.equal(await fallback.locator('#preview').isVisible(),true);await fallback.waitForFunction(()=>lastPreview38?.data?.length>0);check('Unavailable WebGL keeps a usable CPU preview');await fallback.close();
  const validation=await browser.newPage({locale:'sv-SE'});await validation.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await validation.evaluate(()=>{const create=NSGpuPreview.create;NSGpuPreview.create=canvas=>{const gpu=create(canvas);gpu.validate=()=>{throw Error('simulerat färgfel');};return gpu;};});
- await validation.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await validation.waitForFunction(()=>FILMLABB_GPU.snapshot().reason?.includes('simulerat färgfel'));await validation.waitForFunction(()=>lastPreview38?.data?.length>0);check('Failed startup color check automatically shows CPU');await validation.close();
+ await validation.locator('#imageFile').setInputFiles('demo-negative.png');await validation.waitForFunction(()=>FILMLABB_GPU.snapshot().reason?.includes('simulerat färgfel'));await validation.waitForFunction(()=>lastPreview38?.data?.length>0);check('Failed startup color check automatically shows CPU');await validation.close();
  console.log(JSON.stringify(report,null,2));
 }finally{await h.close();}

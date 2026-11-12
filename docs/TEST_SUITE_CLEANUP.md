@@ -10,6 +10,7 @@ Removed:
 
 - Automatic historical reference worktree/cache and capture driver. Expected production values are now read-only Node 22/24 fixtures; all 2,241 exact full cases remain. Fast uses 166 representative cases covering both engines and every profile/strength/edit combination.
 - Tests for the isolated C/D presentation and scene-distribution experiments, their shader-install hooks and packaging/probe scripts. The scalar D factor/exposure reference needed by production tests moved to `tests/helpers/v2-tone-reference.mjs`.
+- The uncalled lab-only `compileLegacy` fast-preset comparison; current Standard is protected by its calibration/scalar-stage, frozen output, prepared export and GPU tests. Its unused production implementation is outside this test-only change.
 - Real-file checks invoking `CE.analyze`, `legacy`, `reference`, `log39` or beta2; the dead standalone V2 benchmark/preview workflow checker; old capture/review/package utilities. Current external-source import/export/detector benchmarks remain manual.
 - The duplicate `verify-preview.mjs` runner, old selector aliases and path-specific style publication scheme. There are three manually runnable levels and one registration/execution owner.
 - The test that asserted a known aliasing limitation as expected behavior; area-filter correctness and independent export-sampling tests remain.
@@ -34,7 +35,7 @@ Full keeps the current product's numerical, precision, source-lifetime, actual e
 
 All profile strengths remain in CPU and floating GPU checks. Full tests every profile through JPEG8, PNG8, PNG16 and TIFF16 at 100%, plus Gold at every strength and CPU fallback. Extended restores every profile/strength/encoder/fallback combination. Current D and custom-calibration GPU cases run in full; the broader versioned-recipe GPU matrix runs in extended. The 6 MP preview and source-loupe measurement is explicit extended work. Timing observations are not a shared-host loupe-speed assertion; bounded operation counts and exact final samples remain gates.
 
-Node-side mathematical references and actual browser/worker/encoder checks are intentionally not merged into one level. They detect different failures. No numerical tolerance was widened and no expected image value was recalculated from candidate code. TIFF reference storage is lossless gzip: its decompressed SHA-256 remains `480c5cc78f48580bccda3d8853fd46f4cbcd69c1eb05d51aee65f18d0d5a9d67`.
+Node-side mathematical references and actual browser/worker/encoder checks are intentionally not merged into one level. They detect different failures. The still-active scalar Standard stage used recursively by Editing 2.0 remains explicitly tested; its internal `editVersion:1` selector is not a resurrected user mode. No numerical tolerance was widened and no expected image value was recalculated from candidate code. TIFF reference storage is lossless gzip: its decompressed SHA-256 remains `480c5cc78f48580bccda3d8853fd46f4cbcd69c1eb05d51aee65f18d0d5a9d67`.
 
 ## Before/after
 
@@ -43,7 +44,7 @@ Node-side mathematical references and actual browser/worker/encoder checks are i
 | Executable test files (`tests/*.mjs`, excluding registry) | 107 | 95 |
 | Full groups (Node + build + browser) | 101 (67 + 1 + 33) | 91 (59 + 1 + 31) |
 | Fast / extended groups | 5 / no level | 7 / 92 |
-| Handwritten test/tool lines | 5,621 | 4,636 |
+| Handwritten test/tool lines | 5,621 | 4,639 |
 | Fixtures + PR #99 evidence bytes | 7,917,229 | 4,517,810 |
 | Helper/tool scripts | 61 | 36 |
 | CI fast | No separate measured job | See final PR verification |

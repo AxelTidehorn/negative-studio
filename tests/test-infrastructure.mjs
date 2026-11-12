@@ -41,6 +41,7 @@ assert.match(workflow,/options: \[fast, full, extended\]/);assert.match(build,/R
 assert.match(build,/fetch-depth: 0/);assert.match(build,/cache: npm/);assert.match(build,/npm ci/);assert.match(build,/cancel-in-progress: true/);assert.doesNotMatch(build,/pages: write|id-token: write/);
 assert.ok(build.indexOf('npm run test:${{ steps.scope.outputs.level }}')<build.indexOf('node tools/verified-artifact.mjs seal'));
 assert.ok(build.indexOf('node tools/verified-artifact.mjs seal')<build.indexOf('actions/upload-artifact@'));
+assert.match(build,/name: Seal the tested artifact\n\s+if: steps\.scope\.outputs\.level != 'fast'/);assert.match(build,/uses: actions\/upload-artifact@v4\n\s+if: steps\.scope\.outputs\.level != 'fast'/);
 assert.match(deploy,/needs: build/);assert.match(deploy,/github.ref == 'refs\/heads\/main'/);assert.match(deploy,/github.event_name == 'push' \|\| github.event_name == 'workflow_dispatch' && inputs.level != 'fast'/);
 assert.match(deploy,/group: pages\n\s+cancel-in-progress: false/);assert.doesNotMatch(deploy,/npm ci|setup-node|test:full|npm run build/);
 assert.equal((workflow.match(/ref: \$\{\{ github.sha \}\}/g)||[]).length,2,'both checkouts use the exact event commit');
