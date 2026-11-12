@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # Conversion Engine 3.0 experiments
 
 This update adds three independently selectable conversion hypotheses to the two

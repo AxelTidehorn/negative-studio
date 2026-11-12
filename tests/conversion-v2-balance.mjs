@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-for(const n of ['image/image-model','conversion-v2/core','conversion-v2/render','conversion-v2/fast','conversion-v2/output','conversion-v2/diagnostics'])await import('../src/'+n+'.js');
-const V=NSConversionV2,R=NSV2Render,O=NSV2Output,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},cols=80,rows=80,n=cols*rows;
+for(const n of ['image/image-model','conversion-v2/core','conversion-v2/render','conversion-v2/fast','conversion-v2/diagnostics'])await import('../src/'+n+'.js');
+await import('./helpers/v2-output-oracle.js');
+const V=NSConversionV2,R=NSV2Render,O=NSV2OutputOracle,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},cols=80,rows=80,n=cols*rows;
 function fixture({dominant=false,conflict=false}={}){
  const positive=new Float64Array(n*3),luma=new Float64Array(n),mask=new Uint8Array(n).fill(1);
  for(let i=0;i<n;i++){

@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # FILMLABB 1.1 Beta 6 – färdig användarintegration
 
 Bas: main `335b707` (PR #16–18). Detta steg kopplar den befintliga geometrin

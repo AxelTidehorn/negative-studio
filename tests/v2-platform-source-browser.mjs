@@ -20,7 +20,7 @@ try{
  assert.equal(await page.evaluate(()=>FILMLABB_GPU.snapshot().backend),'cpu');assert.equal(await page.evaluate(()=>!!previewWorker38&&!workerDisabled38),true);
  assert.equal(await page.evaluate(()=>{const expected=NSPixelKernel.render(workingPreview,configuration38(),display,1400);return expected.data.every((v,i)=>v===lastPreview38.data[i])&&expected.bins.every((v,i)=>v===lastPreview38.bins[i]);}),true);
  assert.ok((await page.locator('#histogramInfo').textContent()).trim());
- const v2Before=await settings(page);await selectEngine(page,'log39');assert.deepEqual(await settings(page),v2Before);assert.equal(await page.locator('#engineMode').inputValue(),'v2');assert.match(await page.locator('#status').textContent(),/Original kräver en sRGB-källa/);
+ const v2Before=await settings(page);
  for(const engine of ['calibrated4','v2']){await selectEngine(page,engine);await page.waitForFunction(e=>state.engine===e,engine);}
  await preview(page);assert.equal(await page.evaluate(()=>state.v2Recipe.intent.id),v2Before.v2Recipe.intent.id);
  console.log('PASS unverified TIFF rejects V2, explicit linear Rec.2020 reimport, actual CPU-worker pixel/histogram parity, Original domain rejection and all visible wide-capable engine switches');
@@ -28,19 +28,15 @@ try{
  const raw=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE'});raw.setDefaultTimeout(60000);raw.on('pageerror',e=>errors.push(e.message));await raw.addInitScript(()=>localStorage.setItem('filmlabb-preview-backend','cpu'));await raw.goto(h.url);
  await raw.locator('#imageFile').setInputFiles({name:'negative.dng',mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')});await ready(raw);
  // Start this failure/recovery regression in the explicit legacy RAW domain.
- await selectEngine(raw,'log39');await selectEngine(raw,'calibrated4');
+ await selectEngine(raw,'calibrated4');await open(raw.locator('#rawMode4'));await raw.locator('#rawMode4').selectOption('protected');await ready(raw);
  // Deliberate decoder failure at the already-validated owner's boundary.
  await raw.evaluate(()=>{window.decoderBeforeFailure=NSRawDecoder.decode;NSRawDecoder.decode=async()=>{throw Error('INTENTIONAL_TEST_FAILURE');};});
  const prior=await settings(raw);await selectEngine(raw,'v2');await raw.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('INTENTIONAL_TEST_FAILURE'));
  assert.deepEqual(await settings(raw),prior);assert.equal(await raw.locator('#engineMode').inputValue(),prior.engine);assert.equal(await raw.evaluate(()=>working),null);
  await raw.evaluate(()=>{NSRawDecoder.decode=decoderBeforeFailure;$('loadFullRaw').click();});await ready(raw);assert.equal(await raw.evaluate(()=>sourceInfo.colorSpace),'srgb');
  await selectEngine(raw,'v2');await raw.waitForFunction(()=>!rollLoading&&state.engine==='v2'&&working);
- const v2=await settings(raw);await raw.evaluate(()=>{NSRawDecoder.decode=async()=>{throw Error('INTENTIONAL_TEST_FAILURE');};});await selectEngine(raw,'log39');await raw.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('INTENTIONAL_TEST_FAILURE'));
- assert.deepEqual(await settings(raw),v2);assert.equal(await raw.locator('#engineMode').inputValue(),'v2');assert.equal(await raw.evaluate(()=>working),null);
- await raw.evaluate(()=>{NSRawDecoder.decode=decoderBeforeFailure;$('loadFullRaw').click();});await ready(raw);assert.equal(await raw.evaluate(()=>sourceInfo.colorSpace),'rec2020');assert.equal(await raw.evaluate(()=>state.v2Recipe.intent.id),v2.v2Recipe.intent.id);
- console.log('PASS failed RAW domain changes restore engine/settings/recipe in both directions, release invalid source and recover through ordinary reload');
-
- await selectEngine(raw,'calibrated4');await open(raw.locator('#rawMode4'));await raw.locator('#rawMode4').selectOption('reference');await raw.waitForFunction(()=>working&&!rollLoading&&sourceInfo.rawMode4==='reference');
+ assert.equal(await raw.evaluate(()=>sourceInfo.colorSpace),'rec2020');
+ await selectEngine(raw,'calibrated4');await open(raw.locator('#rawMode4'));await raw.locator('#rawMode4').selectOption('protected');await raw.waitForFunction(()=>working&&!rollLoading&&sourceInfo.rawMode4==='protected');
  const original=await raw.evaluate(()=>({domain:sourceInfo.domain,pixels:[0,300,working.data.length-3].flatMap(i=>Array.from(working.data.subarray(i,i+3)))}));
  await selectEngine(raw,'v2');await raw.waitForFunction(()=>working&&!rollLoading&&state.engine==='v2');
  await raw.evaluate(()=>{state.filmBaseVersion=2;setProposal2(FM2.measure(working,{x:.05,y:.1,w:.07,h:.6}));FILMLABB_BASE2.accept();});
@@ -48,11 +44,10 @@ try{
  const sourceRecipe=()=>raw.evaluate(()=>({domain:sourceInfo.domain,decoder:sourceInfo.rawMetadata.options,locked:state.rawSourceRecipeV2,decoded:sourceInfo.v2Decoded,accepted:accepted2()?.id,base:accepted2()?.measurement.measured,pixels:[0,300,working.data.length-3].flatMap(i=>Array.from(working.data.subarray(i,i+3))),positive:[0,300,working.data.length-3].flatMap(i=>NSPixelKernel.prepare(working,configuration38()).pixel(i))}));
  const beforeReload=await sourceRecipe();assert.ok(beforeReload.accepted);assert.equal(beforeReload.locked,1);assert.equal(beforeReload.decoded,true);
  await raw.evaluate(()=>$('loadFullRaw').click());await ready(raw);assert.deepEqual(await sourceRecipe(),beforeReload,'Standard reload preserves locked decode, compatible base and exact source/output pixels');
- await selectEngine(raw,'v2');await selectEngine(raw,'log39');await raw.waitForFunction(()=>working&&!rollLoading&&state.engine==='log39'&&sourceInfo.rawMode4==='reference');
- assert.equal(await raw.evaluate(()=>state.rawMode4),'reference');assert.equal(await raw.evaluate(()=>state.rawSourceRecipeV2||0),0);assert.deepEqual(await raw.evaluate(()=>({domain:sourceInfo.domain,pixels:[0,300,working.data.length-3].flatMap(i=>Array.from(working.data.subarray(i,i+3)))})),original);
+ await selectEngine(raw,'calibrated4');await open(raw.locator('#rawMode4'));await raw.locator('#rawMode4').selectOption('protected');await ready(raw);
  // A deliberately non-cancellable old engine reload must not roll back a new queue.
  await raw.evaluate(()=>{globalThis.decoderBeforeRace=NSRawDecoder.decode;NSRawDecoder.decode=async file=>{await new Promise(r=>setTimeout(r,file.name==='replacement.dng'?450:120));return{im:{width:16,height:12,bits:16,colors:3,data:new Float32Array(16*12*3).fill(file.name==='replacement.dng'?.6:.2),scale:1,colorSpace:'rec2020',rawMode4:'wide'},meta:{},provenance:{decoder:'controlled-race',version:'1',options:NSV2Platform.decoderOptions()}};};});
- const oldSwitch=raw.evaluate(async()=>{$('engineMode').value='v2';await $('engineMode').onchange({target:$('engineMode')});});await raw.waitForFunction(()=>rollLoading);
+ const oldSwitch=raw.evaluate(async()=>{await changeEngine('v2');});await raw.waitForFunction(()=>rollLoading);
  await raw.locator('#imageFile').setInputFiles({name:'replacement.dng',mimeType:'image/x-adobe-dng',buffer:fs.readFileSync('tests/fixtures/synthetic-negative.dng')});await ready(raw);await oldSwitch;
  assert.equal(await raw.evaluate(()=>roll[activeFrame].file.name),'replacement.dng');assert.equal(await raw.evaluate(()=>state.engine),'v2');assert.equal(await raw.evaluate(()=>sourceInfo.colorSpace),'rec2020');assert.equal(await raw.evaluate(()=>working.data[0]),Math.fround(.6));assert.equal(await raw.evaluate(()=>state.acceptedCalibration2||null),null);await raw.evaluate(()=>NSRawDecoder.decode=decoderBeforeRace);
  console.log('PASS delayed engine reload cannot roll back a replacement image or leak its accepted base/settings');

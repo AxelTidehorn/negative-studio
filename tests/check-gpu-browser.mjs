@@ -57,7 +57,7 @@ try{
  await page.locator('#geometryTools').evaluate(e=>e.open=true);await page.locator('#rotateRight').click();await page.locator('#zoomIn').click();
  const geometry=await page.evaluate(()=>{drawCrop();const a=$('preview').getBoundingClientRect(),b=$('gpuPreview').getBoundingClientRect();return {delta:Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y),Math.abs(a.width-b.width),Math.abs(a.height-b.height)),pointer:getComputedStyle($('gpuPreview')).pointerEvents};});
  assert.ok(geometry.delta<.01);assert.equal(geometry.pointer,'none');check('GPU follows rotation/zoom/crop geometry; original canvas remains pointer target');
- await page.evaluate(()=>{state.cropConfirmed=true;});
+ await page.evaluate(()=>{state.frame={...state.frame,status:NSFrameSelection.status.confirmed};});
  const exports=await page.evaluate(async()=>{
   const captured=[];const save=downloadBlob;downloadBlob=async(blob,name)=>captured.push({name,bytes:Array.from(new Uint8Array(await blob.arrayBuffer()))});
   try{await exportTiff();await new Promise(r=>setTimeout(r,0));$('previewBackend').value='cpu';$('previewBackend').dispatchEvent(new Event('change'));await exportTiff();await new Promise(r=>setTimeout(r,0));const jpeg=await jpegBytes();return {same:captured.length===2&&JSON.stringify(captured[0].bytes)===JSON.stringify(captured[1].bytes),jpeg:[jpeg[0],jpeg[1],jpeg[jpeg.length-2],jpeg[jpeg.length-1]]};}finally{downloadBlob=save;}
@@ -69,10 +69,7 @@ try{
  await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu'&&FILMLABB_GPU.snapshot().contextLosses===1);
  await page.evaluate(()=>{gpuLossTest.restoreContext();});
  await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');check('Real WebGL context loss falls back to CPU and restoration recovers GPU');
- // Unsupported engine uses CPU and returns to GPU when Standard is selected.
- await page.locator('#advancedSettings').evaluate(el=>{el.open=true;});await selectEngine(page,'log39');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='cpu');
- await selectEngine(page,'calibrated4');await page.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
- check('Comparison engine automatically uses CPU and Standard returns to GPU');
+ assert.equal(await page.evaluate(()=>NSGpuPreview.supports({kind:'retired'})),false);
  await openSettings(page);await page.locator('#clearQueue').click();assert.equal(await page.locator('#gpuPreview').isVisible(),false);assert.equal(await page.locator('#empty').isVisible(),true);check('Clear queue removes GPU preview and releases resources');
  assert.deepEqual(errors,[]);
  // Independent mobile viewport, no-WebGL and failed color-check paths.

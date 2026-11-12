@@ -11,11 +11,8 @@ function plan(im,value,shared,analysisFrame){
  const model=NSGeometry.resolve(value,{width:im.width,height:im.height},analysisFrame);
  const options={cropExportToFrame:shared,analysisFrame},p=NSGeometry.compositionTransform(im.width,im.height,model,options);
  const bounds=NSGeometry.pixelBounds(im.width,im.height,shared?analysisFrame:null);
- const old=model.legacyCrop&&!model.legacyCrop.edited&&model.legacyCrop.analysisFrame;
- const b=old?NSGeometry.pixelBounds(im.width,im.height,old):bounds;
- const contained=b.x0>=bounds.x0&&b.y0>=bounds.y0&&b.x1<=bounds.x1&&b.y1<=bounds.y1;
- if(model.rotation.fineDegrees===0&&(model.compositionCrop===null||(old&&contained))){
-  return NSColorEngine.exportGeometry(im,old||analysisFrame,!!old||shared,model.rotation.quarterTurns*90);
+ if(model.rotation.fineDegrees===0&&model.compositionCrop===null){
+  return NSColorEngine.exportGeometry(im,analysisFrame,shared,model.rotation.quarterTurns*90);
  }
  // Serializable, copied snapshot; the worker derives the identical transform.
  return {width:p.output.width,height:p.output.height,presentation:true,bounds,
@@ -92,7 +89,7 @@ function rgba(im,prepared,g,target,y,count,packed=false,out=new Uint8ClampedArra
 }
 function tiff(im,config,g,y,count,prepared){
  // Preserve exact integer permutation, lookup order and quantization for legacy.
- if(!g.presentation)return NSPixelKernel.exportRows(im,config,g,y,count,null,false,prepared);
+ if(!g.presentation)return NSPixelKernel.exportRows(im,config,g,y,count,prepared);
  const out=new Uint16Array(g.width*count*3),q=new Float64Array(6),rgb=new Array(3),cache=cacheFor(prepared,im);
  for(let dy=0;dy<count;dy++)for(let x=0;x<g.width;x++){
   const p=sample(im,prepared,g,g,x,y+dy,undefined,q,rgb,cache),i=(dy*g.width+x)*3;

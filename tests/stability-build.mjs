@@ -5,7 +5,7 @@ fs.mkdirSync('site',{recursive:true});fs.writeFileSync('site/stale-test-sentinel
 build();assert.ok(!fs.existsSync('site/stale-test-sentinel.js'));assert.equal(readSource('site/index.html','utf8'),readSource('index.html','utf8'));
 const cache=()=>readSource('site/cache-worker.js','utf8');const initial=cache();build();assert.equal(cache(),initial,'identical build has stable cache ID');
 const assets=JSON.parse(initial.match(/const ASSETS=(\[[^;]+);/)[1]);
-for(const f of ['frame-controller.js','calibration-state.js','i18n.js','index.html','libraw/dist/libraw.wasm'])assert.ok(assets.includes('./'+f));
+for(const f of ['frame-controller.js','source-analysis.js','i18n.js','index.html','libraw/dist/libraw.wasm'])assert.ok(assets.includes('./'+f));
 for(const name of assets){if(name==='./')continue;assert.ok(fs.existsSync('site/'+name.slice(2)),name);}
 // Test the hasher with a changed source, always restoring it, including on failure.
 const source=readSource('ui-refinement.css');

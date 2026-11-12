@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-for(const n of ['core','render','fast','output','diagnostics'])await import('../src/conversion-v2/'+n+'.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2Output,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},ctx=V.capture({session:'tone',recipe:{decoder:'synthetic'}});
+for(const n of ['core','render','fast','diagnostics'])await import('../src/conversion-v2/'+n+'.js');
+await import('./helpers/v2-output-oracle.js');
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},ctx=V.capture({session:'tone',recipe:{decoder:'synthetic'}});
 const im={width:120,height:80,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(120*80*3)},rgb=[.8645,.4041,.2068];
 for(let y=0;y<im.height;y++)for(let x=0;x<im.width;x++){const d=x<110?.19+.08*x/120:1.5;im.data.set(rgb.map(v=>v*10**-d),(y*im.width+x)*3);}
 const s=V.source(im,{revision:'tone-source'}),b=V.assumed(rgb,s,ctx),k=V.compile(s,b),options={analysisArea:area},analyzed=R.analyzeWithMask(im,k,options),intent=analyzed.intent,exp=intent.analysis.exposure;

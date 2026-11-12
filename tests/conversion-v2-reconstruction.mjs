@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
-for(const n of ['core','render','fast','output','diagnostics'])await import('../src/conversion-v2/'+n+'.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2Output;
+for(const n of ['core','render','fast','diagnostics'])await import('../src/conversion-v2/'+n+'.js');
+await import('./helpers/v2-output-oracle.js');
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle;
 const im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(48*36*3)},rgb=[.82,.43,.21];
 let seed=71;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};
 for(let i=0;i<im.data.length;i++)im.data[i]=rgb[i%3]*10**(-.08-1.5*random());

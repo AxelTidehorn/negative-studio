@@ -2,7 +2,7 @@ import {readSource} from './helpers/source.mjs';
 import assert from 'node:assert/strict';import vm from 'node:vm';
 import {harness} from './helpers/app-harness.mjs';
 const h=harness(),P=h.context.NSPresentation,E=h.context.NSExportPlan,G=h.context.NSGeometry,K=h.context.NSPixelKernel;
-h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),cropConfirmed:true};sourceInfo={encoding:'linear'};cropRegion={x:0,y:0,w:1,h:1};working={width:13,height:11,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:13*11*3},(_,i)=>1000+(i*173)%52000)};workingPreview=CE.preview(working);analyzeLevels();`);
+h.run(`render=()=>{};scheduleRender=()=>{};state={...defaultState(),frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed})};sourceInfo={encoding:'linear'};applyFrameSelection(NSFrameSelection.rectangular({x:0,y:0,w:1,h:1},{status:NSFrameSelection.status.confirmed}));working={width:13,height:11,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:13*11*3},(_,i)=>1000+(i*173)%52000)};workingPreview=CE.preview(working);analyzeLevels();`);
 const config=JSON.parse(h.run('JSON.stringify(configuration38())'));
 async function worker(im,g,target,corrupt=false,legacy={},colorConfig=config){
  const messages=[],stripes=[];let allocations=0;
@@ -49,20 +49,19 @@ for(const colorMode4 of ['original','robust'])for(const fine of [0,2]){
 const im=h.run('working'),model=G.create();model.rotation.fineDegrees=2;const g=P.plan(im,model,false,null);await worker(im,g,g,true);
 console.log('PASS',cases,'actual JPEG-worker protocol cases match main pre-encode pixels, including flat-field, resized geometry and stripe seams; malformed stripe rejected');
 // Application TIFF and active fallback canvases share geometry, color, and 16-bit data.
-h.run(`roll=[{file:{name:'synthetic.tif'},settings:{...state},crop:{...cropRegion},selected:true,geometry:NSGeometry.create()}];activeFrame=0;roll[0].geometry.rotation.fineDegrees=2;downloadBlob=b=>globalThis.tiffBlob=b;`);
-const before=h.run('JSON.stringify({state,calibration,base,cropRegion,sharedResponse4,analyses:analysisCount38})');
+h.run(`roll=[{file:{name:'synthetic.tif'},settings:{...state},selected:true,geometry:NSGeometry.create()}];activeFrame=0;roll[0].geometry.rotation.fineDegrees=2;downloadBlob=b=>globalThis.tiffBlob=b;`);
+const before=h.run('JSON.stringify({state,calibration,region:frameRegion(),sharedResponse4,analyses:analysisCount38})');
 await h.run('exportTiff()');h.set('__bytes',await h.context.tiffBlob.arrayBuffer());
 const decoded=await h.run('NSTiff.decode(__bytes)'),snapshot=h.run('exportGeometrySnapshot(working).g'),prepared=K.prepare(im,config);
 assert.equal(decoded.width,snapshot.width);assert.equal(decoded.height,snapshot.height);
 assert.deepEqual(Array.from(decoded.data),Array.from(P.tiff(im,config,snapshot,0,snapshot.height,prepared)));
-assert.equal(h.run('JSON.stringify({state,calibration,base,cropRegion,sharedResponse4,analyses:analysisCount38})'),before);
+assert.equal(h.run('JSON.stringify({state,calibration,region:frameRegion(),sharedResponse4,analyses:analysisCount38})'),before);
 // Capture each canvas stripe before encoding (harness canvas normally keeps only last).
 const create=h.context.document.createElement,captured=[];
 h.context.document.createElement=tag=>{const el=create(tag);if(tag==='canvas'){const get=el.getContext.bind(el);el.getContext=()=>{const cx=get();cx.putImageData=(out,x,y)=>captured.push({y,data:out.data});return cx;};}return el;};
 const safe=await h.run('makeSafeJpegExportCanvas(12000000,{im:working,g:exportGeometrySnapshot(working).g,pixels:NSPixelKernel.prepare(working,configuration38())})');
 const expected=P.rgba(im,prepared,snapshot,snapshot,0,snapshot.height),out=new Uint8ClampedArray(expected.length);for(const s of captured)out.set(s.data,s.y*snapshot.width*4);assert.deepEqual(out,expected);assert.equal(safe.width,snapshot.width);
-captured.length=0;h.run('makeExportCanvas()');out.fill(0);for(const s of captured)out.set(s.data,s.y*snapshot.width*4);assert.deepEqual(out,expected);
-console.log('PASS application 16-bit TIFF, safe JPEG canvas and synchronous fallback use identical presentation plan; export leaves analysis/calibration/preview state unchanged');
+console.log('PASS application 16-bit TIFF, safe JPEG canvas and active fallback use identical presentation plan; export leaves analysis/calibration/preview state unchanged');
 
 // A later internal geometry edit must not change an in-flight TIFF snapshot.
 await h.run('exportTiff()');const frozenBytes=new Uint8Array(await h.context.tiffBlob.arrayBuffer());
@@ -83,8 +82,8 @@ console.log('PASS legacy JPEG pixels preserve the old full/cropped quarter-turn 
 // Exercise the existing batch/error owner with real presentation TIFF sampling.
 vm.runInContext(readSource('export-controller.js','utf8'),h.context);
 h.context.DOMException=DOMException;
-h.run(`roll.push({file:{name:'failed.tif'},settings:{...state},crop:{...cropRegion},geometry:NSGeometry.create(),selected:true});roll[1].geometry.rotation.fineDegrees=2;
- chooseFrame=async i=>{activeFrame=i;state={...roll[i].settings};cropRegion={...roll[i].crop};};
+h.run(`roll.push({file:{name:'failed.tif'},settings:{...state},geometry:NSGeometry.create(),selected:true});roll[1].geometry.rotation.fineDegrees=2;
+ chooseFrame=async i=>{activeFrame=i;state={...roll[i].settings};};
  globalThis.batchDownloads=[];downloadBlob=(blob,name)=>batchDownloads.push(name);
  globalThis.savedPrepare=NSPixelKernel.prepare;NSPixelKernel.prepare=(im,c)=>{if(activeFrame===1)return {pixel(){throw Error('synthetic neighbor failure');}};return savedPrepare(im,c);};`);
 await h.elements.get('batchTiff').onclick();

@@ -6,51 +6,20 @@ let baseFeedbackFrame2=null,baseFeedback2=null,loupeSource2=null,loupeKey2=null,
 function capture2(){return FB2.context({...working,linearGain4:hires?.linearGain4},sourceInfo,state,currentLight(),working.flatField||null);}
 function accepted2(){const a=state.useRollBase2?sharedBase2:state.acceptedCalibration2;return FB2.valid(a)&&FB2.compatible(a.context,capture2())?a:null;}
 function effectiveProposal2(){return previewBase2&&proposal2&&proposal2.revision===revision2&&FB2.compatible(proposal2.context,capture2())?proposal2:null;}
-const oldBase2=calibrationBase;
-calibrationBase=function(){if(state.filmBaseVersion!==2||!working)return oldBase2();const p=effectiveProposal2(),a=accepted2();return p?p.measurement:a?.measurement||null;};
-const oldEnsureConversion2=ensureConversion3Calibration;
-ensureConversion3Calibration=function(){const a=state.filmBaseVersion===2&&working?accepted2():null;return a?.responseLocked&&!effectiveProposal2()&&a.adapters.conversions?.[state.engine]?FB2.clone(a.adapters.conversions[state.engine]):oldEnsureConversion2();};
-const oldFindBase2=CE.findBase;
-CE.findBase=function(...args){return state.filmBaseVersion===2?null:oldFindBase2(...args);};
-const oldExplicit2=explicitBase4;
-explicitBase4=function(){return state.filmBaseVersion===2?calibrationBase()?.measured:oldExplicit2();};
-const oldResponse2=response4;
-response4=function(){if(state.filmBaseVersion!==2||!working)return oldResponse2();const a=accepted2();return a?(a.responseLocked?a.response:oldResponse2()):null;};
-function adapters2(){
- const comparison=NSColorAnalysis.analyze(working,cropRegion),measurement=calibrationBase(),b=measurement?.measured||base.map(v=>v/255),light=currentLight();
- const conversions={};for(const engine of NSConversion3.ids)conversions[engine]=NSConversion3.analyze(working,cropRegion,{comparison,base:b,light,noBase:!!state.noBase,domain:sourceInfo.domain||sourceInfo.encoding});
- return {version:2,comparison,legacy:FB2.clone(legacyLevels),conversions};
-}
-const oldAnalyze2=analyzeLevels;
-analyzeLevels=function(){
- const result=oldAnalyze2();
- if(state.filmBaseVersion!==2||!working||!calibration)return result;
- calibration.sceneAnalysis2={version:2,sourceRevision:sourceVersion38,region:CE.rect(cropRegion),statistics:FB2.clone(calibration.log39)};
- const a=accepted2();
- if(a&&!effectiveProposal2()){
-  // Scene tone may change. Technical channel offsets/slopes remain the accepted snapshot.
-  if(a.responseLocked&&a.adapters.comparison)calibration.log39=FB2.clone(a.adapters.comparison);
-  if(a.responseLocked&&a.adapters.legacy){legacyLevels=FB2.clone(a.adapters.legacy);beta3Levels=legacyLevels;levels=legacyLevels;}
-  if(NSConversion3.is(state.engine)&&a.responseLocked&&a.adapters.conversions?.[state.engine])calibration.conversion3=FB2.clone(a.adapters.conversions[state.engine]);
- }
- config38=null;technicalCache38=null;updateBasePanel2();saveCurrentFrame();return result;
-};
-const oldConfig2=configuration38;
-configuration38=function(...args){const c=oldConfig2(...args);return state.filmBaseVersion===2?FB2.clone(c):c;};
 function setProposal2(measurement){
  previewBase2=false;++revision2;proposal2=FB2.proposal(measurement,capture2(),revision2);baseRegion2=measurement.region||null;updateBasePanel2();drawBaseRegion2();
 }
 async function detectBase2(){
  if(!working||exportBusy||rollLoading)return;
  const refreshV2=state.engine==='v2'&&(state.filmBaseVersion!==2||previewBase2);
- state.filmBaseVersion=2;previewBase2=false;const revision=++revision2,source=working,context=capture2(),region=CE.rect(cropRegion);$('base2Status').textContent='Söker homogena regioner i negativets källvärden…';
+ state.filmBaseVersion=2;previewBase2=false;const revision=++revision2,source=working,context=capture2(),region=CE.rect(frameRegion());$('base2Status').textContent='Söker homogena regioner i negativets källvärden…';
  // V2 must stop using an unapproved automatic base immediately, including
  // when a previous proposal preview is replaced by a new search.
  if(refreshV2){analyzeLevels();render();}
  // Yield before bounded sampling. Source/revision guards reject stale image and cancelled work.
  await new Promise(r=>setTimeout(r,0));
  if(revision!==revision2||source!==working)return;
- const measurement=await FM2.detectAsync(source,region,()=>revision===revision2&&source===working&&JSON.stringify(region)===JSON.stringify(CE.rect(cropRegion)));
+ const measurement=await FM2.detectAsync(source,region,()=>revision===revision2&&source===working&&JSON.stringify(region)===JSON.stringify(CE.rect(frameRegion())));
  if(!measurement)return;
  if(revision!==revision2||source!==working||!FB2.compatible(context,capture2()))return;
  autoProposal2=FB2.proposal(measurement,context,revision);proposal2=autoProposal2;baseRegion2=measurement.region||null;updateBasePanel2();drawBaseRegion2();saveCurrentFrame();
@@ -73,10 +42,11 @@ function updateBasePanel2(){
  $('base2Stats').textContent=m?.measured?`Linjär RGB (${m.domain}): ${m.measured.map(v=>v.toFixed(5)).join(' / ')} · median · MAD ${m.mad.map(v=>v.toFixed(5)).join(' / ')} · spridning ${m.spread.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · ${m.samples} prov · klippning ${m.clipped.map(v=>(v*100).toFixed(1)+' %').join(' / ')} · låg signal ${m.dark.map(v=>(v*100).toFixed(1)+' %').join(' / ')}`:'';
  const auto=autoProposal2?.measurement;$('base2Compare').textContent=auto?.measured&&m?.measured?'Automatisk RGB: '+auto.measured.map(v=>v.toFixed(5)).join(' / ')+' · skillnad från aktivt prov: '+m.measured.map((v,c)=>(v-auto.measured[c]).toFixed(5)).join(' / '):'';
 }
-function endBaseTool2(){
+function endBaseTool2({redraw=true}={}){
+ const previousDisplay=baseDisplay2;baseDisplay2=null;
  cancelBaseFeedback2();loupeSource2=null;loupeKey2=null;baseTool2=false;baseDrag2=null;drawBaseRegion2();$('base2Loupe').hidden=true;
  if(globalThis.FILMLABB_GEOMETRY?.mode()==='base')FILMLABB_GEOMETRY.setTool(null);
- if(baseDisplay2){const old=baseDisplay2;baseDisplay2=null;$(old==='negative'?'tabNeg':old==='split'?'tabSplit':'tabPos').click();}
+ if(previousDisplay)setDisplay(previousDisplay,{redraw});
  $('base2Region').textContent='Rita / flytta provområde';
 }
 function cancelProposal2(){const restore=previewBase2;previewBase2=false;proposal2=null;++revision2;endBaseTool2();if(restore&&working)analyzeLevels();updateBasePanel2();if(working)render();}
@@ -88,10 +58,9 @@ function acceptBase2(){
   if(proposal2.measurement.status==='missing')throw Error('Välj ett tillförlitligt prov.');
   const saved=state.acceptedCalibration2||null;
   previewBase2=true;analyzeLevels();
-  const adapters=adapters2(),b=proposal2.measurement.measured;
-  const response=previous?.responseLocked&&previous.response?previous.response:CC4.estimate(working,cropRegion,{base:b,light:[1,1,1],domain:domain4()});response.hasBase=true;
-  if(previous?.responseLocked){adapters.comparison=FB2.clone(previous.adapters.comparison);adapters.legacy=FB2.clone(previous.adapters.legacy);adapters.conversions=FB2.clone(previous.adapters.conversions);for(const model of Object.values(adapters.conversions))model.reference.base=[...b];}
-  const accepted=FB2.accept(proposal2,capture2(),previous,adapters,response);undoBase2={accepted:saved,useRoll:!!state.useRollBase2};state.acceptedCalibration2=accepted;state.useRollBase2=false;state.response4=FB2.clone(response);
+  const b=proposal2.measurement.measured;
+  const response=previous?.responseLocked&&previous.response?previous.response:CC4.estimate(working,frameRegion(),{base:b,light:[1,1,1],domain:domain4()});response.hasBase=true;
+  const accepted=FB2.accept(proposal2,capture2(),previous,response);undoBase2={accepted:saved,useRoll:!!state.useRollBase2};state.acceptedCalibration2=accepted;state.useRollBase2=false;state.response4=FB2.clone(response);
   state.noBase=false;previewBase2=false;proposal2=null;endBaseTool2();analyzeLevels();saveCurrentFrame();render();updateBasePanel2();
  }catch(e){previewBase2=false;if(working)analyzeLevels();setStatus(e.message);}
 }
@@ -184,9 +153,7 @@ $('picture').addEventListener('click',e=>{
  const x=Math.floor(p.x*working.width),y=Math.floor(p.y*working.height);setProposal2(FM2.measure(working,{x:Math.max(0,x-3)/working.width,y:Math.max(0,y-3)/working.height,w:Math.min(7,working.width)/working.width,h:Math.min(7,working.height)/working.height},{kind:'manual-7x7'}));sampleMode=false;$('sample').textContent='Välj filmbas med pipett';
 },true);
 const oldRecalc2=$('recalc').onclick;$('recalc').onclick=()=>state.filmBaseVersion===2?detectBase2():oldRecalc2();
-const oldFinish2=finishImport;finishImport=function(...args){++revision2;proposal2=autoProposal2=null;previewBase2=false;undoBase2=null;baseRegion2=null;const result=oldFinish2(...args);updateBasePanel2();return result;};
-const oldChoose2=chooseFrame;chooseFrame=async function(...args){if(rollLoading||exportBusy)return;cancelProposal2();undoBase2=null;autoProposal2=null;const result=await oldChoose2(...args);$('base2Session').value=state.captureSession2||'';updateBasePanel2();return result;};
-const oldClear2=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(exportBusy||rollLoading)return;cancelProposal2();autoProposal2=null;undoBase2=null;const r=oldClear2();updateBasePanel2();return r;};
+function resetBaseSession(){++revision2;previewBase2=false;proposal2=autoProposal2=null;undoBase2=null;baseRegion2=null;endBaseTool2({redraw:false});}
 const oldView2=applyView;applyView=function(...args){const r=oldView2(...args);drawBaseRegion2();return r;};
 if(typeof ResizeObserver!=='undefined')new ResizeObserver(drawBaseRegion2).observe($('picture'));
 globalThis.FILMLABB_BASE2={leaveTool:endBaseTool2,detect:detectBase2,accept:acceptBase2,cancel:cancelProposal2,refresh:drawBaseRegion2,snapshot:()=>({version:state.filmBaseVersion,proposal:proposal2?FB2.clone(proposal2):null,accepted:working&&state.filmBaseVersion===2?FB2.clone(accepted2()):null,preview:previewBase2,tool:baseTool2,revision:revision2})};

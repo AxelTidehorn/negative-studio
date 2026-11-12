@@ -1,0 +1,1711 @@
+{
+  "productionSourceCommit": "c8ac8be97a4a1ba5892b24583d91754d908893d0",
+  "dateUTC": "2026-11-12",
+  "platform": "Linux x64",
+  "physicalIPad": false,
+  "windowsEdge": false,
+  "scope": "Targeted actual browser DOM/layout/touch tests. Frame tests use real bounded Float32 sources with a controlled decoder; proof uses a synthetic RAF envelope and browser JPEG. These are not full-RAW decoder tests. The separate full RAF import records cover Chromium only.",
+  "results": [
+    {
+      "test": "frame-review-browser.mjs",
+      "engine": "webkit",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+        "layouts": [
+          {
+            "size": [
+              1440,
+              900
+            ],
+            "panel": {
+              "x": 182,
+              "y": 101,
+              "right": 1108,
+              "bottom": 894,
+              "width": 926,
+              "height": 793
+            },
+            "picture": {
+              "x": 187,
+              "y": 106,
+              "right": 1103,
+              "bottom": 769.203125,
+              "width": 916,
+              "height": 663.203125
+            },
+            "review": {
+              "x": 187,
+              "y": 774.203125,
+              "right": 1103,
+              "bottom": 818.203125,
+              "width": 916,
+              "height": 44
+            },
+            "buttons": [
+              {
+                "x": 883.90625,
+                "y": 778.203125,
+                "right": 994.28125,
+                "bottom": 814.203125,
+                "width": 110.375,
+                "height": 36
+              },
+              {
+                "x": 1000.28125,
+                "y": 778.203125,
+                "right": 1097,
+                "bottom": 814.203125,
+                "width": 96.71875,
+                "height": 36
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 384.60455322265625,
+                  "y": 133.20791625976562,
+                  "right": 428.60455322265625,
+                  "bottom": 177.20791625976562,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 930.154541015625,
+                  "y": 144.66986083984375,
+                  "right": 974.154541015625,
+                  "bottom": 188.66986083984375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 935.5077514648438,
+                  "y": 685.6082153320312,
+                  "right": 979.5077514648438,
+                  "bottom": 729.6082153320312,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 373.7669372558594,
+                  "y": 678.6729125976562,
+                  "right": 417.7669372558594,
+                  "bottom": 722.6729125976562,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              1024,
+              768
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 742,
+              "bottom": 762,
+              "width": 634,
+              "height": 661
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 737,
+              "bottom": 604.234375,
+              "width": 624,
+              "height": 498.234375
+            },
+            "review": {
+              "x": 113,
+              "y": 609.234375,
+              "right": 737,
+              "bottom": 669.40625,
+              "width": 624,
+              "height": 60.171875
+            },
+            "buttons": [
+              {
+                "x": 517.90625,
+                "y": 621.3125,
+                "right": 628.28125,
+                "bottom": 657.3125,
+                "width": 110.375,
+                "height": 36
+              },
+              {
+                "x": 634.28125,
+                "y": 621.3125,
+                "right": 731,
+                "bottom": 657.3125,
+                "width": 96.71875,
+                "height": 36
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 240.76588439941406,
+                  "y": 140.9412078857422,
+                  "right": 284.765869140625,
+                  "bottom": 184.9412078857422,
+                  "width": 43.99998474121094,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 612.0263671875,
+                  "y": 148.7413330078125,
+                  "right": 656.0263671875,
+                  "bottom": 192.7413330078125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 615.6693725585938,
+                  "y": 516.863525390625,
+                  "right": 659.6693725585938,
+                  "bottom": 560.863525390625,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 233.390625,
+                  "y": 512.1438598632812,
+                  "right": 277.390625,
+                  "bottom": 556.1438598632812,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              768,
+              1024
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 486,
+              "bottom": 1018,
+              "width": 378,
+              "height": 917
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 481,
+              "bottom": 760.125,
+              "width": 368,
+              "height": 654.125
+            },
+            "review": {
+              "x": 113,
+              "y": 765.125,
+              "right": 481,
+              "bottom": 866.609375,
+              "width": 368,
+              "height": 101.484375
+            },
+            "buttons": [
+              {
+                "x": 119,
+                "y": 822.609375,
+                "right": 229.375,
+                "bottom": 862.609375,
+                "width": 110.375,
+                "height": 40
+              },
+              {
+                "x": 235.375,
+                "y": 822.609375,
+                "right": 332.09375,
+                "bottom": 862.609375,
+                "width": 96.71875,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 179.5374755859375,
+                  "y": 297.9814453125,
+                  "right": 223.5374755859375,
+                  "bottom": 341.9814453125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 397.9962463378906,
+                  "y": 302.57122802734375,
+                  "right": 441.9962463378906,
+                  "bottom": 346.57122802734375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 400.1398620605469,
+                  "y": 519.183349609375,
+                  "right": 444.1398620605469,
+                  "bottom": 563.183349609375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 175.19769287109375,
+                  "y": 516.4061279296875,
+                  "right": 219.19769287109375,
+                  "bottom": 560.4061279296875,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              390,
+              844
+            ],
+            "panel": {
+              "x": 6,
+              "y": 144,
+              "right": 384,
+              "bottom": 633.515625,
+              "width": 378,
+              "height": 489.515625
+            },
+            "picture": {
+              "x": 13,
+              "y": 148,
+              "right": 377,
+              "bottom": 377.640625,
+              "width": 364,
+              "height": 229.640625
+            },
+            "review": {
+              "x": 13,
+              "y": 382.640625,
+              "right": 377,
+              "bottom": 484.125,
+              "width": 364,
+              "height": 101.484375
+            },
+            "buttons": [
+              {
+                "x": 19,
+                "y": 440.125,
+                "right": 129.375,
+                "bottom": 480.125,
+                "width": 110.375,
+                "height": 40
+              },
+              {
+                "x": 135.375,
+                "y": 440.125,
+                "right": 232.09375,
+                "bottom": 480.125,
+                "width": 96.71875,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 84.25005340576172,
+                  "y": 149,
+                  "right": 128.18069458007812,
+                  "bottom": 192.93064880371094,
+                  "width": 43.930641174316406,
+                  "height": 43.93064880371094
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 287.4269714355469,
+                  "y": 149,
+                  "right": 331.35760498046875,
+                  "bottom": 192.93064880371094,
+                  "width": 43.930633544921875,
+                  "height": 43.93064880371094
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 289.420654296875,
+                  "y": 332.7099914550781,
+                  "right": 333.3512878417969,
+                  "bottom": 376.640625,
+                  "width": 43.930633544921875,
+                  "height": 43.930633544921875
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 80.21385192871094,
+                  "y": 332.7099914550781,
+                  "right": 124.14450073242188,
+                  "bottom": 376.640625,
+                  "width": 43.93064880371094,
+                  "height": 43.930633544921875
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              844,
+              390
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 562,
+              "bottom": 384,
+              "width": 454,
+              "height": 283
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 557,
+              "bottom": 257.15625,
+              "width": 444,
+              "height": 151.15625
+            },
+            "review": {
+              "x": 113,
+              "y": 262.15625,
+              "right": 557,
+              "bottom": 332,
+              "width": 444,
+              "height": 69.84375
+            },
+            "buttons": [
+              {
+                "x": 119,
+                "y": 288,
+                "right": 229.375,
+                "bottom": 328,
+                "width": 110.375,
+                "height": 40
+              },
+              {
+                "x": 235.375,
+                "y": 288,
+                "right": 332.09375,
+                "bottom": 328,
+                "width": 96.71875,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 254.88687133789062,
+                  "y": 107.078125,
+                  "right": 298.8868713378906,
+                  "bottom": 151.078125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 387.8743591308594,
+                  "y": 107.078125,
+                  "right": 431.8743591308594,
+                  "bottom": 151.078125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 389.1793212890625,
+                  "y": 212.078125,
+                  "right": 433.1793212890625,
+                  "bottom": 256.078125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 252.24501037597656,
+                  "y": 212.078125,
+                  "right": 296.2449951171875,
+                  "bottom": 256.078125,
+                  "width": 43.99998474121094,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          }
+        ]
+      }
+    },
+    {
+      "test": "range-touch-browser.mjs",
+      "engine": "webkit",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+        "trusted": [],
+        "physicalIPad": false,
+        "webkitTouchDrag": "not available through Playwright; cancellation synthetic"
+      }
+    },
+    {
+      "test": "import-proof-layout-browser.mjs",
+      "engine": "webkit",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/27.2 Safari/605.1.15",
+        "measurements": [
+          {
+            "size": [
+              1440,
+              900
+            ],
+            "proof": {
+              "x": 188,
+              "y": 107,
+              "right": 1102,
+              "bottom": 817.203125,
+              "width": 914,
+              "height": 710.203125
+            },
+            "picture": {
+              "x": 187,
+              "y": 106,
+              "right": 1103,
+              "bottom": 818.203125,
+              "width": 916,
+              "height": 712.203125
+            },
+            "canvas": {
+              "x": 200,
+              "y": 163,
+              "right": 1090,
+              "bottom": 772.40625,
+              "width": 890,
+              "height": 609.40625
+            },
+            "caption": {
+              "x": 200,
+              "y": 780.40625,
+              "right": 1090,
+              "bottom": 805.203125,
+              "width": 890,
+              "height": 24.796875
+            },
+            "cancel": {
+              "x": 593.03125,
+              "y": 119,
+              "right": 696.953125,
+              "bottom": 155,
+              "width": 103.921875,
+              "height": 36
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              1024,
+              768
+            ],
+            "proof": {
+              "x": 114,
+              "y": 107,
+              "right": 736,
+              "bottom": 685.203125,
+              "width": 622,
+              "height": 578.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 737,
+              "bottom": 686.203125,
+              "width": 624,
+              "height": 580.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 163,
+              "right": 724,
+              "bottom": 640.40625,
+              "width": 598,
+              "height": 477.40625
+            },
+            "caption": {
+              "x": 126,
+              "y": 648.40625,
+              "right": 724,
+              "bottom": 673.203125,
+              "width": 598,
+              "height": 24.796875
+            },
+            "cancel": {
+              "x": 373.03125,
+              "y": 119,
+              "right": 476.953125,
+              "bottom": 155,
+              "width": 103.921875,
+              "height": 36
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              768,
+              1024
+            ],
+            "proof": {
+              "x": 114,
+              "y": 107,
+              "right": 480,
+              "bottom": 899.203125,
+              "width": 366,
+              "height": 792.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 481,
+              "bottom": 900.203125,
+              "width": 368,
+              "height": 794.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 163,
+              "right": 468,
+              "bottom": 837.609375,
+              "width": 342,
+              "height": 674.609375
+            },
+            "caption": {
+              "x": 126,
+              "y": 845.609375,
+              "right": 468,
+              "bottom": 887.203125,
+              "width": 342,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 245.03125,
+              "y": 119,
+              "right": 348.953125,
+              "bottom": 155,
+              "width": 103.921875,
+              "height": 36
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              390,
+              844
+            ],
+            "proof": {
+              "x": 14,
+              "y": 149,
+              "right": 376,
+              "bottom": 516.71875,
+              "width": 362,
+              "height": 367.71875
+            },
+            "picture": {
+              "x": 13,
+              "y": 148,
+              "right": 377,
+              "bottom": 517.71875,
+              "width": 364,
+              "height": 369.71875
+            },
+            "canvas": {
+              "x": 26,
+              "y": 205,
+              "right": 364,
+              "bottom": 455.125,
+              "width": 338,
+              "height": 250.125
+            },
+            "caption": {
+              "x": 26,
+              "y": 463.125,
+              "right": 364,
+              "bottom": 504.71875,
+              "width": 338,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 143.03125,
+              "y": 161,
+              "right": 246.953125,
+              "bottom": 197,
+              "width": 103.921875,
+              "height": 36
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              844,
+              390
+            ],
+            "proof": {
+              "x": 114,
+              "y": 107,
+              "right": 556,
+              "bottom": 265.203125,
+              "width": 442,
+              "height": 158.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 557,
+              "bottom": 266.203125,
+              "width": 444,
+              "height": 160.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 163,
+              "right": 544,
+              "bottom": 203.609375,
+              "width": 418,
+              "height": 40.609375
+            },
+            "caption": {
+              "x": 126,
+              "y": 211.609375,
+              "right": 544,
+              "bottom": 253.203125,
+              "width": 418,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 283.03125,
+              "y": 119,
+              "right": 386.953125,
+              "bottom": 155,
+              "width": 103.921875,
+              "height": 36
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          }
+        ]
+      }
+    },
+    {
+      "test": "frame-review-browser.mjs",
+      "engine": "edge",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+        "layouts": [
+          {
+            "size": [
+              1440,
+              900
+            ],
+            "panel": {
+              "x": 182,
+              "y": 101,
+              "right": 1108,
+              "bottom": 894,
+              "width": 926,
+              "height": 793
+            },
+            "picture": {
+              "x": 187,
+              "y": 106,
+              "right": 1103,
+              "bottom": 753.03125,
+              "width": 916,
+              "height": 647.03125
+            },
+            "review": {
+              "x": 187,
+              "y": 758.03125,
+              "right": 1103,
+              "bottom": 818.203125,
+              "width": 916,
+              "height": 60.171875
+            },
+            "buttons": [
+              {
+                "x": 880.265625,
+                "y": 770.109375,
+                "right": 989.640625,
+                "bottom": 806.109375,
+                "width": 109.375,
+                "height": 36
+              },
+              {
+                "x": 995.640625,
+                "y": 770.109375,
+                "right": 1097,
+                "bottom": 806.109375,
+                "width": 101.359375,
+                "height": 36
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 384.60455322265625,
+                  "y": 125.12197875976562,
+                  "right": 428.60455322265625,
+                  "bottom": 169.12197875976562,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 930.154541015625,
+                  "y": 136.58392333984375,
+                  "right": 974.154541015625,
+                  "bottom": 180.58392333984375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 935.5077514648438,
+                  "y": 677.5222778320312,
+                  "right": 979.5077514648438,
+                  "bottom": 721.5222778320312,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 373.7669372558594,
+                  "y": 670.5869750976562,
+                  "right": 417.7669372558594,
+                  "bottom": 714.5869750976562,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              1024,
+              768
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 742,
+              "bottom": 762,
+              "width": 634,
+              "height": 661
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 737,
+              "bottom": 604.234375,
+              "width": 624,
+              "height": 498.234375
+            },
+            "review": {
+              "x": 113,
+              "y": 609.234375,
+              "right": 737,
+              "bottom": 669.40625,
+              "width": 624,
+              "height": 60.171875
+            },
+            "buttons": [
+              {
+                "x": 514.265625,
+                "y": 621.3125,
+                "right": 623.640625,
+                "bottom": 657.3125,
+                "width": 109.375,
+                "height": 36
+              },
+              {
+                "x": 629.640625,
+                "y": 621.3125,
+                "right": 731,
+                "bottom": 657.3125,
+                "width": 101.359375,
+                "height": 36
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 240.76588439941406,
+                  "y": 140.9412078857422,
+                  "right": 284.765869140625,
+                  "bottom": 184.9412078857422,
+                  "width": 43.99998474121094,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 612.0263671875,
+                  "y": 148.7413330078125,
+                  "right": 656.0263671875,
+                  "bottom": 192.7413330078125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 615.6693725585938,
+                  "y": 516.863525390625,
+                  "right": 659.6693725585938,
+                  "bottom": 560.863525390625,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 233.390625,
+                  "y": 512.1438598632812,
+                  "right": 277.390625,
+                  "bottom": 556.1438598632812,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              768,
+              1024
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 486,
+              "bottom": 1018,
+              "width": 378,
+              "height": 917
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 481,
+              "bottom": 760.125,
+              "width": 368,
+              "height": 654.125
+            },
+            "review": {
+              "x": 113,
+              "y": 765.125,
+              "right": 481,
+              "bottom": 866.609375,
+              "width": 368,
+              "height": 101.484375
+            },
+            "buttons": [
+              {
+                "x": 119,
+                "y": 822.609375,
+                "right": 228.375,
+                "bottom": 862.609375,
+                "width": 109.375,
+                "height": 40
+              },
+              {
+                "x": 234.375,
+                "y": 822.609375,
+                "right": 335.734375,
+                "bottom": 862.609375,
+                "width": 101.359375,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 179.5374755859375,
+                  "y": 297.9814453125,
+                  "right": 223.5374755859375,
+                  "bottom": 341.9814453125,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 397.9962463378906,
+                  "y": 302.57122802734375,
+                  "right": 441.9962463378906,
+                  "bottom": 346.57122802734375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 400.1398620605469,
+                  "y": 519.183349609375,
+                  "right": 444.1398620605469,
+                  "bottom": 563.183349609375,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 175.19769287109375,
+                  "y": 516.4061279296875,
+                  "right": 219.19769287109375,
+                  "bottom": 560.4061279296875,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              390,
+              844
+            ],
+            "panel": {
+              "x": 6,
+              "y": 144,
+              "right": 384,
+              "bottom": 633.515625,
+              "width": 378,
+              "height": 489.515625
+            },
+            "picture": {
+              "x": 13,
+              "y": 148,
+              "right": 377,
+              "bottom": 377.640625,
+              "width": 364,
+              "height": 229.640625
+            },
+            "review": {
+              "x": 13,
+              "y": 382.640625,
+              "right": 377,
+              "bottom": 484.125,
+              "width": 364,
+              "height": 101.484375
+            },
+            "buttons": [
+              {
+                "x": 19,
+                "y": 440.125,
+                "right": 128.375,
+                "bottom": 480.125,
+                "width": 109.375,
+                "height": 40
+              },
+              {
+                "x": 134.375,
+                "y": 440.125,
+                "right": 235.734375,
+                "bottom": 480.125,
+                "width": 101.359375,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 84.25005340576172,
+                  "y": 149,
+                  "right": 128.18069458007812,
+                  "bottom": 192.93064880371094,
+                  "width": 43.930641174316406,
+                  "height": 43.93064880371094
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 287.4269714355469,
+                  "y": 149,
+                  "right": 331.35760498046875,
+                  "bottom": 192.93064880371094,
+                  "width": 43.930633544921875,
+                  "height": 43.93064880371094
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 289.420654296875,
+                  "y": 332.7099609375,
+                  "right": 333.3512878417969,
+                  "bottom": 376.640625,
+                  "width": 43.930633544921875,
+                  "height": 43.9306640625
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 80.21385192871094,
+                  "y": 332.7099609375,
+                  "right": 124.14450073242188,
+                  "bottom": 376.640625,
+                  "width": 43.93064880371094,
+                  "height": 43.9306640625
+                }
+              }
+            ],
+            "overflow": false
+          },
+          {
+            "size": [
+              844,
+              390
+            ],
+            "panel": {
+              "x": 108,
+              "y": 101,
+              "right": 562,
+              "bottom": 384,
+              "width": 454,
+              "height": 283
+            },
+            "picture": {
+              "x": 113,
+              "y": 106,
+              "right": 557,
+              "bottom": 242.3125,
+              "width": 444,
+              "height": 136.3125
+            },
+            "review": {
+              "x": 113,
+              "y": 247.3125,
+              "right": 557,
+              "bottom": 332,
+              "width": 444,
+              "height": 84.6875
+            },
+            "buttons": [
+              {
+                "x": 119,
+                "y": 288,
+                "right": 228.375,
+                "bottom": 328,
+                "width": 109.375,
+                "height": 40
+              },
+              {
+                "x": 234.375,
+                "y": 288,
+                "right": 335.734375,
+                "bottom": 328,
+                "width": 101.359375,
+                "height": 40
+              }
+            ],
+            "handles": [
+              {
+                "r": 22,
+                "rect": {
+                  "x": 260.7371826171875,
+                  "y": 107.15625,
+                  "right": 304.7371826171875,
+                  "bottom": 151.15625,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 380.336669921875,
+                  "y": 107.15625,
+                  "right": 424.336669921875,
+                  "bottom": 151.15625,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 381.51025390625,
+                  "y": 197.15625,
+                  "right": 425.51025390625,
+                  "bottom": 241.15625,
+                  "width": 44,
+                  "height": 44
+                }
+              },
+              {
+                "r": 22,
+                "rect": {
+                  "x": 258.36126708984375,
+                  "y": 197.15625,
+                  "right": 302.36126708984375,
+                  "bottom": 241.15625,
+                  "width": 44,
+                  "height": 44
+                }
+              }
+            ],
+            "overflow": false
+          }
+        ]
+      }
+    },
+    {
+      "test": "range-touch-browser.mjs",
+      "engine": "edge",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+        "trusted": [
+          {
+            "mode": "drag",
+            "before": "692",
+            "after": "692",
+            "active": null
+          },
+          {
+            "mode": "double-tap",
+            "before": "500",
+            "after": "500",
+            "active": null
+          },
+          {
+            "mode": "precise-saved-value",
+            "before": "531",
+            "after": "531",
+            "active": null
+          }
+        ],
+        "physicalIPad": false
+      }
+    },
+    {
+      "test": "import-proof-layout-browser.mjs",
+      "engine": "edge",
+      "status": "pass",
+      "result": {
+        "browser": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36 Edg/157.0.0.0",
+        "measurements": [
+          {
+            "size": [
+              1440,
+              900
+            ],
+            "proof": {
+              "x": 188,
+              "y": 100,
+              "right": 1102,
+              "bottom": 825.203125,
+              "width": 914,
+              "height": 725.203125
+            },
+            "picture": {
+              "x": 187,
+              "y": 99,
+              "right": 1103,
+              "bottom": 826.203125,
+              "width": 916,
+              "height": 727.203125
+            },
+            "canvas": {
+              "x": 200,
+              "y": 148,
+              "right": 1090,
+              "bottom": 780.40625,
+              "width": 890,
+              "height": 632.40625
+            },
+            "caption": {
+              "x": 200,
+              "y": 788.40625,
+              "right": 1090,
+              "bottom": 813.203125,
+              "width": 890,
+              "height": 24.796875
+            },
+            "cancel": {
+              "x": 592.359375,
+              "y": 112,
+              "right": 697.640625,
+              "bottom": 140,
+              "width": 105.28125,
+              "height": 28
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              1024,
+              768
+            ],
+            "proof": {
+              "x": 114,
+              "y": 100,
+              "right": 736,
+              "bottom": 825.203125,
+              "width": 622,
+              "height": 725.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 99,
+              "right": 737,
+              "bottom": 826.203125,
+              "width": 624,
+              "height": 727.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 148,
+              "right": 724,
+              "bottom": 780.40625,
+              "width": 598,
+              "height": 632.40625
+            },
+            "caption": {
+              "x": 126,
+              "y": 788.40625,
+              "right": 724,
+              "bottom": 813.203125,
+              "width": 598,
+              "height": 24.796875
+            },
+            "cancel": {
+              "x": 372.359375,
+              "y": 112,
+              "right": 477.640625,
+              "bottom": 140,
+              "width": 105.28125,
+              "height": 28
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              768,
+              1024
+            ],
+            "proof": {
+              "x": 114,
+              "y": 100,
+              "right": 480,
+              "bottom": 915.203125,
+              "width": 366,
+              "height": 815.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 99,
+              "right": 481,
+              "bottom": 916.203125,
+              "width": 368,
+              "height": 817.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 148,
+              "right": 468,
+              "bottom": 853.609375,
+              "width": 342,
+              "height": 705.609375
+            },
+            "caption": {
+              "x": 126,
+              "y": 861.609375,
+              "right": 468,
+              "bottom": 903.203125,
+              "width": 342,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 244.359375,
+              "y": 112,
+              "right": 349.640625,
+              "bottom": 140,
+              "width": 105.28125,
+              "height": 28
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              390,
+              844
+            ],
+            "proof": {
+              "x": 14,
+              "y": 133,
+              "right": 376,
+              "bottom": 500.71875,
+              "width": 362,
+              "height": 367.71875
+            },
+            "picture": {
+              "x": 13,
+              "y": 132,
+              "right": 377,
+              "bottom": 501.71875,
+              "width": 364,
+              "height": 369.71875
+            },
+            "canvas": {
+              "x": 26,
+              "y": 181,
+              "right": 364,
+              "bottom": 439.125,
+              "width": 338,
+              "height": 258.125
+            },
+            "caption": {
+              "x": 26,
+              "y": 447.125,
+              "right": 364,
+              "bottom": 488.71875,
+              "width": 338,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 142.359375,
+              "y": 145,
+              "right": 247.640625,
+              "bottom": 173,
+              "width": 105.28125,
+              "height": 28
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          },
+          {
+            "size": [
+              844,
+              390
+            ],
+            "proof": {
+              "x": 114,
+              "y": 100,
+              "right": 556,
+              "bottom": 281.203125,
+              "width": 442,
+              "height": 181.203125
+            },
+            "picture": {
+              "x": 113,
+              "y": 99,
+              "right": 557,
+              "bottom": 282.203125,
+              "width": 444,
+              "height": 183.203125
+            },
+            "canvas": {
+              "x": 126,
+              "y": 148,
+              "right": 544,
+              "bottom": 219.609375,
+              "width": 418,
+              "height": 71.609375
+            },
+            "caption": {
+              "x": 126,
+              "y": 227.609375,
+              "right": 544,
+              "bottom": 269.203125,
+              "width": 418,
+              "height": 41.59375
+            },
+            "cancel": {
+              "x": 282.359375,
+              "y": 112,
+              "right": 387.640625,
+              "bottom": 140,
+              "width": 105.28125,
+              "height": 28
+            },
+            "position": "absolute",
+            "transform": "none",
+            "fit": "contain",
+            "loading": "hidden",
+            "tools": "hidden",
+            "basePixel": [
+              0,
+              0,
+              0
+            ],
+            "subjectPixel": [
+              188,
+              191,
+              189
+            ],
+            "source": null,
+            "exportDisabled": true,
+            "kind": "approximate-positive"
+          }
+        ]
+      }
+    },
+    {
+      "test": "film-base2-performance-browser.mjs",
+      "engine": "chromium",
+      "status": "pass",
+      "fixture": "Confirmed frame, reduced motion, actual captured native pointer ID; no color/geometry precision assertions relaxed.",
+      "result": {
+        "environment": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/156.0.0.0 Safari/537.36",
+        "pointerId": 1,
+        "source": {
+          "width": 3000,
+          "height": 2000,
+          "encoding": "linear"
+        },
+        "events": 96,
+        "releaseMatches": true,
+        "loupeMatches": true,
+        "finalProvisional": false,
+        "measureCalls": 13,
+        "loupeCalls": 13,
+        "sourceReads": 11197,
+        "dispatchMedianMs": 4.899999999906868,
+        "dispatchP95Ms": 9,
+        "frameMedianMs": 16.899999999906868,
+        "frameP95Ms": 29.100000000093132,
+        "measureMedianMs": 1.2000000001862645,
+        "measureP95Ms": 3.6000000000931323,
+        "loupeMedianMs": 0.39999999990686774,
+        "loupeP95Ms": 1.6000000000931323,
+        "finalMatches": true
+      }
+    }
+  ]
+}

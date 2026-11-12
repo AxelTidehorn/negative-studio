@@ -1,3 +1,5 @@
+> **Historisk verifieringsrapport för PR #97.** Användarflödet och pekskydden består. Tillståndsmodellen har sedan samlats i `settings.frame`; aktuellt projektformat och ägarskap beskrivs i [arkitekturen](../ARCHITECTURE.md) och [konsolideringen](../consolidation/README.md).
+
 # Filmrutehantering 2.0 och reglage på pekskärm
 
 Utgångspunkt: `460177d` på main, efter mergad PR #96. Detektorns algoritm,

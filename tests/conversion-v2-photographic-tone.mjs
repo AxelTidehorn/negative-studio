@@ -1,4 +1,4 @@
-import assert from 'node:assert/strict';for(const n of ['core','render','fast','output'])await import('../src/conversion-v2/'+n+'.js');
+import assert from 'node:assert/strict';for(const n of ['core','render','fast'])await import('../src/conversion-v2/'+n+'.js');
 const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,im={width:32,height:24,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(32*24*3)};
 for(let i=0;i<im.data.length;i++)im.data[i]=[.8,.4,.2][i%3]*10**(-.1-(i%97)/40);
 const s=V.source(im,{revision:'photo'}),b=V.assumed([.8,.4,.2],s,V.capture({session:'test',recipe:{decoder:'fixture'}})),k=V.compile(s,b,V.latestPrior),area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},neutral=R.analyze(im,k,{analysisArea:area,algorithmVersion:3}),photo=R.photographic(neutral),f=F.compile(k,photo),out=new Float64Array(3);

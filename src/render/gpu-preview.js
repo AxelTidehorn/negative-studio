@@ -19,7 +19,7 @@
   info.textContent=backend==='gpu'?'GPU-prototyp aktiv · export använder CPU':reason||'CPU-förhandsvisning aktiv';
  }
  function syncView(){
-  const visible=active&&!!workingPreview&&!!src&&!baseCanvas.classList.contains('hidden');
+  const visible=active&&!!workingPreview&&!!working&&!baseCanvas.classList.contains('hidden');
   canvas.classList.toggle('hidden',!visible);
   // Keep the original canvas as the pointer target for all existing eyedroppers.
   const opacity=visible?'0':'';if(baseCanvas.style.opacity!==opacity)baseCanvas.style.opacity=opacity;
@@ -82,7 +82,7 @@
    // Engine switches can replace the bounded source without a new import. Do
    // not retain the previous negative texture beside the new V2 positive.
    if((lastSource&&lastSource!==workingPreview)||(lastVersion>=0&&lastVersion!==sourceVersion38)){stopHistogram();renderer.releaseSource();metrics.positiveCacheBytes=0;NSPixelKernel.clearV2Positive();lastSource=null;lastVersion=-1;}
-   const key=config.kind==='v2'?JSON.stringify([NSV2GpuMath.version,sourceVersion38,NSPixelKernel.v2PreviewKey(workingPreview,config),NSEditing2.version(config.opts.editVersion)]):JSON.stringify([config.kind,config.conversion3?.revision,config.look,config.monochrome,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
+   const key=config.kind==='v2'?JSON.stringify([NSV2GpuMath.version,sourceVersion38,NSPixelKernel.v2PreviewKey(workingPreview,config),NSEditing2.version(config.opts.editVersion)]):JSON.stringify([config.kind,config.look,config.monochrome,sourceVersion38,NSEditing2.version(config.opts.editVersion)]);
    if(validationKey!==key){metrics.validationError=renderer.validate(config);if(config.kind==='v2')metrics.validationError=Math.max(metrics.validationError,renderer.validate({...config,look:{id:'neutral',strength:0},monochrome:false,opts:{...config.opts,exposure:1.3,contrast:1.4,saturation:1.4,vibrance:60}}));validationKey=key;}
    if(!active){stopPreviewWork();clearTimeout(previewTick38);clearTimeout(dragTimer38);previewTick38=dragTimer38=null;}
    const ms=renderer.metrics.gpuMs;

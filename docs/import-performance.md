@@ -180,3 +180,7 @@ Kvar: LibRaws långa demosaic/imageData, kall GPU-start, andra kameror/enheter,
 total processminnesprofilering och eventuell framtida minnesbudgeterad
 inaktiv cache. Ingen half-size-kompromiss, ny konverteringsmotor, automatisk
 merge eller deployment införs.
+
+## Architecture consolidation
+
+Only V2/D and Standard remain. RAW/TIFF import no longer builds two extra RGBA camera/legacy-preview buffers; the authoritative linear source and bounded Float32 working preview are retained. The active file/re-cipe cache, worker cancellation and labelled approximate RAF preview are unchanged. Device-local image recipes and older project migration are removed; current project metadata carries the confirmed frame/reference state. See [current architecture](ARCHITECTURE.md) and [measurements](consolidation/README.md).

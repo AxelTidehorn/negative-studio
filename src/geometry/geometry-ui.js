@@ -11,14 +11,14 @@
  const handles=document.createElementNS(ns,'svg');handles.id='geometryHandles';handles.setAttribute('aria-hidden','true');picture.append(handles);
  let presenter=null,failed=false,cpuImage=null,negativeImage=null,colorSource=null,colorSize=null,colorVersion=-1,colorRenderId=null,colorConfigKey=null,mode=null,drag=null,lineStart=null,lineEnd=null,scheduled=null,grid=false,cpuLimit=480,cpuIdle=null,overlayKey=null,viewportMotion=null;
  // New rolls start with the entire exposed frame; imported projects keep their explicit choice.
- if(!roll.length){rollShared.cropExportToFrame=true;state.cropExport=true;}
+ if(!roll.length){rollShared.cropExportToFrame=true;}
  const metrics={draws:0,colorUploads:0,cpuPasses:0,lastMs:0,lastError:null};
  try{grid=localStorage.getItem('filmlabb-thirds')==='true';}catch{}$('thirdsGrid').checked=grid;
  function busy(){return !working||rollLoading||exportBusy||rollingExport;}
- function current(){const f=roll[activeFrame];return f?geometryForFrame(f,state,cropRegion):NSGeometry.create(state.rotation||0);}
+ function current(){const f=roll[activeFrame];return f?geometryForFrame(f,state,frameRegion()):NSGeometry.create(state.rotation||0);}
  function plan(context=!!mode){
   if(!working)return null;const g=current(),W=working.width,H=working.height;
-  const p=context?NSGeometry.contextTransform(W,H,g):NSGeometry.compositionTransform(W,H,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion});
+  const p=context?NSGeometry.contextTransform(W,H,g):NSGeometry.compositionTransform(W,H,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()});
   return {...p,sourceWidth:W,sourceHeight:H,model:g};
  }
  function layout(p){
@@ -43,10 +43,10 @@
  function points(ps){return ps.map(p=>p.x+','+p.y).join(' ');}
  function rectPoints(p,crop){const L=Math.max(working.width,working.height),t=NSGeometry.transform(working.width,working.height,p.model.rotation);return [[-1,-1],[1,-1],[1,1],[-1,1]].map(([x,y])=>t.inverse({x:(crop.cx+x*crop.w/2)*L,y:(crop.cy+y*crop.h/2)*L}));}
  function drawOverlay(p,v){
-  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,cropRegion,state.frameSelection,state.frameDetection,state.cropVisible,state.cropLocked,rollShared.cropExportToFrame,lineStart,lineEnd]);
+  const key=JSON.stringify([sourceVersion38,p.area,p.model,mode,grid,v.width,v.height,v.scale,v.ox,v.oy,frameRegion(),state.frame,state.cropVisible,state.frame?.locked,rollShared.cropExportToFrame,lineStart,lineEnd]);
   if(key===overlayKey)return;overlayKey=key;
   handles.replaceChildren();handles.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);overlay.replaceChildren();overlay.setAttribute('viewBox',`0 0 ${v.width} ${v.height}`);
-  const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
+  const effective=NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop;
   const corners=rectPoints(p,effective).map(s=>v.toView(s));
   if(grid){for(const f of [1/3,2/3]){const lerp=(a,b)=>({x:a.x+(b.x-a.x)*f,y:a.y+(b.y-a.y)*f});for(const [a,b]of [[lerp(corners[0],corners[1]),lerp(corners[3],corners[2])],[lerp(corners[0],corners[3]),lerp(corners[1],corners[2])]])svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'grid-line');}}
   if(mode==='frame'&&state.cropVisible!==false){
@@ -55,7 +55,7 @@
    let topEdge=0,bestAlignment=-Infinity;
    for(let start=0;start<4;start++){let alignment=0;for(let j=0;j<4;j++){const a=quad[(start+j)%4],b=quad[(start+j+1)%4],dx=(b.x-a.x)*W,dy=(b.y-a.y)*H,l=Math.hypot(dx,dy),axis=[[0,-1],[1,0],[0,1],[-1,0]][j];alignment+=(dy*axis[0]-dx*axis[1])/l;}if(alignment>bestAlignment){topEdge=start;bestAlignment=alignment;}}
    svg('polygon',{points:points(framePoints),...(s.status==='pending'?{'stroke-dasharray':'6 4'}:{})},'frame-line');
-   if(!state.cropLocked){
+   if(!state.frame?.locked){
     for(const [j,side]of ['top','right','bottom','left'].entries()){const a=(topEdge+j)%4,b=(a+1)%4;svg('line',{x1:framePoints[a].x,y1:framePoints[a].y,x2:framePoints[b].x,y2:framePoints[b].y,'data-side':side,'data-frame-edge':a},'hit');}
     for(let i=0;i<4;i++){const cx=edgeHandle(framePoints[i].x,v.width),cy=edgeHandle(framePoints[i].y,v.height);svg('circle',{cx:Math.max(22,Math.min(v.width-22,cx)),cy:Math.max(22,Math.min(v.height-22,cy)),r:22,'data-frame-corner':i},'frame-touch');svg('circle',{cx,cy,r:4},'frame-handle');}
    }
@@ -67,12 +67,12 @@
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
  function draw(){
-  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working||!src){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();handles.replaceChildren();return;}
+  scheduled=null;globalThis.FILMLABB_BASE2?.refresh();if(!working){canvas.hidden=fallback.hidden=true;overlayKey=null;overlay.replaceChildren();handles.replaceChildren();return;}
   const p=plan(),v=styleView(p);drawOverlay(p,v);controls();
   if(colorSource!==workingPreview||colorVersion!==sourceVersion38)return;
   const t=performance.now(),{width,height}=NSPreviewPresentation.dimensions(p,colorSize,failed?cpuLimit:1400);
-  const exact=!mode&&p.model.rotation.fineDegrees===0&&p.model.compositionCrop===null&&(!p.model.legacyCrop||p.model.legacyCrop.edited)&&!rollShared.cropExportToFrame;
-  const bounds=mode?NSGeometry.pixelBounds(working.width,working.height,null):NSGeometry.pixelBounds(working.width,working.height,rollShared.cropExportToFrame?cropRegion:null);
+  const exact=!mode&&p.model.rotation.fineDegrees===0&&p.model.compositionCrop===null&&!rollShared.cropExportToFrame;
+  const bounds=mode?NSGeometry.pixelBounds(working.width,working.height,null):NSGeometry.pixelBounds(working.width,working.height,rollShared.cropExportToFrame?frameRegion():null);
   try{if(presenter&&!failed){presenter.draw(p,width,height,bounds,display==='split',exact);canvas.hidden=false;fallback.hidden=true;}else{
    if(!cpuImage)return;const r=NSPreviewPresentation.cpu(cpuImage,p,width,height,bounds,negativeImage,exact);fallback.width=r.width;fallback.height=r.height;fallback.getContext('2d').putImageData(new ImageData(r.data,r.width,r.height),0,0);fallback.hidden=false;canvas.hidden=true;metrics.cpuPasses++;
   }}catch(e){const wasFailed=failed;metrics.lastError=e.message;failed=true;canvas.hidden=true;if(!wasFailed)ensureCpu();else setStatus('Förhandsvisning: '+e.message);return;}
@@ -101,13 +101,13 @@
  // Predict only the final available viewport height. Controls/status can wrap
  // mid-slide; interpolate their effect with grid width instead of jumping Fit.
  function beginViewportMotion(targetWidth){
-  if(!working||!src)return;
+  if(!working)return;
   const v=layout(plan()),panel=picture.closest('.image-panel'),old=panel.style.width;
   panel.style.width=targetWidth+'px';const toWidth=picture.clientWidth,toHeight=picture.clientHeight;panel.style.width=old;
   viewportMotion=toWidth===v.width?null:{fromWidth:v.width,fromHeight:2*(v.oy-panY),toWidth,toHeight};
  }
  function endViewportMotion(){viewportMotion=null;resizeView();}
- function resizeView(){if(working&&src){const p=plan();drawOverlay(p,styleView(p));}}
+ function resizeView(){if(working){const p=plan();drawOverlay(p,styleView(p));}}
  const oldDraw=drawCrop;drawCrop=function(){oldDraw();if(working){const p=plan();styleView(p);drawOverlay(p,layout(p));queue();}else draw();};
  function controls(){
   const g=working?current():NSGeometry.create(),fine=g.rotation.fineDegrees,total=g.rotation.quarterTurns*90+fine;
@@ -121,7 +121,7 @@
  function fine(value){if(busy())return;const n=Number(value);if(!Number.isFinite(n)||n< -45||n>45){controls();return;}const g=current();g.rotation.fineDegrees=n;commit(g,true);}
  $('fineRotation').oninput=e=>fine(e.target.value);$('rotationDegrees').oninput=e=>{if(e.target.value!=='')fine(e.target.value);};$('rotationDegrees').onchange=()=>{$('rotationDegrees').value=working?current().rotation.fineDegrees:0;controls();};
  const oldRotate=rotateBy;rotateBy=function(degrees){if(busy())return;oldRotate(degrees);controls();queue();};
- $('rotationReset').onclick=()=>{if(busy())return;const g=NSGeometry.syncLegacy(current(),0);g.rotation.fineDegrees=0;panX=panY=0;commit(g);};
+ $('rotationReset').onclick=()=>{if(busy())return;const g=NSGeometry.withQuarterTurns(current(),0);g.rotation.fineDegrees=0;panX=panY=0;commit(g);};
  function setMode(value){
   if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);
   mode=value;if(value!=='base')globalThis.FILMLABB_BASE2?.leaveTool();lineStart=lineEnd=null;drag=null;zoom=1;panX=panY=0;picture.classList.toggle('geometry-line-tool',mode==='straighten');
@@ -134,24 +134,24 @@
  }
  document.querySelector('.image-controls .toolrow').append($('frameReviewEdit'));
  function refreshFrameReview(){
-  const visible=!!working&&!rollLoading,editing=mode==='frame',pending=visible&&!state.cropConfirmed;
+  const visible=!!working&&!rollLoading,editing=mode==='frame',pending=visible&&!(state.frame?.status!=='pending'&&!!state.frame);
   picture.closest('.image-panel').classList.toggle('frame-review-active',visible&&(editing||pending));
   $('frameReview').hidden=!visible||(!editing&&!pending);$('frameReviewCopy').hidden=!editing&&!pending;
-  $('frameReviewConfirm').hidden=!editing;$('frameReviewFull').hidden=!editing;$('frameReviewFull').disabled=!!state.cropLocked;
+  $('frameReviewConfirm').hidden=!editing;$('frameReviewFull').hidden=!editing;$('frameReviewFull').disabled=!!state.frame?.locked;
   $('frameReviewEdit').hidden=!visible||editing;
   if(!visible)return;
-  const message=state.cropLocked?'Filmrutan är låst.':currentFrameSelection().origin==='full'&&pending?'Vi kunde inte hitta bildytan säkert. Markera fotografiet genom att dra i hörnen eller kanterna.':'Vi har föreslagit en bildyta. Dra i hörnen eller kanterna om något behöver justeras.';
+  const message=state.frame?.locked?'Filmrutan är låst.':currentFrameSelection().origin==='full'&&pending?'Vi kunde inte hitta bildytan säkert. Markera fotografiet genom att dra i hörnen eller kanterna.':'Vi har föreslagit en bildyta. Dra i hörnen eller kanterna om något behöver justeras.';
   if(globalThis.FILMLABB_I18N?.source)FILMLABB_I18N.source($('frameReviewMessage'),message);else $('frameReviewMessage').textContent=message;
  }
- function openPendingFrame(){if(working&&!rollLoading&&!state.cropConfirmed){state.cropVisible=true;if(mode!=='frame')setMode('frame');}refreshFrameReview();}
+ function openPendingFrame(){if(working&&!rollLoading&&!(state.frame?.status!=='pending'&&!!state.frame)){state.cropVisible=true;if(mode!=='frame')setMode('frame');}refreshFrameReview();}
  $('frameReviewConfirm').onclick=()=>confirmFrameSelection();
- $('frameReviewFull').onclick=()=>{if(busy()||cropDrag||state.cropLocked)return;delete state.frameDetection;state.cropConfidence=0;state.cropMethod='manual';applyFrameSelection(NSFrameSelection.create(NSFrameSelection.rectangle({x:0,y:0,w:1,h:1}),{origin:'full',sourceDimensions:{width:working.width,height:working.height}}));confirmFrameSelection();};
+ $('frameReviewFull').onclick=()=>{if(busy()||cropDrag||state.frame?.locked)return;applyFrameSelection(NSFrameSelection.rectangular({x:0,y:0,w:1,h:1},{origin:'full',sourceDimensions:{width:working.width,height:working.height}}));confirmFrameSelection();};
  $('frameReviewEdit').onclick=()=>{if(!busy()){state.cropVisible=true;setMode('frame');}};
  globalThis.FILMLABB_FRAME_REVIEW=Object.freeze({refresh:refreshFrameReview,openPending:openPendingFrame});
  $('geometryDone').onclick=()=>setMode(null);
  $('geometryTools').addEventListener('toggle',()=>{if(!$('geometryTools').open&&(mode==='composition'||mode==='straighten'))setMode(null);});
- $('compositionEnabled').onchange=e=>{if(busy())return;let g=current();const c=e.target.checked?NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop:null;g=NSGeometry.withComposition(g,c);commit(g);setMode(c?'composition':null);};
- $('compositionEdit').onclick=()=>{if(busy())return;const g=current();if(!g.compositionCrop)commit(NSGeometry.withComposition(g,NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop));setMode('composition');};
+ $('compositionEnabled').onchange=e=>{if(busy())return;let g=current();const c=e.target.checked?NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop:null;g=NSGeometry.withComposition(g,c);commit(g);setMode(c?'composition':null);};
+ $('compositionEdit').onclick=()=>{if(busy())return;const g=current();if(!g.compositionCrop)commit(NSGeometry.withComposition(g,NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop));setMode('composition');};
  $('compositionReset').onclick=()=>{if(busy())return;commit(NSGeometry.withComposition(current(),null));setMode(null);};
  $('straighten').onclick=()=>{if(!busy())setMode(mode==='straighten'?null:'straighten');};
  $('thirdsGrid').onchange=e=>{grid=e.target.checked;try{localStorage.setItem('filmlabb-thirds',String(grid));}catch{}queue();};
@@ -165,7 +165,7 @@
   if(saved.kind==='line'&&lineStart&&lineEnd&&e.type==='pointerup'){
    const t=NSGeometry.transform(working.width,working.height,current().rotation),a=t.forward(lineStart),b=t.forward(lineEnd);
    if(Math.hypot(b.x-a.x,b.y-a.y)>Math.max(working.width,working.height)*.015){let angle=Math.atan2(b.y-a.y,b.x-a.x)*180/Math.PI;angle-=Math.round(angle/90)*90;const g=current();let f=g.rotation.fineDegrees-angle,q=g.rotation.quarterTurns;
-    while(f>45){f-=90;q=(q+1)%4;}while(f< -45){f+=90;q=(q+3)%4;}const rotated={...g,rotation:{quarterTurns:q,fineDegrees:f}};if(q!==g.rotation.quarterTurns&&rotated.legacyCrop)rotated.legacyCrop={...rotated.legacyCrop,edited:true};commit(rotated);
+    while(f>45){f-=90;q=(q+1)%4;}while(f< -45){f+=90;q=(q+3)%4;}const rotated={...g,rotation:{quarterTurns:q,fineDegrees:f}};commit(rotated);
    }setMode(null);
   }else if(saved.kind==='line')setMode(null);else{saveCurrentFrame();queue();}
  }
@@ -190,7 +190,7 @@
    const a=i===0||i===3?x:left,b=i===0||i===3?right:x,d=i<2?y:top,f=i<2?bottom:y;desired={cx:(a+b)/2,cy:(d+f)/2,w:b-a,h:f-d};
   }
   desired.cx=Math.max(-2,Math.min(2,desired.cx));desired.cy=Math.max(-2,Math.min(2,desired.cy));desired.w=Math.min(4,desired.w);desired.h=Math.min(4,desired.h);
-  const g=NSGeometry.withComposition(p.model,desired),effective=NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:cropRegion}).crop;
+  const g=NSGeometry.withComposition(p.model,desired),effective=NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop;
   // Commit what the handles actually show. No hidden oversize crop on release.
   roll[activeFrame].geometry=NSGeometry.withComposition(g,effective);controls();queue(true);
  },true);

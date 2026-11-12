@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import vm from 'node:vm';
 import {harness} from './helpers/app-harness.mjs';
 const h=harness(),G=h.context.NSGeometry,P=h.context.NSPresentation,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,E=h.context.NSExportPlan;
-h.run(`render=()=>{};scheduleRender=()=>{};sourceInfo={encoding:'linear'};state={...defaultState(),cropConfirmed:true};cropRegion={x:0,y:0,w:1,h:1};
+h.run(`render=()=>{};scheduleRender=()=>{};sourceInfo={encoding:'linear'};state={...defaultState(),frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed})};applyFrameSelection(NSFrameSelection.rectangular({x:0,y:0,w:1,h:1},{status:NSFrameSelection.status.confirmed}));
 working={width:31,height:23,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:31*23*3},(_,i)=>2000+(i*137)%50000)};workingPreview=CE.preview(working);analyzeLevels();`);
 const config=h.run('configuration38()');
 const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
@@ -67,7 +67,7 @@ console.log('PASS linear-display interpolation after color, constant field, hold
 for(const q of [0,90,180,270])for(const crop of [false,true]){
  const im=h.run('working'),frame={x:.13,y:.11,w:.72,h:.73},g=P.plan(im,G.create(q),crop,frame),old=CE.exportGeometry(im,frame,crop,q);
  assert.equal(g.presentation,undefined);assert.equal(g.width,old.width);assert.equal(g.height,old.height);
- assert.deepEqual(P.tiff(im,config,g,0,g.height,K.prepare(im,config)),K.exportRows(im,config,old,0,old.height,null,false,K.prepare(im,config)));
+ assert.deepEqual(P.tiff(im,config,g,0,g.height,K.prepare(im,config)),K.exportRows(im,config,old,0,old.height,K.prepare(im,config)));
 }
 for(const Type of [Uint8Array,Uint16Array,Float32Array,Float64Array]){const im={data:new Type(0)},g={presentation:true},target={width:16384};const rows=P.rows(im,g,target,100);assert.ok(rows*target.width*(12*Type.BYTES_PER_ELEMENT+6)<=P.STRIPE_BYTES);}
 console.log('PASS exact legacy 16-bit output at four quarters; four-neighbor stripe byte budget holds through Float64 / 16384px JPEG sides');

@@ -1,6 +1,6 @@
 /* Beta 4 workflow prototypes. Original source and analysis stay independent of loupe. */
 'use strict';
-let sharedFlatField=null,flatFieldBusy=false,flatFieldRead=0,lightReadNext=0;
+let flatFieldBusy=false,flatFieldRead=0,lightReadNext=0;
 const sourceBeforeNext=workingSource;
 function captureDomainNext(){return sourceInfo.captureDomain||sourceInfo.domain||sourceInfo.encoding+':'+sourceInfo.label;}
 workingSource=function(){
@@ -19,13 +19,13 @@ function nextControls(){
  $('originalDetail').disabled=!working;
 }
 const uiBeforeNext=updateCalibrationUI;updateCalibrationUI=function(){uiBeforeNext();nextControls();};
-function rebuildFlatNext(){state.response4=null;state.useRollResponse4=false;state.manualCalibration=null;state.manualBase=null;state.useRollBase=false;state.auto=true;saveCurrentFrame();finishImport('Belysningskorrigeringen uppdaterad');persist();nextControls();}
+function rebuildFlatNext(){state.response4=null;state.useRollResponse4=false;state.manualCalibration=null;state.useRollBase=false;state.auto=true;saveCurrentFrame();finishImport('Belysningskorrigeringen uppdaterad');persist();nextControls();}
 $('jpegSize').onchange=e=>{state.jpegSize=e.target.value==='safe'?'safe':'original';saveCurrentFrame();persist();};
 $('useFlatField').onchange=e=>{if(exportBusy||rollLoading||flatFieldBusy)return nextControls();state.useFlatField=!!e.target.checked;rebuildFlatNext();};
 $('clearFlatField').onclick=()=>{if(exportBusy||rollLoading||flatFieldBusy)return;sharedFlatField=null;state.useFlatField=false;if(working)rebuildFlatNext();nextControls();};
 $('flatFieldFile').accept=NSFileFormats.accept;
 async function readFlatNext(file){
- if(NSFileFormats.isRaw(file)){const locked=NSV2Platform.usesLockedSource(state),r=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});if(r.im.inputDiagnostics4?.clipped.some(n=>n/r.im.inputDiagnostics4.pixels>.002))throw Error('RAW-referensen innehåller klippta källkanaler. Sänk exponeringen.');return {im:{width:r.im.width,height:r.im.height,channels:3,data:r.im.data,scale:r.im.scale||65535,colorSpace:r.im.colorSpace||'srgb',encoding:'linear'},domain:'raw-'+(locked?'wide-v2-1':r.im.rawMode4||'reference')+':'+(r.meta?.camera_model||'unknown')};}
+ if(NSFileFormats.isRaw(file)){const locked=NSV2Platform.usesLockedSource(state),r=await NSRawDecoder.decode(file,locked?'wide':state.rawMode4,locked?{options:NSV2Platform.decoderOptions()}:{});if(r.im.inputDiagnostics4?.clipped.some(n=>n/r.im.inputDiagnostics4.pixels>.002))throw Error('RAW-referensen innehåller klippta källkanaler. Sänk exponeringen.');return {im:{width:r.im.width,height:r.im.height,channels:3,data:r.im.data,scale:r.im.scale||65535,colorSpace:r.im.colorSpace||'srgb',encoding:'linear'},domain:'raw-'+(locked?'wide-v2-1':r.im.rawMode4||'protected')+':'+(r.meta?.camera_model||'unknown')};}
  if(NSFileFormats.kind(file)==='tiff'){
   const decoded=await NSTiff.decode(await file.arrayBuffer());
   // Snapshot only after asynchronous decoding: a different image may now be
@@ -73,10 +73,6 @@ const clearBeforeNext=$('clearQueue').onclick;$('clearQueue').onclick=()=>{if(ro
 window.addEventListener('keydown',e=>{if(e.key==='Escape')closeDetailNext();});
 nextControls();
 
-const engineNext=$('engineMode').onchange;
-$('engineMode').onchange=e=>{if(sourceInfo.colorSpace==='rec2020'&&e.target.value!=='calibrated4'&&!NSConversion3.is(e.target.value)){e.target.value=state.engine;setStatus('Original kräver sRGB-import. Välj en annan RAW-import för att jämföra alla fem motorer.');return;}return engineNext(e);};
-const rawNext=$('rawMode4').onchange;
-$('rawMode4').onchange=async e=>{if(e.target.value==='wide'&&!exportBusy&&!rollLoading){state.engine='calibrated4';$('engineMode').value='calibrated4';}return rawNext(e);};
 // Use the same decoder and color domain for the scalar light reference.
 async function decodeLightFile(file){const {im,domain}=await readFlatNext(file);return {...im,domain};}
 $('referenceFile').onchange=async e=>{

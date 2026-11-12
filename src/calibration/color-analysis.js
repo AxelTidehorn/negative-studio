@@ -10,8 +10,5 @@ function analyze(im,region){
  const lo=a.map(x=>quant(x,.015)),hi=a.map(x=>quant(x,.985)),spans=hi.map((v,c)=>Math.max(.04,v-lo[c]));
  return {version:39,lo,hi,spans,count:pixels.length,clipped:clipped.map(x=>x/pixels.length),dark:dark.map(x=>x/pixels.length),weak:hi.some((v,c)=>v-lo[c]<.04),region:C.rect(region)};
 }
-// The shared detector returns source-space corners and a separate analysis polygon.
-const detect=(im,options)=>root.NSFrameDetector.detect(im,options);
-
-root.NSColorAnalysis={analyze,detect};
+root.NSColorAnalysis={analyze};
 })(globalThis);

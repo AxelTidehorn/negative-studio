@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # V2 i huvudplattformen
 
 > Senaste V2-kandidaten: [teknisk rekonstruktion, algoritm 2 och skydd av äldre recept](V2_TECHNICAL_RECONSTRUCTION.md). Beskrivningarna nedan dokumenterar tidigare leveranser.

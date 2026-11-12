@@ -1,0 +1,109 @@
+{
+  "environment": {
+    "node": "v22.23.5",
+    "os": "linux",
+    "arch": "x64",
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
+  },
+  "source": {
+    "kind": "bounded actual RAW technical preview, not original-resolution RAW/export",
+    "filename": "_DSF9235.RAF",
+    "width": 480,
+    "height": 321
+  },
+  "scope": "Node CPU microbenchmark; excludes file/codec, GPU, browser layout and download",
+  "rows": [
+    {
+      "engine": "v2",
+      "workload": "source analysis, same frozen channel response/recipe, one cold + seven repeated calls",
+      "coldMs": 524.686266,
+      "timesMs": [
+        107.84035899999992,
+        96.40027600000008,
+        96.9583879999999,
+        95.12662799999998,
+        106.15359799999999,
+        94.45961499999999,
+        95.35780599999998
+      ]
+    },
+    {
+      "engine": "v2",
+      "workload": "TIFF16 pixel production, direct",
+      "size": [
+        384,
+        255
+      ],
+      "timesMs": [
+        744.631654,
+        721.2060920000004,
+        718.334656,
+        749.4347290000005,
+        721.2953599999992
+      ],
+      "sha256": "74ad463e16126ec0df480f07563eaa095ecacc70ccdb2c54bce4ae26f66a1dbd"
+    },
+    {
+      "engine": "v2",
+      "workload": "TIFF16 pixel production, fine rotation 2 degrees",
+      "size": [
+        365,
+        242
+      ],
+      "timesMs": [
+        939.9269180000001,
+        873.2367730000005,
+        893.8795929999997,
+        870.2089520000009,
+        912.6127479999996
+      ],
+      "sha256": "d31c287d6f40e1434978276d0c962cf1107cbd3488f63485d932f8b05b5c0d01"
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "source analysis, same frozen channel response/recipe, one cold + seven repeated calls",
+      "coldMs": 212.829205,
+      "timesMs": [
+        151.1027439999998,
+        144.8941939999986,
+        141.79542599999877,
+        151.7984319999996,
+        157.36436499999945,
+        148.74802799999998,
+        142.2510629999997
+      ]
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "TIFF16 pixel production, direct",
+      "size": [
+        384,
+        255
+      ],
+      "timesMs": [
+        433.9737499999992,
+        393.2408579999992,
+        385.0995639999983,
+        394.8380730000008,
+        383.3979419999996
+      ],
+      "sha256": "1fadcb7c85645f6e504b0c4a941b5fe47f776b679e44dd98115d09b5aa3c5f7a"
+    },
+    {
+      "engine": "calibrated4",
+      "workload": "TIFF16 pixel production, fine rotation 2 degrees",
+      "size": [
+        365,
+        242
+      ],
+      "timesMs": [
+        634.2360609999996,
+        617.5278519999974,
+        649.3010270000013,
+        760.6331079999982,
+        661.9551470000006
+      ],
+      "sha256": "e5b9a9d80cbc28f881ba7ab6dc903c6c5736bd5f57905f8ac4d75219da89f1be"
+    }
+  ]
+}

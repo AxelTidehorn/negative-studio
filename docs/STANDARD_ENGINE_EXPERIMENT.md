@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # Standardmotorn: experiment med låg signaltillit
 
 Utgår från `main` **6e1861f** (inklusive #20 och mergade #21). Endast

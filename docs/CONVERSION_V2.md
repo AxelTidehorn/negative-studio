@@ -1,3 +1,5 @@
+> **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
+
 # FILMLABB 2.0: pålitlig A/B-referens och färg-/tondiagnostik
 
 > Algoritm 3: [neutralreferenser, högdagrar och versionsskydd](V2_NEUTRAL_HIGHLIGHTS.md).

@@ -57,18 +57,4 @@ async function exportRgb16(format,control={}){
 }
 exportTiff=control=>exportRgb16('tiff',control);
 function exportPng16(control){return exportRgb16('png16',control);}
-function makeExportCanvas(){
- const im=working,c=configuration38(),g=exportGeometrySnapshot(im).g,canvas=document.createElement('canvas');canvas.width=g.width;canvas.height=g.height;
- const cx=canvas.getContext('2d',{colorSpace:'srgb'}),prepared=NSPixelKernel.prepare(im,c);
- const table=!g.presentation&&im.encoding==='linear'&&im.scale===65535&&(im.normalization||1)===1&&c.kind!=='reference'?technicalTables38(c):null,complete=!!(table&&technicalCache38?.complete);
- for(let y=0;y<g.height;){
-  const rows=NSPresentation.rows(im,g,g,g.height-y),out=cx.createImageData(g.width,rows);
-  if(g.presentation)NSPresentation.rgba(im,prepared,g,g,y,rows,false,out.data);
-  else{const samples=NSPixelKernel.exportRows(im,c,g,y,rows,table,complete);for(let i=0;i<samples.length;i+=3){const j=i/3*4;out.data[j]=Math.round(samples[i]/257);out.data[j+1]=Math.round(samples[i+1]/257);out.data[j+2]=Math.round(samples[i+2]/257);out.data[j+3]=255;}}
-  cx.putImageData(out,0,y);y+=rows;
- }
- return canvas;
-};
-
-
 globalThis.FILMLABB_RGB16={snapshot:()=>rgb16Metrics?JSON.parse(JSON.stringify(rgb16Metrics)):null};

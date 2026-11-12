@@ -18,9 +18,10 @@ function intersect(a,b){const d=a.nx*b.ny-a.ny*b.nx;if(Math.abs(d)<1e-6)return n
 function lines(p){return p.map((v,i)=>{const q=p[(i+1)%4],l=Math.hypot(q.x-v.x,q.y-v.y);return {nx:(v.y-q.y)/l,ny:(q.x-v.x)/l,d:((v.y-q.y)*v.x+(q.x-v.x)*v.y)/l};});}
 function inset(p,pixels,w,h){const q=p.map(v=>({x:v.x*w,y:v.y*h})),ls=lines(q).map(l=>({...l,d:l.d+pixels})),out=ls.map((l,i)=>intersect(ls[(i+3)%4],l));if(out.some(v=>!v))return null;const n=out.map(v=>({x:v.x/w,y:v.y/h}));return validQuad(n)?n:null;}
 // D65 CIELAB, normalized. Rec.2020 and linear sRGB use their own XYZ matrix.
+const LAB_WIDE=[.636958,.144617,.168881,.262700,.677998,.059302,0,.028073,1.060985],LAB_SRGB=[.412456,.357576,.180438,.212673,.715152,.072175,.019334,.119192,.950304];
+const labTransfer=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;
 function lab(rgb,wide){
- const m=wide?[.636958,.144617,.168881,.262700,.677998,.059302,0,.028073,1.060985]:[.412456,.357576,.180438,.212673,.715152,.072175,.019334,.119192,.950304];
- const f=v=>v>.008856?Math.cbrt(v):7.787*v+16/116;
+ const m=wide?LAB_WIDE:LAB_SRGB,f=labTransfer;
  const x=f((m[0]*rgb[0]+m[1]*rgb[1]+m[2]*rgb[2])/.95047),y=f(m[3]*rgb[0]+m[4]*rgb[1]+m[5]*rgb[2]),z=f((m[6]*rgb[0]+m[7]*rgb[1]+m[8]*rgb[2])/1.08883);
  return [(116*y-16)/100,500*(x-y)/128,200*(y-z)/128];
 }
@@ -36,7 +37,10 @@ function components(mask,w,h){
  for(let start=0;start<mask.length;start++)if(mask[start]&&!seen[start]){
   let head=0,tail=1,touch=false;queue[0]=start;seen[start]=1;const boundary=[];
   while(head<tail){const i=queue[head++],x=i%w,y=Math.floor(i/w);let edge=false;if(x<2||y<2||x>=w-2||y>=h-2)touch=true;
-   for(const j of [x?i-1:-1,x+1<w?i+1:-1,y?i-w:-1,y+1<h?i+w:-1]){if(j<0||!mask[j])edge=true;else if(!seen[j]){seen[j]=1;queue[tail++]=j;}}
+   let j=x?i-1:-1;if(j<0||!mask[j])edge=true;else if(!seen[j]){seen[j]=1;queue[tail++]=j;}
+   j=x+1<w?i+1:-1;if(j<0||!mask[j])edge=true;else if(!seen[j]){seen[j]=1;queue[tail++]=j;}
+   j=y?i-w:-1;if(j<0||!mask[j])edge=true;else if(!seen[j]){seen[j]=1;queue[tail++]=j;}
+   j=y+1<h?i+w:-1;if(j<0||!mask[j])edge=true;else if(!seen[j]){seen[j]=1;queue[tail++]=j;}
    if(edge)boundary.push({x:x+.5,y:y+.5});
   }
   if(tail>=64&&boundary.length>=20)out.push({boundary,count:tail,touch});
@@ -105,10 +109,12 @@ function detect(im,{limit=480,debug=false,verify=true,strategy='hybrid'}={}){
   const center=[0,1,2].map(c=>quant(ps.map(v=>v[c]),.5)),spread=quant(ps.map(v=>distance(v,center)),.8);
   if(spread<.025){let cluster=clusters.find(m=>distance(m.center,center)<.045);if(!cluster){cluster={center,count:0,sides:new Set()};clusters.push(cluster);}cluster.count++;cluster.sides.add(side);}
  }for(const c of clusters.filter(c=>c.count>=3&&c.sides.size>=2))if(!models.some(m=>distance(m,c.center)<.045))models.push(c.center);}
- const prototypes=models.slice(0,12),hypotheses=[];
- if(prototypes.length){for(const threshold of [.035,.065,.10]){const m=Uint8Array.from(colors,p=>prototypes.every(b=>distance(p,b)>threshold)?1:0);hypotheses.push({mask:m,name:'background-'+threshold});}}
- const ls=Array.from(lum);
- for(const fraction of [.2,.4,.6,.8]){const threshold=quant(ls,fraction);for(const bright of [false,true])hypotheses.push({mask:Uint8Array.from(lum,v=>bright?v>threshold:v<threshold),name:(bright?'bright-':'dark-')+fraction});}
+ const prototypes=models.slice(0,12);
+ function* masks(){
+ if(prototypes.length){for(const threshold of [.035,.065,.10]){const m=Uint8Array.from(colors,p=>prototypes.every(b=>distance(p,b)>threshold)?1:0);yield {mask:m,name:'background-'+threshold};}}
+ const ls=Array.from(lum).sort((a,b)=>a-b);
+ for(const fraction of [.2,.4,.6,.8]){const threshold=ls[Math.floor((ls.length-1)*fraction)]||0;for(const bright of [false,true])yield {mask:Uint8Array.from(lum,v=>bright?v>threshold:v<threshold),name:(bright?'bright-':'dark-')+fraction};}
+ }
  const candidates=[];
  function scoreQuad(q,method){
    const quad=q.map(v=>({x:v.x/w,y:v.y/h}));if(!validQuad(quad))return;
@@ -127,7 +133,7 @@ function detect(im,{limit=480,debug=false,verify=true,strategy='hybrid'}={}){
    const uniform=outsideSpread.reduce((s,v)=>s+Math.max(0,1-v/.12),0)/4,score=supports.reduce((s,v,i)=>s+v*Math.min(1,content[i]/.7),0)/4*.60+uniform*.20+texture.reduce((s,v)=>s+v,0)/4*.20;
    candidates.push({quad,region:bounds(quad),score,supports,content,texture,clearToSubject,strong,uniform,method,detectorSize:{width:w,height:h}});
  }
- for(const hypothesis of strategy==='lines'?[]:hypotheses){
+ for(const hypothesis of strategy==='lines'?[]:masks()){
   const mask=close(hypothesis.mask,w,h);
   for(const component of components(mask,w,h)){
    if(component.touch)continue;

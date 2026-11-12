@@ -34,7 +34,7 @@ try{
  const automatic=await page.evaluate(()=>({base:state.v2Recipe.base,cal:state.v2Recipe.calibration,pixel:NSPixelKernel.compile(configuration38()).pixel([.2,.1,.05])}));
  assert.equal(automatic.base.acceptance,'automatic-platform');
  await page.locator('#base2Enable').click();await page.waitForFunction(()=>FILMLABB_BASE2.snapshot().proposal);
- assert.equal(await page.evaluate(()=>CE.findBase(working,cropRegion)),null);
+ assert.ok(await page.evaluate(()=>CE.findBase(working,frameRegion()))); // Pure sampling is separate from reference acceptance policy.
  assert.equal(await page.evaluate(()=>state.v2Recipe.base.origin),'prior','warm automatic base cannot bypass Filmbas 2 acceptance');
  assert.equal(await page.evaluate(()=>accepted2()),null);
  await settled(page);

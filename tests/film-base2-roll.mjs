@@ -23,7 +23,7 @@ for(const field of ['gain','whiteBalance','domain']){
 }
 // Known common exposure cancels only after explicit source normalization. A
 // different normalization context is paused until the new reference is accepted.
-const outputsBefore={};for(const engine of ['log39','calibrated4','curve3','density3','matrix3']){h.set('engine2',engine);outputsBefore[engine]=h.run('state.engine=engine2;analyzeLevels();NSPixelKernel.compile(configuration38()).pixel(CE.pixel(working,70,40))');}
+const outputsBefore={};for(const engine of ['calibrated4']){h.set('engine2',engine);outputsBefore[engine]=h.run('state.engine=engine2;analyzeLevels();NSPixelKernel.compile(configuration38()).pixel(CE.pixel(working,70,40))');}
 const normalized=source([.72,.43,.21],2,2);h.set('newSource2',normalized);
 h.run(`hires=newSource2;working=workingSource();workingPreview=CE.preview(working);analyzeLevels();`);
 assert.equal(h.run('accepted2()'),null);assert.equal(h.run('JSON.stringify(state.acceptedCalibration2)'),override);
@@ -46,4 +46,4 @@ console.log('PASS real two-frame roll selection, private override, capture gain/
 h.run(`globalThis.parseBefore2=NSColorManagement.parseICC;globalThis.iccFactor2=5.0001;NSColorManagement.parseICC=()=>({label:'Same ICC name',toLinear:p=>p.map(v=>v*iccFactor2)});`);
 const contexts=[];for(const factor of [5.0001,5.0002]){h.set('factor2',factor);contexts.push(h.run(`iccFactor2=factor2;globalThis.iccRaw2={width:8,height:8,bits:16,channels:3,icc:new Uint8Array([1]),data:Uint16Array.from({length:192},(_,i)=>[26214,16384,8192][i%3])};prepareTiff(iccRaw2);hires=iccRaw2;working=workingSource();({context:capture2(),label:sourceInfo.label,pixel:CE.pixel(working,0,0)})`));}
 assert.equal(contexts[0].label,contexts[1].label,'Rounded labels cannot establish normalization compatibility');assert.notEqual(contexts[0].context.normalization,contexts[1].context.normalization);assert.equal(h.context.NSFilmBaseReference.compatible(contexts[0].context,contexts[1].context),false);assert.equal(contexts[0].pixel[0],1);h.run('NSColorManagement.parseICC=parseBefore2');
-console.log('PASS exact ICC exposure normalization provenance, no double scaling, and five-engine pixel consistency after documented common normalization');
+console.log('PASS exact ICC exposure normalization provenance, no double scaling, and Standard pixel consistency after documented common normalization');

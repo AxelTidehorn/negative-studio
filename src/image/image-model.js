@@ -1,4 +1,4 @@
-/* Negative Studio Beta 2. Pure functions; input RGB is normalized, tagged sRGB or linear sRGB. */
+/* Source sampling, linear previews, base measurement and integer export geometry. */
 (function(root){
 'use strict';
 const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
@@ -44,14 +44,7 @@ function areaPreview(im,limit=1400){
  return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};
 }
 function preview(im,limit=1400,method='nearest'){if(method==='area-v1')return areaPreview(im,limit);const s=Math.min(1,limit/Math.max(im.width,im.height)),w=Math.max(1,Math.round(im.width*s)),h=Math.max(1,Math.round(im.height*s)),data=new Float32Array(w*h*3);for(let y=0;y<h;y++)for(let x=0;x<w;x++){const p=pixel(im,Math.min(im.width-1,Math.floor((x+.5)*im.width/w)),Math.min(im.height-1,Math.floor((y+.5)*im.height/h)));data.set(p,(y*w+x)*3);}return {width:w,height:h,data,channels:3,scale:1,encoding:'linear',colorSpace:im.colorSpace||'srgb'};}
-function detectFrame(im){
- const g=preview(im,180),w=g.width,h=g.height;
- function axis(horizontal){const n=horizontal?w:h,m=horizontal?h:w,scores=new Array(n).fill(0);for(let k=2;k<n-2;k++){const ds=[];for(let j=Math.floor(m*.08);j<m*.92;j+=2){const a=pixel(g,horizontal?k-2:j,horizontal?j:k-2),b=pixel(g,horizontal?k+2:j,horizontal?j:k+2);ds.push(Math.max(...a.map((v,c)=>Math.abs(v-b[c]))));}scores[k]=quantile(ds,.6);}
- const floor=quantile(scores,.65),candidates=[];for(let k=3;k<n-3;k++)if(scores[k]>.025&&scores[k]>floor*1.7&&scores[k]>=scores[k-1]&&scores[k]>=scores[k+1])candidates.push(k);
- let best=null;for(const a of candidates)for(const b of candidates){const span=(b-a)/n;if(span<.32||a>n*.48||b<n*.52)continue;const strength=(scores[a]+scores[b])/2;const value=strength*(.7+span)-Math.abs((a+b)/(2*n)-.5)*.08;if(!best||value>best.value)best={a,b,value,strength};}
- return best?{lo:(best.a+1)/n,hi:(best.b-1)/n,confidence:clamp(best.strength*3,0,.95)}:{lo:.02,hi:.98,confidence:0};}
- const x=axis(true),y=axis(false);return {region:rect({x:x.lo,y:y.lo,w:x.hi-x.lo,h:y.hi-y.lo}),confidence:Math.min(.65,x.confidence,y.confidence),method:'edge-projection'};
-}
+function detectFrame(im,options){return root.NSFrameDetector.detect(im,options);}
 function normalizeBase(p){const m=Math.max(...p);return p.map(v=>v/Math.max(1e-8,m));}
 // Accept only orange, non-clipped, locally uniform pixels in a narrow outside band.
 // The scene itself and neutral illuminated holder are never automatic base samples.
@@ -65,25 +58,9 @@ function findBase(im,r){const b=bounds(im,r),pad=Math.max(2,Math.round(Math.min(
  const deviation=median(top.map(v=>Math.max(...normalizeBase(v).map((x,c)=>Math.abs(x-shape[c])))));
  if(deviation>.045)return null;return {shape,measured:p,kind:'auto-edge',confidence:clamp(1-deviation*10,0,.9),samples:top.length};
 }
-function analyze(im,region,options={}){
- const pixels=sample(im,region),light=options.light||[1,1,1],correct=p=>p.map((v,c)=>Math.max(1e-8,v*light[c]));
- const edge=options.noBase?null:(options.base||findBase(im,region));
- const corrected=pixels.map(correct);if(corrected.length<4)throw Error('Filmrutan är för liten för analys.');
- const baseShape=edge?normalizeBase(edge.shape.map((v,c)=>v*light[c])):normalizeBase([0,1,2].map(c=>quantile(corrected.map(p=>p[c]),.995)));
- // Same exposure scale for all channels. It cancels scan exposure without stretching colors individually.
- const exposure=quantile(corrected.map(p=>Math.max(...p.map((v,c)=>v/Math.max(1e-8,baseShape[c])))),.99);
- const densities=corrected.map(p=>density(p,baseShape,exposure));
- const lum=densities.map(d=>.2126*d[0]+.7152*d[1]+.0722*d[2]);
- const lo=quantile(lum,.015),hi=quantile(lum,.985),span=Math.max(.08,hi-lo);
- // No grey-world average, channel-range matching, or permanent tint offsets.
- const clipped=pixels.filter(p=>p.some(v=>v>=.995||v<=1/65535)).length/pixels.length;
- return {version:2,baseShape,exposure,light:[...light],lo,hi,span,balance:[0,0,0],base:edge||{kind:'fallback',confidence:0},count:pixels.length,clipped,channelRange:[0,1,2].map(c=>[quantile(densities.map(p=>p[c]),.015),quantile(densities.map(p=>p[c]),.985)]),region:rect(region)};
-}
-function density(p,shape,exposure){return p.map((v,c)=>-Math.log10(Math.max(1e-8,v/Math.max(1e-8,shape[c]*exposure))));}
-function positive(p,cal,auto=true,strength=1){const d=density(p.map((v,c)=>v*cal.light[c]),cal.baseShape,cal.exposure);return d.map((v,c)=>{const u=auto?(v-cal.lo-(cal.balance[c]||0)*strength)/cal.span:v;return clamp(Math.expm1(clamp(u)*1.6)/Math.expm1(1.6));});}
 function sampleBase(im,x,y){const p=[],cx=Math.min(im.width-1,Math.floor(clamp(x)*im.width)),cy=Math.min(im.height-1,Math.floor(clamp(y)*im.height));for(let yy=Math.max(0,cy-3);yy<=Math.min(im.height-1,cy+3);yy++)for(let xx=Math.max(0,cx-3);xx<=Math.min(im.width-1,cx+3);xx++)p.push(pixel(im,xx,yy));const measured=[0,1,2].map(c=>median(p.map(v=>v[c])));if(Math.min(...measured)<1e-5||Math.max(...measured)>.995)throw Error('Filmbasprovet är klippt eller för mörkt. Välj en annan yta.');return {shape:normalizeBase(measured),measured,kind:'manual',confidence:1};}
 // Exact U16 code normalization (no transfer/gamut/color conversion).
 function unitFloat32(input){const out=new Float32Array(input.length);for(let i=0;i<input.length;i++)out[i]=input[i]/65535;return out;}
 function exportGeometry(im,region,crop,rotation=0){const b=crop?bounds(im,region):{x0:0,y0:0,x1:im.width,y1:im.height},sw=b.x1-b.x0,sh=b.y1-b.y0,rot=((rotation%360)+360)%360;return {width:rot%180?sh:sw,height:rot%180?sw:sh,at(x,y){return [b.x0+(rot===90?y:rot===180?sw-1-x:rot===270?sw-1-y:x),b.y0+(rot===90?sh-1-x:rot===180?sh-1-y:rot===270?x:y)];}};}
-root.NSColorEngine={unitFloat32,clamp,decode,encode,rect,bounds,pixel,linearPixel,sample,preview,detectFrame,findBase,analyze,positive,sampleBase,exportGeometry,quantile,normalizeBase};
+root.NSColorEngine={unitFloat32,clamp,decode,encode,rect,bounds,pixel,linearPixel,sample,preview,detectFrame,findBase,sampleBase,exportGeometry,quantile,normalizeBase};
 })(globalThis);
