@@ -6,7 +6,8 @@ assert.ok(error(area)<1e-6);assert.ok(error(old)>.49);assert.deepEqual(C.preview
 for(const [w,h,limit] of [[37,29,11],[256,192,91],[1,101,13]]){const im=image(w,h,()=>.23),p=C.preview(im,limit,'area-v1');assert.ok(Array.from(p.data).every(v=>Math.abs(v-.23)<1e-6));}
 const im=image(31,23,(x,y,k)=>(x+2*y+k)/100),p=C.preview(im,9,'area-v1'),mean=a=>a.reduce((s,v)=>s+v,0)/a.length;assert.ok(Math.abs(mean(im.data)-mean(p.data))<1e-6);
 assert.deepEqual(C.preview(im,100,'area-v1'),C.preview(im,100));
-const big=image(3000,2000,(x,y,k)=>(x+y+k)%256/255),start=performance.now();C.preview(big,1400,'area-v1');console.log(JSON.stringify({syntheticPixels:6000000,areaImportMs:performance.now()-start,checkerMeanError:{nearest:error(old),area:error(area)}}));
+if(process.env.FILMLABB_TEST_LEVEL==='extended'){const big=image(3000,2000,(x,y,k)=>(x+y+k)%256/255),start=performance.now();C.preview(big,1400,'area-v1');console.log(JSON.stringify({syntheticPixels:6000000,areaImportMs:performance.now()-start,checkerMeanError:{nearest:error(old),area:error(area)}}));}
+
 assert.equal(h.context.NSProjectSettings.imageDefaults().previewSampling,'area-v1');
 console.log('PASS exact area filter checkerboard suppression, noninteger/one-pixel dimensions, DC/mean preservation and unchanged legacy/default API');
 // Exercise actual project save/import migration, including absent legacy version.

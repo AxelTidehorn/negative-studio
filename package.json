@@ -8,18 +8,11 @@
   "type": "module",
   "scripts": {
     "build": "node tools/build-artifact.mjs --force",
-    "test": "node verify-preview.mjs",
-    "test:tiff": "node verify-preview.mjs --tiff",
-    "test:workflow": "node verify-preview.mjs --workflow",
-    "test:next": "node verify-preview.mjs --next",
-    "test:gpu": "node verify-preview.mjs --gpu",
-    "test:build": "node tests/stability-build.mjs",
-    "test:browser": "node tools/test-runner.mjs browser",
+    "test": "node tools/test-runner.mjs fast",
     "test:fast": "node tools/test-runner.mjs fast",
-    "test:style": "node tools/test-runner.mjs style",
-    "test:integration": "node tools/test-runner.mjs integration",
     "test:full": "node tools/test-runner.mjs full",
-    "test:benchmark": "node tools/benchmark-consolidation.mjs . .cache/consolidation-benchmark.json"
+    "test:benchmark": "node tools/benchmark-consolidation.mjs . .cache/consolidation-benchmark.json",
+    "test:extended": "node tools/test-runner.mjs extended"
   },
   "dependencies": {
     "libraw-wasm": "1.6.0"

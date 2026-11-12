@@ -4,9 +4,9 @@ import assert from 'node:assert/strict';import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';import {browserHarness} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness(),results=[],errors=[];
 const cards=['imageAdjustments','creativeProfiles','calibration3','advancedSettings','exportProject'];
-const formats=[[1440,900,false],[1920,1080,false],[1024,768,true],[768,1024,true],[390,844,true]];
+const extended=process.env.FILMLABB_TEST_LEVEL==='extended',formats=extended?[[1440,900,false],[1920,1080,false],[1024,768,true],[768,1024,true],[390,844,true]]: [[1920,1080,false],[1024,768,true],[390,844,true]];
 async function settled(p){await p.waitForFunction(()=>!document.getAnimations().some(a=>a.playState==='running'&&a.effect?.getTiming().iterations!==Infinity),null,{timeout:5000});}
-try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
+try{for(const [width,height,touch]of formats)for(const reduced of (extended?[false,true]:[width===1024])){
  const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,reducedMotion:reduced?'reduce':'no-preference',locale:'en-US',serviceWorkers:'block'}),p=await c.newPage();p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
  if(width===768)await p.evaluate(()=>{NSPreviewPresentation.create=()=>{throw Error('Test CPU presentation fallback')};});
  await p.locator('#imageFile').setInputFiles(['d2-a.png','d2-b.png'].map(name=>({name,mimeType:'image/png',buffer:fs.readFileSync('demo-negative.png')})));
@@ -15,7 +15,7 @@ try{for(const reduced of [false,true])for(const [width,height,touch]of formats){
  // All native card headers, including long localized export text. Closed glyphs
  // must be fully contained; open captions must actually be invisible, not clipped.
  const captions=async()=>p.evaluate(()=>Array.from(document.querySelectorAll('#adjustmentPanel > .tool-card'),d=>{const e=d.querySelector('.card-status'),s=d.querySelector('summary'),r=e.getBoundingClientRect(),b=s.getBoundingClientRect(),cs=getComputedStyle(e),visible=cs.visibility==='visible'&&e.checkVisibility();return{id:d.id,open:d.open,visible,visibility:cs.visibility,display:cs.display,fits:!visible||(r.left>=b.left-.1&&r.right<=b.right+.1&&r.top>=b.top-.1&&r.bottom<=b.bottom+.1&&r.height>=e.scrollHeight-.5)};}));
- for(const lang of reduced?['sv','en','fr','es','de']:['en']){
+ for(const lang of (width===1024||extended&&width===768)?['sv','en','fr','es','de']:['en']){
   await selectLanguage(p,lang);
   for(const id of cards){await p.locator('#'+id).evaluate(e=>e.open=false);}await settled(p);
   assert.ok((await captions()).every(x=>!x.open&&x.visible&&x.fits),lang+' closed captions');

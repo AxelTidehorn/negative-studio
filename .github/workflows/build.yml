@@ -3,6 +3,12 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+    inputs:
+      level:
+        description: Verification level (fast never publishes)
+        type: choice
+        default: full
+        options: [fast, full, extended]
   push:
     branches: [main]
 permissions:
@@ -25,6 +31,7 @@ jobs:
           cache: npm
       - run: npm ci --no-audit --no-fund
       - name: Prepare browser
+        if: github.event_name != 'workflow_dispatch' || inputs.level != 'fast'
         run: |
           filmlabb_chrome_bin="$(command -v google-chrome || command -v chromium || true)"
           if [ -n "$filmlabb_chrome_bin" ]; then
@@ -33,17 +40,20 @@ jobs:
           else
             npx playwright install --with-deps chromium
           fi
-      # Fail closed: only a pure src/ui/*.css diff gets the shorter visual suite.
-      # The runner prepares site/ before browser tests. Never rebuild after it.
-      - name: Select verification scope
+      # PR/push always use full; manual dispatch may choose an explicit level.
+      - name: Select verification level
         id: scope
+        env:
+          REQUESTED_LEVEL: ${{ inputs.level || 'full' }}
         run: |
-          level="$(node tools/verification-scope.mjs)"
-          echo "level=$level" >> "$GITHUB_OUTPUT"
+          case "$REQUESTED_LEVEL" in fast|full|extended) ;; *) exit 1 ;; esac
+          echo "level=$REQUESTED_LEVEL" >> "$GITHUB_OUTPUT"
       - run: npm run test:${{ steps.scope.outputs.level }}
       - name: Seal the tested artifact
-        run: node tools/verified-artifact.mjs seal
+        if: steps.scope.outputs.level != 'fast'
+        run: node tools/verified-artifact.mjs seal ${{ steps.scope.outputs.level }}
       - uses: actions/upload-artifact@v4
+        if: steps.scope.outputs.level != 'fast'
         with:
           name: FILMLABB-WASM
           overwrite: true
@@ -55,7 +65,7 @@ jobs:
           compression-level: 1
   deploy:
     needs: build
-    if: github.repository == 'AxelTidehorn/negative-studio' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch')
+    if: github.repository == 'AxelTidehorn/negative-studio' && github.ref == 'refs/heads/main' && (github.event_name == 'push' || github.event_name == 'workflow_dispatch' && inputs.level != 'fast')
     runs-on: ubuntu-latest
     permissions:
       contents: read

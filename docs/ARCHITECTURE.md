@@ -67,3 +67,7 @@ Aktuellt projekt är `filmlabb-roll-4`, geometri version 2, Editing 2.0. Instäl
 Se [konsolideringsrapporten](consolidation/README.md) för borttagna moduler, numeriska referenser, mätningar och begränsningar. [TESTING.md](TESTING.md) beskriver full CI och plattformsprov.
 
 **Utvecklingsregel:** PR:er som ändrar användarbeteende, standardvärden, arkitektur eller funktioner uppdaterar relevant dokumentation i samma PR. Dokumentationsstatus ingår i granskningen. Regeln kräver inte dokumentationsändringar för varje trivial intern justering.
+
+## Verifiering
+
+Testregistrering och de tre nivåerna fast/full/extended finns i `tests/suites.mjs`. Normal CI använder frysta numeriska referenser, inte historiska Git-utcheckningar. Full/extended förseglar exakt verifierade byggbytes; fast kan aldrig publiceras. Se [TESTING](TESTING.md) för täckning, manuell körning och referenspolicy.
