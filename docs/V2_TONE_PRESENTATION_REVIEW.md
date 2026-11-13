@@ -1,5 +1,7 @@
 # V2: tonseparation efter den scenmedvetna exponeringskandidaten
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/V2_TONE_PRESENTATION_REVIEW.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 Fortsättning i **PR #89**, utan en konkurrerande PR. Produktion: main
 `6e3d763cfdaad958fac7baf4d8acda3cb5e9733b`. Fryst A/B-leverans och exponeringskod:
 `912430a762f28c7b7e316cdc71056f35c87dbba1`. Produktionsfiler, sparade recept,

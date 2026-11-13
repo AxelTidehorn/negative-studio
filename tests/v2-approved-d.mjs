@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import '../src/conversion-v2/core.js';import '../src/conversion-v2/render.js';import '../src/conversion-v2/fast.js';import '../src/conversion-v2/platform.js';
-import {factor} from '../tools/v2-presentation-model.mjs';import {placement} from '../tools/v2-scene-tone-model.mjs';
+import {factor,placement} from './helpers/v2-tone-reference.mjs';
 const V=NSConversionV2,R=NSV2Render,P=NSV2Platform;
 for(let n=0;n<1000;n++){const y=2**(-20+n/25);assert.equal(R.matchedFactor(y),factor(y,0));}
 const stats={p10:.01,p50:.04,p60:.055,p90:.073,p99:.082,samples:1000,validFraction:.9,areaStatus:'confirmed'};assert.deepEqual(R.sceneExposure(stats,R.reconstructionExposureRecipe),placement(R,stats,R.reconstructionExposureRecipe));

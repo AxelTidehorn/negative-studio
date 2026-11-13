@@ -1,23 +1,11 @@
-import {confirmFrameIfNeeded} from './helpers/browser.mjs';
-import {openSettings,selectBackend} from './helpers/browser.mjs';
-import {selectEngine} from './helpers/browser.mjs';
-import {launchBrowser} from './helpers/browser-runtime.mjs';
-import {readSource} from './helpers/source.mjs';
-/* Optional browser integration. Install Playwright separately, then:
-   FILMLABB_CHROMIUM_BIN=/path/to/chromium npm run test:gpu
-   Override FILMLABB_PLAYWRIGHT_MODULE / FILMLABB_CHROMIUM_ARGS if needed. */
-import fs from 'node:fs';import path from 'node:path';import http from 'node:http';import assert from 'node:assert/strict';
-const {chromium}=await import(process.env.FILMLABB_PLAYWRIGHT_MODULE||'playwright');
-const root=path.resolve('site');const mime={'.html':'text/html','.js':'text/javascript','.wasm':'application/wasm','.css':'text/css','.png':'image/png','.webmanifest':'application/manifest+json'};
-const server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,p=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!p.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(p)]||'application/octet-stream');res.end(readSource(p));}catch{res.writeHead(404);res.end();}});
-await new Promise(r=>server.listen(0,'127.0.0.1',r));
-const browser=await launchBrowser({headless:true,executablePath:process.env.FILMLABB_CHROMIUM_BIN||undefined,args:process.env.FILMLABB_CHROMIUM_ARGS?JSON.parse(process.env.FILMLABB_CHROMIUM_ARGS):['--no-sandbox','--enable-unsafe-swiftshader']});
+import {browserHarness,confirmFrameIfNeeded,selectBackend,openSettings} from './helpers/browser.mjs';import assert from 'node:assert/strict';
+const h=await browserHarness(),browser=h.browser;
 const report={environment:'Chromium WebGL 2; renderer recorded below; synthetic image fixtures',checks:[]};
 function check(message){report.checks.push(message);console.log('PASS',message);}
 try{
  const page=await browser.newPage({viewport:{width:1280,height:900},locale:'sv-SE'}),errors=[];page.setDefaultTimeout(90000);
- page.on('pageerror',e=>errors.push(e.message));await page.goto('http://127.0.0.1:'+server.address().port+'/',{waitUntil:'domcontentloaded',timeout:90000});
- await page.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));
+ page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url,{waitUntil:'domcontentloaded',timeout:90000});
+ await page.locator('#imageFile').setInputFiles('demo-negative.png');
  await page.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().backend==='gpu');await confirmFrameIfNeeded(page);
  assert.deepEqual(errors,[]);check('Actual app PNG import uses GPU with no page errors');
  const parity=await page.evaluate(()=>{
@@ -52,7 +40,7 @@ try{
  await page.locator('#exposure').evaluate(el=>{for(let i=0;i<30;i++){el.value=String(i/30);el.dispatchEvent(new Event('input',{bubbles:true}));}el.dispatchEvent(new Event('change',{bubbles:true}));});
  await page.waitForTimeout(350);
  const after=await page.evaluate(()=>({analyses:analysisCount38,source:sourceVersion38,response:JSON.stringify(state.response4),uploads:FILMLABB_GPU.snapshot().sourceUploads,gpu:FILMLABB_GPU.snapshot()}));
- assert.equal(before.analyses,after.analyses);assert.equal(before.source,after.source);assert.equal(before.response,after.response);assert.equal(before.uploads,after.uploads);assert.equal(after.gpu.backend,'gpu');await page.screenshot({path:path.resolve('../gpu-preview-qa.png')});check('Actual slider burst uses GPU without recalibration or source reupload');
+ assert.equal(before.analyses,after.analyses);assert.equal(before.source,after.source);assert.equal(before.response,after.response);assert.equal(before.uploads,after.uploads);assert.equal(after.gpu.backend,'gpu');check('Actual slider burst uses GPU without recalibration or source reupload');
  // Click geometry, rotation, crop overlay and manual sample still use source coordinates.
  await page.locator('#geometryTools').evaluate(e=>e.open=true);await page.locator('#rotateRight').click();await page.locator('#zoomIn').click();
  const geometry=await page.evaluate(()=>{drawCrop();const a=$('preview').getBoundingClientRect(),b=$('gpuPreview').getBoundingClientRect();return {delta:Math.max(Math.abs(a.x-b.x),Math.abs(a.y-b.y),Math.abs(a.width-b.width),Math.abs(a.height-b.height)),pointer:getComputedStyle($('gpuPreview')).pointerEvents};});
@@ -74,13 +62,13 @@ try{
  assert.deepEqual(errors,[]);
  // Independent mobile viewport, no-WebGL and failed color-check paths.
  const mobile=await browser.newPage({viewport:{width:390,height:844},deviceScaleFactor:2,isMobile:true,hasTouch:true,locale:'sv-SE'});
- await mobile.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await mobile.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await mobile.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
+ await mobile.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await mobile.locator('#imageFile').setInputFiles('demo-negative.png');await mobile.waitForFunction(()=>FILMLABB_GPU.snapshot().backend==='gpu');
  await mobile.locator('#exposure').evaluate(el=>{el.value='.4';el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}));});await mobile.waitForTimeout(250);
- assert.equal(await mobile.locator('#gpuPreview').isVisible(),true);check('390px touch viewport imports and adjusts in GPU mode');await mobile.screenshot({path:path.resolve('../gpu-mobile-qa.png')});await mobile.close();
+ assert.equal(await mobile.locator('#gpuPreview').isVisible(),true);check('390px touch viewport imports and adjusts in GPU mode');await mobile.close();
  const fallback=await browser.newPage({locale:'sv-SE'});await fallback.addInitScript(()=>{const original=HTMLCanvasElement.prototype.getContext;HTMLCanvasElement.prototype.getContext=function(type,...args){return type==='webgl2'?null:original.call(this,type,...args);};});
- await fallback.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await fallback.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await fallback.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().reason?.includes('WebGL'));
+ await fallback.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await fallback.locator('#imageFile').setInputFiles('demo-negative.png');await fallback.waitForFunction(()=>globalThis.FILMLABB_GPU?.snapshot().reason?.includes('WebGL'));
  assert.equal(await fallback.locator('#preview').isVisible(),true);await fallback.waitForFunction(()=>lastPreview38?.data?.length>0);check('Unavailable WebGL keeps a usable CPU preview');await fallback.close();
  const validation=await browser.newPage({locale:'sv-SE'});await validation.goto(page.url(),{waitUntil:'domcontentloaded',timeout:90000});await validation.evaluate(()=>{const create=NSGpuPreview.create;NSGpuPreview.create=canvas=>{const gpu=create(canvas);gpu.validate=()=>{throw Error('simulerat färgfel');};return gpu;};});
- await validation.locator('#imageFile').setInputFiles(path.resolve('demo-negative.png'));await validation.waitForFunction(()=>FILMLABB_GPU.snapshot().reason?.includes('simulerat färgfel'));await validation.waitForFunction(()=>lastPreview38?.data?.length>0);check('Failed startup color check automatically shows CPU');await validation.close();
- console.log(JSON.stringify(report,null,2));fs.writeFileSync('docs/gpu-browser-results.json',JSON.stringify(report,null,2));
-}finally{await browser.close();server.closeAllConnections();server.close();}
+ await validation.locator('#imageFile').setInputFiles('demo-negative.png');await validation.waitForFunction(()=>FILMLABB_GPU.snapshot().reason?.includes('simulerat färgfel'));await validation.waitForFunction(()=>lastPreview38?.data?.length>0);check('Failed startup color check automatically shows CPU');await validation.close();
+ console.log(JSON.stringify(report,null,2));
+}finally{await h.close();}

@@ -10,4 +10,4 @@ for(const engine of ['calibrated4']){
 }
 assert.ok(Math.abs(D.stats([[.5,.5,.5]],'srgb','display-srgb').luminance[0]-.21404114048223255)<1e-12);assert.equal(D.stats([[.5,.5,.5]],'srgb','coordinate').luminance,null);
 assert.throws(()=>compare({schemaVersion:9},{}));assert.throws(()=>D.serialize({huge:'x'.repeat(200001)}));
-console.log('PASS deterministic bounded diagnostics, five engines, private metadata exclusion, immutable state/source, neutral/edit diff and size/version guards');
+console.log('PASS deterministic bounded diagnostics, active engines, private metadata exclusion, immutable state/source, neutral/edit diff and size/version guards');

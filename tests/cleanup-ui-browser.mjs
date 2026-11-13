@@ -3,8 +3,8 @@ import {selectLanguage} from './helpers/browser.mjs';
 import assert from 'node:assert/strict';
 import {browserHarness,selectEngine} from './helpers/browser.mjs';
 
-// The build/suite owner prepares site/. --probe records the frozen baseline.
-const probe=process.argv.includes('--probe'),h=await browserHarness(),errors=[];
+// The build/suite owner prepares site/.
+const h=await browserHarness(),errors=[];
 try{
  const page=await h.browser.newPage({viewport:{width:1024,height:1000},locale:'sv-SE',hasTouch:true});page.setDefaultTimeout(60000);page.on('pageerror',e=>errors.push(e.message));await page.goto(h.url);
  const empty=await page.evaluate(()=>({left:$('rotateLeft').disabled,right:$('rotateRight').disabled}));
@@ -16,7 +16,7 @@ try{
  for(const language of ['en','fr','es','de']){
   await selectLanguage(page,language);descriptions[language]=await page.locator('#methodDescription3').textContent();
   const label=await page.evaluate(()=>{updateCalibrationUI();return {actual:$('engineMode').querySelector('[value="v2"]').textContent,expected:FILMLABB_I18N.fromSource('V2 · standard')};});
-  if(!probe)assert.equal(label.actual,label.expected,'V2 option remains localized after controller refresh in '+language);
+  assert.equal(label.actual,label.expected,'V2 option remains localized after controller refresh in '+language);
  }
  for(const viewport of [{width:1440,height:900},{width:820,height:1180},{width:390,height:844}]){
   await page.setViewportSize(viewport);await page.evaluate(()=>new Promise(r=>requestAnimationFrame(()=>requestAnimationFrame(r))));
@@ -33,8 +33,8 @@ try{
  const cleared=await page.evaluate(()=>({empty:!working&&!roll.length,worker:previewWorker38===null,result:lastPreview38===null,busy:workerBusy38,queued:queued38===null,tick:previewTick38===null,idle:dragTimer38===null,terminated:previewTerminations,rotation:[$('rotateLeft').disabled,$('rotateRight').disabled],histogram:$('histogramInfo').textContent,histogramEmpty:!$('histogram').getContext('2d').getImageData(0,0,$('histogram').width,$('histogram').height).data.some(v=>v!==0)}));
  await page.evaluate(()=>FILMLABB_APPEARANCE.set('light'));
  await page.waitForTimeout(30);const afterTheme=await page.locator('#histogramInfo').textContent();
- if(probe){console.log(JSON.stringify({empty,descriptions,failed,busyNoop,cleared,afterTheme,errors},null,2));}
- else{
+ {
+
   assert.deepEqual(empty,{left:true,right:true},'rotation controls unavailable without an image');
   for(const [language,text]of Object.entries(descriptions)){assert.match(text,/^V2/,'V2 explanation in '+language);assert.doesNotMatch(text,/Äldre projekt|Legacy project/);}
   assert.deepEqual(failed,{empty:true,histogram:'No image'},'failed import cannot retain old histogram');

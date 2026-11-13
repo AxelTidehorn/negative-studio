@@ -37,16 +37,13 @@ Open `http://localhost:8000`. Serve **`site/`**, not the source root: `app-manif
 ## Development and verification
 
 ```sh
-npm run test:fast
-npm run test:integration
-npm run test:full
-npm test -- --group color
-npm run test:browser
-npm run test:build
-npm run test:benchmark
+npm run test:fast       # short architecture / numeric / import checks
+npm run test:full       # complete current-product regression and verified build
+npm run test:extended   # full plus expanded geometry / GPU / viewport workloads
+npm run test:benchmark  # separate source-analysis / sampling measurement
 ```
 
-Set `FILMLABB_CHROMIUM_BIN` to an installed Chromium-family executable. The complete suite covers V2/D, Standard, current projects/queue, calibration, frame interaction, profiles, Editing 2.0, GPU/CPU, RAW/TIFF import and all export formats. Numeric oracles retain pre-consolidation Float64 output and 16-bit export hashes; expected pixels must not be regenerated to hide a cleanup regression.
+Set `FILMLABB_CHROMIUM_BIN` to an installed Chromium-family executable. The complete suite covers V2/D, Standard, current projects/queue, calibration, frame interaction, profiles, Editing 2.0, GPU/CPU, RAW/TIFF import and all export formats. Reviewed frozen Node 22/24 fixtures protect exact Float64 output and 16-bit export hashes without checking out historical code. Expected pixels must not be regenerated to hide a regression. See [verification and coverage](docs/TESTING.md).
 
 [Architecture](docs/ARCHITECTURE.md), [testing](docs/TESTING.md), [settings/export](docs/SETTINGS_AND_EXPORT.md), [backlog](docs/FEATURE_BACKLOG.md) and [consolidation evidence](docs/consolidation/README.md) describe the active implementation. Earlier reports explicitly marked archival describe their own historical commits.
 

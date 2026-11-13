@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 for(const n of ['core','render','fast'])await import('../src/conversion-v2/'+n+'.js');
-await import('./helpers/v2-output-oracle.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'};
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'};
 const close=(a,b)=>assert.ok(Math.abs(a-b)<=1e-12*Math.max(1,Math.abs(b)),`${a} != ${b}`),ys=p=>.2126*p[0]+.7152*p[1]+.0722*p[2];
 const rgb=[.82,.43,.21],im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(48*36*3)};
 let seed=71;for(let i=0;i<im.data.length;i++){seed=(Math.imul(seed,1664525)+1013904223)>>>0;im.data[i]=rgb[i%3]*10**(-.08-1.5*seed/2**32);}
@@ -33,6 +32,5 @@ const a=estimate(fallback,R.balanceRecipe),b=estimate(fallback,R.balanceRecipe2)
 for(let i=0;i<n;i+=37){const p=Array.from(near.positive.subarray(i*3,i*3+3));close(V.luminance(R.balance(p,{...next,colorCorrection:balanced})),V.luminance(p));}
 for(const mode of ['auto','technical','fixed']){
  const fast=F.compile(k,next,{viewMode:mode});for(let i=0;i<im.data.length;i+=39){const p=V.read(im,i),expected=R.view(k.pixel(p).positive,next,mode);fast.pixel(...p,scratch);scratch.forEach((v,c)=>close(v,expected[c]));}
- for(const rotation of [0,90,180,270]){const g=O.geometry(im,{x:.1,y:.2,w:.7,h:.6},rotation,17),ref=O.rows(im,g,0,g.height,(x,y)=>O.pixel(im,k,next,x,y,mode),16),actual=await O.area(im,g,fast.pixel,16);actual.forEach((v,i)=>assert.ok(Math.abs(v-ref[i])<=1));}
 }
-console.log('PASS render3: old output/analysis unchanged, luminance and hue direction, bounded highlights, near-neutral evidence and terminal fallback, frozen keys, fixed/technical identity, fast/reference/area RGB16 parity');
+console.log('PASS render3: old output/analysis unchanged, luminance and hue direction, bounded highlights, near-neutral evidence and terminal fallback, frozen keys, fixed/technical identity, fast/reference parity');

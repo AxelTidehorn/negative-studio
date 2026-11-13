@@ -1,5 +1,7 @@
 # Filmgränser och preliminär importbild
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/frame-detection/method.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 Bas: main `0ac89dc` efter #95. Originalet `_DSF9235.RAF` finns i Drive/Fotolab,
 50 245 120 byte, SHA256 `ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094`.
 Det importeras genom appens libraw-wasm/V2-recept. En nedskalad linjär

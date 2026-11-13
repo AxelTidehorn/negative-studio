@@ -5,7 +5,7 @@ import {harness} from './helpers/app-harness.mjs';
 const h=harness(),G=h.context.NSGeometry,P=h.context.NSPresentation,K=h.context.NSPixelKernel,CE=h.context.NSColorEngine,E=h.context.NSExportPlan;
 h.run(`render=()=>{};scheduleRender=()=>{};sourceInfo={encoding:'linear'};state={...defaultState(),frame:NSFrameSelection.rectangular(typeof testRegion==='undefined'?{x:0,y:0,w:1,h:1}:testRegion,{status:NSFrameSelection.status.confirmed})};applyFrameSelection(NSFrameSelection.rectangular({x:0,y:0,w:1,h:1},{status:NSFrameSelection.status.confirmed}));
 working={width:31,height:23,channels:3,scale:65535,encoding:'linear',data:Uint16Array.from({length:31*23*3},(_,i)=>2000+(i*137)%50000)};workingPreview=CE.preview(working);analyzeLevels();`);
-const config=h.run('configuration38()');
+const config=h.run('configuration38()'),referenceKernel=K.compile(config);
 const decode=v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4;
 const encode=v=>v<=.0031308?v*12.92:1.055*v**(1/2.4)-.055;
 // Independent scalar reference: no production geometry/sampling helpers.
@@ -22,7 +22,7 @@ function reference(im,model,shared,frame,target,x,y){
  }else{hh=Math.min(dw/(aspect*Math.abs(c)+Math.abs(s)),dh/(aspect*Math.abs(s)+Math.abs(c)));w=aspect*hh;cx=c*((b.x0+b.x1-W)/2)-s*((b.y0+b.y1-H)/2);cy=s*((b.x0+b.x1-W)/2)+c*((b.y0+b.y1-H)/2);}
  const rx=cx+((x+.5)/target.width-.5)*w,ry=cy+((y+.5)/target.height-.5)*hh;
  const u=Math.max(b.x0,Math.min(b.x1-1,W/2+c*rx+s*ry-.5)),v=Math.max(b.y0,Math.min(b.y1-1,H/2-s*rx+c*ry-.5)),ix=Math.floor(u),iy=Math.floor(v),fx=u-ix,fy=v-iy;
- const k=K.compile(config),sum=[0,0,0];
+ const k=referenceKernel,sum=[0,0,0];
  for(const [sx,sy,weight] of [[ix,iy,(1-fx)*(1-fy)],[Math.min(b.x1-1,ix+1),iy,fx*(1-fy)],[ix,Math.min(b.y1-1,iy+1),(1-fx)*fy],[Math.min(b.x1-1,ix+1),Math.min(b.y1-1,iy+1),fx*fy]]){
   const p=k.pixel(CE.pixel(im,sx,sy));p.forEach((v,i)=>sum[i]+=decode(Math.max(0,Math.min(1,v)))*weight);
  }

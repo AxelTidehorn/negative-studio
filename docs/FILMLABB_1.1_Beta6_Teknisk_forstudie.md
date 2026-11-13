@@ -1,5 +1,7 @@
 # FILMLABB 1.1 Beta 6 – Teknisk förstudie
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/FILMLABB_1.1_Beta6_Teknisk_forstudie.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 **Status:** beslutsunderlag, ingen implementation.  
 **Granskad bas:** `main`, commit `2773bb996069ee43cc789fdcea4273876ef7643a`.  
 **Källkontroll:** GitHubs branchmetadata och PR #16 bekräftar att denna commit är merge av stabiliseringsuppdateringen. Rapporten gäller denna låsta revision, även om main senare flyttas.

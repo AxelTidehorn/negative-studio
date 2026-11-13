@@ -1,5 +1,7 @@
 # Scenmedveten tonplacering – fryst fotografisk A/B
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/V2_SCENE_TONE_REVIEW.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 Baseline är main `6e3d763cfdaad958fac7baf4d8acda3cb5e9733b` efter #88.
 **Produktionsbeteendet behålls.** Kandidaten ger ljusare snö men inte en
 konsekvent fotografisk vinst över kontrollmaterialet. Ingen ny motor, inget

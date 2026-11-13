@@ -20,4 +20,6 @@ const manifest=JSON.stringify(assets);for(const module of ['conversion3.js','leg
 const a=S.imageDefaults(),b=S.imageDefaults();a.response4={span:[1,2,3]};const copied=S.clone(a);copied.response4.span[0]=99;assert.equal(a.response4.span[0],1);assert.equal(b.response4,null);
 assert.deepEqual(Object.keys(S.rollDefaults()).sort(),['cropExportToFrame','look','monochrome']);
 console.log('PASS only V2/Standard production graph, current defaults and independent settings');
-await import('../tools/consolidation-oracle.mjs');
+
+const boot=scripts.filter(a=>a.harness).map(a=>fs.readFileSync(a.source,'utf8')).join('\n');
+assert.match(boot,/^applyTheme\(currentTheme\);/m);assert.ok(boot.indexOf('applyTheme(currentTheme);')<boot.indexOf("$('auto').checked"));assert.match(html,/github\.com\/AxelTidehorn\/negative-studio\/issues/);

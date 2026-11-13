@@ -1,5 +1,7 @@
 # V2 GPU reconstruction, stage 2
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/V2_GPU_RECONSTRUCTION.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 Based on main `2367a55` (merged #63), including #61 cleanup and #62 Vibrance.
 [Stage 1](V2_GPU_PREVIEW.md) is the historical CPU-reconstruction/GPU-editing
 reference. This change executes V2's existing reconstruction on GPU. No new

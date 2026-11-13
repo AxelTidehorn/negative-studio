@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 for(const n of ['core','render','fast','diagnostics','platform'])await import('../src/conversion-v2/'+n+'.js');
-await import('./helpers/v2-output-oracle.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle,P=NSV2Platform;
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,P=NSV2Platform;
 const close=(a,b)=>assert.ok(Math.abs(a-b)<=1e-12*Math.max(1,Math.abs(b)),`${a} != ${b}`);
 const im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(48*36*3)},rgb=[.8,.45,.2];
 for(let i=0;i<im.data.length;i++)im.data[i]=rgb[i%3]*10**(-.1-(i%113)/65);
@@ -43,10 +42,7 @@ const scratch=new Float64Array(3);
 for(const mode of ['auto','technical','fixed']){
  const fast=F.compile(k,next,{viewMode:mode});
  for(let i=0;i<im.data.length;i+=33){const j=V.read(im,i),technical=k.pixel(j).positive,expected=R.view(technical,next,mode);fast.pixel(...j,scratch);scratch.forEach((v,c)=>close(v,expected[c]));if(mode!=='auto')assert.deepEqual(expected,R.view(technical,old,mode));}
- for(const rotation of [0,90,180,270]){
-  const g=O.geometry(im,{x:.1,y:.2,w:.7,h:.6},rotation,17),expected=O.rows(im,g,0,g.height,(x,y)=>O.pixel(im,k,next,x,y,mode),16),actual=await O.area(im,g,fast.pixel,16);
-  actual.forEach((v,i)=>assert.ok(Math.abs(v-expected[i])<=1));
- }
+
 }
 const report=NSV2Diagnostics.diagnostic(im,k,next);
 assert.deepEqual(report.colorBalance.value.gains,model.gains);assert.equal(report.colorBalance.value.application,'global-terminal');
@@ -65,4 +61,4 @@ assert.equal(P.prepare(im,{...input,photographic:false,previous:recipe}).intent.
 assert.equal(P.prepare(im,{...input,photographic:true,previous:recipe}).intent.tone,'luminance-photographic-1');
 assert.equal(P.prepare(im,{...input,photographic:undefined}).intent.tone,'luminance-matched-D-1','fresh automatic V2 uses approved D');
 assert.equal(P.prepare(im,{...input,photographic:undefined}).intent.output,R.presentationRecipe.version);
-console.log('PASS opt-in photographic color: qualified global anchor, intensity-invariant chromatic ratios, unchanged luminance/tone/technical response, explicit fallback, historical PR45/neutral, versioned persistence, all view modes/rotations/RGB16 and applied-model diagnostics');
+console.log('PASS opt-in photographic color: qualified global anchor, intensity-invariant chromatic ratios, unchanged luminance/tone/technical response, explicit fallback, historical PR45/neutral, versioned persistence, all view modes and fast/scalar parity and applied-model diagnostics');

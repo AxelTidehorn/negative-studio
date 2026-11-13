@@ -1,5 +1,7 @@
 # FILMLABB 3.0: en aktiv presentationskedja
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/profile-system/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 Bas: main `023b208f5e8a4fa772718b49b79a9cf0883e4fd6`, inklusive mergad
 PR #89. D återanvänds; dess exponering, kontrast 0, rekonstruktion och tonrecept
 ändras inte. Work-underlagets uppgift att #89 är öppen är historisk.

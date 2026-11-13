@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import {harness} from './helpers/app-harness.mjs';
 
-const baseline=process.argv.includes('--baseline'),failures=[];
+const failures=[];
 function setup(){
  const h=harness();
  h.run(`render=()=>{};scheduleRender=()=>{};
@@ -69,5 +69,4 @@ await check('project reload preserves an actual source import error',async()=>{
  await load(h,Promise.resolve(JSON.stringify(p))).promise;
  assert.equal(h.elements.get('status').textContent,'Importfel: requested decode failed');
 });
-if(baseline){assert.ok(failures.length>=7,'baseline must reproduce the ownership defects');console.log('CONFIRMED baseline failures:',failures.length);}
-else assert.deepEqual(failures,[]);
+assert.deepEqual(failures,[]);

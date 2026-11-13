@@ -1,6 +1,6 @@
 import {readSource} from './helpers/source.mjs';
-import assert from 'node:assert/strict';import '../src/import/tiff-codec.js';
-for(const f of JSON.parse(readSource('tests/fixtures/tiff/expected.json'))){
+import assert from 'node:assert/strict';import {gunzipSync} from 'node:zlib';import '../src/import/tiff-codec.js';
+for(const f of JSON.parse(gunzipSync(readSource('tests/fixtures/tiff/expected.json.gz')))){
  const b=readSource('tests/fixtures/tiff/'+f.name),ab=b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength),im=await NSTiff.decode(ab);
  assert.equal(im.width,f.width,f.name+' width');assert.equal(im.height,f.height,f.name+' height');assert.deepEqual(Array.from(im.data),f.pixels,f.name+' samples');
  if(!/deflate|-c8\./.test(f.name))assert.deepEqual(NSTiff.decodeSync(ab).data,im.data);

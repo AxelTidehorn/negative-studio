@@ -1,5 +1,7 @@
 # Godkänd D i ordinarie V2
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/V2_APPROVED_D_INTEGRATION.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 Fotografens val av D i 05/11 är beslutsunderlaget. Det ersätter inte mätningar
 eller verifierar automatiskt färgkorrekthet. Produktionsbas: main 6e3d763;
 referens-D: PR89 efcf88f, matched-shoulder-1 och scene-distribution-1.

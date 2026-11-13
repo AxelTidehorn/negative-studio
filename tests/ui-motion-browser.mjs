@@ -6,9 +6,9 @@ import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';
 import {browserHarness} from './helpers/browser.mjs';
 ensureBuild();const h=await browserHarness(),results=[],errors=[];
-const viewports=[[1440,900,false],[1920,1080,false],[1024,768,true],[768,1024,true],[390,844,true]];
+const extended=process.env.FILMLABB_TEST_LEVEL==='extended',viewports=extended?[[1440,900,false],[1920,1080,false],[1024,768,true],[768,1024,true],[390,844,true]]: [[1920,1080,false],[1024,768,true],[390,844,true]];
 try{
- for(const reduced of [false,true])for(const [width,height,touch]of viewports){
+ for(const [width,height,touch]of viewports)for(const reduced of (extended?[false,true]:[width===1024])){
   const c=await h.browser.newContext({viewport:{width,height},hasTouch:touch,reducedMotion:reduced?'reduce':'no-preference',locale:'sv-SE',serviceWorkers:'block'}),p=await c.newPage();
   p.on('pageerror',e=>errors.push(e.message));await p.goto(h.url);
   await p.locator('#imageFile').setInputFiles({name:'motion.png',mimeType:'image/png',buffer:fs.readFileSync('demo-negative.png')});

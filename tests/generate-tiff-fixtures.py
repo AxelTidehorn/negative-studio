@@ -56,3 +56,10 @@ for tiled in [False,True]:
     t.TIFFClose(f)
     manifest.append(dict(name=name,width=w,height=h,pixels=[value(x,y,ch) if bits==16 else (value(x,y,ch)%256)*257 for y in range(h) for x in range(w) for ch in range(3)]))
 (p/'expected.json').write_text(json.dumps(manifest));print(len(manifest),'TIFF fixtures')
+
+# Lossless storage only: do not recalculate expected samples during tests.
+import gzip
+reference=p/'expected.json'
+with gzip.GzipFile(filename=str(p/'expected.json.gz'),mode='wb',mtime=0) as f:
+    f.write(reference.read_bytes())
+reference.unlink()

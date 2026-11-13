@@ -30,6 +30,8 @@ function event(type,x,y,id=7,side){const e={...screen(x,y),pointerId:id,target:{
 }
 function drag(side,from,to,end='pointerup'){const vertical=side==='top'||side==='bottom';event('pointerdown',vertical?.5:from,vertical?from:.5,7,side);assert.equal(run('state.frame.origin'),'manual','manual on down');event('pointermove',vertical?.5:to,vertical?to:.5);const moved=json('frameRegion()');event(end,vertical?.5:to,vertical?to:.5);assert.deepEqual(json('frameRegion()'),moved,'end retains selected rectangle');assert.equal(captures.size,0);return moved;}
 let detected=0;const detect=context.NSColorEngine.detectFrame;context.NSColorEngine.detectFrame=im=>{detected++;return detect(im);};
+// Coordinate-only matrix: V2 reanalysis is verified by frame-detection/review.
+run('globalThis.fullAnalysis=analyzeLevels;globalThis.geometryAnalyses=0;analyzeLevels=()=>geometryAnalyses++;');
 for(const rotation of [0,90,180,270])for(const z of [1,2.3])for(const width of [460,980]){
  picture.clientWidth=width;picture.clientHeight=620;picture.getBoundingClientRect=()=>({left:31,top:47,width:width*.8,height:496});run(`state.rotation=${rotation};zoom=${z};panX=19;panY=-27;applyFrameSelection(NSFrameSelection.rectangular({x:.1,y:.15,w:.8,h:.7},{status:NSFrameSelection.status.confirmed}));state.frame.locked=false;`);
  let r=drag('top',.15,.07);near(r.y,.07,'top independent');near(r.y+r.h,.85,'bottom stationary');
@@ -38,7 +40,7 @@ for(const rotation of [0,90,180,270])for(const z of [1,2.3])for(const width of [
  r=drag('right',.9,.98);near(r.x,.02,'left stationary');near(r.x+r.w,.98,'right independent');
  const before=json('frameRegion()');run('applyView();drawCrop();analyzeLevels();render();');assert.deepEqual(json('frameRegion()'),before);assert.deepEqual(json('NSFrameSelection.region(roll[0].settings.frame)'),before);
 }
-assert.equal(detected,0,'no detector called on manual or render');
+assert.equal(detected,0,'no detector called on manual or render');assert.equal(run('geometryAnalyses'),80,'64 drag endings plus 16 explicit analysis calls');run('analyzeLevels=fullAnalysis;');
 console.log('PASS 64 edge drags: four rotations, two zooms, two panel widths; independent sides and unchanged image coordinates');
 // Capture offset and other pointers cannot snap/move a selected edge.
 run('applyFrameSelection(NSFrameSelection.rectangular({x:.1,y:.15,w:.8,h:.7},{status:NSFrameSelection.status.confirmed}));');event('pointerdown',.5,.16,7,'top');event('pointermove',.5,.8,8);near(run('frameRegion().y'),.15,'ignore second pointer');event('pointermove',.5,.16);near(run('frameRegion().y'),.15,'grab offset retained');event('pointermove',.5,.08);event('pointercancel',.5,.08);near(run('frameRegion().y'),.07,'cancel commits last position');

@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {ensureBuild} from '../tools/build-artifact.mjs';
 import {browserHarness} from './helpers/browser.mjs';
-ensureBuild();const app=await browserHarness();fs.mkdirSync('docs/filmbas2/screenshots',{recursive:true});
+ensureBuild();const app=await browserHarness();if(process.env.FILMLABB_BASE_SCREENSHOTS)fs.mkdirSync(process.env.FILMLABB_BASE_SCREENSHOTS,{recursive:true});
 try{
  for(const [name,width,height,touch]of [['desktop',1360,950,false],['ipad-landscape',1024,768,true],['ipad-portrait',768,1024,true],['mobile',390,844,true]]){
   const page=await app.browser.newPage({viewport:{width,height},hasTouch:touch,isMobile:touch,serviceWorkers:'block',locale:'sv-SE'}),errors=[];page.on('pageerror',e=>errors.push(e.message));page.setDefaultTimeout(30000);await page.goto(app.url);
@@ -20,14 +20,14 @@ try{
   await page.waitForFunction(()=>FILMLABB_BASE2.snapshot().proposal?.measurement.kind==='manual-region');const measurement=await page.evaluate(()=>FILMLABB_BASE2.snapshot().proposal.measurement);assert.equal(measurement.status,'safe');assert.ok(measurement.samples>=16);assert.equal(await page.locator('#base2Loupe').isVisible(),true);
   // Move the rectangle, then resize a corner using actual pointer capture.
   if(!touch){const body=await page.locator('#base2Overlay polygon').boundingBox();await page.mouse.move(body.x+body.width/2,body.y+body.height/2);await page.mouse.down();await page.mouse.move(body.x+body.width/2+3,body.y+body.height/2+4,{steps:3});await page.mouse.up();const old=await page.evaluate(()=>baseRegion2.w),corner=await page.locator('#base2Overlay circle').nth(2).boundingBox();await page.mouse.move(corner.x+14,corner.y+14);await page.mouse.down();await page.mouse.move(corner.x+16,corner.y+20,{steps:3});await page.mouse.up();assert.notEqual(await page.evaluate(()=>baseRegion2.w),old);}
-  await page.screenshot({path:`docs/filmbas2/screenshots/${name}-sample.png`});
+  if(process.env.FILMLABB_BASE_SCREENSHOTS)await page.screenshot({path:`${process.env.FILMLABB_BASE_SCREENSHOTS||'.cache/filmbas2'}/${name}-sample.png`});
   await page.locator('#base2Preview').click();assert.equal(await page.evaluate(()=>FILMLABB_BASE2.snapshot().preview),true);await page.locator('#base2Preview').click();assert.equal(await page.evaluate(()=>FILMLABB_BASE2.snapshot().preview),false);
   await page.locator('#base2Accept').click();await page.waitForFunction(()=>state.acceptedCalibration2?.baseLocked);const reference=await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2));
   await page.evaluate(()=>{applyFrameSelection(NSFrameSelection.rectangular({x:.2,y:.2,w:.6,h:.6},{status:NSFrameSelection.status.confirmed}));cropChanged();});assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);
   await page.locator('#base2Enable').click();await page.waitForFunction(()=>FILMLABB_BASE2.snapshot().proposal);assert.equal(await page.locator('#base2Accept').isDisabled(),true);assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);
   await page.locator('#base2Cancel').click();
   const n=await page.evaluate(()=>analysisCount38);await page.evaluate(()=>FILMLABB_APPEARANCE.set(FILMLABB_APPEARANCE.get().mode==='light'?'dark':'light'));assert.equal(await page.evaluate(()=>analysisCount38),n);assert.equal(await page.locator('footer.foot').count(),1);assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth+1),false);
-  await page.screenshot({path:`docs/filmbas2/screenshots/${name}-accepted.png`});
+  if(process.env.FILMLABB_BASE_SCREENSHOTS)await page.screenshot({path:`${process.env.FILMLABB_BASE_SCREENSHOTS||'.cache/filmbas2'}/${name}-accepted.png`});
   if(name==='desktop'){
    const parity=await page.evaluate(async()=>{
     const saved=state.engine,results=[];downloadBlob=()=>{};
@@ -36,7 +36,7 @@ try{
      if(NSGpuPreview.supports(c)){const canvas=document.createElement('canvas'),gpu=NSGpuPreview.create(canvas);gpu.draw(working,c,'positive',480,sourceVersion38);const pixels=gpu.read();for(let y=0;y<working.height;y+=7)for(let x=0;x<working.width;x+=7){const p=kernel.pixel(CE.pixel(working,x,y));for(let k=0;k<3;k++)max=Math.max(max,Math.abs(pixels.data[(y*working.width+x)*4+k]-Math.round(p[k]*255)));}gpu.destroy();gpuTested=true;}
      let output;downloadBlob=b=>output=b;await exportTiff();const tiff=await NSTiff.decode(await output.arrayBuffer());const jpeg=await jpegBytes();results.push({engine,max,gpuTested,tiffValid:tiff.width>0&&tiff.height>0,jpegValid:jpeg[0]===255&&jpeg[1]===216});
     }state.engine=saved;analyzeLevels();render();return results;
-   });assert.ok(parity.every(r=>r.max<=2&&r.tiffValid&&r.jpegValid),JSON.stringify(parity));console.log('PASS v2 five engine TIFF/JPEG exports and supported GPU/CPU parity',JSON.stringify(parity));
+   });assert.ok(parity.every(r=>r.max<=2&&r.tiffValid&&r.jpegValid),JSON.stringify(parity));console.log('PASS Standard TIFF/JPEG exports and supported GPU/CPU parity',JSON.stringify(parity));
    await page.locator('#shareBase').click();assert.equal(await page.evaluate(()=>state.useRollBase2),true);
    const project=await page.evaluate(async()=>{let b;downloadBlob=x=>b=x;$('saveSettings').onclick();return JSON.parse(await b.text());});assert.ok(project.sharedBase2);
    await page.locator('#settingsFile').setInputFiles({name:'v2.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});await page.waitForFunction(()=>!rollLoading&&$('status').textContent.includes('matchades'));assert.equal(await page.evaluate(()=>JSON.stringify(state.acceptedCalibration2)),reference);assert.equal(await page.evaluate(()=>!!accepted2()),true);

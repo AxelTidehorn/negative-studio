@@ -1,6 +1,8 @@
-import assert from 'node:assert/strict';
+/* Geometric evidence, uncertain/missing boundaries and real V2 area integration. */
+import assert from 'node:assert/strict';import fs from 'node:fs';import zlib from 'node:zlib';
 import '../src/image/image-model.js';import '../src/calibration/frame-detector.js';import '../src/calibration/frame-selection.js';import '../src/calibration/color-analysis.js';
-import {negativeFrame} from './helpers/negative-frame.mjs';
+import {negativeFrame} from './helpers/negative-frame.mjs';import {metrics,inside} from './helpers/frame-metrics.mjs';
+{
 const results=[];
 for(const options of [{},{angle:180},{angle:90,frame:{x:.25,y:.15,w:.5,h:.7}},{frame:{x:.04,y:.08,w:.90,h:.86},separator:1},{frame:{x:.018,y:.018,w:.962,h:.96},holder:0,separator:1},{angle:3},{angle:-4},{light:.12},{separator:0},{frame:{x:.15,y:.05,w:.76,h:.87}}]){
  const f=negativeFrame(options),d=NSFrameDetector.detect(f.image),r=d.region;
@@ -40,3 +42,24 @@ h.run(`state.frame={...state.frame,status:NSFrameSelection.status.pending};state
 assert.equal(h.run('baseCalls'),0);assert.equal(h.run('state.v2Recipe.base.origin'),'prior');
 h.run('confirmFrameSelection();');assert.ok(h.run('baseCalls')>0);assert.equal(h.run('state.v2Recipe.base.origin'),'measured');assert.equal(h.run('state.v2Recipe.base.source'),'automatic-platform');
 console.log('PASS uncertain area cannot auto-select film base; confirmed geometry still enables the existing automatic base path');
+}
+{
+let count=0;
+const extended=process.env.FILMLABB_TEST_LEVEL==='extended';
+for(const ratio of (extended?[.12,.4,1,1.5,4,8]:[.12,1,8]))for(const angle of (extended?[0,4,17]:[0,17])){
+ const width=480,height=360;let fw=ratio>width/height?width*.78:height*.78*ratio,fh=fw/ratio;const a=angle*Math.PI/180,s=Math.min(1,width*.88/(fw*Math.cos(a)+fh*Math.sin(a)),height*.88/(fw*Math.sin(a)+fh*Math.cos(a)));fw*=s;fh*=s;
+ const frame={x:(width-fw)/2/width,y:(height-fh)/2/height,w:fw/width,h:fh/height},f=negativeFrame({width,height,frame,angle}),d=NSFrameDetector.detect(f.image);
+ assert.equal(d.analysisSafe,true,JSON.stringify({ratio,angle,d}));let retained=0,truth=0,leak=0;
+ for(let y=0;y<height;y+=2)for(let x=0;x<width;x+=2){const p={x:(x+.5)/width,y:(y+.5)/height},v=f.inside(x+.5,y+.5);truth+=v;retained+=v&&NSFrameDetector.contains(d.quad,p.x,p.y);leak+=!v&&NSFrameDetector.contains(d.analysisQuad,p.x,p.y);}
+ assert.ok(retained/truth>.975,JSON.stringify({ratio,angle,retained,truth,d}));assert.equal(leak,0,JSON.stringify({ratio,angle,d}));count++;
+}
+for(const newBase of [[.8,.8,.8],[.2,.6,.4]]){const f=negativeFrame({angle:7,light:.10});for(let i=0;i<f.image.data.length;i++)f.image.data[i]=f.image.data[i]/f.base[i%3]*newBase[i%3];assert.equal(NSFrameDetector.detect(f.image).analysisSafe,true);count++;}
+const perspective=[{x:.15,y:.18},{x:.81,y:.13},{x:.84,y:.84},{x:.13,y:.82}],pd=new Float32Array(480*360*3),base=[.72,.38,.18];for(let y=0;y<360;y++)for(let x=0;x<480;x++){const subject=inside(perspective,{x:(x+.5)/480,y:(y+.5)/360});for(let c=0;c<3;c++)pd[(y*480+x)*3+c]=base[c]*(subject?10**(-(.25+1.2*(.5+.5*Math.sin(x*.075+y*.047+c*.1)))):1);}
+const pdet=NSFrameDetector.detect({width:480,height:360,data:pd,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020'}),pm=metrics(pdet.quad,pdet.analysisQuad,perspective,480,360);assert.equal(pdet.analysisSafe,true,JSON.stringify(pdet));assert.ok(pm.retainedMotifFraction>.975,JSON.stringify(pm));assert.ok(pm.includedBorderFraction<.002,JSON.stringify(pm));count++;
+for(const split of [false,true]){const data=new Float32Array(480*360*3);for(let y=0;y<360;y++)for(let x=0;x<480;x++)data.set(split&&x>240?[.1,.1,.1]:[.5,.5,.5],(y*480+x)*3);const d=NSFrameDetector.detect({width:480,height:360,data,channels:3,scale:1,encoding:'linear'});assert.equal(d.analysisSafe,false);assert.equal(d.reason,'no-boundary-evidence');}
+const left=negativeFrame({holder:0,frame:{x:.08,y:.17,w:.32,h:.66}}),right=negativeFrame({holder:0,frame:{x:.60,y:.17,w:.32,h:.66}});for(let i=0;i<left.image.data.length;i++)left.image.data[i]=Math.min(left.image.data[i],right.image.data[i]);const competing=NSFrameDetector.detect(left.image);assert.equal(competing.analysisSafe,false);assert.equal(competing.reason,'competing-regions');
+const record=JSON.parse(fs.readFileSync(new URL('./fixtures/frame-real/dsf9235.json',import.meta.url))),b=zlib.gunzipSync(fs.readFileSync(new URL('./fixtures/frame-real/dsf9235.f32.gz',import.meta.url))),im={...record,data:new Float32Array(b.buffer.slice(b.byteOffset,b.byteOffset+b.byteLength))},d=NSFrameDetector.detect(im),m=metrics(d.quad,d.analysisQuad,record.referenceQuad,im.width,im.height);
+assert.equal(d.analysisSafe,true,JSON.stringify(d));assert.ok(m.retainedMotifFraction>.97,JSON.stringify(m));assert.ok(m.includedBorderFraction<.01,JSON.stringify(m));assert.ok(m.maxBoundaryDeviationPixels<5,JSON.stringify(m));
+assert.equal(NSFrameDetector.validRecord(d),true);assert.equal(NSFrameDetector.matches(d,d.region,im),true);assert.equal(NSFrameDetector.matches(d,{x:0,y:0,w:1,h:1},im),false);assert.equal(NSFrameDetector.validRecord({...d,quad:d.quad.map((p,i)=>i? p:{x:NaN,y:p.y})}),false);
+console.log('PASS',count,'independently varied format/rotation/non-orange cases, no frame/single edge abstention; actual RAF-derived fixture',JSON.stringify({...m}));
+}
