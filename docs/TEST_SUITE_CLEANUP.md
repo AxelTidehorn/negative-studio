@@ -48,8 +48,8 @@ Node-side mathematical references and actual browser/worker/encoder checks are i
 | Handwritten test/tool lines | 5,621 | 4,575 |
 | Fixtures + PR #99 evidence bytes | 7,917,229 | 4,517,810 |
 | Helper/tool scripts | 61 | 35 |
-| CI fast | No separate measured job | See final PR verification |
-| CI full | 511.57 s (PR #99 run 43279927099) | See final PR verification |
+| CI fast | No comparable separate job | Manual level added; not remotely timed |
+| CI full build job / test step | 557 s / 536 s (run 43279927099) | 476 s / 462 s (run 43339488771) |
 
 File/line accounting includes executable tests, `tests/helpers`, `tools/*.mjs/*.py` and the old runner; it excludes generated fixtures/reports and dependencies. Fixture/evidence accounting is `tests/fixtures` plus `docs/consolidation/measurements`; gzip bytes describe git storage, not runtime RAM. Counts are maintenance/size indicators, not correctness scores.
 
@@ -57,16 +57,18 @@ Comparable local timing uses Node 22.23.5, Linux x64, AMD EPYC 9V74, Chromium 15
 
 | Local wall time | Before | After |
 | --- | ---: | ---: |
-| Fast, empty reference cache (one run) | 51.514 s | Recorded in final PR |
-| Fast, two warm runs | 24.748–24.944 s | Recorded in final PR |
-| Full, warm reference cache (one run) | 638.733 s | Recorded in final PR |
+| Fast, no historical reference cache | 51.514 s (one run) | 0.902–1.161 s (three runs; reference cache removed) |
+| Fast, warm historical reference cache | 24.748–24.944 s (two runs) | Same three new runs above; no reference-cache dependency |
+| Full (one paired run per revision) | 638.733 s | 459.046 s |
 
-The old full baseline passed 101/101. Full is a single observation per revision, so its variation is not estimated. Final CI timings and local after measurements are recorded in the PR. CI runner hardware is not guaranteed identical; those observations are distinct from the controlled local pair. There was no comparable historical CI fast job, and no before/after CI fast speedup will be invented.
+The old full baseline passed 101/101; current full passed 91/91 locally and in CI. The paired local full observation is approximately 28% shorter; it is not an estimate of its distribution. Before is `f78a031`, measured after is `20fa93b`, with identical production code. CI timestamps come from the Actions jobs API: whole build-job execution and the npm test step are listed separately. Queue time is excluded. GitHub-hosted runner hardware is not guaranteed identical, so the 557→476 s CI pair is an observation, not a portable speed guarantee. The old runner's printed 511.57 s excluded preflight; it is not substituted for the actual 536 s test step. There was no comparable historical CI fast job, and no CI fast speedup is invented.
+
+On `20fa93b`, fast passed 7/7 (three runs), full passed 91/91 in 459.046 s wall time, and extended passed 92/92 in 624.447 s wall time. The interrupted overnight extended run and exploratory failed runs are not counted. Final full/extended execution and final-head CI are linked in [PR #100](https://github.com/AxelTidehorn/negative-studio/pull/100). Documentation-only commits following the measured revision do not change the test or application implementation.
 
 ## Verification and limits
 
 Run `npm run test:fast`, `npm run test:full` and `npm run test:extended`; the exact tests are enumerated in `tests/suites.mjs`. Unknown levels/selectors fail. Registry checks reject missing files, duplicates and unregistered ordinary tests; external-original checks are explicitly listed as manual. Publication rejects fast/partial/failed reports and any post-test artifact mutation. There is one build owner and one shared browser/server for ordinary browser suites; fault/server-lifecycle tests retain their isolated servers.
 
-Final execution results are linked from the PR. Node 22 and Node 24 frozen numeric values are separate because their transcendental functions can differ in the final Float64 bit. Other Node majors need review instead of auto-capture. Physical iPad Safari/Windows Edge are not implied by automated Linux browser tests. Existing iPad touch protections and production behavior are untouched.
+Final execution results are linked from [PR #100](https://github.com/AxelTidehorn/negative-studio/pull/100). Node 24 also passed all 2,241 numeric cases and 27 fresh analyses / 1,053 exact samples. One-off output fault probes using the existing numeric test rejected both a changed float sample and a one-bit RGB16 error; they introduce no additional committed framework or reports. Node 22 and Node 24 frozen numeric values are separate because their transcendental functions can differ in the final Float64 bit. Other Node majors need review instead of auto-capture. Physical iPad Safari/Windows Edge are not implied by automated Linux browser tests. Existing iPad touch protections and production behavior are untouched.
 
 The former CSS-only short publication path is deliberately removed; CSS-only PRs now run full rather than the old five-group style check. This is a known CI tradeoff for one uniform full/extended artifact contract. Fast remains suitable for short local feedback and explicit manual CI, but cannot publish an application.

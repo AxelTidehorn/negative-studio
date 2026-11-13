@@ -17,6 +17,8 @@ Senast genomgången: 2026-11-12. Ursprungligen sammanställd: 2026-11-06. Detta 
 
 Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kvalitet eller kontroll på fysisk iPad/Windows Edge.
 
+- [x] Testmiljön har konsoliderats i [#100](https://github.com/AxelTidehorn/negative-studio/pull/100): fast/full/extended, frysta numeriska referenser utan historisk utcheckning och mindre duplicerad test-/verifieringskod. Se [täckning](TESTING.md) och [mätningar](TEST_SUITE_CLEANUP.md). Produktionsalgoritmerna är oförändrade.
+
 - [x] RAW-import och preliminär förhandsvisning har förbättrats i [#93](https://github.com/AxelTidehorn/negative-studio/pull/93); verklig enhetsprestanda återstår.
 - [x] Kodak Gold 200 och Portra 400 använder Gold P respektive Portra P (profilrevision 2) efter [#94](https://github.com/AxelTidehorn/negative-studio/pull/94); fotografisk slutkalibrering återstår.
 - [x] Importåterhämtning, sammansatt RGB16-sampling och responsivare TIFF16/PNG16-export har förbättrats i [#95](https://github.com/AxelTidehorn/negative-studio/pull/95); minne och långa exporter på fysisk enhet återstår.

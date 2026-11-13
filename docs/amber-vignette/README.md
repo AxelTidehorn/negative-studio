@@ -1,5 +1,7 @@
 # Amber Glass: lugnare bakgrund och lättare bildkö
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/amber-vignette/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 Visuell korrigering från main `427fd40` (#68). Endast mörk Classic får de ändrade materialen. Ingen app-JavaScript, layout, bildbehandling, import/export, projektkod eller bygg-/publiceringslogik ändras.
 
 - Den befintliga arbetsytegradienten använder nu fyra breda, asymmetriska **mörka** radialfält över en varm neutral mörk mittton. Kopparljusfälten är borttagna. Fälten ligger kvar bakom korten under editor-scroll; inga nya lager, animationer eller bildresurser.

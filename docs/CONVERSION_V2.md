@@ -1,5 +1,7 @@
 > **Arkivrapport.** Beskriver den angivna historiska implementationen. Motorval, projektmigreringar, labb och kommandon kan ha tagits bort. Aktuell produkt: [README](../README.md), [arkitektur](ARCHITECTURE.md) och [konsolidering](consolidation/README.md).
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/CONVERSION_V2.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](TESTING.md).
+
 # FILMLABB 2.0: pålitlig A/B-referens och färg-/tondiagnostik
 
 > Algoritm 3: [neutralreferenser, högdagrar och versionsskydd](V2_NEUTRAL_HIGHLIGHTS.md).

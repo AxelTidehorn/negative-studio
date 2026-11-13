@@ -1,5 +1,7 @@
 # UI correction after #65
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/ui-refinement-ci/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 The existing five cards, native disclosures, session state, summaries, controls and tools are reused. Only CSS changes the application; no DOM, state, image-processing or geometry logic changes.
 
 - Classic dark: shared workspace `#211d1b`, opaque card bodies `#1b1817`, chrome `#191615`, frosted headers `#403630` at 91% / 9px. Other themes/light mode remain available.

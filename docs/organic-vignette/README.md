@@ -1,5 +1,7 @@
 # Organic Vignette
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/organic-vignette/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 Bakgrundskorrigering från main `207b048` (#69). **Endast arbetsytans bakgrund i mörk Classic ändras.** Kortens material, bildkö (redan halvtransparent), opak bildvisare, layout och all app-/bildbehandlingskod behålls.
 
 ## SVG och rendering

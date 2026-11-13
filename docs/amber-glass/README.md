@@ -1,5 +1,7 @@
 # Amber Glass
 
+> Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/amber-glass/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
+
 Pure visual experiment based on merged UI 2.2 (#67). The existing cards, DOM, padding, native disclosures, V2 default, advanced engine selector, import icon, workflow and release system are retained.
 
 Material variables live in the existing dark-Classic block of `ui-refinement.css`:
