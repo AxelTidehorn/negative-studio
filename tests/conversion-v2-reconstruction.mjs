@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 for(const n of ['core','render','fast','diagnostics'])await import('../src/conversion-v2/'+n+'.js');
-await import('./helpers/v2-output-oracle.js');
-const V=NSConversionV2,R=NSV2Render,F=NSV2Fast,O=NSV2OutputOracle;
+const V=NSConversionV2,R=NSV2Render,F=NSV2Fast;
 const im={width:48,height:36,channels:3,scale:1,encoding:'linear',colorSpace:'rec2020',data:new Float32Array(48*36*3)},rgb=[.82,.43,.21];
 let seed=71;const random=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/2**32;};
 for(let i=0;i<im.data.length;i++)im.data[i]=rgb[i%3]*10**(-.08-1.5*random());
@@ -48,8 +47,5 @@ const scratch=new Float64Array(3),color={...intent,colorCorrection:{version:1,ki
 for(const p of inputs){const ref=k.pixel(p);assert.ok(ref.positive.every(Number.isFinite));assert.ok(ref.logPositive.every(Number.isFinite));assert.deepEqual(k.pixel(p),ref);}
 assert.deepEqual(k.pixel([0,-1,NaN]).flags.invalid,[true,true,true]);assert.deepEqual(k.pixel([0,-1,NaN]).flags.floor,[true,true,true]);assert.deepEqual(k.pixel([1.2,2,1.1]).flags.clipped,[true,true,true]);assert.ok(k.pixel([1e100,1e50,1e20]).density.every(v=>v<0),'T>1 remains negative density');
 for(const i of [intent,color])for(const viewMode of ['auto','fixed','technical']){const f=F.compile(k,i,{viewMode});for(const p of inputs){f.technical(...p,scratch);scratch.forEach((v,c)=>close(v,k.pixel(p).positive[c]));f.pixel(...p,scratch);const expected=R.view(k.pixel(p).positive,i,viewMode);scratch.forEach((v,c)=>{assert.ok(Number.isFinite(v)&&v>=0&&v<=1);close(v,expected[c]);});}}
-// RGB8/RGB16 geometric integration samples the same converted pixels as the
-// scalar reference; no negative averaging before reconstruction.
-for(const rotation of [0,90,180,270])for(const bits of [8,16])for(const mode of ['auto','fixed','technical']){const g=O.geometry(im,{x:.1,y:.1,w:.8,h:.8},rotation,17),ref=O.rows(im,g,0,g.height,(x,y)=>O.pixel(im,k,intent,x,y,mode),bits),actual=await O.area(im,g,F.compile(k,intent,{viewMode:mode}).pixel,bits);actual.forEach((v,n)=>assert.ok(Math.abs(v-ref[n])<=1));}
 const diagnostic=NSV2Diagnostics.diagnostic(im,k,intent,{mask:analyzed.mask});assert.equal(diagnostic.calibration.value.version,3);assert.deepEqual(diagnostic.calibration.value.densityMatrix,V.latestPrior.densityMatrix);assert.equal(diagnostic.tonePlacement.value.currentStatistics.recipe.version,intent.analysisVersion);assert.equal(diagnostic.tonePlacement.value.currentStatistics.recipe.target,.8);
-console.log('PASS reconstruction: frozen base-zero prior, density/gain invariants, scalar toe oracle, fixed density mixing, legacy affine preservation, explicit bounds, fast/reference/view/area/RGB16 parity, versioned P60/P99 and diagnostics; max relative/absolute error',maxError);
+console.log('PASS reconstruction: frozen base-zero prior, density/gain invariants, scalar toe oracle, fixed density mixing, legacy affine preservation, explicit bounds, fast/reference/view parity, versioned P60/P99 and diagnostics; max relative/absolute error',maxError);

@@ -1,7 +1,6 @@
 import assert from 'node:assert/strict';
 for(const n of ['image/image-model','conversion-v2/core','conversion-v2/render','conversion-v2/fast','conversion-v2/diagnostics'])await import('../src/'+n+'.js');
-await import('./helpers/v2-output-oracle.js');
-const V=NSConversionV2,R=NSV2Render,O=NSV2OutputOracle,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},cols=80,rows=80,n=cols*rows;
+const V=NSConversionV2,R=NSV2Render,area={region:{x:0,y:0,w:1,h:1},status:'confirmed'},cols=80,rows=80,n=cols*rows;
 function fixture({dominant=false,conflict=false}={}){
  const positive=new Float64Array(n*3),luma=new Float64Array(n),mask=new Uint8Array(n).fill(1);
  for(let i=0;i<n;i++){
@@ -28,7 +27,6 @@ const s=V.source(im,{revision:'color-oracle'}),ctx=V.capture({session:'test',rec
 for(const mode of ['auto','fixed','technical']){
  const fast=NSV2Fast.compile(k,intent,{viewMode:mode}),out=new Float64Array(3);
  for(let index=0;index<im.data.length;index+=3){const p=Array.from(im.data.subarray(index,index+3)),expected=R.view(k.pixel(p).positive,intent,mode);fast.pixel(...p,out);out.forEach((v,c)=>{maxError=Math.max(maxError,Math.abs(v-expected[c]));assert.ok(Math.abs(v-expected[c])<2e-14);});}
- for(const rotation of [0,90,180,270]){const g=O.geometry(im,{x:.1,y:.2,w:.7,h:.6},rotation,19),ref=O.rows(im,g,0,g.height,(x,y)=>O.pixel(im,k,intent,x,y,mode),16),actual=O.fastRows(im,g,0,g.height,fast.pixel,16),areaPixels=await O.area(im,g,fast.pixel,16);actual.forEach((v,j)=>assert.ok(Math.abs(v-ref[j])<=1));areaPixels.forEach((v,j)=>assert.ok(Math.abs(v-ref[j])<=1));}
 }
 const p=[.4,.6,.2],q=[.8,.3,.7].map(v=>v*V.luminance(p)/V.luminance([.8,.3,.7])),bp=R.balance(p,i),bq=R.balance(q,i);
 assert.ok(Math.abs(Math.log2(p[0]/p[1])-Math.log2(q[0]/q[1])-(Math.log2(bp[0]/bp[1])-Math.log2(bq[0]/bq[1])))<1e-12);
@@ -38,4 +36,4 @@ for(const knot of c.knots)for(const delta of [-1e-9,1e-9]){const p=[.8,1,1.3].ma
 for(const input of [[0,-1,NaN],[Infinity,1e-38,1],[1.2,2,1.1]]){const fast=NSV2Fast.compile(k,intent),out=new Float64Array(3);fast.pixel(...input,out);assert.ok(out.every(Number.isFinite));const expected=R.view(k.pixel(input).positive,intent);out.forEach((v,c)=>assert.ok(Math.abs(v-expected[c])<2e-14));}
 for(const knot of c.knots){const unit=[.8,1,1.3].map(v=>v/V.luminance([.8,1,1.3])),below=R.balance(unit.map(v=>v*(knot-1e-9)),i),above=R.balance(unit.map(v=>v*(knot+1e-9)),i);below.forEach((v,c)=>assert.ok(Math.abs(v-above[c])<1e-7,'continuous transitions at luminance knots'));}
 assert.throws(()=>R.prepareBalance({...i,colorCorrection:{...c,knots:[0,0,1]}}),/COLOR_BALANCE_INVALID/);
-console.log('PASS neutral anchors, dominant-color abstention, band conflict, frame confidence, luminance/color separation, fixed/technical identity, scalar/reference/area/export; max error',maxError);
+console.log('PASS neutral anchors, dominant-color abstention, band conflict, frame confidence, luminance/color separation, fixed/technical identity, scalar/reference parity; max error',maxError);

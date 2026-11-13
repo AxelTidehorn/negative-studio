@@ -10,6 +10,7 @@ Removed:
 
 - Automatic historical reference worktree/cache and capture driver. Expected production values are now read-only Node 22/24 fixtures; all 2,241 exact full cases remain. Fast uses 166 representative cases covering both engines and every profile/strength/edit combination.
 - Tests for the isolated C/D presentation and scene-distribution experiments, their shader-install hooks and packaging/probe scripts. The scalar D factor/exposure reference needed by production tests moved to `tests/helpers/v2-tone-reference.mjs`.
+- The test-only lab box-integration implementation and tests comparing its `rows`, `fastRows` and `area` variants. These algorithms no longer render application exports. Direct V2 scalar/fast checks remain; current geometry, processing order, packing, RGB16 and actual encoders are protected by the production sampler tests, frozen hashes and browser exports.
 - The uncalled lab-only `compileLegacy` fast-preset comparison; current Standard is protected by its calibration/scalar-stage, frozen output, prepared export and GPU tests. Its unused production implementation is outside this test-only change.
 - Real-file checks invoking `CE.analyze`, `legacy`, `reference`, `log39` or beta2; the dead standalone V2 benchmark/preview workflow checker; old capture/review/package utilities. Current external-source import/export/detector benchmarks remain manual.
 - The duplicate `verify-preview.mjs` runner, old selector aliases and path-specific style publication scheme. There are three manually runnable levels and one registration/execution owner.
@@ -44,9 +45,9 @@ Node-side mathematical references and actual browser/worker/encoder checks are i
 | Executable test files (`tests/*.mjs`, excluding registry) | 107 | 95 |
 | Full groups (Node + build + browser) | 101 (67 + 1 + 33) | 91 (59 + 1 + 31) |
 | Fast / extended groups | 5 / no level | 7 / 92 |
-| Handwritten test/tool lines | 5,621 | 4,639 |
+| Handwritten test/tool lines | 5,621 | 4,575 |
 | Fixtures + PR #99 evidence bytes | 7,917,229 | 4,517,810 |
-| Helper/tool scripts | 61 | 36 |
+| Helper/tool scripts | 61 | 35 |
 | CI fast | No separate measured job | See final PR verification |
 | CI full | 511.57 s (PR #99 run 43279927099) | See final PR verification |
 
