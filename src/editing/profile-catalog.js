@@ -3,10 +3,10 @@
 "use strict";
 const catalog={
  "version": 1,
- "operator": "profile-oklch-display-1",
+ "operator": "profile-oklch-display-2",
  "input": "positive-srgb-d65-v1",
- "creativeSourceSHA256": "6e48c8dc083c1fb77a56b7858d8b34dd5ea2c246b8007fbaaaf590701fc16f70",
- "sourceSHA256": "60621250e8e9c9e59d5b8bcc132b9c7e4376ad8e7d7f1184fafb2345a8e6d4d2",
+ "creativeSourceSHA256": "abed8cecb500be9dc9a5cc97937e857a2911014331233fe1772ec21bc5233c09",
+ "sourceSHA256": "a75339e915e681f756336b84c7559710263e7c6cdaa67f9b136efc0f9f4f79e7",
  "neutral": {
   "id": "neutral",
   "label": "Neutral",
@@ -29,660 +29,660 @@ const catalog={
    "label": "Kodak Gold 200",
    "category": "film",
    "presentation": "color",
-   "revision": 2,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "tone": [
     0,
-    0.008,
-    0.027,
-    0.072,
-    0.139,
-    0.312,
-    0.629,
-    0.879,
-    0.994
+    0.007,
+    0.031,
+    0.088,
+    0.168,
+    0.345,
+    0.625,
+    0.875,
+    0.99
    ],
    "hue": [
     [
      22,
-     2,
-     0.08,
-     0
+     4,
+     0.18,
+     -0.01
     ],
     [
      54,
-     3,
-     0.095,
-     0.004
+     0,
+     0.1,
+     0
     ],
     [
      99,
-     -6,
-     0.16,
-     0.01
+     -4,
+     0.28,
+     0.012
     ],
     [
      142,
-     -7,
-     0.02,
+     -14,
+     -0.04,
      0
     ],
     [
      196,
-     -3,
-     -0.05,
-     -0.004
-    ],
-    [
-     250,
-     0,
-     -0.03,
+     -8,
+     -0.14,
      0
     ],
     [
+     250,
+     -5,
+     -0.08,
+     0.012
+    ],
+    [
      325,
+     6,
      0,
-     0.015,
      0
     ]
    ],
    "chroma": [
-    0,
-    -0.08,
-    -0.017,
-    0.025,
-    0.012,
-    -0.08,
-    -0.15
+    -0.1,
+    0.08,
+    0.14,
+    0.12,
+    0.04,
+    -0.15,
+    -0.35
    ],
    "shadow": [
-    0,
-    0
+    0.004,
+    0.012
    ],
    "highlight": [
-    0,
-    0
+    0.005,
+    0.019
    ],
-   "skinPass": 0.33
+   "skinPass": 0.6
   },
   "film.kodak-ektar-100": {
    "id": "film.kodak-ektar-100",
    "label": "Kodak Ektar 100",
    "category": "film",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "tone": [
     0,
-    0.008,
-    0.031,
-    0.085,
-    0.157,
-    0.331,
-    0.624,
-    0.865,
+    0.005,
+    0.024,
+    0.074,
+    0.15,
+    0.33,
+    0.635,
+    0.89,
     1
    ],
    "hue": [
     [
      22,
-     0,
-     0.21,
-     -0.004
+     -2,
+     0.26,
+     -0.02
     ],
     [
      54,
-     -2,
-     0.115,
-     0
+     -3,
+     0.14,
+     -0.006
     ],
     [
      99,
-     1,
-     0.09,
-     0.002
+     0,
+     0.16,
+     0
     ],
     [
      142,
-     3,
-     0.14,
-     -0.007
+     5,
+     0.22,
+     -0.012
     ],
     [
      196,
-     0,
-     0.085,
-     -0.007
+     4,
+     0.22,
+     -0.012
     ],
     [
      250,
-     -2,
-     0.19,
-     -0.019
+     -4,
+     0.32,
+     -0.045
     ],
     [
      325,
      0,
-     0.105,
-     -0.008
+     0.16,
+     0
     ]
    ],
    "chroma": [
-    0,
-    -0.03,
-    0.025,
-    0.045,
-    0.01,
-    -0.105,
-    0
+    -0.05,
+    0.24,
+    0.3,
+    0.27,
+    0.14,
+    -0.05,
+    -0.3
    ],
    "shadow": [
-    0,
-    0
+    -0.002,
+    -0.01
    ],
    "highlight": [
-    0,
-    0
+    0.002,
+    0.004
    ],
-   "skinPass": 0.28
+   "skinPass": 0.5
   },
   "film.fuji-pro-400h": {
    "id": "film.fuji-pro-400h",
    "label": "Fujifilm Pro 400H",
    "category": "film",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "tone": [
-    0,
-    0.012,
-    0.046,
-    0.11,
-    0.195,
-    0.373,
-    0.622,
-    0.855,
-    1
+    0.018,
+    0.028,
+    0.058,
+    0.118,
+    0.198,
+    0.368,
+    0.612,
+    0.862,
+    0.99
    ],
    "hue": [
     [
      22,
-     0,
-     -0.07,
-     0
+     -5,
+     -0.05,
+     0.01
     ],
     [
      54,
-     -2,
-     -0.08,
-     0
+     -4,
+     -0.1,
+     0.015
     ],
     [
      99,
-     -2,
-     -0.09,
-     0.002
+     9,
+     -0.22,
+     0.01
     ],
     [
      142,
-     10,
-     -0.045,
-     0.018
+     20,
+     0.04,
+     0.02
     ],
     [
      196,
-     3,
-     -0.035,
-     0.006
+     0,
+     0.06,
+     0.01
     ],
     [
      250,
-     0,
-     -0.035,
-     0
+     -7,
+     -0.06,
+     0.012
     ],
     [
      325,
      0,
-     0.015,
+     -0.12,
      0
     ]
    ],
    "chroma": [
-    0,
-    -0.02,
-    -0.025,
-    -0.02,
-    -0.055,
-    -0.085,
-    0
+    -0.12,
+    -0.14,
+    -0.1,
+    -0.1,
+    -0.16,
+    -0.26,
+    -0.4
    ],
    "shadow": [
-    0,
-    0
+    -0.014,
+    -0.004
    ],
    "highlight": [
-    0,
-    0
+    -0.005,
+    -0.002
    ],
-   "skinPass": 0.28
+   "skinPass": 0.55
   },
   "film.kodak-portra-400": {
    "id": "film.kodak-portra-400",
    "label": "Kodak Portra 400",
    "category": "film",
    "presentation": "color",
-   "revision": 2,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "tone": [
     0,
     0.012,
     0.046,
-    0.114,
-    0.196,
-    0.379,
-    0.618,
-    0.843,
+    0.11,
+    0.19,
+    0.356,
+    0.605,
+    0.858,
     0.995
    ],
    "hue": [
     [
      22,
-     0,
-     -0.045,
-     0
-    ],
-    [
-     54,
-     0,
-     -0.06,
-     0
-    ],
-    [
-     99,
-     -3,
-     -0.045,
-     0
-    ],
-    [
-     142,
-     -2,
+     3,
      -0.05,
      0
     ],
     [
+     54,
+     3,
+     0.05,
+     0.012
+    ],
+    [
+     99,
+     -3,
+     -0.1,
+     0
+    ],
+    [
+     142,
+     -9,
+     -0.28,
+     -0.01
+    ],
+    [
      196,
-     0,
-     -0.045,
+     -4,
+     -0.26,
      0
     ],
     [
      250,
-     0,
-     -0.04,
-     0
+     -2,
+     -0.2,
+     0.006
     ],
     [
      325,
      0,
-     -0.035,
+     -0.16,
      0
     ]
    ],
    "chroma": [
-    0,
-    -0.025,
-    -0.045,
-    -0.03,
-    -0.04,
-    -0.075,
-    -0.13
+    -0.06,
+    -0.07,
+    -0.09,
+    -0.11,
+    -0.15,
+    -0.24,
+    -0.38
    ],
    "shadow": [
-    0,
-    0
+    0.001,
+    0.003
    ],
    "highlight": [
-    0,
-    0
+    0.004,
+    0.012
    ],
-   "skinPass": 0.21
+   "skinPass": 0.7
   },
   "creative.backstreet": {
    "id": "creative.backstreet",
    "label": "Backstreet",
    "category": "creative",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "description": "Dokumentär färg med täta skuggor, grafiska mellantoner, olivgrönt och tydligt rött.",
    "tone": [
     0,
-    0.006,
-    0.024,
-    0.067,
-    0.138,
-    0.325,
-    0.63,
-    0.84,
-    0.985
+    0.003,
+    0.014,
+    0.05,
+    0.115,
+    0.315,
+    0.652,
+    0.88,
+    0.98
    ],
    "hue": [
     [
      22,
-     0,
-     0.1,
-     -0.005
+     4,
+     0.3,
+     -0.02
     ],
     [
      54,
-     -1,
-     -0.025,
+     -2,
+     -0.06,
      0
     ],
     [
      99,
-     -5,
-     -0.14,
-     -0.004
+     -14,
+     -0.18,
+     -0.02
     ],
     [
      142,
-     -12,
-     -0.13,
-     -0.012
+     -30,
+     -0.3,
+     -0.04
     ],
     [
      196,
-     0,
-     -0.14,
-     -0.006
+     -10,
+     -0.4,
+     -0.01
     ],
     [
      250,
-     0,
-     -0.12,
-     -0.008
+     -8,
+     -0.36,
+     -0.03
     ],
     [
      325,
-     0,
-     -0.04,
+     -8,
+     -0.24,
      0
     ]
    ],
    "chroma": [
-    0,
-    -0.06,
-    0.015,
-    0.025,
-    -0.03,
-    -0.09,
-    0
+    -0.15,
+    -0.12,
+    -0.16,
+    -0.18,
+    -0.22,
+    -0.32,
+    -0.45
    ],
    "shadow": [
-    0,
-    0
+    -0.011,
+    -0.012
    ],
    "highlight": [
-    0,
-    0
+    0.004,
+    0.012
    ],
-   "skinPass": 0.18
+   "skinPass": 0.55
   },
   "creative.afterglow": {
    "id": "creative.afterglow",
    "label": "Afterglow",
    "category": "creative",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "description": "Nattfärg med djupa blå toner, varma ljus och mjuka högdagerövergångar.",
    "tone": [
     0,
     0.007,
-    0.029,
-    0.08,
-    0.15,
-    0.33,
-    0.61,
-    0.83,
-    0.99
+    0.03,
+    0.086,
+    0.162,
+    0.336,
+    0.6,
+    0.825,
+    0.97
    ],
    "hue": [
     [
      22,
-     0,
-     0.1,
+     10,
+     0.2,
      0
     ],
     [
      54,
-     1,
-     0.06,
-     0.004
+     2,
+     0.2,
+     0.02
     ],
     [
      99,
-     -4,
-     0.04,
-     0.005
+     -10,
+     0.1,
+     0.01
     ],
     [
      142,
-     2,
-     -0.12,
-     -0.01
+     38,
+     -0.3,
+     -0.03
     ],
     [
      196,
-     8,
-     0.015,
-     -0.015
+     10,
+     0.2,
+     -0.02
     ],
     [
      250,
-     4,
-     0.12,
-     -0.025
+     -15,
+     0.16,
+     -0.04
     ],
     [
      325,
-     0,
-     0.035,
-     -0.006
+     -24,
+     -0.2,
+     -0.02
     ]
    ],
    "chroma": [
     0,
-    0.015,
-    0.03,
-    0.025,
-    0,
-    -0.025,
-    0
+    0.1,
+    0.15,
+    0.12,
+    0.04,
+    -0.12,
+    -0.32
    ],
    "shadow": [
-    -0.006,
-    -0.012
+    -0.012,
+    -0.02
    ],
    "highlight": [
-    0,
-    0
+    0.01,
+    0.026
    ],
-   "skinPass": 0.16
+   "skinPass": 0.5
   },
   "creative.pale-static": {
    "id": "creative.pale-static",
    "label": "Pale Static",
    "category": "creative",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "description": "Ljus matt tonalitet, återhållsam färg och jordnära mellantoner med bevarad struktur.",
    "tone": [
-    0.1,
-    0.104,
-    0.115,
-    0.15,
-    0.22,
-    0.39,
-    0.63,
-    0.83,
-    0.965
+    0.09,
+    0.095,
+    0.112,
+    0.152,
+    0.226,
+    0.396,
+    0.636,
+    0.842,
+    0.94
    ],
    "hue": [
     [
      22,
-     2,
+     6,
      -0.1,
-     0.005
+     0.01
     ],
     [
      54,
-     0,
-     -0.09,
-     0.005
+     4,
+     0.06,
+     0.01
     ],
     [
      99,
-     -3,
-     -0.16,
-     0.008
+     -10,
+     -0.14,
+     0
     ],
     [
      142,
-     -4,
-     -0.18,
-     0.004
+     -16,
+     -0.26,
+     0.01
     ],
     [
      196,
-     0,
-     -0.16,
-     0
+     -6,
+     -0.3,
+     0.01
     ],
     [
      250,
-     0,
-     -0.2,
-     0
+     -10,
+     -0.34,
+     0.02
     ],
     [
      325,
      0,
-     -0.12,
+     -0.3,
      0
     ]
    ],
    "chroma": [
-    0,
-    -0.07,
-    -0.09,
-    -0.08,
-    -0.12,
-    -0.16,
-    0
+    -0.3,
+    -0.3,
+    -0.28,
+    -0.3,
+    -0.34,
+    -0.4,
+    -0.42
    ],
    "shadow": [
-    0,
-    0
+    0.004,
+    0.003
    ],
    "highlight": [
-    0,
-    0
+    0.003,
+    0.012
    ],
-   "skinPass": 0.24
+   "skinPass": 0.6
   },
   "creative.redline": {
    "id": "creative.redline",
    "label": "Redline",
    "category": "creative",
    "presentation": "color",
-   "revision": 1,
+   "revision": 3,
    "status": "prototype",
-   "operator": "profile-oklch-display-1",
+   "operator": "profile-oklch-display-2",
    "description": "Kopparröd färgstruktur och grafisk kontrast med djupa skuggor och sval blå motvikt.",
    "tone": [
     0,
-    0.006,
-    0.025,
-    0.07,
-    0.14,
-    0.32,
-    0.635,
-    0.86,
+    0.004,
+    0.019,
+    0.06,
+    0.128,
+    0.318,
+    0.648,
+    0.882,
     0.99
    ],
    "hue": [
     [
      22,
-     7,
-     0.2,
-     -0.005
+     12,
+     0.4,
+     -0.02
     ],
     [
      54,
-     -3,
-     0.04,
-     0
-    ],
-    [
-     99,
-     -8,
-     -0.1,
-     -0.004
-    ],
-    [
-     142,
-     -5,
-     -0.1,
-     -0.008
-    ],
-    [
-     196,
-     4,
-     -0.06,
+     6,
+     0.26,
      -0.01
     ],
     [
-     250,
-     4,
+     99,
+     -15,
+     -0.1,
+     -0.02
+    ],
+    [
+     142,
+     -10,
+     -0.42,
+     -0.03
+    ],
+    [
+     196,
+     10,
      0.04,
      -0.02
     ],
     [
+     250,
+     0,
+     0.2,
+     -0.04
+    ],
+    [
      325,
-     3,
-     -0.015,
-     -0.004
+     20,
+     -0.2,
+     0
     ]
    ],
    "chroma": [
+    -0.05,
+    0.1,
+    0.12,
+    0.08,
     0,
-    -0.035,
-    0.025,
-    0.035,
-    -0.015,
-    -0.07,
-    0
+    -0.15,
+    -0.36
    ],
    "shadow": [
-    0,
-    0
+    -0.004,
+    -0.018
    ],
    "highlight": [
-    0,
-    0
+    0.012,
+    0.016
    ],
-   "skinPass": 0.12
+   "skinPass": 0.45
   }
  }
 };

@@ -46,7 +46,32 @@ En osäker men rimlig kandidat visas direkt redigerbar. Utan kandidat används h
 
 Godkända filmbasreferenser hör till kalibreringsägaren och har explicit käll-/ljus-/sessionskompatibilitet; de är inte motivpixlar. Den befintliga uttryckliga referenspolicyn behålls: att aktivera förslag utan att godkänna dem får inte återaktivera en gammal automatisk bas.
 
-`frame.geometry` på **köposten** (inte `settings.frame`) äger komposition och fin-/kvartvarvsrotation. `rollShared.cropExportToFrame` är köns enda beskär-till-filmruta-val. Gamla individuella `legacyCrop`-planer och duplicerade köfält `crop`, `base`, `levels` har tagits bort. Kvartvarvsinställningen för visningen samordnas med geometrins rotationsplan av `withQuarterTurns`; dess befintliga centrum-/dimensionsrotation är bevarad.
+`frame.geometry` på **köposten** (inte `settings.frame`) äger komposition och fin-/kvartvarvsrotation. Beskärningsdrag går via `NSGeometry.dragComposition`: hörn flyttar två kanter med motsatt hörn fast, kanthandtag en kant, ytan flyttar utan storleksändring. Den rörliga delen projiceras på giltigt område (per axel vid 0°, glidande längs sned gräns vid rotation); fasta kanter flyttas eller skalas aldrig. `effectiveComposition` skalar fortfarande proportionellt när domänen ändras utan drag, t.ex. vid rotation. `rollShared.cropExportToFrame` är köns enda beskär-till-filmruta-val. Gamla individuella `legacyCrop`-planer och duplicerade köfält `crop`, `base`, `levels` har tagits bort. Kvartvarvsinställningen för visningen samordnas med geometrins rotationsplan av `withQuarterTurns`; dess befintliga centrum-/dimensionsrotation är bevarad.
+
+## Profiler
+
+Profilen är en skärmrefererad presentation efter motorns sRGB-positiv och före Editing 2.0. `profile-engine.js` (CPU) och dess `glsl` (GPU) implementerar samma operator, `profile-oklch-display-2`; data genereras från `docs/profile-system/*-profile-designs.json`. Standardstyrkan är 100 %. Lägre styrka blandar en gång i kodad sRGB.
+
+Per pixel i OKLab: PCHIP-tonkurva i L, kromafaktor över L, nyansberoende nyans-/kroma-/L-förskjutning vid sju fasta nyansankare samt skugg-/högdagertoning. Jämfört med operator 1 gäller:
+
+- Toning och kromafaktor över L verkar även på neutrala toner, så varje film har en egen färgstick i grått. Endast nyansberoende termer tonas in över de första 0,03 i kroma.
+- De gemensamma spärrarna för högdager (L > 0,86), djupa skuggor och gamutmarginal är borttagna. Varje profil styr i stället högdager-/skuggmättnad via sin kromakurva.
+- Hudskyddet dämpar nyansvridning och kromaökning med profilens `skinPass` (0,45–0,7).
+- Ett mjukt luminansbevarande gamutknä (0,1) ersätter den hårda kromaklippningen.
+- Nyansankarna valideras mot GPU:ns fasta konstanter.
+
+| Profil | Karaktär |
+|---|---|
+| Gold 200 | Varm guldton, rika röda/gula, gröna mot gult, punchiga mellantoner |
+| Ektar 100 | Högst mättnad och kontrast, djupblå himmel, svalt neutral |
+| Pro 400H | Låg kontrast, lyfta skuggor, mintgröna, cyan-gröna skuggor, blek hy |
+| Portra 400 | Varm krämig hy, dämpade gröna/blå, mjuk kontrast |
+| Backstreet | Täta skuggor, grafisk kontrast, olivgrönt, starkt rött, skifferblått |
+| Afterglow | Teal-blå skuggor, bärnstensljus, mjuk högdagerövergång |
+| Pale Static | Matt: lyfta svarta, sänkta vita, jordnära dämpad färg |
+| Redline | Kopparrött mot kalla blå skuggor, djupa svarta |
+
+Detta är fotografiska prototyper, inte uppmätta emulsioner. `tests/profile-system.mjs` kontrollerar gamut, monoton grå luminans, nyanskontinuitet, styrkeblandning, syntetiska hud-/gråstickgränser och minsta inbördes avstånd. Frysta profilhashar uppdateras endast med `node tools/update-profile-hashes.mjs`, som vägrar om någon motor-, Neutral-, monokrom- eller exporthash ändras.
 
 ## Buffertar och cache
 

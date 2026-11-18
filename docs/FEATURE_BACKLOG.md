@@ -17,6 +17,7 @@ Senast genomgången: 2026-11-12. Ursprungligen sammanställd: 2026-11-06. Detta 
 
 Status här avser **kod och dokumenterade tester**, inte godkänd fotografisk kvalitet eller kontroll på fysisk iPad/Windows Edge.
 
+- [x] Profiloperator 2: tydligt åtskilda film- och kreativa profiler, toning även i neutrala toner, borttagna gemensamma högdager-/skugg-/gamutspärrar, standardstyrka 100 %. Se [arkitektur](ARCHITECTURE.md#profiler). Fotografisk verifiering på riktiga negativ återstår.
 - [x] Testmiljön har konsoliderats i [#100](https://github.com/AxelTidehorn/negative-studio/pull/100): fast/full/extended, frysta numeriska referenser utan historisk utcheckning och mindre duplicerad test-/verifieringskod. Se [täckning](TESTING.md) och [mätningar](TEST_SUITE_CLEANUP.md). Produktionsalgoritmerna är oförändrade.
 
 - [x] RAW-import och preliminär förhandsvisning har förbättrats i [#93](https://github.com/AxelTidehorn/negative-studio/pull/93); verklig enhetsprestanda återstår.

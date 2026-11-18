@@ -62,7 +62,9 @@
   }
   if(mode==='composition'){
    const body=svg('polygon',{points:points(corners),'data-composition':'move',fill:'transparent','pointer-events':'all'},'composition-line');body.style.cursor='move';
-   for(let i=0;i<4;i++){const cx=edgeHandle(corners[i].x,v.width),cy=edgeHandle(corners[i].y,v.height);svg('circle',{cx,cy,r:18,'data-composition':String(i)},'composition-touch');svg('circle',{cx,cy,r:5},'composition-handle');}
+   const at=i=>({x:edgeHandle(corners[i%4].x,v.width),y:edgeHandle(corners[i%4].y,v.height)});
+   ['top','right','bottom','left'].forEach((side,i)=>{const a=at(i),b=at(i+1);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y,'data-composition':side,style:'cursor:'+(i%2?'ew':'ns')+'-resize'},'composition-edge');svg('circle',{cx:(a.x+b.x)/2,cy:(a.y+b.y)/2,r:4},'composition-handle');});
+   for(let i=0;i<4;i++){const {x:cx,y:cy}=at(i);svg('circle',{cx,cy,r:18,'data-composition':String(i),style:'cursor:'+(i%2?'nesw':'nwse')+'-resize'},'composition-touch');svg('circle',{cx,cy,r:5},'composition-handle');}
   }
   if(lineStart&&lineEnd){const a=v.toView(lineStart),b=v.toView(lineEnd);svg('line',{x1:a.x,y1:a.y,x2:b.x,y2:b.y},'straight-line');}
  }
@@ -176,23 +178,16 @@
   if(e.pointerType==='mouse'&&e.button!==0)return;e.preventDefault();e.stopImmediatePropagation();dragPoint=null;
   const p=plan(),s=viewPoint(e,p),t=NSGeometry.transform(working.width,working.height,p.model.rotation),r=t.forward(s),L=Math.max(working.width,working.height);
   if(mode==='straighten'){lineStart=lineEnd=s;drag={id:e.pointerId,kind:'line',source:working};}
-  else drag={id:e.pointerId,kind:'crop',part,start:{x:r.x/L,y:r.y/L},crop:{...p.model.compositionCrop},source:working};
+  else drag={id:e.pointerId,kind:'crop',part,start:{x:r.x/L,y:r.y/L},crop:NSGeometry.effectiveComposition(working.width,working.height,p.model,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop,source:working};
   picture.setPointerCapture(e.pointerId);queue();
  },true);
  picture.addEventListener('pointermove',e=>{
   if(!drag||drag.id!==e.pointerId||drag.source!==working)return;e.preventDefault();e.stopImmediatePropagation();
   const p=plan(),s=viewPoint(e,p);if(drag.kind==='line'){lineEnd=s;queue();return;}
   const t=NSGeometry.transform(working.width,working.height,p.model.rotation),r=t.forward(s),L=Math.max(working.width,working.height),dx=r.x/L-drag.start.x,dy=r.y/L-drag.start.y,c=drag.crop;
-  let desired;
-  if(drag.part==='move')desired={...c,cx:c.cx+dx,cy:c.cy+dy};
-  else{const i=Number(drag.part),left=c.cx-c.w/2,right=c.cx+c.w/2,top=c.cy-c.h/2,bottom=c.cy+c.h/2,min=1/L;
-   const x=i===0||i===3?Math.min(right-min,left+dx):Math.max(left+min,right+dx),y=i<2?Math.min(bottom-min,top+dy):Math.max(top+min,bottom+dy);
-   const a=i===0||i===3?x:left,b=i===0||i===3?right:x,d=i<2?y:top,f=i<2?bottom:y;desired={cx:(a+b)/2,cy:(d+f)/2,w:b-a,h:f-d};
-  }
-  desired.cx=Math.max(-2,Math.min(2,desired.cx));desired.cy=Math.max(-2,Math.min(2,desired.cy));desired.w=Math.min(4,desired.w);desired.h=Math.min(4,desired.h);
-  const g=NSGeometry.withComposition(p.model,desired),effective=NSGeometry.effectiveComposition(working.width,working.height,g,{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()}).crop;
-  // Commit what the handles actually show. No hidden oversize crop on release.
-  roll[activeFrame].geometry=NSGeometry.withComposition(g,effective);controls();queue(true);
+  // Only the dragged corner/edge/body moves; the boundary clamps just the blocked motion.
+  const crop=NSGeometry.dragComposition(working.width,working.height,p.model,c,drag.part,{x:dx,y:dy},{cropExportToFrame:rollShared.cropExportToFrame,analysisFrame:frameRegion()});
+  roll[activeFrame].geometry=NSGeometry.withComposition(p.model,crop);controls();queue(true);
  },true);
  for(const type of ['pointerup','pointercancel','lostpointercapture'])picture.addEventListener(type,finishDrag,true);
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mode){if(drag&&picture.hasPointerCapture(drag.id))picture.releasePointerCapture(drag.id);setMode(null);}});

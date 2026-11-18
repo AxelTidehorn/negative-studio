@@ -3,7 +3,7 @@ import fs from 'node:fs';import crypto from 'node:crypto';
 import '../src/editing/editing-engine.js';import '../src/editing/profile-engine.js';
 const path='docs/profile-system/film-profile-designs.json',bytes=fs.readFileSync(path),work=JSON.parse(bytes),profiles={};
 const filmIds=['film.kodak-gold-200','film.kodak-ektar-100','film.fuji-pro-400h','film.kodak-portra-400'];
-if(work.operator!=='profile-oklch-display-1'||JSON.stringify(work.profiles.map(p=>p.id))!==JSON.stringify(filmIds))throw Error('Invalid film catalog');
+if(work.operator!=='profile-oklch-display-2'||JSON.stringify(work.profiles.map(p=>p.id))!==JSON.stringify(filmIds))throw Error('Invalid film catalog');
 for(const p of work.profiles){if(p.category!=='film'||p.presentation!=='color'||!Number.isInteger(p.revision)||p.revision<1)throw Error('Invalid film definition');NSProfiles.validateDefinition(p);profiles[p.id]=p;}
 const creativePath='docs/profile-system/creative-profile-designs.json',creativeBytes=fs.readFileSync(creativePath),creative=JSON.parse(creativeBytes);
 const creativeIds=['creative.backstreet','creative.afterglow','creative.pale-static','creative.redline'];
