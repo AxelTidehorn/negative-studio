@@ -1,3 +1,5 @@
+> **Arkiv.** Beskriver profiloperator 1. Aktuell operator 2 och profiler: [arkitektur](../ARCHITECTURE.md#profiler). Work P-oraklet och `tools/profile-work-oracle.py` är borttagna.
+
 # Gold P och Portra P i applikationen
 
 Bas: aktuell main `f33aea70ceba5b70ff030377ad5aaf16f440dd77` (#93), kontrollerad

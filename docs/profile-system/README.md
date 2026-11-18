@@ -1,3 +1,5 @@
+> **Arkiv.** Beskriver profiloperator 1. Aktuell operator 2 och profiler: [arkitektur](../ARCHITECTURE.md#profiler). Work P-oraklet och `tools/profile-work-oracle.py` är borttagna.
+
 # FILMLABB 3.0: en aktiv presentationskedja
 
 > Historical implementation/measurement record. Reproduction commands referring to removed tools require the [pinned PR #99 checkout](https://github.com/AxelTidehorn/negative-studio/blob/f78a0314480072a723f97ce3f1a5aeffae008353/docs/profile-system/README.md). This does not retire the application functionality described here. Current test commands and coverage are in [TESTING](../TESTING.md).
