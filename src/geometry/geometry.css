@@ -131,3 +131,4 @@
  .frame-review-active .image-controls{justify-content:center}
  .frame-review-active #frameReviewTitle{display:none}
 }
+:is(#geometryOverlay,#geometryHandles) .composition-edge{stroke:transparent;stroke-width:22;fill:none;pointer-events:stroke;touch-action:none}

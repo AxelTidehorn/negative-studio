@@ -86,6 +86,40 @@ function effectiveComposition(width,height,value,options={}){
  const crop={cx:center.x/L,cy:center.y/L,w:w/L,h:h/L};
  return {crop,limited:['cx','cy','w','h'].some(k=>Math.abs(crop[k]-desired[k])>EPS)};
 }
+// Interactive crop edit in the rotation plane, from the crop at drag start plus the
+// total pointer delta (so reversing direction retraces exactly). Only the dragged
+// part moves: corner = its two edges, edge = one edge, move = translation. Each
+// crop corner must stay in the valid domain; those half-planes are linear in the
+// moving coordinates, so the desired position is projected onto that convex set.
+// At 0° this is plain per-axis clamping; when rotated the pointer slides along the
+// slanted boundary. Never rescales, recentres or moves anchored edges.
+const DRAG_PARTS={move:[1,1,1,1],0:[1,0,1,0],1:[0,1,1,0],2:[0,1,0,1],3:[1,0,0,1],top:[0,0,1,0],right:[0,1,0,0],bottom:[0,0,0,1],left:[1,0,0,0]};
+function dragComposition(width,height,value,start,part,delta,options={}){
+ const g=validate(value),c=composition(start),m=DRAG_PARTS[part];if(!m||!object(delta)||!finite(delta.x)||!finite(delta.y))fail('ogiltig beskärningsdragning.');
+ const t=transform(width,height,g.rotation),b=domain(width,height,options),L=Math.max(width,height),W=width/2,H=height/2;
+ // Edges as [constant, coefficient of u.x, coefficient of u.y]; u is the offset of the moving edges.
+ const e={left:[c.cx-c.w/2,m[0],0],right:[c.cx+c.w/2,m[1],0],top:[c.cy-c.h/2,0,m[2]],bottom:[c.cy+c.h/2,0,m[3]]},rows=[];
+ for(const [ex,ey] of [[e.left,e.top],[e.right,e.top],[e.right,e.bottom],[e.left,e.bottom]]){
+  // Source x = W + L(cos·qx + sin·qy), source y = H + L(-sin·qx + cos·qy).
+  const sx=[0,1,2].map(j=>L*(t.cos*ex[j]+t.sin*ey[j])),sy=[0,1,2].map(j=>L*(-t.sin*ex[j]+t.cos*ey[j]));
+  rows.push([sx[1],sx[2],b.x1-W-sx[0]],[-sx[1],-sx[2],sx[0]+W-b.x0],[sy[1],sy[2],b.y1-H-sy[0]],[-sy[1],-sy[2],sy[0]+H-b.y0]);
+ }
+ // A resized side never crosses its anchor; keep at least a few pixels (or the start size).
+ const minW=Math.min(c.w,8/L),minH=Math.min(c.h,8/L);
+ if(part!=='move'){
+  if(m[0])rows.push([1,0,c.w-minW]);if(m[1])rows.push([-1,0,c.w-minW]);
+  if(m[2])rows.push([0,1,c.h-minH]);if(m[3])rows.push([0,-1,c.h-minH]);
+ }
+ const half=rows.filter(([a,d])=>Math.hypot(a,d)>1e-12),tol=1e-9,ok=u=>half.every(([a,d,k])=>a*u[0]+d*u[1]<=k+tol);
+ const want=[m[0]||m[1]?delta.x:0,m[2]||m[3]?delta.y:0];let best=ok(want)?want:[0,0];
+ if(best!==want){
+  let distance=Math.hypot(want[0],want[1]);const consider=u=>{if(ok(u)){const d=Math.hypot(u[0]-want[0],u[1]-want[1]);if(d<distance){distance=d;best=u;}}};
+  for(const [a,d,k] of half){const s=(a*want[0]+d*want[1]-k)/(a*a+d*d);consider([want[0]-s*a,want[1]-s*d]);}
+  for(let i=0;i<half.length;i++)for(let j=i+1;j<half.length;j++){const [a1,d1,k1]=half[i],[a2,d2,k2]=half[j],det=a1*d2-a2*d1;if(Math.abs(det)>1e-12)consider([(k1*d2-k2*d1)/det,(a1*k2-a2*k1)/det]);}
+ }
+ const left=e.left[0]+e.left[1]*best[0],right=e.right[0]+e.right[1]*best[0],top=e.top[0]+e.top[2]*best[1],bottom=e.bottom[0]+e.bottom[2]*best[1];
+ return composition({cx:(left+right)/2,cy:(top+bottom)/2,w:right-left,h:bottom-top});
+}
 function compositionTransform(width,height,value,options={}){
  const g=validate(value);
  const t=transform(width,height,g.rotation),e=effectiveComposition(width,height,g,options),L=Math.max(width,height);
@@ -119,5 +153,5 @@ function viewTransform(width,height,value,view,options={}){
  const ox=view.width/2+view.panX,oy=view.height/2+view.panY;
  return {forward(s){const q=p.forward(s);return {x:ox+(q.x-.5)*p.area.width*scale,y:oy+(q.y-.5)*p.area.height*scale};},inverse(v){return p.inverse({x:.5+(v.x-ox)/(p.area.width*scale),y:.5+(v.y-oy)/(p.area.height*scale)});}};
 }
-root.NSGeometry=Object.freeze({VERSION,rect,composition,sourceSize,rotation,quarterRotation,create,validate,transform,pixelBounds,resolve,withQuarterTurns,withComposition,isValidCrop,validPolygon,autoValidCrop,effectiveComposition,compositionTransform,contextTransform,viewTransform});
+root.NSGeometry=Object.freeze({VERSION,rect,composition,sourceSize,rotation,quarterRotation,create,validate,transform,pixelBounds,resolve,withQuarterTurns,withComposition,isValidCrop,validPolygon,autoValidCrop,effectiveComposition,dragComposition,compositionTransform,contextTransform,viewTransform});
 })(globalThis);

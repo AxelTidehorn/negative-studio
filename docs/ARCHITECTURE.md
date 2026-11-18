@@ -46,7 +46,7 @@ En osäker men rimlig kandidat visas direkt redigerbar. Utan kandidat används h
 
 Godkända filmbasreferenser hör till kalibreringsägaren och har explicit käll-/ljus-/sessionskompatibilitet; de är inte motivpixlar. Den befintliga uttryckliga referenspolicyn behålls: att aktivera förslag utan att godkänna dem får inte återaktivera en gammal automatisk bas.
 
-`frame.geometry` på **köposten** (inte `settings.frame`) äger komposition och fin-/kvartvarvsrotation. `rollShared.cropExportToFrame` är köns enda beskär-till-filmruta-val. Gamla individuella `legacyCrop`-planer och duplicerade köfält `crop`, `base`, `levels` har tagits bort. Kvartvarvsinställningen för visningen samordnas med geometrins rotationsplan av `withQuarterTurns`; dess befintliga centrum-/dimensionsrotation är bevarad.
+`frame.geometry` på **köposten** (inte `settings.frame`) äger komposition och fin-/kvartvarvsrotation. Beskärningsdrag går via `NSGeometry.dragComposition`: hörn flyttar två kanter med motsatt hörn fast, kanthandtag en kant, ytan flyttar utan storleksändring. Den rörliga delen projiceras på giltigt område (per axel vid 0°, glidande längs sned gräns vid rotation); fasta kanter flyttas eller skalas aldrig. `effectiveComposition` skalar fortfarande proportionellt när domänen ändras utan drag, t.ex. vid rotation. `rollShared.cropExportToFrame` är köns enda beskär-till-filmruta-val. Gamla individuella `legacyCrop`-planer och duplicerade köfält `crop`, `base`, `levels` har tagits bort. Kvartvarvsinställningen för visningen samordnas med geometrins rotationsplan av `withQuarterTurns`; dess befintliga centrum-/dimensionsrotation är bevarad.
 
 ## Profiler
 
