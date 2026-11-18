@@ -1,0 +1,4536 @@
+{
+  "schema": "filmlabb-practical-test-v1",
+  "date": "2026-10-28",
+  "folder": "10AugIqofuavZQlzcXqH_WYyzx4VukEaT",
+  "inventory_count": 12,
+  "unique_count": 11,
+  "main_commit": "17b01d463e3a785998b9644d16973c9fbb6634e9",
+  "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+  "neo_commit": "324c2daefada7d8d8c783719f62bf7f27320349a",
+  "originals_read_only": true,
+  "frozen_parameters": {
+    "frozen_at": "2026-10-28T13:23:27.483844+00:00",
+    "training_indices": [
+      0,
+      1,
+      2,
+      6
+    ],
+    "validation_indices": [
+      9,
+      10
+    ],
+    "additional_development_indices": [
+      3,
+      4,
+      5,
+      8,
+      11
+    ],
+    "slopes": [
+      1.2,
+      1.0366067625463724,
+      0.8066116270147937
+    ],
+    "density_offset": [
+      -0.10833108308627509,
+      0.022077949425465204,
+      0.08625313366080989
+    ],
+    "positive_gain": [
+      1.2716860571072692,
+      0.9377979506807447,
+      0.7185892463067459
+    ],
+    "positive_gain_EV": [
+      0.34674255446123553,
+      -0.092650968468805,
+      -0.476760749327433
+    ],
+    "density_medians": [
+      0.25427725926784117,
+      0.38468629177958147,
+      0.44886147601492615
+    ],
+    "density_spans": [
+      0.44288670430992993,
+      0.5370387897584572,
+      0.6901686295716216
+    ],
+    "limits": {
+      "slope_multiplier": [
+        0.8,
+        1.2
+      ],
+      "positive_chroma_EV": 0.65
+    },
+    "status": "Statistical hypotheses, not measured film calibration. No film-roll identity verified. Corrected ROI version 2; initial holder-contaminated ROIs rejected before photographic validation review."
+  },
+  "files": [
+    {
+      "id": "1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO",
+      "title": "_DSF9231.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50511360",
+      "url": "https://drive.google.com/file/d/1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T13:01:11.802Z",
+      "modified_time": "2026-10-28T13:01:11.802Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "cd2575f8f65ebf4f8c2e2850bebb6c73ff8b47dc86eb97313e5625c5ae7858c5",
+      "actual_size": 50511360,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 0,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.25,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-28T17:57:06.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8866559863090515,
+        0.4562905430793762,
+        0.23076218366622925
+      ],
+      "base_region": {
+        "x": 0.3,
+        "y": 0.005,
+        "w": 0.2,
+        "h": 0.012
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Fasad och skyltar i dagsljus",
+      "role": "fit",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "00",
+      "full_B_exports": true
+    },
+    {
+      "id": "1ZA6Is8L6VxkVlx2ZVBxKCq1RL-9Ky2PH",
+      "title": "_DSF9237.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50428928",
+      "url": "https://drive.google.com/file/d/1ZA6Is8L6VxkVlx2ZVBxKCq1RL-9Ky2PH/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1ZA6Is8L6VxkVlx2ZVBxKCq1RL-9Ky2PH/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T13:00:31.451Z",
+      "modified_time": "2026-10-28T13:00:31.451Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "37df5503bc615791d60e946553847de1e56c5fa188c24022a525d44893527fce",
+      "actual_size": 50428928,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 1,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T14:32:08.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.5698786973953247,
+        0.2672159969806671,
+        0.13597314059734344
+      ],
+      "base_region": {
+        "x": 0.3,
+        "y": 0.004,
+        "w": 0.2,
+        "h": 0.012
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Gul buss, färgdominans och skuggor",
+      "role": "fit",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "01",
+      "full_B_exports": false
+    },
+    {
+      "id": "11wDPUuh3T1sR0lvshDthP2qOjBn1HCqf",
+      "title": "_DSF9229.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50294272",
+      "url": "https://drive.google.com/file/d/11wDPUuh3T1sR0lvshDthP2qOjBn1HCqf/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/11wDPUuh3T1sR0lvshDthP2qOjBn1HCqf/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:59:55.735Z",
+      "modified_time": "2026-10-28T12:59:55.735Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "43bfc84fa67b2c9457aba48515245f2aaae5a6fd50c8dd4923a8c2840f1ee783",
+      "actual_size": 50294272,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 2,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.25,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-28T17:55:50.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.9421988129615784,
+        0.6661631464958191,
+        0.3144579231739044
+      ],
+      "base_region": {
+        "x": 0.3,
+        "y": 0.004,
+        "w": 0.2,
+        "h": 0.012
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Bil och tegel, cyan/grön färgdominans",
+      "role": "fit",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "02",
+      "full_B_exports": false
+    },
+    {
+      "id": "1I9XxU5gIvskIbUQJk6ejcyMDe3P3h-3g",
+      "title": "_DSF8951.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50290688",
+      "url": "https://drive.google.com/file/d/1I9XxU5gIvskIbUQJk6ejcyMDe3P3h-3g/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1I9XxU5gIvskIbUQJk6ejcyMDe3P3h-3g/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:59:22.846Z",
+      "modified_time": "2026-10-28T12:59:22.846Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "d52ce3a32f13ae3b0e6f9917b438f6c00ffc580a5398f1522bbf76b4001e0f99",
+      "actual_size": 50290688,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 3,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-06-13T13:41:28.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8931563496589661,
+        0.504982054233551,
+        0.26112765073776245
+      ],
+      "base_region": {
+        "x": 0.209,
+        "y": 0.2,
+        "w": 0.008,
+        "h": 0.3
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Stad och vatten, hög kontrast",
+      "role": "development",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 0,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "03",
+      "full_B_exports": false
+    },
+    {
+      "id": "1cuNkHG2aYPnYUETqUI2s58CJ-mwAhgUl",
+      "title": "_DSF9235.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50245120",
+      "url": "https://drive.google.com/file/d/1cuNkHG2aYPnYUETqUI2s58CJ-mwAhgUl/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1cuNkHG2aYPnYUETqUI2s58CJ-mwAhgUl/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:58:47.109Z",
+      "modified_time": "2026-10-28T12:58:47.109Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094",
+      "actual_size": 50245120,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 4,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T14:30:16.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8625314831733704,
+        0.40183109045028687,
+        0.20152589678764343
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.97,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Utomhusporträtt, blå huvtröja",
+      "role": "development",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "04",
+      "full_B_exports": true
+    },
+    {
+      "id": "1a7LfhkQZW91UbKHHEmGno_V0rZKy5Bkh",
+      "title": "_DSF8983.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50229760",
+      "url": "https://drive.google.com/file/d/1a7LfhkQZW91UbKHHEmGno_V0rZKy5Bkh/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1a7LfhkQZW91UbKHHEmGno_V0rZKy5Bkh/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:58:10.167Z",
+      "modified_time": "2026-10-28T12:58:10.167Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53",
+      "actual_size": 50229760,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 5,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-06-13T14:22:18.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.9006485342979431,
+        0.5126726031303406,
+        0.25980010628700256
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.02,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Köksporträtt, fönstermotljus",
+      "role": "development",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 0,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "05",
+      "full_B_exports": false
+    },
+    {
+      "id": "1wZl5crTbZvbVrCYoDL-K9wbwc7M2esgc",
+      "title": "_DSF9239.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50222080",
+      "url": "https://drive.google.com/file/d/1wZl5crTbZvbVrCYoDL-K9wbwc7M2esgc/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1wZl5crTbZvbVrCYoDL-K9wbwc7M2esgc/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:57:20.373Z",
+      "modified_time": "2026-10-28T12:57:20.373Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "62426373bbbf4240113c6dc5a750758d2745aa1f8f9d2de80fbe542e9433e3f7",
+      "actual_size": 50222080,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 6,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T14:37:38.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8487372994422913,
+        0.3919127285480499,
+        0.19972534477710724
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.97,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Två personer i soffa, fönsterljus",
+      "role": "fit",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "06",
+      "full_B_exports": false
+    },
+    {
+      "id": "1IyAk_U0527YmjlQyZejrXxXX94sDh-y5",
+      "title": "_DSF9239.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50222080",
+      "url": "https://drive.google.com/file/d/1IyAk_U0527YmjlQyZejrXxXX94sDh-y5/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1IyAk_U0527YmjlQyZejrXxXX94sDh-y5/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:56:51.284Z",
+      "modified_time": "2026-10-28T12:56:51.284Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "62426373bbbf4240113c6dc5a750758d2745aa1f8f9d2de80fbe542e9433e3f7",
+      "actual_size": 50222080,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified via identical SHA-256 file",
+      "index": 7,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T14:37:38.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8487372994422913,
+        0.3919127285480499,
+        0.19972534477710724
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.97,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Byteidentisk kopia av index 06",
+      "role": "duplicate",
+      "duplicate_of_index": 6,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "06",
+      "full_B_exports": false
+    },
+    {
+      "id": "1j73xL-5XgNfF_sh87VfS0kbku_ETVv2i",
+      "title": "_DSF8948.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50206208",
+      "url": "https://drive.google.com/file/d/1j73xL-5XgNfF_sh87VfS0kbku_ETVv2i/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1j73xL-5XgNfF_sh87VfS0kbku_ETVv2i/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:56:11.923Z",
+      "modified_time": "2026-10-28T12:56:11.923Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "644375ef0652998341a34ba0ddc904901a4b13ea5232aeca119c822201754326",
+      "actual_size": 50206208,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 8,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.3333333432674408,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-06-13T13:37:44.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.9858396053314209,
+        0.8335545659065247,
+        0.3952086567878723
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.04,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Kanalvis klippning",
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Nöjesfält, starka färger och ljuskällor",
+      "role": "development",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 0,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "08",
+      "full_B_exports": false
+    },
+    {
+      "id": "1-Ti_-uv7f69A5nMI49Nnx2usGZXKXgUd",
+      "title": "_DSF8434.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50205696",
+      "url": "https://drive.google.com/file/d/1-Ti_-uv7f69A5nMI49Nnx2usGZXKXgUd/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1-Ti_-uv7f69A5nMI49Nnx2usGZXKXgUd/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:55:38.657Z",
+      "modified_time": "2026-10-28T12:55:38.657Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "50c5bf7bf26d0cc536af69ddf8a0120a2a4ad9d3b852d1d181ff55b7c08bb444",
+      "actual_size": 50205696,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        437.0,
+        302.0,
+        755.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 9,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.125,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-05-18T19:46:13.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            437,
+            302,
+            755,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.4775921404361725,
+        0.33734646439552307,
+        0.2727702856063843
+      ],
+      "base_region": {
+        "x": 0.777,
+        "y": 0.25,
+        "w": 0.008,
+        "h": 0.3
+      },
+      "base_quality": "review",
+      "base_warnings": [
+        "Kontrollera variationen i provet"
+      ],
+      "auto_base": "missing",
+      "subject": "Snöscen, ljusa neutrala ytor och låg kontrast",
+      "role": "validation",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 0,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "09",
+      "full_B_exports": true
+    },
+    {
+      "id": "1KraxC27LZFuUTEvLYsXXGuXFoO6XkPej",
+      "title": "_DSF9243.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50199552",
+      "url": "https://drive.google.com/file/d/1KraxC27LZFuUTEvLYsXXGuXFoO6XkPej/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1KraxC27LZFuUTEvLYsXXGuXFoO6XkPej/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:55:00.686Z",
+      "modified_time": "2026-10-28T12:55:00.686Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "1aa2cad3bbbb315de5ff03c9ff8e284af4657d4ccd89b21a14b47314d132fdc0",
+      "actual_size": 50199552,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 10,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T16:56:56.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.9158769845962524,
+        0.5695277452468872,
+        0.29091325402259827
+      ],
+      "base_region": {
+        "x": 0.3,
+        "y": 0.004,
+        "w": 0.2,
+        "h": 0.012
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Utomhuspar, hudtoner och grön omgivning",
+      "role": "validation",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "10",
+      "full_B_exports": true
+    },
+    {
+      "id": "1okW2uslsnBPAFSNbpgtM_PyIdhyetusZ",
+      "title": "_DSF9238.RAF",
+      "mime_type": "image/x-fuji-raf",
+      "size": "50160640",
+      "url": "https://drive.google.com/file/d/1okW2uslsnBPAFSNbpgtM_PyIdhyetusZ/view?usp=drivesdk",
+      "display_url": "https://drive.google.com/file/d/1okW2uslsnBPAFSNbpgtM_PyIdhyetusZ/view?usp=drivesdk",
+      "file_or_folder": "file",
+      "created_time": "2026-10-28T12:54:27.917Z",
+      "modified_time": "2026-10-28T12:54:27.917Z",
+      "parent_ids": null,
+      "drive_id": null,
+      "current_user_can_share": null,
+      "has_augmented_permissions": null,
+      "shared": true,
+      "permissions": null,
+      "source_visibility_status": "access_not_verified",
+      "sha256": "be99fa6a39acb700a08686b07a5231658f5b4f037e4b8bf41e6b6a3281e182e2",
+      "actual_size": 50160640,
+      "metadata": {},
+      "dimensions": [
+        6032,
+        4032
+      ],
+      "black_level": [
+        1022,
+        1022,
+        1022,
+        1022
+      ],
+      "white_level": 16383,
+      "camera_wb": [
+        556.0,
+        302.0,
+        565.0,
+        0.0
+      ],
+      "rgb_xyz_matrix": [
+        [
+          1.143399953842163,
+          -0.49480000138282776,
+          -0.12099999934434891
+        ],
+        [
+          -0.37459999322891235,
+          1.204200029373169,
+          0.19030000269412994
+        ],
+        [
+          -0.066600002348423,
+          0.14790000021457672,
+          0.5235000252723694
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      "decode": "Full LibRaw unpack; actual FILMLABB libraw-wasm decode verified",
+      "index": 11,
+      "raw_metadata": {
+        "width": 6032,
+        "height": 4032,
+        "raw_width": 6160,
+        "raw_height": 4032,
+        "top_margin": 0,
+        "left_margin": 0,
+        "flip": 0,
+        "camera_make": "Fujifilm",
+        "camera_model": "X-T2",
+        "iso_speed": 200,
+        "shutter": 0.20000000298023224,
+        "aperture": 8,
+        "focal_len": 80,
+        "timestamp": "2018-07-29T14:36:45.000Z",
+        "color_data": {
+          "black": 0,
+          "data_maximum": 0,
+          "maximum": 16383,
+          "fmaximum": 0,
+          "fnorm": 0,
+          "cam_mul": [
+            556,
+            302,
+            565,
+            0
+          ],
+          "pre_mul": [
+            2.172879219055176,
+            0.9475454688072205,
+            1.5276477336883545,
+            0
+          ],
+          "flash_used": 0,
+          "canon_ev": 0,
+          "model2": "Y53102",
+          "UniqueCameraModel": "",
+          "LocalizedCameraModel": "",
+          "ImageUniqueID": "",
+          "RawDataUniqueID": "",
+          "raw_bps": 14,
+          "ExifColorSpace": 2,
+          "cmatrix": [
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ],
+            [
+              0,
+              0,
+              0,
+              0
+            ]
+          ],
+          "rgb_cam": [
+            [
+              1.2821619510650635,
+              -0.10368648171424866,
+              -0.1784755140542984,
+              0
+            ],
+            [
+              -0.1845952868461609,
+              1.5407127141952515,
+              -0.3561174273490906,
+              0
+            ],
+            [
+              0.017254667356610298,
+              -0.4453255832195282,
+              1.4280709028244019,
+              0
+            ]
+          ],
+          "cam_xyz": [
+            [
+              1.143399953842163,
+              -0.49480000138282776,
+              -0.12099999934434891
+            ],
+            [
+              -0.37459999322891235,
+              1.2041999101638794,
+              0.19029998779296875
+            ],
+            [
+              -0.06659999489784241,
+              0.14790000021457672,
+              0.5234999656677246
+            ],
+            [
+              0,
+              0,
+              0
+            ]
+          ],
+          "profile": null,
+          "profile_length": 0,
+          "dng_color": [
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            },
+            {
+              "illuminant": 65535,
+              "colormatrix": [
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "forwardmatrix": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ],
+              "calibration": [
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ],
+                [
+                  0,
+                  0,
+                  0,
+                  0
+                ]
+              ]
+            }
+          ],
+          "dng_levels": {
+            "dng_whitelevel": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "default_crop": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "asshotneutral": [
+              0,
+              0,
+              0,
+              0
+            ],
+            "analogbalance": [
+              1,
+              1,
+              1,
+              1
+            ],
+            "baseline_exposure": -999,
+            "LinearResponseLimit": 1,
+            "dng_black": 0
+          }
+        }
+      },
+      "identified_negative": true,
+      "negative_type": "Photographic color negative, film stock unverified",
+      "film_stock": null,
+      "film_roll": null,
+      "film_edge_available": true,
+      "base_origin": "manual measured visible film edge",
+      "base": [
+        0.8747997283935547,
+        0.4117952287197113,
+        0.20976577699184418
+      ],
+      "base_region": {
+        "x": 0.4,
+        "y": 0.97,
+        "w": 0.08,
+        "h": 0.005
+      },
+      "base_quality": "missing",
+      "base_warnings": [
+        "Ojämnt prov: textur, damm eller blandade ytor"
+      ],
+      "auto_base": "missing",
+      "subject": "Sittande inomhusporträtt, varm vägg",
+      "role": "development",
+      "duplicate_of_index": null,
+      "display_rotation_clockwise": 90,
+      "conversion_commit": "da3fe84a0fef0bb139602ca4ad998ede24e10538",
+      "exports_prefix": "11",
+      "full_B_exports": false
+    }
+  ]
+}

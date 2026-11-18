@@ -1,0 +1,13 @@
+index,title,id,actual_size,sha256,subject,role,base_quality,duplicate_of_index
+0,_DSF9231.RAF,1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO,50511360,cd2575f8f65ebf4f8c2e2850bebb6c73ff8b47dc86eb97313e5625c5ae7858c5,Fasad och skyltar i dagsljus,fit,missing,
+1,_DSF9237.RAF,1ZA6Is8L6VxkVlx2ZVBxKCq1RL-9Ky2PH,50428928,37df5503bc615791d60e946553847de1e56c5fa188c24022a525d44893527fce,"Gul buss, färgdominans och skuggor",fit,missing,
+2,_DSF9229.RAF,11wDPUuh3T1sR0lvshDthP2qOjBn1HCqf,50294272,43bfc84fa67b2c9457aba48515245f2aaae5a6fd50c8dd4923a8c2840f1ee783,"Bil och tegel, cyan/grön färgdominans",fit,missing,
+3,_DSF8951.RAF,1I9XxU5gIvskIbUQJk6ejcyMDe3P3h-3g,50290688,d52ce3a32f13ae3b0e6f9917b438f6c00ffc580a5398f1522bbf76b4001e0f99,"Stad och vatten, hög kontrast",development,missing,
+4,_DSF9235.RAF,1cuNkHG2aYPnYUETqUI2s58CJ-mwAhgUl,50245120,ae289e8118ffc91321b19c145c5e815b3562fe4b47fda5c2eae5517439ab0094,"Utomhusporträtt, blå huvtröja",development,missing,
+5,_DSF8983.RAF,1a7LfhkQZW91UbKHHEmGno_V0rZKy5Bkh,50229760,9d96173891843d780cbd0abcad40be5c613dfdcd9de3334faccfceb94aee2d53,"Köksporträtt, fönstermotljus",development,missing,
+6,_DSF9239.RAF,1wZl5crTbZvbVrCYoDL-K9wbwc7M2esgc,50222080,62426373bbbf4240113c6dc5a750758d2745aa1f8f9d2de80fbe542e9433e3f7,"Två personer i soffa, fönsterljus",fit,missing,
+7,_DSF9239.RAF,1IyAk_U0527YmjlQyZejrXxXX94sDh-y5,50222080,62426373bbbf4240113c6dc5a750758d2745aa1f8f9d2de80fbe542e9433e3f7,Byteidentisk kopia av index 06,duplicate,missing,6
+8,_DSF8948.RAF,1j73xL-5XgNfF_sh87VfS0kbku_ETVv2i,50206208,644375ef0652998341a34ba0ddc904901a4b13ea5232aeca119c822201754326,"Nöjesfält, starka färger och ljuskällor",development,missing,
+9,_DSF8434.RAF,1-Ti_-uv7f69A5nMI49Nnx2usGZXKXgUd,50205696,50c5bf7bf26d0cc536af69ddf8a0120a2a4ad9d3b852d1d181ff55b7c08bb444,"Snöscen, ljusa neutrala ytor och låg kontrast",validation,review,
+10,_DSF9243.RAF,1KraxC27LZFuUTEvLYsXXGuXFoO6XkPej,50199552,1aa2cad3bbbb315de5ff03c9ff8e284af4657d4ccd89b21a14b47314d132fdc0,"Utomhuspar, hudtoner och grön omgivning",validation,missing,
+11,_DSF9238.RAF,1okW2uslsnBPAFSNbpgtM_PyIdhyetusZ,50160640,be99fa6a39acb700a08686b07a5231658f5b4f037e4b8bf41e6b6a3281e182e2,"Sittande inomhusporträtt, varm vägg",development,missing,

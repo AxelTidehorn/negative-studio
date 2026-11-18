@@ -1,0 +1,115 @@
+{
+  "change": "Same measured source, all base channels +10 percent; artificial sensitivity perturbation, not another measurement",
+  "oldBase": [
+    0.8866559863090515,
+    0.4562905430793762,
+    0.23076218366622925
+  ],
+  "newBase": [
+    0.9753215849399568,
+    0.5019195973873138,
+    0.2538384020328522
+  ],
+  "oldIntent": {
+    "schema": "RenderIntentV1",
+    "version": 1,
+    "id": "tone-f80ebece-76e1-4f50-9eb9-7e72aa99c341",
+    "analysisVersion": "source-content-2",
+    "sourceRevision": "1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO",
+    "calibrationId": "rec2020-common-prior-1",
+    "baseId": "base-23701df7-5e9a-4791-97fb-1cd729b8b367",
+    "status": "estimated",
+    "exposure": 1,
+    "requestedExposure": 2.326442507014749,
+    "exposureLimited": true,
+    "tone": "luminance-reinhard-1",
+    "colorCorrection": {
+      "version": 1,
+      "status": "prior",
+      "kind": "identity"
+    },
+    "sampleCount": 22109,
+    "median": 0.0358875265916046,
+    "analysis": {
+      "version": 2,
+      "mode": "edge-connected-content-2",
+      "status": "estimated",
+      "sourceRevision": "1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO",
+      "baseId": "base-23701df7-5e9a-4791-97fb-1cd729b8b367",
+      "cols": 160,
+      "rows": 150,
+      "samples": 24000,
+      "counts": {
+        "invalid": 0,
+        "clipped": 0,
+        "logFloor": 0,
+        "edgeBase": 1868,
+        "edgeHolder": 23,
+        "edgeClear": 0,
+        "kept": 22109
+      },
+      "keptFraction": 0.9212083333333333,
+      "maskId": "mask-fa49c692",
+      "baseEvidence": "measured",
+      "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+      "fullSourceMedian": 0.03324129680589968,
+      "fullSourceRequestedEV": 2.4369483359722497
+    }
+  },
+  "newFreshIntent": {
+    "schema": "RenderIntentV1",
+    "version": 1,
+    "id": "tone-77718798-f20d-4554-8e73-edda93a9d074",
+    "analysisVersion": "source-content-2",
+    "sourceRevision": "1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO",
+    "calibrationId": "rec2020-common-prior-1",
+    "baseId": "measured-base-sensitivity-plus10pct",
+    "status": "estimated",
+    "exposure": 1,
+    "requestedExposure": 2.128564427908537,
+    "exposureLimited": true,
+    "tone": "luminance-reinhard-1",
+    "colorCorrection": {
+      "version": 1,
+      "status": "prior",
+      "kind": "identity"
+    },
+    "sampleCount": 22324,
+    "median": 0.04116335500927503,
+    "analysis": {
+      "version": 2,
+      "mode": "edge-connected-content-2",
+      "status": "estimated",
+      "sourceRevision": "1fwIHZ_ujF_WDIV0DeRRW7L4_h2YgMgfO",
+      "baseId": "measured-base-sensitivity-plus10pct",
+      "cols": 160,
+      "rows": 150,
+      "samples": 24000,
+      "counts": {
+        "invalid": 0,
+        "clipped": 0,
+        "logFloor": 0,
+        "edgeBase": 1653,
+        "edgeHolder": 23,
+        "edgeClear": 0,
+        "kept": 22324
+      },
+      "keptFraction": 0.9301666666666667,
+      "maskId": "mask-d6b0111b",
+      "baseEvidence": "measured",
+      "assumption": "Heuristic edge-connected base/holder/clear regions; not semantic subject detection",
+      "fullSourceMedian": 0.03849098386308332,
+      "fullSourceRequestedEV": 2.225404453280042
+    }
+  },
+  "staleWorkerBehavior": "parameters() runs analyzeWithMask only when !intent. accept/reuse/undo call parameters() without clearing an existing intent; tone explicitly reanalyzes.",
+  "effect": {
+    "oldAppliedEV": 1,
+    "correctFreshAppliedEV": 1,
+    "oldRequestedEV": 2.326442507014749,
+    "freshRequestedEV": 2.128564427908537,
+    "oldBaseId": "base-23701df7-5e9a-4791-97fb-1cd729b8b367",
+    "newBaseId": "measured-base-sensitivity-plus10pct"
+  },
+  "classification": "Verified code-state defect; initial-import darkness already occurs with a fresh intent."
+}
