@@ -54,7 +54,7 @@ node tests/<name>.mjs    # a single test (FILMLABB_TEST_LEVEL=extended for expan
 ```
 
 - Browser tests need Chromium: set `FILMLABB_CHROMIUM_BIN` (in Claude Code cloud sessions: `/opt/pw-browsers/chromium`). Don't run `playwright install` there.
-- Tests are registered in one place: `tests/suites.mjs`. A new test file that is not listed there does not run.
+- Tests are registered in one place: `tests/suites.mjs`. A new test file that is not listed there does not run. Browser tests run in parallel; a test that measures timing or animation must also be listed in `serialBrowserTests`.
 - Exact hashes are defined for Node 22 and 24 on Linux x64; other runtimes fail on purpose.
 - Logs and per-test output go to `.cache/`. Don't edit sources or switch branches during a full run (the runner checks build inputs did not change).
 - Performance claims need measurement: `npm run test:benchmark` and the `tools/benchmark-*.mjs` drivers; run before/after serially on the same machine. Small synthetic probes don't predict large-RAW behaviour.

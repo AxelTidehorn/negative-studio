@@ -1,10 +1,10 @@
 import fs from 'node:fs';import http from 'node:http';import path from 'node:path';import os from 'node:os';import {spawn} from 'node:child_process';import {performance} from 'node:perf_hooks';
-import {levels} from '../tests/suites.mjs';import {browserExecutable} from '../tests/helpers/browser-runtime.mjs';
+import {levels,serialBrowserTests} from '../tests/suites.mjs';import {browserExecutable} from '../tests/helpers/browser-runtime.mjs';
 import {ensureBuild,inputHash} from './build-artifact.mjs';
 import {contentIdentity} from './build-identity.mjs';
 if(process.argv.length>3)throw Error('Use fast/full/extended, or run a test file directly; extra selectors are not supported.');
 const level=process.argv[2]||'fast',selected=levels[level];if(!selected)throw Error('Unknown test level: '+level);
-const start=performance.now(),rows=[],env={...process.env,FILMLABB_TEST_LEVEL:level},report={level,engine:'all',node:process.version,jobs:level==='fast'?1:Math.min(2,os.availableParallelism()),tests:rows};let failures=0;
+const start=performance.now(),rows=[],env={...process.env,FILMLABB_TEST_LEVEL:level},report={level,engine:'all',node:process.version,jobs:level==='fast'?1:os.availableParallelism(),tests:rows};let failures=0;
 fs.mkdirSync('.cache',{recursive:true});
 function run(file){return new Promise(resolve=>{const began=performance.now(),log=fs.openSync('.cache/'+file.replaceAll('/','_')+'.log','w'),child=spawn(process.execPath,[file],{env,stdio:['ignore',log,log]});let error;child.on('error',e=>error=e.message);child.on('close',code=>{fs.closeSync(log);const row={file,ms:performance.now()-began,status:code,error};rows.push(row);if(code!==0){failures++;console.error('FAIL',file,fs.readFileSync('.cache/'+file.replaceAll('/','_')+'.log','utf8'));}else console.log('PASS',file,Math.round(row.ms)+'ms');resolve();});});}
 async function pool(files,jobs){let next=0;await Promise.all(Array.from({length:jobs},async()=>{while(next<files.length)await run(files[next++]);}));}
@@ -16,7 +16,10 @@ if(failures){console.error('Fast/Node checks failed; browser/build not started.'
   browserServer=await chromium.launchServer({headless:true,executablePath:browserExecutable(),args:['--no-sandbox','--enable-unsafe-swiftshader']});env.FILMLABB_BROWSER_WS=browserServer.wsEndpoint();report.browserProcesses=1;
   const root=path.resolve('site'),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.wasm':'application/wasm','.png':'image/png'};
   server=http.createServer((req,res)=>{const name=new URL(req.url,'http://localhost').pathname,file=path.resolve(root,'.'+(name==='/'?'/index.html':name));if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return;}try{res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');res.end(fs.readFileSync(file));}catch{res.writeHead(404);res.end();}});await new Promise(r=>server.listen(0,'127.0.0.1',r));env.FILMLABB_SITE_URL='http://127.0.0.1:'+server.address().port+'/';
-  for(const file of selected.browser)await run('tests/'+file);
+  // Independent contexts share one browser/server; measurements then run alone.
+  report.browserJobs=Number(process.env.FILMLABB_BROWSER_JOBS)||Math.max(1,Math.min(3,os.availableParallelism()-1));
+  await pool(selected.browser.filter(f=>!serialBrowserTests.includes(f)).map(f=>'tests/'+f),report.browserJobs);
+  for(const file of selected.browser.filter(f=>serialBrowserTests.includes(f)))await run('tests/'+file);
  }catch(e){failures++;report.error=e.message;console.error(e);}finally{if(browserServer)await browserServer.close();if(server){server.closeAllConnections();await new Promise(r=>server.close(r));}}
  }
 }

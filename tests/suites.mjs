@@ -20,5 +20,8 @@ export const levels={
  extended:{node:Object.values(nodeSuites).flat(),browser:[...browserTests,'film-base2-performance-browser.mjs']}
 };
 
+// Timing/animation measurements: run alone after the parallel browser pool so CPU contention cannot skew them.
+export const serialBrowserTests=['import-latency-browser.mjs','ui-motion-browser.mjs','ui-motion-d2-browser.mjs','film-base2-performance-browser.mjs'];
+
 // External originals / measurement tools; deliberately manual, not silent omissions.
 export const manualTests=['check-real-arw.mjs','check-decode-benchmark.mjs','check-raf-dng-pair.mjs'];
