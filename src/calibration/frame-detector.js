@@ -3,7 +3,17 @@
 (function(root){
 'use strict';
 const full=()=>({x:0,y:0,w:1,h:1}),cross=(a,b,c)=>(b.x-a.x)*(c.y-a.y)-(b.y-a.y)*(c.x-a.x);
-const quant=(a,q)=>{const b=a.slice().sort((x,y)=>x-y);return b[Math.floor((b.length-1)*q)]||0;};
+// k-th smallest value by quickselect: the same order statistic a full sort would give.
+function quant(a,q){
+ const n=a.length,b=new Float64Array(n);for(let i=0;i<n;i++)b[i]=a[i];if(!n)return 0;
+ const k=Math.floor((n-1)*q);let lo=0,hi=n-1;
+ while(lo<hi){
+  const pivot=b[(lo+hi)>>1];let i=lo,j=hi;
+  while(i<=j){while(b[i]<pivot)i++;while(b[j]>pivot)j--;if(i<=j){const t=b[i];b[i]=b[j];b[j]=t;i++;j--;}}
+  if(k<=j)hi=j;else if(k>=i)lo=i;else break;
+ }
+ return b[k]||0;
+}
 function hull(points){
  const p=points.slice().sort((a,b)=>a.x-b.x||a.y-b.y),a=[],b=[];
  for(const v of p){while(a.length>1&&cross(a.at(-2),a.at(-1),v)<=0)a.pop();a.push(v);}
@@ -26,10 +36,13 @@ function lab(rgb,wide){
  return [(116*y-16)/100,500*(x-y)/128,200*(y-z)/128];
 }
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1],a[2]-b[2]);
+// 3x3 box dilation then erosion, each as separable row/column passes over the same interior.
 function close(mask,w,h){
- const a=new Uint8Array(mask.length),b=new Uint8Array(mask.length);
- for(let y=1;y<h-1;y++)for(let x=1;x<w-1;x++){let v=0;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)v|=mask[(y+dy)*w+x+dx];a[y*w+x]=v;}
- for(let y=2;y<h-2;y++)for(let x=2;x<w-2;x++){let v=1;for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)v&=a[(y+dy)*w+x+dx];b[y*w+x]=v;}
+ const r=new Uint8Array(mask.length),a=new Uint8Array(mask.length),b=new Uint8Array(mask.length);
+ for(let y=0;y<h;y++)for(let x=1,i=y*w+1;x<w-1;x++,i++)r[i]=mask[i-1]|mask[i]|mask[i+1];
+ for(let y=1;y<h-1;y++)for(let x=1,i=y*w+1;x<w-1;x++,i++)a[i]=r[i-w]|r[i]|r[i+w];
+ for(let y=1;y<h-1;y++)for(let x=2,i=y*w+2;x<w-2;x++,i++)r[i]=a[i-1]&a[i]&a[i+1];
+ for(let y=2;y<h-2;y++)for(let x=2,i=y*w+2;x<w-2;x++,i++)b[i]=r[i-w]&r[i]&r[i+w];
  return b;
 }
 function components(mask,w,h){
@@ -70,14 +83,14 @@ function edgeQuads(colors,w,h){
   for(let c=0;c<3;c++){const dx=colors[i+1][c]-colors[i-1][c],dy=colors[i+w][c]-colors[i-w][c],m=Math.hypot(dx,dy);if(m>mag){mag=m;gx=dx;gy=dy;}}
   edges.push({x:x+.5,y:y+.5,mag,angle:(Math.atan2(gy,gx)*180/Math.PI+180)%180});magnitudes.push(mag);
  }
- const threshold=Math.max(.025,quant(magnitudes,.88)),diag=Math.ceil(Math.hypot(w,h)),stride=diag*2+1,votes=new Float32Array(180*stride),trig=Array.from({length:180},(_,a)=>[Math.cos(a*Math.PI/180),Math.sin(a*Math.PI/180)]);
- for(const p of edges)if(p.mag>=threshold)for(let da=-2;da<=2;da++){const a=(Math.round(p.angle)+da+180)%180,[c,s]=trig[a],r=Math.round(p.x*c+p.y*s)+diag;votes[a*stride+r]+=Math.min(3,p.mag/threshold);}
+ const threshold=Math.max(.025,quant(magnitudes,.88)),diag=Math.ceil(Math.hypot(w,h)),stride=diag*2+1,votes=new Float32Array(180*stride),trig=Array.from({length:180},(_,a)=>[Math.cos(a*Math.PI/180),Math.sin(a*Math.PI/180)]),strong=edges.filter(v=>v.mag>=threshold);
+ for(const p of strong)for(let da=-2;da<=2;da++){const a=(Math.round(p.angle)+da+180)%180,[c,s]=trig[a],r=Math.round(p.x*c+p.y*s)+diag;votes[a*stride+r]+=Math.min(3,p.mag/threshold);}
  const peaks=[];
  for(let a=0;a<180;a++)for(let r=1;r<stride-1;r++){const v=votes[a*stride+r];if(v>=14&&v>=votes[a*stride+r-1]&&v>=votes[a*stride+r+1])peaks.push({a,r:r-diag,v});}
  peaks.sort((a,b)=>b.v-a.v);const selected=[];
  for(const p of peaks){if(selected.some(q=>Math.abs(q.a-p.a)<4&&Math.abs(q.r-p.r)<4))continue;selected.push(p);if(selected.length===60)break;}
  for(const p of selected){
-  const [nx,ny]=trig[p.a],ps=edges.filter(v=>v.mag>=threshold&&Math.min(Math.abs(v.angle-p.a),180-Math.abs(v.angle-p.a))<12&&Math.abs(v.x*nx+v.y*ny-p.r)<2);
+  const [nx,ny]=trig[p.a],ps=strong.filter(v=>Math.min(Math.abs(v.angle-p.a),180-Math.abs(v.angle-p.a))<12&&Math.abs(v.x*nx+v.y*ny-p.r)<2);
   if(ps.length<8){p.line={nx,ny,d:p.r};continue;}
   const x=ps.reduce((s,v)=>s+v.x,0)/ps.length,y=ps.reduce((s,v)=>s+v.y,0)/ps.length;let xx=0,xy=0,yy=0;
   for(const v of ps){xx+=(v.x-x)**2;xy+=(v.x-x)*(v.y-y);yy+=(v.y-y)**2;}
@@ -111,20 +124,24 @@ function detect(im,{limit=480,debug=false,verify=true,strategy='hybrid'}={}){
  }for(const c of clusters.filter(c=>c.count>=3&&c.sides.size>=2))if(!models.some(m=>distance(m,c.center)<.045))models.push(c.center);}
  const prototypes=models.slice(0,12);
  function* masks(){
- if(prototypes.length){for(const threshold of [.035,.065,.10]){const m=Uint8Array.from(colors,p=>prototypes.every(b=>distance(p,b)>threshold)?1:0);yield {mask:m,name:'background-'+threshold};}}
- const ls=Array.from(lum).sort((a,b)=>a-b);
- for(const fraction of [.2,.4,.6,.8]){const threshold=ls[Math.floor((ls.length-1)*fraction)]||0;for(const bright of [false,true])yield {mask:Uint8Array.from(lum,v=>bright?v>threshold:v<threshold),name:(bright?'bright-':'dark-')+fraction};}
+ // Plain loops: TypedArray.from(source,map) takes the slow iterator path.
+ const binary=(values,test)=>{const m=new Uint8Array(n);for(let i=0;i<n;i++)m[i]=test(values[i])?1:0;return m;};
+ if(prototypes.length){const nearest=new Float64Array(n);for(let i=0;i<n;i++){let d=Infinity;for(const b of prototypes)d=Math.min(d,distance(colors[i],b));nearest[i]=d;}for(const threshold of [.035,.065,.10])yield {mask:binary(nearest,d=>d>threshold),name:'background-'+threshold};}
+ const ls=lum.slice().sort();
+ for(const fraction of [.2,.4,.6,.8]){const threshold=ls[Math.floor((ls.length-1)*fraction)]||0;for(const bright of [false,true])yield {mask:binary(lum,bright?v=>v>threshold:v=>v<threshold),name:(bright?'bright-':'dark-')+fraction};}
  }
  const candidates=[];
  function scoreQuad(q,method){
    const quad=q.map(v=>({x:v.x/w,y:v.y/h}));if(!validQuad(quad))return;
-   const supports=[],outsideSpread=[],content=[],texture=[],clearToSubject=[];
+   const supports=[],outsideSpread=[],content=[],texture=[],clearToSubject=[];let weak=0;
    for(let side=0;side<4;side++){
     const a=q[side],b=q[(side+1)%4],l=Math.hypot(b.x-a.x,b.y-a.y),nx=(a.y-b.y)/l,ny=(b.x-a.x)/l,outer=[],inner=[];let supported=0,subject=0;
     for(let t=0;t<31;t++){const f=.05+.90*t/30,x=a.x+(b.x-a.x)*f,y=a.y+(b.y-a.y)*f,o=at(x-nx*3,y-ny*3),inside=at(x+nx*3,y+ny*3);outer.push(o);inner.push(inside);if(distance(o,inside)>.035)supported++;if(!prototypes.length||prototypes.every(b=>distance(inside,b)>.035))subject++;}
     const center=[0,1,2].map(c=>quant(outer.map(v=>v[c]),.5));outsideSpread.push(quant(outer.map(v=>distance(v,center)),.75));supports.push(supported/31);content.push(subject/31);
     const ic=[0,1,2].map(c=>quant(inner.map(v=>v[c]),.5));texture.push(Math.min(1,quant(inner.map(v=>distance(v,ic)),.75)/.06));
     clearToSubject.push(quant(outer.map((v,i)=>v[0]-inner[i][0]),.5)>.025);
+    // Fewer than three strong sides is rejected below; stop once two have failed.
+    if((weak+=!(supports[side]>=.65&&content[side]>=.6&&(texture[side]>.25||clearToSubject[side])))>1)return;
    }
    // A holder -> uniform clear-film transition is the OUTER film edge, not
    // the photograph. Clear-film -> denser subject or textured subject beside
